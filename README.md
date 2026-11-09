@@ -43,6 +43,9 @@ Dificuldade: **difícil** — vilões podem vencer, a morte pode ser permanente,
 | 19 | [Dificuldade, derrota e estratégia](docs/19-dificuldade-derrota-estrategia.md) | Morte, Batalhas Mortais, Juiz de Táticas, Relógio do Eclipse |
 | 20 | [**Direção de arte**](docs/20-direcao-de-arte.md) | Pesquisa de referências, paletas, formas por reino, galerias |
 | 21 | [**Criador de avatares e mapas**](docs/21-criador-de-avatares-e-mapas.md) | Pixel art procedural: DNA, catálogo, avatar do jogador, mapas |
+| 22 | [**Jogabilidade completa**](docs/22-jogabilidade.md) | Fluidez no WhatsApp, grupo × privado, combate em rodada simultânea, Postura, reações elementais, subida de atributos, todos os modos e situações |
+| 22b | [Balanceamento](docs/22b-balanceamento.md) | Gerado pelo simulador: jogador × vilão por nível, curva de XP, ritmo da campanha |
+| 23 | [**Pets espirituais**](docs/23-pets-espirituais.md) | 20 pets × 3 estágios em pixel art, vínculo e evolução |
 
 ## Dados estruturados (`data/`)
 
@@ -74,6 +77,8 @@ Dificuldade: **difícil** — vilões podem vencer, a morte pode ser permanente,
 node scripts/gerar-dados.mjs        # regenera dados/docs e valida tudo
 node scripts/render-avatares.mjs    # avatares em pixel art (vilões, NPCs, exemplos) + galerias
 node scripts/render-mapas.mjs       # mapas em pixel art
+node scripts/render-pets.mjs        # 20 pets × 3 estágios
+node scripts/simular-progressao.mjs # tabela de balanceamento (docs/22b)
 python3 scripts/validar-historia.py # valida o roteiro contra vilões/subfases/regiões
 node scripts/render-cartas.mjs      # gera exemplos de cartas em templates/exemplos/
 ```
@@ -87,7 +92,7 @@ node scripts/render-cartas.mjs      # gera exemplos de cartas em templates/exemp
 | Aldeias de origem | 24 (6 castas × 4 reinos) |
 | Classes | 9 (+18 especializações no Rank B) |
 | Atributos mágicos | 4 elementos × variantes + 12 raros/lendários |
-| Pets espirituais | 20 |
+| Pets espirituais | 20 (× 3 estágios em pixel art) |
 | Itens lendários | 4 Grandes Itens + Amuleto da Perdição |
 | Grimórios simples | 40 (ranks E → S) |
 | Subfases | 36 |

@@ -168,3 +168,59 @@ export function dnaJogador({ id, reino, casta, classe, elemento, rank = "E", tip
     acessorios, brilhoAura: RANK_AURA[rank], corAsas: "#1a1a22",
   };
 }
+
+// ─────────────────────────────── PETS ESPIRITUAIS ───────────────────────────────
+// Base de cada pet + o que muda em cada estágio: 1 Filhote (fofo, traços pequenos) · 2 Desperto (traços
+// completos: chifres, crina, asas, mais caudas) · 3 Ascendido (aura + coroa espiritual + marcas do elemento).
+const PET = {
+  P01: { elemento: "Fogo", tipo: "fera", cor: "#fff0e0", orelhas: "pontudas", corOlhos: "dourado", corCauda: "#7fd1ff",
+    estagios: [{ focinho: "curto", caudas: 1 }, { caudas: 3, marcas: ["brasas"] }, { caudas: 9, marcas: ["brasas"] }] },
+  P02: { elemento: "Fogo", tipo: "ave", cor: "#ffb02a", cor2: "#fff0b0", corAsas: "#ff8a2a", corOlhos: "ambar",
+    estagios: [{}, { crista: true, corCrista: "#ff5a1a", corAsas: "#ff5a1a" }, { crista: true, corCrista: "#ffd23a", cor: "#ff6a2a", corAsas: "#e8401a", marcas: ["brasas"] }] },
+  P03: { elemento: "Fogo", tipo: "fera", cor: "#e8b040", orelhas: "redondas", focinho: "curto", corOlhos: "vermelho", corCrina: "#ff5a1a",
+    estagios: [{ crina: true, corCrina: "#ffb02a" }, { crina: true, dentes: true }, { crina: true, dentes: true, marcas: ["brasas"] }] },
+  P04: { elemento: "Lava", tipo: "serpente", cor: "#c0401a", cor2: "#ffb02a", corOlhos: "dourado",
+    estagios: [{ chifres: false }, { asas: true }, { asas: true, marcas: ["magma"] }] },
+  P05: { elemento: "Água", tipo: "peixe", cor: "#f4f0e6", manchas: "#3a8ee8", corBarbatana: "#bfe6ff", corOlhos: "preto",
+    estagios: [{}, { bigodes: true, corBigode: "#7fd1ff" }, { bigodes: true, corBigode: "#ffd23a", manchas: "#165e83" }] },
+  P06: { elemento: "Água", tipo: "tartaruga", cor: "#5a9a7a", corCasco: "#2a5a6a", corOlhos: "preto",
+    estagios: [{}, { cauda: "serpente" }, { cauda: "serpente", corCasco: "#1a3a5a" }] },
+  P07: { elemento: "Água", tipo: "fera", cor: "#8a5a3a", cor2: "#e8d8c0", orelhas: "redondas", focinho: "curto", corOlhos: "preto",
+    estagios: [{ marcas: ["bigodes"] }, { caudas: 1, corCauda: "#8a5a3a", marcas: ["bigodes"] }, { caudas: 1, corCauda: "#7fd1ff", marcas: ["bigodes", "estrelas"] }] },
+  P08: { elemento: "Água", tipo: "serpente", cor: "#2a8ac0", cor2: "#bfe6ff", corOlhos: "azul", olho: "brilho",
+    estagios: [{ chifres: false }, { bigodes: true, corBigode: "#bfe6ff" }, { bigodes: true, asas: true, corAsas: "#7fd1ff" }] },
+  P09: { elemento: "Terra", tipo: "fera", cor: "#8a6a4a", cor2: "#e8d8c0", orelhas: "redondas", focinho: "curto", corOlhos: "preto",
+    estagios: [{ marcas: ["mascara-tanuki"] }, { marcas: ["mascara-tanuki"], caudas: 1, corCauda: "#6a4a2a" }, { marcas: ["mascara-tanuki", "estrelas"], caudas: 1, corCauda: "#6a4a2a" }] },
+  P10: { elemento: "Terra", tipo: "fera", cor: "#8a8070", orelhas: "pontudas", focinho: "curto", corOlhos: "vermelho",
+    estagios: [{}, { marcas: ["presas"], crina: true, corCrina: "#5a5048" }, { marcas: ["presas"], crina: true, corCrina: "#c47222" }] },
+  P11: { elemento: "Madeira", tipo: "tartaruga", cor: "#7a9a5a", corCasco: "#5a4a2a", corOlhos: "preto",
+    estagios: [{}, { arvore: true }, { arvore: true, corFolhas: "#ff9ac8", marcas: ["estrelas"] }] },
+  P12: { elemento: "Cristal", tipo: "fera", cor: "#c8b0f0", orelhas: "redondas", focinho: "curto", corOlhos: "roxo", corCrina: "#e080ff",
+    estagios: [{}, { crina: true }, { crina: true, chifres: "retos", corChifre: "#ffffff" }] },
+  P13: { elemento: "Vento", tipo: "ave", cor: "#1a1a2a", cor2: "#3a3a4a", corAsas: "#1a1a2a", corBico: "#ffd23a", corOlhos: "vermelho",
+    estagios: [{}, { crista: true, corCrista: "#ffd23a" }, { crista: true, corCrista: "#ffd23a", tema: "luz" }] },
+  P14: { elemento: "Vento", tipo: "fera", cor: "#e8d8b0", cor2: "#f4e8d0", orelhas: "pontudas", focinho: "longo", corOlhos: "preto",
+    estagios: [{ marcas: ["foices"] }, { caudas: 1, corCauda: "#e8d8b0", marcas: ["foices"] }, { caudas: 3, corCauda: "#7ff0d8", marcas: ["foices"] }] },
+  P15: { elemento: "Vento", tipo: "ave", cor: "#c89a4a", corAsas: "#8a6a3a", corOlhos: "dourado",
+    estagios: [{}, { crista: true, corCrista: "#f4f0e6" }, { crista: true, corCrista: "#ffd23a", corAsas: "#f4f0e6" }] },
+  P16: { elemento: "Raio", tipo: "fera", cor: "#4a6ad0", orelhas: "pontudas", corOlhos: "dourado", corCauda: "#ffe040",
+    estagios: [{ focinho: "curto", caudas: 1 }, { caudas: 1, marcas: ["raios"] }, { caudas: 2, crina: true, corCrina: "#ffe040", marcas: ["raios"] }] },
+  P17: { elemento: "Luz", tipo: "fera", cor: "#f0d070", orelhas: "pontudas", corOlhos: "azul", corCrina: "#7fd1ff", corChifre: "#ffffff",
+    estagios: [{ focinho: "curto" }, { crina: true, chifres: "retos" }, { crina: true, chifres: "retos", marcas: ["estrelas"] }] },
+  P18: { elemento: "Sonho", tipo: "fera", cor: "#6a7aa0", cor2: "#e8e8f0", orelhas: "redondas", corOlhos: "preto",
+    estagios: [{}, { marcas: ["estrelas"] }, { marcas: ["estrelas"], cor: "#4a5a90" }] },
+  P19: { elemento: "Trevas", tipo: "fera", cor: "#2a2a32", orelhas: "pontudas", focinho: "curto", corOlhos: "verde", corCauda: "#2a2a32",
+    estagios: [{ caudas: 1 }, { caudas: 2, marcas: ["chamas-roxas"] }, { caudas: 2, corCauda: "#7b3fb0", marcas: ["chamas-roxas"] }] },
+  P20: { elemento: "Luz", tipo: "fera", cor: "#f0f0e8", orelhas: "redondas", focinho: "curto", corOlhos: "dourado", corChifre: "#c8a040",
+    estagios: [{ marcas: ["olho-terceiro"] }, { chifres: "curvos", marcas: ["olho-terceiro"] }, { chifres: "curvos", marcas: ["olho-terceiro", "olhos-corpo"] }] },
+};
+
+export const NOMES_ESTAGIO = ["Filhote", "Desperto", "Ascendido"];
+
+export function dnaPet(id, estagio = 1) {
+  const { estagios, ...base } = PET[id];
+  const e = estagios[estagio - 1] ?? {};
+  const marcas = [...(e.marcas ?? []), ...(estagio === 3 ? ["coroa-espirito"] : [])];
+  return { id: `${id}-${estagio}`, ...base, ...e, marcas, fofo: estagio === 1, brilhoAura: estagio === 3 };
+}
+export const IDS_PETS = Object.keys(PET);

@@ -4,8 +4,21 @@
 import { rng } from "./pixel.mjs";
 import { rampa, misturar, OLHOS } from "./paletas.mjs";
 
+let FOFO = false;
 function olho(t, x, y, cor, tipo = "brilho", tam = 1) {
   const c = OLHOS[cor] ?? cor ?? "#ffd23a";
+  if (FOFO) {
+    const R = Math.max(2.2, tam * 1.9);
+    t.pintar(t.mascara().elipse(x, y, R + 0.6, R + 0.8), "#1a1024");
+    t.pintar(t.mascara().elipse(x, y + 0.5, R - 0.2, R), c);
+    t.pintar(t.mascara().elipse(x, y + 1, R - 1, R - 1.2), rampa(c)[1]);
+    t.set(Math.round(x - R / 2), Math.round(y - R / 2), "#ffffff");
+    t.set(Math.round(x - R / 2) + 1, Math.round(y - R / 2), "#ffffff");
+    t.set(Math.round(x + R / 3), Math.round(y + R / 3), "#ffffff");
+    t.set(Math.round(x) - 2, Math.round(y + R + 2), "#f59ab0");
+    t.set(Math.round(x) + 2, Math.round(y + R + 2), "#f59ab0");
+    return;
+  }
   if (tipo === "fenda") {
     t.carimbar(t.mascara().elipse(x, y, 1.6 * tam, 1.4 * tam), rampa(c), { sombra: 0 });
     t.pintar(t.mascara().linha(x, y - tam, x, y + tam), "#120a10");
@@ -143,6 +156,30 @@ const ARQ = {
     marcas(t, d, r);
   },
 
+  tartaruga(t, d, r) {
+    const C = rampa(d.cor), K = rampa(d.corCasco ?? misturar(d.cor, "#000000", 0.3));
+    if (d.cauda === "serpente") {
+      const m = t.mascara();
+      for (let k = 0; k <= 20; k++) m.elipse(52 + Math.sin(k / 4) * 5, 50 - k * 1.8, 2.5, 2.5);
+      t.carimbar(m, rampa(d.corCauda ?? "#2a6a5a"));
+      t.carimbar(t.mascara().elipse(54, 12, 4, 3), rampa(d.corCauda ?? "#2a6a5a"));
+      olho(t, 53, 11, "vermelho", "fenda", 0.8);
+    }
+    t.carimbar(t.mascara().elipse(14, 56, 5, 4).elipse(48, 57, 5, 4), C);
+    t.carimbar(t.mascara().elipse(13, 40, 9, 8), C, { sombra: 2 });
+    const casco = t.mascara().elipse(34, 46, 22, 14).apagar(t.mascara().retangulo(0, 52, 63, 63));
+    casco.retangulo(13, 48, 55, 54);
+    t.carimbar(casco, K, { sombra: 2 });
+    for (const [x, y] of [[26, 40], [36, 37], [46, 41], [31, 47], [42, 47]]) t.pintar(t.mascara().elipse(x, y, 3.5, 2.5).apagar(t.mascara().elipse(x, y, 2.5, 1.5)), K[0]);
+    if (d.arvore) {
+      t.carimbar(t.mascara().retangulo(32, 18, 35, 34), rampa("#6a4a2a"));
+      t.carimbar(t.mascara().elipse(34, 15, 11, 8).elipse(26, 19, 6, 5).elipse(42, 19, 6, 5), rampa(d.corFolhas ?? "#5aa040"));
+    }
+    olho(t, 10, 38, d.corOlhos, d.olho ?? "brilho", 1.1);
+    t.pintar(t.mascara().linha(6, 43, 10, 44), C[0]);
+    marcas(t, d, r);
+  },
+
   golem(t, d, r) {
     const C = rampa(d.cor);
     t.carimbar(t.mascara().retangulo(4, 44, 60, 63), C, { sombra: 2 });
@@ -252,6 +289,14 @@ function marcas(t, d, r) {
     if (m === "moedas") for (let k = 0; k < 6; k++) t.carimbar(t.mascara().elipse(14 + k * 7, 8 + (k % 2) * 3, 2, 2), rampa("#e6b422"), { contorno: false });
     if (m === "ninho-ouro") t.carimbar(t.mascara().elipse(32, 60, 16, 4), rampa("#c8a040"));
     if (m === "ponte") t.carimbar(t.mascara().retangulo(40, 34, 63, 38), rampa("#1c1820"));
+    if (m === "bigodes") t.pintar(t.mascara().linha(14, 33, 4, 31).linha(14, 35, 4, 37).linha(24, 34, 32, 32), "#f4f0e6");
+    if (m === "foices") for (const x of [18, 44]) t.carimbar(t.mascara().poligono([[x, 63], [x + 3, 63], [x + 10, 50], [x + 6, 48]]), rampa("#dfe8f0"));
+    if (m === "mascara-tanuki") t.pintar(t.mascara().elipse(29, 26, 5, 3).elipse(41, 26, 4, 3).apagar(t.mascara().elipse(29, 25, 2.4, 2.4)).apagar(t.mascara().elipse(41, 25, 2.2, 2.2)), "#2a1a14");
+    if (m === "presas") { t.carimbar(t.mascara().poligono([[17, 36], [20, 36], [15, 28]]).poligono([[24, 37], [27, 37], [24, 29]]), rampa("#f4f0e6")); }
+    if (m === "coroa-espirito") { const c = t.mascara(); for (const x of [26, 31, 36]) c.espinho(x, 6, 4, x, 0); c.retangulo(24, 6, 38, 7); t.carimbar(c, rampa(d.corCoroa ?? "#ffd23a")); }
+    if (m === "chamas-roxas") for (let k = 0; k < 18; k++) t.set(Math.floor(r() * 64), Math.floor(r() * 64), r() < 0.5 ? "#a050ff" : "#d0a0ff");
+    if (m === "estrelas") for (let k = 0; k < 12; k++) { const x = Math.floor(r() * 64), y = Math.floor(r() * 64); t.set(x, y, "#fff6c0"); t.set(x + 1, y, "#c0a0ff"); }
+    if (m === "olhos-corpo") for (const [x, y] of [[24, 50], [36, 52], [46, 46]]) { t.pintar(t.mascara().elipse(x, y, 2, 1.5), "#ffd23a"); t.set(x, y, "#1a1024"); }
     if (m === "barcos") for (const x of [6, 50]) t.carimbar(t.mascara().poligono([[x, 58], [x + 8, 58], [x + 6, 61], [x + 2, 61]]), rampa("#8a6a40"));
   }
 }
@@ -263,7 +308,9 @@ function naoVazio(t) {
 
 export function desenharCriatura(t, d) {
   const r = rng(d.id ?? "criatura");
+  FOFO = !!d.fofo;
   (ARQ[d.tipo] ?? ARQ.espirito)(t, d, r);
+  FOFO = false;
 }
 
 export const ARQUETIPOS_CRIATURA = Object.keys(ARQ);

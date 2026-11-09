@@ -1,27 +1,298 @@
 {
-  "elegibilidade_por_casta": {"campones": 0.22, "plebeu": 0.20, "cavaleiro": 0.25, "realeza": 0.35, "indefinido": 0.30, "rei": 1.0},
-  "santuarios": {"Fogo": "SF-HOM-05", "Água": "SF-WAT-06", "Terra": "Floresta Kodama (provação na SF-DAI-03)", "Vento": "SF-FUJ-03"},
-  "estagios": ["Filhote", "Desperto (20 vitórias juntos)", "Ascendido (60 vitórias + marco de história)"],
+  "elegibilidade_por_casta": {
+    "campones": 0.22,
+    "plebeu": 0.2,
+    "cavaleiro": 0.25,
+    "realeza": 0.35,
+    "indefinido": 0.3,
+    "rei": 1.0
+  },
+  "santuarios": {
+    "Fogo": "SF-HOM-05",
+    "Água": "SF-WAT-06",
+    "Terra": "Floresta Kodama (provação na SF-DAI-03)",
+    "Vento": "SF-FUJ-03"
+  },
+  "estagios": [
+    "Filhote (ao obter)",
+    "Desperto (20 vitórias juntos + Vínculo 50)",
+    "Ascendido (60 vitórias + Vínculo 100 + marco de história)"
+  ],
   "pets": [
-    {"id": "P01", "nome": "Kitsune-bi", "elemento": "Fogo", "especie": "raposa de fogo-fátuo", "papel": "dano mágico", "habilidade": "Fogo-Fátuo: ataque extra de MAG×0,5 por turno"},
-    {"id": "P02", "nome": "Hiyoko", "elemento": "Fogo", "especie": "filhote de fênix", "papel": "suporte", "habilidade": "Cinza Renascida: revive o dono 1× por dia com 30% HP"},
-    {"id": "P03", "nome": "Shishi de Brasa", "elemento": "Fogo", "especie": "leão-guardião", "papel": "tanque", "habilidade": "Guarda: recebe 30% do dano do dono"},
-    {"id": "P04", "nome": "Ryū-chan", "elemento": "Lava", "especie": "dragãozinho de lava", "papel": "dano em área", "habilidade": "Sopro: dano em todos os inimigos a cada 3 turnos"},
-    {"id": "P05", "nome": "Koi Celeste", "elemento": "Água", "especie": "carpa espiritual", "papel": "cura", "habilidade": "Bênção: cura 8% HP do dono por turno"},
-    {"id": "P06", "nome": "Genbu-mirim", "elemento": "Água", "especie": "tartaruga-serpente", "papel": "tanque", "habilidade": "Casco: +20% DEF e RES do dono"},
-    {"id": "P07", "nome": "Kawauso", "elemento": "Água", "especie": "lontra das marés", "papel": "utilidade", "habilidade": "Mergulho: encontra itens extras (+15% drop)"},
-    {"id": "P08", "nome": "Mizuchi-mirim", "elemento": "Água", "especie": "serpente d'água", "papel": "controle", "habilidade": "Enlaçar: prende 1 inimigo a cada 4 turnos"},
-    {"id": "P09", "nome": "Ponpoko", "elemento": "Terra", "especie": "tanuki da montanha", "papel": "ilusão", "habilidade": "Transformação: vira cópia do dono e atrai 1 ataque"},
-    {"id": "P10", "nome": "Inoshishi de Pedra", "elemento": "Terra", "especie": "javali de pedra", "papel": "dano físico", "habilidade": "Investida: atordoa 20%"},
-    {"id": "P11", "nome": "Kodama-game", "elemento": "Madeira", "especie": "tartaruga-árvore", "papel": "cura", "habilidade": "Fruto: cura 15% MP do dono a cada 3 turnos"},
-    {"id": "P12", "nome": "Komainu de Cristal", "elemento": "Cristal", "especie": "cão-leão guardião", "papel": "anti-magia", "habilidade": "Reflexo: devolve 15% do dano mágico"},
-    {"id": "P13", "nome": "Yatagarasu-mirim", "elemento": "Vento", "especie": "corvo de três patas", "papel": "batedor", "habilidade": "Guia: revela segredos e caminhos em subfases"},
-    {"id": "P14", "nome": "Kamaitachi-mirim", "elemento": "Vento", "especie": "doninha-foice", "papel": "dano rápido", "habilidade": "Corte: sangramento em cada ataque do dono"},
-    {"id": "P15", "nome": "Grifo-filhote", "elemento": "Vento", "especie": "grifo", "papel": "montaria", "habilidade": "Voo: viagens custam metade do tempo; +15% VEL"},
-    {"id": "P16", "nome": "Raijū", "elemento": "Raio", "especie": "fera do trovão", "papel": "dano", "habilidade": "Relâmpago: 25% de paralisar ao atacar"},
-    {"id": "P17", "nome": "Kirin", "elemento": "Luz", "especie": "kirin", "papel": "sagrado", "raro": true, "restricao": "afinidade Luz/Estelar ou casta rei", "habilidade": "Pureza: imunidade a maldições e +30% contra Trevas"},
-    {"id": "P18", "nome": "Baku", "elemento": "Sonho", "especie": "devorador de sonhos", "papel": "controle", "raro": true, "restricao": "afinidade Sonho/Alma", "habilidade": "Comer Pesadelo: remove 1 efeito negativo por turno"},
-    {"id": "P19", "nome": "Nekomata", "elemento": "Trevas", "especie": "gata de duas caudas", "papel": "necromancia", "raro": true, "restricao": "afinidade Trevas ou classe Bruxo/Demônio", "habilidade": "Marionete: controla 1 inimigo morto por 2 turnos"},
-    {"id": "P20", "nome": "Hakutaku", "elemento": "Sabedoria", "especie": "besta de nove olhos", "papel": "conhecimento", "raro": true, "restricao": "somente casta rei", "habilidade": "Conhecimento: revela fraquezas e atributos de qualquer inimigo; +10% XP do grupo"}
-  ]
+    {
+      "id": "P01",
+      "nome": "Kitsune-bi",
+      "elemento": "Fogo",
+      "especie": "raposa de fogo-fátuo",
+      "papel": "dano mágico",
+      "habilidade": "Fogo-Fátuo: ataque extra de MAG×0,5 por turno",
+      "sprites": [
+        "assets/avatares/pets/P01-1.png",
+        "assets/avatares/pets/P01-2.png",
+        "assets/avatares/pets/P01-3.png"
+      ]
+    },
+    {
+      "id": "P02",
+      "nome": "Hiyoko",
+      "elemento": "Fogo",
+      "especie": "filhote de fênix",
+      "papel": "suporte",
+      "habilidade": "Cinza Renascida: revive o dono 1× por dia com 30% HP",
+      "sprites": [
+        "assets/avatares/pets/P02-1.png",
+        "assets/avatares/pets/P02-2.png",
+        "assets/avatares/pets/P02-3.png"
+      ]
+    },
+    {
+      "id": "P03",
+      "nome": "Shishi de Brasa",
+      "elemento": "Fogo",
+      "especie": "leão-guardião",
+      "papel": "tanque",
+      "habilidade": "Guarda: recebe 30% do dano do dono",
+      "sprites": [
+        "assets/avatares/pets/P03-1.png",
+        "assets/avatares/pets/P03-2.png",
+        "assets/avatares/pets/P03-3.png"
+      ]
+    },
+    {
+      "id": "P04",
+      "nome": "Ryū-chan",
+      "elemento": "Lava",
+      "especie": "dragãozinho de lava",
+      "papel": "dano em área",
+      "habilidade": "Sopro: dano em todos os inimigos a cada 3 turnos",
+      "sprites": [
+        "assets/avatares/pets/P04-1.png",
+        "assets/avatares/pets/P04-2.png",
+        "assets/avatares/pets/P04-3.png"
+      ]
+    },
+    {
+      "id": "P05",
+      "nome": "Koi Celeste",
+      "elemento": "Água",
+      "especie": "carpa espiritual",
+      "papel": "cura",
+      "habilidade": "Bênção: cura 8% HP do dono por turno",
+      "sprites": [
+        "assets/avatares/pets/P05-1.png",
+        "assets/avatares/pets/P05-2.png",
+        "assets/avatares/pets/P05-3.png"
+      ]
+    },
+    {
+      "id": "P06",
+      "nome": "Genbu-mirim",
+      "elemento": "Água",
+      "especie": "tartaruga-serpente",
+      "papel": "tanque",
+      "habilidade": "Casco: +20% DEF e RES do dono",
+      "sprites": [
+        "assets/avatares/pets/P06-1.png",
+        "assets/avatares/pets/P06-2.png",
+        "assets/avatares/pets/P06-3.png"
+      ]
+    },
+    {
+      "id": "P07",
+      "nome": "Kawauso",
+      "elemento": "Água",
+      "especie": "lontra das marés",
+      "papel": "utilidade",
+      "habilidade": "Mergulho: encontra itens extras (+15% drop)",
+      "sprites": [
+        "assets/avatares/pets/P07-1.png",
+        "assets/avatares/pets/P07-2.png",
+        "assets/avatares/pets/P07-3.png"
+      ]
+    },
+    {
+      "id": "P08",
+      "nome": "Mizuchi-mirim",
+      "elemento": "Água",
+      "especie": "serpente d'água",
+      "papel": "controle",
+      "habilidade": "Enlaçar: prende 1 inimigo a cada 4 turnos",
+      "sprites": [
+        "assets/avatares/pets/P08-1.png",
+        "assets/avatares/pets/P08-2.png",
+        "assets/avatares/pets/P08-3.png"
+      ]
+    },
+    {
+      "id": "P09",
+      "nome": "Ponpoko",
+      "elemento": "Terra",
+      "especie": "tanuki da montanha",
+      "papel": "ilusão",
+      "habilidade": "Transformação: vira cópia do dono e atrai 1 ataque",
+      "sprites": [
+        "assets/avatares/pets/P09-1.png",
+        "assets/avatares/pets/P09-2.png",
+        "assets/avatares/pets/P09-3.png"
+      ]
+    },
+    {
+      "id": "P10",
+      "nome": "Inoshishi de Pedra",
+      "elemento": "Terra",
+      "especie": "javali de pedra",
+      "papel": "dano físico",
+      "habilidade": "Investida: atordoa 20%",
+      "sprites": [
+        "assets/avatares/pets/P10-1.png",
+        "assets/avatares/pets/P10-2.png",
+        "assets/avatares/pets/P10-3.png"
+      ]
+    },
+    {
+      "id": "P11",
+      "nome": "Kodama-game",
+      "elemento": "Madeira",
+      "especie": "tartaruga-árvore",
+      "papel": "cura",
+      "habilidade": "Fruto: cura 15% MP do dono a cada 3 turnos",
+      "sprites": [
+        "assets/avatares/pets/P11-1.png",
+        "assets/avatares/pets/P11-2.png",
+        "assets/avatares/pets/P11-3.png"
+      ]
+    },
+    {
+      "id": "P12",
+      "nome": "Komainu de Cristal",
+      "elemento": "Cristal",
+      "especie": "cão-leão guardião",
+      "papel": "anti-magia",
+      "habilidade": "Reflexo: devolve 15% do dano mágico",
+      "sprites": [
+        "assets/avatares/pets/P12-1.png",
+        "assets/avatares/pets/P12-2.png",
+        "assets/avatares/pets/P12-3.png"
+      ]
+    },
+    {
+      "id": "P13",
+      "nome": "Yatagarasu-mirim",
+      "elemento": "Vento",
+      "especie": "corvo de três patas",
+      "papel": "batedor",
+      "habilidade": "Guia: revela segredos e caminhos em subfases",
+      "sprites": [
+        "assets/avatares/pets/P13-1.png",
+        "assets/avatares/pets/P13-2.png",
+        "assets/avatares/pets/P13-3.png"
+      ]
+    },
+    {
+      "id": "P14",
+      "nome": "Kamaitachi-mirim",
+      "elemento": "Vento",
+      "especie": "doninha-foice",
+      "papel": "dano rápido",
+      "habilidade": "Corte: sangramento em cada ataque do dono",
+      "sprites": [
+        "assets/avatares/pets/P14-1.png",
+        "assets/avatares/pets/P14-2.png",
+        "assets/avatares/pets/P14-3.png"
+      ]
+    },
+    {
+      "id": "P15",
+      "nome": "Grifo-filhote",
+      "elemento": "Vento",
+      "especie": "grifo",
+      "papel": "montaria",
+      "habilidade": "Voo: viagens custam metade do tempo; +15% VEL",
+      "sprites": [
+        "assets/avatares/pets/P15-1.png",
+        "assets/avatares/pets/P15-2.png",
+        "assets/avatares/pets/P15-3.png"
+      ]
+    },
+    {
+      "id": "P16",
+      "nome": "Raijū",
+      "elemento": "Raio",
+      "especie": "fera do trovão",
+      "papel": "dano",
+      "habilidade": "Relâmpago: 25% de paralisar ao atacar",
+      "sprites": [
+        "assets/avatares/pets/P16-1.png",
+        "assets/avatares/pets/P16-2.png",
+        "assets/avatares/pets/P16-3.png"
+      ]
+    },
+    {
+      "id": "P17",
+      "nome": "Kirin",
+      "elemento": "Luz",
+      "especie": "kirin",
+      "papel": "sagrado",
+      "raro": true,
+      "restricao": "afinidade Luz/Estelar ou casta rei",
+      "habilidade": "Pureza: imunidade a maldições e +30% contra Trevas",
+      "sprites": [
+        "assets/avatares/pets/P17-1.png",
+        "assets/avatares/pets/P17-2.png",
+        "assets/avatares/pets/P17-3.png"
+      ]
+    },
+    {
+      "id": "P18",
+      "nome": "Baku",
+      "elemento": "Sonho",
+      "especie": "devorador de sonhos",
+      "papel": "controle",
+      "raro": true,
+      "restricao": "afinidade Sonho/Alma",
+      "habilidade": "Comer Pesadelo: remove 1 efeito negativo por turno",
+      "sprites": [
+        "assets/avatares/pets/P18-1.png",
+        "assets/avatares/pets/P18-2.png",
+        "assets/avatares/pets/P18-3.png"
+      ]
+    },
+    {
+      "id": "P19",
+      "nome": "Nekomata",
+      "elemento": "Trevas",
+      "especie": "gata de duas caudas",
+      "papel": "necromancia",
+      "raro": true,
+      "restricao": "afinidade Trevas ou classe Bruxo/Demônio",
+      "habilidade": "Marionete: controla 1 inimigo morto por 2 turnos",
+      "sprites": [
+        "assets/avatares/pets/P19-1.png",
+        "assets/avatares/pets/P19-2.png",
+        "assets/avatares/pets/P19-3.png"
+      ]
+    },
+    {
+      "id": "P20",
+      "nome": "Hakutaku",
+      "elemento": "Sabedoria",
+      "especie": "besta de nove olhos",
+      "papel": "conhecimento",
+      "raro": true,
+      "restricao": "somente casta rei",
+      "habilidade": "Conhecimento: revela fraquezas e atributos de qualquer inimigo; +10% XP do grupo",
+      "sprites": [
+        "assets/avatares/pets/P20-1.png",
+        "assets/avatares/pets/P20-2.png",
+        "assets/avatares/pets/P20-3.png"
+      ]
+    }
+  ],
+  "vinculo": {
+    "vitoria": 1,
+    "carinho_diario": 2,
+    "alimentar_comida_natal": 3,
+    "salvar_dono": 5,
+    "dono_cai": -2
+  }
 }

@@ -1621,7 +1621,7 @@
     "elemento": "Fogo",
     "arquetipo": "assassino",
     "atributos": {
-      "HP": 625,
+      "HP": 1015,
       "MP": 118,
       "FOR": 45,
       "DEF": 24,
@@ -1629,7 +1629,7 @@
       "RES": 24,
       "VEL": 56
     },
-    "poder": 236,
+    "poder": 275,
     "habilidade": "Contra-Ataque Espelhado: devolve 50% do dano do 1º golpe recebido",
     "fraqueza": "Água",
     "descricao": "Campeã mascarada do Coliseu de Brasas. Ninguém sabe quem ela é — talvez alguém da corte.",
@@ -1667,7 +1667,7 @@
     "elemento": "Cinzas",
     "arquetipo": "invocador",
     "atributos": {
-      "HP": 720,
+      "HP": 1170,
       "MP": 274,
       "FOR": 23,
       "DEF": 30,
@@ -1675,7 +1675,7 @@
       "RES": 45,
       "VEL": 30
     },
-    "poder": 253,
+    "poder": 298,
     "habilidade": "Chamado dos Afogados: invoca 2 Marinheiros-Esqueleto",
     "fraqueza": "Água",
     "descricao": "Lidera um culto que quer 'devolver o mar ao deserto' — com sacrifícios humanos.",
@@ -1713,7 +1713,7 @@
     "elemento": "Fogo",
     "arquetipo": "bruto",
     "atributos": {
-      "HP": 705,
+      "HP": 1150,
       "MP": 62,
       "FOR": 37,
       "DEF": 31,
@@ -1721,7 +1721,7 @@
       "RES": 18,
       "VEL": 21
     },
-    "poder": 191,
+    "poder": 235,
     "habilidade": "Martelo-Sol: dano muito alto a cada 2 turnos",
     "fraqueza": "Água",
     "descricao": "Campeão do Torneio dos Novatos há três anos. Arrogante, mas honrado — respeita quem o vence.",
@@ -1759,7 +1759,7 @@
     "elemento": "Trevas",
     "arquetipo": "equilibrado",
     "atributos": {
-      "HP": 670,
+      "HP": 1090,
       "MP": 154,
       "FOR": 35,
       "DEF": 32,
@@ -1767,7 +1767,7 @@
       "RES": 32,
       "VEL": 32
     },
-    "poder": 230,
+    "poder": 272,
     "habilidade": "Comando da Tripulação: aliados mortos-vivos +30% dano",
     "fraqueza": "Luz",
     "descricao": "Capitã do maior navio afundado no deserto. Procura o mar que desapareceu.",
@@ -1805,7 +1805,7 @@
     "elemento": "Fogo",
     "arquetipo": "invocador",
     "atributos": {
-      "HP": 520,
+      "HP": 840,
       "MP": 198,
       "FOR": 17,
       "DEF": 22,
@@ -1813,7 +1813,7 @@
       "RES": 33,
       "VEL": 22
     },
-    "poder": 185,
+    "poder": 217,
     "habilidade": "Constelação: invoca 2 Enxames Carniceiros",
     "fraqueza": "Vento",
     "descricao": "Espírito antigo que guarda o labirinto da floresta. Testa todos que entram.",
@@ -1851,7 +1851,7 @@
     "elemento": "Lava",
     "arquetipo": "tanque",
     "atributos": {
-      "HP": 1585,
+      "HP": 2580,
       "MP": 135,
       "FOR": 46,
       "DEF": 74,
@@ -1859,7 +1859,7 @@
       "RES": 56,
       "VEL": 28
     },
-    "poder": 391,
+    "poder": 490,
     "habilidade": "Armadura de Magma: reflete 25% do dano físico",
     "fraqueza": "Água",
     "descricao": "Ferreiro real que foi jogado no rio de lava por inveja. Voltou feito de magma.",
@@ -1897,7 +1897,7 @@
     "elemento": "Água",
     "arquetipo": "espiritual",
     "atributos": {
-      "HP": 800,
+      "HP": 1300,
       "MP": 237,
       "FOR": 30,
       "DEF": 34,
@@ -1905,7 +1905,7 @@
       "RES": 49,
       "VEL": 41
     },
-    "poder": 283,
+    "poder": 333,
     "habilidade": "Véu d'Água: +40% esquiva",
     "fraqueza": "Raio",
     "descricao": "Espírito-carpa que testa quem é digno de um pet espiritual. Não é mau — é exigente.",
@@ -1943,7 +1943,7 @@
     "elemento": "Água",
     "arquetipo": "mago",
     "atributos": {
-      "HP": 540,
+      "HP": 875,
       "MP": 246,
       "FOR": 16,
       "DEF": 22,
@@ -1951,7 +1951,7 @@
       "RES": 41,
       "VEL": 29
     },
-    "poder": 213,
+    "poder": 247,
     "habilidade": "Página Proibida: sela uma magia do alvo por 3 turnos",
     "fraqueza": "Fogo",
     "descricao": "Morreu lendo o livro proibido. Continua lendo. Não gosta de barulho.",
@@ -1989,7 +1989,7 @@
     "elemento": "Espelho",
     "arquetipo": "equilibrado",
     "atributos": {
-      "HP": 800,
+      "HP": 1300,
       "MP": 182,
       "FOR": 41,
       "DEF": 38,
@@ -1997,7 +1997,7 @@
       "RES": 38,
       "VEL": 38
     },
-    "poder": 273,
+    "poder": 323,
     "habilidade": "Cópia: assume os atributos e a habilidade do jogador que o enfrenta",
     "fraqueza": "A fraqueza do próprio jogador",
     "descricao": "Seu reflexo do passado decidiu que ele merece ser você.",
@@ -2035,7 +2035,7 @@
     "elemento": "Terra",
     "arquetipo": "besta",
     "atributos": {
-      "HP": 1115,
+      "HP": 1810,
       "MP": 106,
       "FOR": 56,
       "DEF": 43,
@@ -2043,7 +2043,7 @@
       "RES": 35,
       "VEL": 52
     },
-    "poder": 324,
+    "poder": 393,
     "habilidade": "Tremor: atordoa todos por 1 turno (recarga 3)",
     "fraqueza": "Raio",
     "descricao": "Bagre colossal que faz o chão tremer ao se mexer.",
@@ -2081,7 +2081,7 @@
     "elemento": "Água",
     "arquetipo": "equilibrado",
     "atributos": {
-      "HP": 895,
+      "HP": 1455,
       "MP": 204,
       "FOR": 46,
       "DEF": 42,
@@ -2089,7 +2089,7 @@
       "RES": 42,
       "VEL": 42
     },
-    "poder": 304,
+    "poder": 360,
     "habilidade": "Canhonaço de Maré: dano em linha",
     "fraqueza": "Raio",
     "descricao": "Lidera a frota pirata que acampou no casco da tartaruga ancestral.",
@@ -2127,7 +2127,7 @@
     "elemento": "Trevas",
     "arquetipo": "invocador",
     "atributos": {
-      "HP": 950,
+      "HP": 1545,
       "MP": 360,
       "FOR": 30,
       "DEF": 39,
@@ -2135,7 +2135,7 @@
       "RES": 59,
       "VEL": 39
     },
-    "poder": 331,
+    "poder": 391,
     "habilidade": "Pacto Cobrado: rouba 20% do MP de todos",
     "fraqueza": "Luz",
     "descricao": "Vende grimórios em troca de anos de vida. Dizem que tem 900 anos 'emprestados'.",
@@ -2173,7 +2173,7 @@
     "elemento": "Terra",
     "arquetipo": "assassino",
     "atributos": {
-      "HP": 625,
+      "HP": 1015,
       "MP": 118,
       "FOR": 45,
       "DEF": 24,
@@ -2181,7 +2181,7 @@
       "RES": 24,
       "VEL": 56
     },
-    "poder": 236,
+    "poder": 275,
     "habilidade": "Teia de Pedra: prende o alvo por 2 turnos",
     "fraqueza": "Fogo",
     "descricao": "Tece teias de seda que petrificam ao contato com o ar.",
@@ -2219,7 +2219,7 @@
     "elemento": "Metal",
     "arquetipo": "equilibrado",
     "atributos": {
-      "HP": 865,
+      "HP": 1405,
       "MP": 197,
       "FOR": 45,
       "DEF": 41,
@@ -2227,7 +2227,7 @@
       "RES": 41,
       "VEL": 41
     },
-    "poder": 296,
+    "poder": 350,
     "habilidade": "Imposto de Sangue: drena 5% do HP de todos por turno",
     "fraqueza": "Fogo",
     "descricao": "Nobre corrupto que escraviza a aldeia de Mugibatake e esconde do rei.",
@@ -2265,7 +2265,7 @@
     "elemento": "Terra",
     "arquetipo": "tanque",
     "atributos": {
-      "HP": 870,
+      "HP": 1415,
       "MP": 75,
       "FOR": 26,
       "DEF": 42,
@@ -2273,7 +2273,7 @@
       "RES": 31,
       "VEL": 16
     },
-    "poder": 218,
+    "poder": 273,
     "habilidade": "Comando Rúnico: golens aliados +30% DEF",
     "fraqueza": "Água",
     "descricao": "O primeiro golem que pensou. Liderou a rebelião dos golens.",
@@ -2311,7 +2311,7 @@
     "elemento": "Madeira",
     "arquetipo": "tanque",
     "atributos": {
-      "HP": 1180,
+      "HP": 1915,
       "MP": 101,
       "FOR": 35,
       "DEF": 56,
@@ -2319,7 +2319,7 @@
       "RES": 42,
       "VEL": 21
     },
-    "poder": 293,
+    "poder": 367,
     "habilidade": "Raízes Profundas: regenera 10% HP por turno",
     "fraqueza": "Fogo",
     "descricao": "Protege a biblioteca escondida dentro da árvore-colosso.",
@@ -2357,7 +2357,7 @@
     "elemento": "Terra",
     "arquetipo": "equilibrado",
     "atributos": {
-      "HP": 990,
+      "HP": 1610,
       "MP": 226,
       "FOR": 51,
       "DEF": 46,
@@ -2365,7 +2365,7 @@
       "RES": 46,
       "VEL": 46
     },
-    "poder": 334,
+    "poder": 396,
     "habilidade": "Mil Golpes: ataque extra a cada 3 turnos",
     "fraqueza": "Nenhuma",
     "descricao": "Não é mau: ele é o teste. Mas não pega leve com ninguém.",
@@ -2403,7 +2403,7 @@
     "elemento": "Cristal",
     "arquetipo": "mago",
     "atributos": {
-      "HP": 895,
+      "HP": 1455,
       "MP": 407,
       "FOR": 26,
       "DEF": 36,
@@ -2411,7 +2411,7 @@
       "RES": 68,
       "VEL": 47
     },
-    "poder": 350,
+    "poder": 406,
     "habilidade": "Prisão de Cristal: congela 1 alvo por 2 turnos",
     "fraqueza": "Som",
     "descricao": "Mineradora transformada em cristal vivo. Controla todos os mineiros de olhos de cristal.",
@@ -2449,7 +2449,7 @@
     "elemento": "Vento",
     "arquetipo": "assassino",
     "atributos": {
-      "HP": 570,
+      "HP": 930,
       "MP": 108,
       "FOR": 41,
       "DEF": 22,
@@ -2457,7 +2457,7 @@
       "RES": 22,
       "VEL": 51
     },
-    "poder": 215,
+    "poder": 251,
     "habilidade": "Corte Triplo: 3 ataques por turno (uma derruba, uma corta, uma cura)",
     "fraqueza": "Terra",
     "descricao": "Trio de doninhas que viajam num redemoinho. Nunca se separam.",
@@ -2495,7 +2495,7 @@
     "elemento": "Vento",
     "arquetipo": "assassino",
     "atributos": {
-      "HP": 515,
+      "HP": 840,
       "MP": 97,
       "FOR": 38,
       "DEF": 20,
@@ -2503,7 +2503,7 @@
       "RES": 20,
       "VEL": 46
     },
-    "poder": 196,
+    "poder": 228,
     "habilidade": "Desaparecer: invisível por 1 turno",
     "fraqueza": "Luz",
     "descricao": "Infiltrado na rede de espiões do rei. Quem está pagando por ele?",
@@ -2541,7 +2541,7 @@
     "elemento": "Vento",
     "arquetipo": "equilibrado",
     "atributos": {
-      "HP": 895,
+      "HP": 1455,
       "MP": 204,
       "FOR": 46,
       "DEF": 42,
@@ -2549,7 +2549,7 @@
       "RES": 42,
       "VEL": 42
     },
-    "poder": 304,
+    "poder": 360,
     "habilidade": "Leque dos Mil Ventos: dano em área + empurra",
     "fraqueza": "Raio",
     "descricao": "Mestre do mosteiro tengu. Quem o vencer recebe o Livro da Espada-Vento.",
@@ -2587,7 +2587,7 @@
     "elemento": "Som",
     "arquetipo": "invocador",
     "atributos": {
-      "HP": 780,
+      "HP": 1265,
       "MP": 295,
       "FOR": 24,
       "DEF": 32,
@@ -2595,7 +2595,7 @@
       "RES": 49,
       "VEL": 32
     },
-    "poder": 272,
+    "poder": 321,
     "habilidade": "Crescendo: dano aumenta 15% a cada turno",
     "fraqueza": "Terra",
     "descricao": "As vozes presas no vento unidas em um só ser.",
@@ -2633,7 +2633,7 @@
     "elemento": "Vento",
     "arquetipo": "assassino",
     "atributos": {
-      "HP": 845,
+      "HP": 1370,
       "MP": 158,
       "FOR": 60,
       "DEF": 32,
@@ -2641,7 +2641,7 @@
       "RES": 32,
       "VEL": 74
     },
-    "poder": 315,
+    "poder": 367,
     "habilidade": "Abordagem: rouba um buff do alvo",
     "fraqueza": "Raio",
     "descricao": "Pirata de nave de vento, rápida, debochada e surpreendentemente justa.",
@@ -2679,7 +2679,7 @@
     "elemento": "Raio",
     "arquetipo": "mago",
     "atributos": {
-      "HP": 895,
+      "HP": 1455,
       "MP": 407,
       "FOR": 26,
       "DEF": 36,
@@ -2687,7 +2687,7 @@
       "RES": 68,
       "VEL": 47
     },
-    "poder": 350,
+    "poder": 406,
     "habilidade": "Julgamento do Raio: dano alto em alvo aleatório",
     "fraqueza": "Terra",
     "descricao": "Tenta acordar o deus do trovão com sacrifícios.",
@@ -2725,7 +2725,7 @@
     "elemento": "Trevas",
     "arquetipo": "invocador",
     "atributos": {
-      "HP": 950,
+      "HP": 1545,
       "MP": 360,
       "FOR": 30,
       "DEF": 39,
@@ -2733,7 +2733,7 @@
       "RES": 59,
       "VEL": 39
     },
-    "poder": 331,
+    "poder": 391,
     "habilidade": "Lance Final: força o alvo a escolher entre perder um item ou 30% do HP",
     "fraqueza": "Luz",
     "descricao": "O homem de manto com os quatro brasões que convenceu Kaien a roubar o ovo. A seiva da Árvore-Estrela o impede de morrer e lhe tirou a sombra. Hoje é o tesoureiro de Kanata.",
@@ -2777,7 +2777,7 @@
     "elemento": "Fogo",
     "arquetipo": "equilibrado",
     "atributos": {
-      "HP": 2235,
+      "HP": 4300,
       "MP": 377,
       "FOR": 85,
       "DEF": 77,
@@ -2785,7 +2785,7 @@
       "RES": 77,
       "VEL": 77
     },
-    "poder": 617,
+    "poder": 823,
     "habilidade": "Lâmina Rubra: queimadura que impede cura",
     "fraqueza": "Água",
     "descricao": "Irmão do rei Ryūen. Perdeu o duelo pelo trono e jurou queimar o reino que o rejeitou.",
@@ -2823,7 +2823,7 @@
     "elemento": "Fogo",
     "arquetipo": "espiritual",
     "atributos": {
-      "HP": 1820,
+      "HP": 3500,
       "MP": 400,
       "FOR": 50,
       "DEF": 57,
@@ -2831,7 +2831,7 @@
       "RES": 82,
       "VEL": 69
     },
-    "poder": 522,
+    "poder": 690,
     "habilidade": "Renascer: revive 1× com 50% do HP",
     "fraqueza": "Água",
     "descricao": "A fênix sagrada do vulcão foi infectada pelo Vazio. Suas chamas agora são violeta.",
@@ -2869,7 +2869,7 @@
     "elemento": "Explosão",
     "arquetipo": "bruto",
     "atributos": {
-      "HP": 3245,
+      "HP": 6240,
       "MP": 210,
       "FOR": 120,
       "DEF": 103,
@@ -2877,7 +2877,7 @@
       "RES": 60,
       "VEL": 68
     },
-    "poder": 719,
+    "poder": 1018,
     "habilidade": "Detonação: dano em área, também se fere em 10%",
     "fraqueza": "Água",
     "descricao": "General de Homura que quer guerra total contra Watatsumi, com ou sem o rei.",
@@ -2915,7 +2915,7 @@
     "elemento": "Lava",
     "arquetipo": "besta",
     "atributos": {
-      "HP": 2560,
+      "HP": 4920,
       "MP": 180,
       "FOR": 95,
       "DEF": 73,
@@ -2923,7 +2923,7 @@
       "RES": 59,
       "VEL": 88
     },
-    "poder": 615,
+    "poder": 851,
     "habilidade": "Sopro de Magma: dano em linha + queimadura",
     "fraqueza": "Água",
     "descricao": "Fingiu ser uma ponte por mil anos. Acordou com fome.",
@@ -2961,7 +2961,7 @@
     "elemento": "Água",
     "arquetipo": "besta",
     "atributos": {
-      "HP": 2810,
+      "HP": 5400,
       "MP": 197,
       "FOR": 104,
       "DEF": 80,
@@ -2969,7 +2969,7 @@
       "RES": 64,
       "VEL": 96
     },
-    "poder": 673,
+    "poder": 932,
     "habilidade": "Engolir: tira um aliado da batalha por 2 turnos",
     "fraqueza": "Raio",
     "descricao": "Gigante negro que surge do mar em noites calmas e pede um barril. Se você der um balde, ele afunda o barco.",
@@ -3007,7 +3007,7 @@
     "elemento": "Gelo",
     "arquetipo": "invocador",
     "atributos": {
-      "HP": 2010,
+      "HP": 3870,
       "MP": 566,
       "FOR": 46,
       "DEF": 61,
@@ -3015,7 +3015,7 @@
       "RES": 92,
       "VEL": 61
     },
-    "poder": 569,
+    "poder": 755,
     "habilidade": "Despertar das Legiões: invoca 3 soldados de gelo",
     "fraqueza": "Fogo",
     "descricao": "General de uma guerra que ninguém lembra, ainda dando ordens a um exército de gelo.",
@@ -3053,7 +3053,7 @@
     "elemento": "Água",
     "arquetipo": "assassino",
     "atributos": {
-      "HP": 2255,
+      "HP": 4335,
       "MP": 313,
       "FOR": 118,
       "DEF": 64,
@@ -3061,7 +3061,7 @@
       "RES": 64,
       "VEL": 145
     },
-    "poder": 681,
+    "poder": 889,
     "habilidade": "Sangue de Serpente: drena HP igual a 30% do dano",
     "fraqueza": "Raio",
     "descricao": "Mulher-serpente que caça nas profundezas onde a luz não chega.",
@@ -3099,7 +3099,7 @@
     "elemento": "Água",
     "arquetipo": "mago",
     "atributos": {
-      "HP": 2290,
+      "HP": 4400,
       "MP": 770,
       "FOR": 49,
       "DEF": 68,
@@ -3107,7 +3107,7 @@
       "RES": 127,
       "VEL": 88
     },
-    "poder": 717,
+    "poder": 928,
     "habilidade": "Maré Política: controla um inimigo por 1 turno",
     "fraqueza": "Raio",
     "descricao": "Conselheiro do rei Kaishin. Manipula a corte há décadas.",
@@ -3145,7 +3145,7 @@
     "elemento": "Metal",
     "arquetipo": "besta",
     "atributos": {
-      "HP": 2685,
+      "HP": 5160,
       "MP": 189,
       "FOR": 100,
       "DEF": 77,
@@ -3153,7 +3153,7 @@
       "RES": 61,
       "VEL": 92
     },
-    "poder": 645,
+    "poder": 892,
     "habilidade": "Carapaça de Ferro: imune a acertos críticos",
     "fraqueza": "Fogo",
     "descricao": "Centopeia gigantesca que dá sete voltas numa montanha.",
@@ -3191,7 +3191,7 @@
     "elemento": "Alma",
     "arquetipo": "mago",
     "atributos": {
-      "HP": 1705,
+      "HP": 3280,
       "MP": 575,
       "FOR": 37,
       "DEF": 51,
@@ -3199,7 +3199,7 @@
       "RES": 95,
       "VEL": 66
     },
-    "poder": 537,
+    "poder": 694,
     "habilidade": "Memória Ancestral: usa uma magia aleatória do grupo inimigo",
     "fraqueza": "Luz",
     "descricao": "O crânio do dragão que forma o cânion ainda pensa — e quer um corpo novo.",
@@ -3237,7 +3237,7 @@
     "elemento": "Metal",
     "arquetipo": "tanque",
     "atributos": {
-      "HP": 4410,
+      "HP": 8480,
       "MP": 278,
       "FOR": 94,
       "DEF": 151,
@@ -3245,7 +3245,7 @@
       "RES": 113,
       "VEL": 57
     },
-    "poder": 913,
+    "poder": 1320,
     "habilidade": "Juramento de Sangue: guardas aliados recebem o dano por ele",
     "fraqueza": "Fogo",
     "descricao": "Nobre que conspira para derrubar o rei Gōtetsu e tomar Daichi-koku.",
@@ -3283,7 +3283,7 @@
     "elemento": "Trevas",
     "arquetipo": "invocador",
     "atributos": {
-      "HP": 2575,
+      "HP": 4950,
       "MP": 722,
       "FOR": 59,
       "DEF": 78,
@@ -3291,7 +3291,7 @@
       "RES": 117,
       "VEL": 78
     },
-    "poder": 727,
+    "poder": 964,
     "habilidade": "Rio dos Mortos: aliados caídos voltam lutando por ela",
     "fraqueza": "Luz",
     "descricao": "Leva almas pelo rio subterrâneo. Decide quem não volta.",
@@ -3329,7 +3329,7 @@
     "elemento": "Vento",
     "arquetipo": "mago",
     "atributos": {
-      "HP": 1995,
+      "HP": 3840,
       "MP": 673,
       "FOR": 43,
       "DEF": 60,
@@ -3337,7 +3337,7 @@
       "RES": 111,
       "VEL": 77
     },
-    "poder": 628,
+    "poder": 812,
     "habilidade": "Tufão Cortante: dano em área + sangramento",
     "fraqueza": "Terra",
     "descricao": "Ex-guardião da torre que enlouqueceu no silêncio do olho do furacão.",
@@ -3375,7 +3375,7 @@
     "elemento": "Raio",
     "arquetipo": "besta",
     "atributos": {
-      "HP": 2810,
+      "HP": 5400,
       "MP": 197,
       "FOR": 104,
       "DEF": 80,
@@ -3383,7 +3383,7 @@
       "RES": 64,
       "VEL": 96
     },
-    "poder": 673,
+    "poder": 932,
     "habilidade": "Cauda-Serpente: veneno + paralisia",
     "fraqueza": "Terra",
     "descricao": "Rosto de macaco, corpo de tanuki, patas de tigre e cauda de serpente. Seu grito traz azar.",
@@ -3421,7 +3421,7 @@
     "elemento": "Metal",
     "arquetipo": "tanque",
     "atributos": {
-      "HP": 3410,
+      "HP": 6560,
       "MP": 216,
       "FOR": 73,
       "DEF": 117,
@@ -3429,7 +3429,7 @@
       "RES": 88,
       "VEL": 44
     },
-    "poder": 707,
+    "poder": 1022,
     "habilidade": "Correntes: prende 2 alvos por 2 turnos",
     "fraqueza": "Raio",
     "descricao": "O ser acorrentado sob a ilha que nunca se move. Quem o prendeu ali?",
@@ -3467,7 +3467,7 @@
     "elemento": "Vento",
     "arquetipo": "assassino",
     "atributos": {
-      "HP": 2345,
+      "HP": 4505,
       "MP": 325,
       "FOR": 123,
       "DEF": 66,
@@ -3475,7 +3475,7 @@
       "RES": 66,
       "VEL": 151
     },
-    "poder": 707,
+    "poder": 923,
     "habilidade": "Passo Negro: ataca 2× por turno",
     "fraqueza": "Luz",
     "descricao": "Primo do rei Sorahiko. Acha que o tornado errou de pessoa.",
@@ -3513,7 +3513,7 @@
     "elemento": "Terra",
     "arquetipo": "tanque",
     "atributos": {
-      "HP": 4825,
+      "HP": 9280,
       "MP": 305,
       "FOR": 103,
       "DEF": 165,
@@ -3521,7 +3521,7 @@
       "RES": 124,
       "VEL": 62
     },
-    "poder": 999,
+    "poder": 1444,
     "habilidade": "Selo Rachado: a cada turno perde DEF e ganha FOR",
     "fraqueza": "Raio",
     "descricao": "Uma das guardiãs dos selos, sendo devorada pelo Vazio aos poucos.",
@@ -3559,7 +3559,7 @@
     "elemento": "Água",
     "arquetipo": "mago",
     "atributos": {
-      "HP": 2415,
+      "HP": 4640,
       "MP": 812,
       "FOR": 51,
       "DEF": 72,
@@ -3567,7 +3567,7 @@
       "RES": 134,
       "VEL": 93
     },
-    "poder": 757,
+    "poder": 979,
     "habilidade": "Maré Negra: dano + reduz cura recebida em 50%",
     "fraqueza": "Raio",
     "descricao": "Irmã gêmea de Kanae. Luta ao lado dela; se uma cair, a outra enlouquece (+50% dano).",
@@ -3605,7 +3605,7 @@
     "elemento": "Luz",
     "arquetipo": "equilibrado",
     "atributos": {
-      "HP": 2755,
+      "HP": 5300,
       "MP": 464,
       "FOR": 104,
       "DEF": 94,
@@ -3613,7 +3613,7 @@
       "RES": 94,
       "VEL": 94
     },
-    "poder": 756,
+    "poder": 1010,
     "habilidade": "Prova do Coração: quanto menor o Mérito do jogador, maior o dano",
     "fraqueza": "Nenhuma",
     "descricao": "Cavaleiro espectral que protege a Excalibur há séculos. Não luta para matar — luta para julgar.",
@@ -3651,7 +3651,7 @@
     "elemento": "Vazio",
     "arquetipo": "assassino",
     "atributos": {
-      "HP": 2695,
+      "HP": 5185,
       "MP": 374,
       "FOR": 141,
       "DEF": 76,
@@ -3659,7 +3659,7 @@
       "RES": 76,
       "VEL": 173
     },
-    "poder": 812,
+    "poder": 1061,
     "habilidade": "Anulação Total: cancela todas as magias do turno",
     "fraqueza": "Luz",
     "descricao": "Anti-magia que caça magos por recompensa. Pode virar aliado se for vencido sem magia.",
@@ -3697,7 +3697,7 @@
     "elemento": "Fogo",
     "arquetipo": "bruto",
     "atributos": {
-      "HP": 9490,
+      "HP": 22775,
       "MP": 396,
       "FOR": 224,
       "DEF": 192,
@@ -3705,7 +3705,7 @@
       "RES": 112,
       "VEL": 128
     },
-    "poder": 1685,
+    "poder": 3014,
     "habilidade": "Julgamento Infernal: dano proporcional às vitórias do alvo",
     "fraqueza": "Água",
     "descricao": "Juiz dos mortos do fogo, aprisionado sob as ruínas da cidade que ele mesmo condenou.",
@@ -3743,7 +3743,7 @@
     "elemento": "Fogo",
     "arquetipo": "equilibrado",
     "atributos": {
-      "HP": 6800,
+      "HP": 16320,
       "MP": 738,
       "FOR": 164,
       "DEF": 149,
@@ -3751,7 +3751,7 @@
       "RES": 149,
       "VEL": 149
     },
-    "poder": 1440,
+    "poder": 2392,
     "habilidade": "Duelo Eterno: força 1×1 com um único jogador por 3 turnos",
     "fraqueza": "Água",
     "descricao": "Espírito do duelista que enfrentou o rei antigo Ryūga na véspera do selo e perdeu. Guarda o capítulo Céu Rubro do Shitenchō e só o entrega a quem o vencer em duelo justo.",
@@ -3789,7 +3789,7 @@
     "elemento": "Água",
     "arquetipo": "besta",
     "atributos": {
-      "HP": 9000,
+      "HP": 21600,
       "MP": 407,
       "FOR": 214,
       "DEF": 165,
@@ -3797,7 +3797,7 @@
       "RES": 132,
       "VEL": 197
     },
-    "poder": 1707,
+    "poder": 2967,
     "habilidade": "Maelstrom: dano em todos + puxa para o fundo (−VEL)",
     "fraqueza": "Raio",
     "descricao": "Serpente do abismo, maior que uma cidade. Guarda o capítulo Céu Profundo.",
@@ -3835,7 +3835,7 @@
     "elemento": "Tempo",
     "arquetipo": "mago",
     "atributos": {
-      "HP": 5520,
+      "HP": 13250,
       "MP": 1198,
       "FOR": 76,
       "DEF": 106,
@@ -3843,7 +3843,7 @@
       "RES": 197,
       "VEL": 136
     },
-    "poder": 1309,
+    "poder": 2082,
     "habilidade": "Tamatebako: envelhece o alvo (−15% em todos os atributos por 3 turnos)",
     "fraqueza": "Luz",
     "descricao": "Antiga princesa do palácio submerso que vive roubando os anos dos outros.",
@@ -3881,7 +3881,7 @@
     "elemento": "Terra",
     "arquetipo": "bruto",
     "atributos": {
-      "HP": 10140,
+      "HP": 24335,
       "MP": 423,
       "FOR": 239,
       "DEF": 205,
@@ -3889,7 +3889,7 @@
       "RES": 120,
       "VEL": 137
     },
-    "poder": 1801,
+    "poder": 3221,
     "habilidade": "Passo do Gigante: dano em todos + derruba",
     "fraqueza": "Vento",
     "descricao": "Gigante tão grande que suas pegadas viraram lagos.",
@@ -3927,7 +3927,7 @@
     "elemento": "Alma",
     "arquetipo": "tanque",
     "atributos": {
-      "HP": 11360,
+      "HP": 27265,
       "MP": 462,
       "FOR": 156,
       "DEF": 249,
@@ -3935,7 +3935,7 @@
       "RES": 187,
       "VEL": 94
     },
-    "poder": 1916,
+    "poder": 3507,
     "habilidade": "Batida: a cada 3 turnos, pulso que atordoa todos",
     "fraqueza": "Vento",
     "descricao": "O coração que bate dentro da montanha. Guarda o capítulo Céu de Pedra.",
@@ -3973,7 +3973,7 @@
     "elemento": "Raio",
     "arquetipo": "mago",
     "atributos": {
-      "HP": 6000,
+      "HP": 14400,
       "MP": 1302,
       "FOR": 82,
       "DEF": 115,
@@ -3981,7 +3981,7 @@
       "RES": 214,
       "VEL": 148
     },
-    "poder": 1422,
+    "poder": 2262,
     "habilidade": "Tambores do Trovão: 3 raios aleatórios por turno",
     "fraqueza": "Terra",
     "descricao": "O deus do trovão acordou — e quer saber quem o acordou. Guarda o capítulo Céu Errante.",
@@ -4019,7 +4019,7 @@
     "elemento": "Alma",
     "arquetipo": "invocador",
     "atributos": {
-      "HP": 6570,
+      "HP": 15770,
       "MP": 1188,
       "FOR": 96,
       "DEF": 128,
@@ -4027,7 +4027,7 @@
       "RES": 192,
       "VEL": 128
     },
-    "poder": 1425,
+    "poder": 2345,
     "habilidade": "Prisão de Vozes: sela a voz (magias) de um jogador por 3 turnos",
     "fraqueza": "Terra",
     "descricao": "Ela prende as vozes das pessoas no vento. Para quê?",
@@ -4065,7 +4065,7 @@
     "elemento": "Espaço",
     "arquetipo": "mago",
     "atributos": {
-      "HP": 6480,
+      "HP": 15550,
       "MP": 1405,
       "FOR": 89,
       "DEF": 124,
@@ -4073,7 +4073,7 @@
       "RES": 231,
       "VEL": 160
     },
-    "poder": 1536,
+    "poder": 2443,
     "habilidade": "Dobra Espacial: troca posições e redireciona ataques",
     "fraqueza": "Vazio",
     "descricao": "Guarda a Joia dos Portões Celestes e um arquivo de tudo que já aconteceu.",
@@ -4111,7 +4111,7 @@
     "elemento": "Terra",
     "arquetipo": "tanque",
     "atributos": {
-      "HP": 13280,
+      "HP": 31870,
       "MP": 540,
       "FOR": 182,
       "DEF": 291,
@@ -4119,7 +4119,7 @@
       "RES": 218,
       "VEL": 109
     },
-    "poder": 2237,
+    "poder": 4096,
     "habilidade": "Olhar Petrificante: petrifica 1 alvo (2 turnos ou até ser curado)",
     "fraqueza": "Espelho",
     "descricao": "Petrificou a floresta inteira. Sentado sobre a Égide do Quinto Portador.",
@@ -4157,7 +4157,7 @@
     "elemento": "Trevas",
     "arquetipo": "assassino",
     "atributos": {
-      "HP": 7480,
+      "HP": 17950,
       "MP": 668,
       "FOR": 250,
       "DEF": 135,
@@ -4165,7 +4165,7 @@
       "RES": 135,
       "VEL": 308
     },
-    "poder": 1711,
+    "poder": 2758,
     "habilidade": "Eco da Devoração: copia 1 habilidade de um jogador por turno · Mil Contratos: −20% em tudo para quem fez missões da Guilda",
     "fraqueza": "O Diário de Sayo (Dúvida) · Luz",
     "descricao": "Descendente de Sayo, irmã de Kaien. Mestre da Guilda de Kyōkai. Quer reunir os 4 núcleos e o Ovo Eterno para abrir o Esquife e libertar Kaien — sem saber que isso destampa o buraco negro.",
@@ -4215,7 +4215,7 @@
     "elemento": "Vazio",
     "arquetipo": "equilibrado",
     "atributos": {
-      "HP": 8800,
+      "HP": 21120,
       "MP": 954,
       "FOR": 212,
       "DEF": 193,
@@ -4223,7 +4223,7 @@
       "RES": 193,
       "VEL": 193
     },
-    "poder": 1864,
+    "poder": 3096,
     "habilidade": "Mão Queimada: o ataque ignora escudos e queima 10% do MP",
     "fraqueza": "O Ovo Eterno (se o portador estiver presente, Tōya pode ser libertado sem luta)",
     "descricao": "Descendente de Sayo que tentou usar o ovo para abrir o Esquife há 200 anos. O ovo o rejeitou e ele desceu atrás dele. O buraco o devolveu vazio.",
@@ -4268,7 +4268,7 @@
     "elemento": "Fogo",
     "arquetipo": "divino",
     "atributos": {
-      "HP": 21840,
+      "HP": 52415,
       "MP": 1973,
       "FOR": 345,
       "DEF": 345,
@@ -4276,7 +4276,7 @@
       "RES": 345,
       "VEL": 292
     },
-    "poder": 3856,
+    "poder": 6914,
     "habilidade": "Coroa de Brasa: campo de lava (dano por turno a todos); +50% contra quem tem o Núcleo Rubro",
     "fraqueza": "Água",
     "descricao": "Rei de Homura há 500 anos. Escolheu o emissário. Deu a vida pelo selo; o buraco corrompeu sua alma presa ao Esquife. Vencido, é libertado e abençoa o portador do Núcleo Rubro.",
@@ -4321,7 +4321,7 @@
     "elemento": "Água",
     "arquetipo": "divino",
     "atributos": {
-      "HP": 21840,
+      "HP": 52415,
       "MP": 1973,
       "FOR": 345,
       "DEF": 345,
@@ -4329,7 +4329,7 @@
       "RES": 345,
       "VEL": 292
     },
-    "poder": 3856,
+    "poder": 6914,
     "habilidade": "Dilúvio do Fim: dano crescente a cada turno (afogamento)",
     "fraqueza": "Raio",
     "descricao": "Rei de Watatsumi há 500 anos, o mais sábio dos quatro, o que mais se arrependeu. Libertado, abençoa o portador do Núcleo Abissal.",
@@ -4374,7 +4374,7 @@
     "elemento": "Terra",
     "arquetipo": "divino",
     "atributos": {
-      "HP": 21840,
+      "HP": 52415,
       "MP": 1973,
       "FOR": 345,
       "DEF": 345,
@@ -4382,7 +4382,7 @@
       "RES": 345,
       "VEL": 292
     },
-    "poder": 3856,
+    "poder": 6914,
     "habilidade": "Peso do Mundo: VEL de todos cai pela metade",
     "fraqueza": "Vento",
     "descricao": "Rei de Daichi há 500 anos. Foi o primeiro a propor o sacrifício. Libertado, abençoa o portador do Núcleo Raiz.",
@@ -4427,7 +4427,7 @@
     "elemento": "Vento",
     "arquetipo": "divino",
     "atributos": {
-      "HP": 21840,
+      "HP": 52415,
       "MP": 1973,
       "FOR": 345,
       "DEF": 345,
@@ -4435,7 +4435,7 @@
       "RES": 345,
       "VEL": 292
     },
-    "poder": 3856,
+    "poder": 6914,
     "habilidade": "Sopro que Apaga Nomes: silencia todo o grupo por 1 turno",
     "fraqueza": "Terra",
     "descricao": "Rei de Fūjin há 500 anos. Fincou a Excalibur na estepe antes do último combate, 'para o quinto que vier'. Libertado, abençoa o portador do Núcleo Celeste.",
@@ -4480,7 +4480,7 @@
     "elemento": "Trevas",
     "arquetipo": "divino",
     "atributos": {
-      "HP": 23040,
+      "HP": 55295,
       "MP": 2081,
       "FOR": 364,
       "DEF": 364,
@@ -4488,7 +4488,7 @@
       "RES": 364,
       "VEL": 308
     },
-    "poder": 4068,
+    "poder": 7294,
     "habilidade": "Noite Eterna: Demônios inimigos +50%, cura −50%",
     "fraqueza": "Luz",
     "descricao": "A lua do mundo foi partida em uma guerra antiga. Ele é o que sobrou.",
@@ -4526,7 +4526,7 @@
     "elemento": "Fogo",
     "arquetipo": "divino",
     "atributos": {
-      "HP": 24240,
+      "HP": 58175,
       "MP": 2189,
       "FOR": 383,
       "DEF": 383,
@@ -4534,7 +4534,7 @@
       "RES": 383,
       "VEL": 324
     },
-    "poder": 4280,
+    "poder": 7674,
     "habilidade": "Luto Ardente: quanto mais tempo a luta dura, mais forte fica (+10% por turno) — até ver o ovo",
     "fraqueza": "O Ovo Eterno desperto (encerra a luta)",
     "descricao": "O último dragão antigo, guardião da Árvore-Estrela, mãe do Ovo Eterno. Destruiu o Vale de Hinata pela dor de perder o filho e se fundiu a Kaien. Só é enfrentado separado no Final Estelar — ou se o ovo for perdido.",
@@ -4577,7 +4577,7 @@
     "elemento": "Vazio",
     "arquetipo": "divino",
     "atributos": {
-      "HP": 24000,
+      "HP": 57600,
       "MP": 2167,
       "FOR": 379,
       "DEF": 379,
@@ -4585,7 +4585,7 @@
       "RES": 379,
       "VEL": 320
     },
-    "poder": 4236,
+    "poder": 7596,
     "habilidade": "Silêncio Absoluto: nenhuma magia funciona por 2 turnos",
     "fraqueza": "Luz",
     "descricao": "A voz do Vazio no mundo. Fala pelas bocas de quem ouviu o Vazio demais.",
@@ -4623,7 +4623,7 @@
     "elemento": "Vazio",
     "arquetipo": "divino",
     "atributos": {
-      "HP": 24720,
+      "HP": 59330,
       "MP": 2232,
       "FOR": 390,
       "DEF": 390,
@@ -4631,7 +4631,7 @@
       "RES": 390,
       "VEL": 330
     },
-    "poder": 4362,
+    "poder": 7823,
     "habilidade": "Devoração: rouba 1 habilidade de cada jogador por turno e a usa no turno seguinte · Fome Primordial: devora um elemento do campo por turno",
     "fraqueza": "O Ovo Eterno desperto (separa a fusão) · o Diário de Sayo (fere Kaien)",
     "descricao": "Kaien, o menino que roubou o ovo, fundido ao luto do dragão Nisteroy. Um menino com olhos de dragão e um dragão com voz de menino. Chefe final.",

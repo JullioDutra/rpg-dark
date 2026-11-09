@@ -14,7 +14,10 @@ Nível máximo: **100**. O rank é o "título" do jogador, exibido na carta e na
 | S | 80–94 | Lenda | Obsidiana | Torre Sem Fim (andares 50+) |
 | SS | 95–100 | Portador | Arco-íris (5 elementos) | Andares finais e o final da história |
 
-**Curva de XP:** `XP para o próximo nível = 50 × nível^1,6` (nv 1→2: 50 · nv 10: ~2.000 · nv 50: ~26.000 · nv 99: ~78.000).
+**Curva de XP:** `XP para o próximo nível = 50 × nível^1,5` (nv 10: ~1.600 · nv 50: ~17.700 · nv 99: ~49.000). Ritmo de campanha ≈ 4 meses até o nível 100 (doc 22b).
+
+> O sistema completo de subida de atributos (8 fontes, Maestria por uso, Feitos) e o combate em rodada simultânea
+> estão no **[doc 22](22-jogabilidade.md)**, que prevalece sobre este documento.
 
 **Ganhos por nível:** atributos conforme `cresc` da classe (`data/classes.json`), `+HP = 8 + DEF/4`, `+MP = 4 × mult_MP`.
 A cada 10 níveis: **+3 pontos livres** — o *único* momento em que o jogador escolhe onde colocar atributos (comando `!distribuir`).
@@ -71,7 +74,7 @@ Fugir        = 50% + (VEL média do grupo − VEL média inimiga)%  · impossív
 ```
 
 Referência (gerada pelas fórmulas): um Espadachim nível 2 (FOR ~16) causa ~39 de dano no Haikobo (V001, 120 HP) → ~3 golpes.
-Um grupo de 4 jogadores nível 38 derruba o Yōgan-ryū (V064, 2.560 HP) em ~3–4 rodadas usando habilidades.
+Um grupo de 4 jogadores nível 38 derruba o Yōgan-ryū (V064, 4.920 HP) em ~4–5 rodadas usando habilidades (tabelas completas no doc 22b).
 
 ### Derrota
 O jogo é **difícil**: vilões podem vencer. Estados (Caído, Ferido, Capturado, Marca da Morte, **Morte Verdadeira**),

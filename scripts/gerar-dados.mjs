@@ -8,6 +8,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { VILOES, MASCARAS } from "./viloes-fonte.mjs";
 import { APARENCIA_VILOES } from "./aparencia-viloes.mjs";
+import { TIERS } from "./balanceamento.mjs";
 
 const raiz = join(dirname(fileURLToPath(import.meta.url)), "..");
 const lerJSON = (p) => JSON.parse(readFileSync(join(raiz, p), "utf8"));
@@ -19,13 +20,6 @@ Object.assign(REINO_DA_REGIAO, { "Esquife dos Quatro Céus": "Eclipse", Kurenai:
 const escrever = (p, s) => writeFileSync(join(raiz, p), s);
 
 // ───────────────────────── Balanceamento ─────────────────────────
-export const TIERS = {
-  comum:     { rotulo: "Nível Comum",   emoji: "⚪", stat: 1.0,  hp: 1.0,  xp: 1,  amuleto: 0,    nivel: [1, 20] },
-  medio:     { rotulo: "Médio Escalão", emoji: "🟢", stat: 1.2,  hp: 1.6,  xp: 2.5, amuleto: 0.01, nivel: [14, 32] },
-  alto:      { rotulo: "Alto Escalão",  emoji: "🔵", stat: 1.45, hp: 2.6,  xp: 6,  amuleto: 0.03, nivel: [32, 58] },
-  rei:       { rotulo: "Nível Rei",     emoji: "🟣", stat: 1.8,  hp: 5.0,  xp: 15, amuleto: 0.10, nivel: [65, 85] },
-  divindade: { rotulo: "Divindade",     emoji: "🟡", stat: 2.4,  hp: 10.0, xp: 40, amuleto: 0.25, nivel: [88, 100] },
-};
 
 //                FOR   DEF   MAG   RES   VEL   HP    MP
 const ARQUETIPOS = {

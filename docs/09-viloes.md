@@ -6,10 +6,10 @@
 | Tier | Qtd | Faixa de nível | Multiplicador de atributos | Multiplicador de HP | Chance de Amuleto |
 |------|:---:|:---:|:---:|:---:|:---:|
 | ⚪ Nível Comum | 35 | 1–20 | ×1 | ×1 | 0% |
-| 🟢 Médio Escalão | 25 | 14–32 | ×1.2 | ×1.6 | 1% |
-| 🔵 Alto Escalão | 20 | 32–58 | ×1.45 | ×2.6 | 3% |
-| 🟣 Nível Rei | 12 | 65–85 | ×1.8 | ×5 | 10% |
-| 🟡 Divindade | 8 | 88–100 | ×2.4 | ×10 | 25% |
+| 🟢 Médio Escalão | 25 | 14–32 | ×1.2 | ×2.6 | 1% |
+| 🔵 Alto Escalão | 20 | 32–58 | ×1.45 | ×5 | 3% |
+| 🟣 Nível Rei | 12 | 65–85 | ×1.8 | ×12 | 10% |
+| 🟡 Divindade | 8 | 88–100 | ×2.4 | ×24 | 25% |
 | **Total** | **100** | | | | |
 
 **Fórmulas:** `base = 5 + nível×1,2` · `atributo = base × mult_tier × peso_arquétipo` ·
@@ -281,31 +281,31 @@ Os **4 reis dos reinos** (Ryūen, Kaishin, Gōtetsu, Sorahiko) **não** estão n
 
 | Avatar | ID | Nome | Nv | Região | Elemento | HP | FOR | DEF | MAG | RES | VEL | Chefe de |
 |:---:|---|---|:---:|---|---|---:|---:|---:|---:|---:|---:|---|
-| <img src="../assets/avatares/viloes/V036.png" width="64"> | V036 | **Kagari** | 20 | Kagutsuchi-jō | Fogo | 625 | 45 | 24 | 24 | 24 | 56 | — |
-| <img src="../assets/avatares/viloes/V037.png" width="64"> | V037 | **Okibi** | 22 | Deserto de Haijin | Cinzas | 720 | 23 | 30 | 53 | 45 | 30 | — |
-| <img src="../assets/avatares/viloes/V038.png" width="64"> | V038 | **Ōgama** | 14 | Kagutsuchi-jō | Fogo | 705 | 37 | 31 | 13 | 18 | 21 | SF-HOM-02 |
-| <img src="../assets/avatares/viloes/V039.png" width="64"> | V039 | **Capitã Mizuchi** | 18 | Deserto de Haijin | Trevas | 670 | 35 | 32 | 32 | 32 | 32 | SF-HOM-04 |
-| <img src="../assets/avatares/viloes/V040.png" width="64"> | V040 | **Hotaru-hime** | 15 | Floresta Hotaru-bi | Fogo | 520 | 17 | 22 | 39 | 33 | 22 | SF-HOM-03 |
-| <img src="../assets/avatares/viloes/V041.png" width="64"> | V041 | **Gōen** | 28 | Rio Yōgan | Lava | 1585 | 46 | 74 | 28 | 56 | 28 | — |
-| <img src="../assets/avatares/viloes/V042.png" width="64"> | V042 | **Ugetsu** | 22 | Cachoeiras Taki-no-Koe | Água | 800 | 30 | 34 | 49 | 49 | 41 | SF-WAT-06 |
-| <img src="../assets/avatares/viloes/V043.png" width="64"> | V043 | **Shiori** | 18 | Ryūgū-jō | Água | 540 | 16 | 22 | 51 | 41 | 29 | SF-WAT-02 |
-| <img src="../assets/avatares/viloes/V044.png" width="64"> | V044 | **O Reflexo Invertido** | 22 | Lago Kagami | Espelho | 800 | 41 | 38 | 38 | 38 | 38 | SF-WAT-03 |
-| <img src="../assets/avatares/viloes/V045.png" width="64"> | V045 | **Namazu** | 26 | Pântano Numa-no-Me | Terra | 1115 | 56 | 43 | 26 | 35 | 52 | — |
-| <img src="../assets/avatares/viloes/V046.png" width="64"> | V046 | **Almirante Kujira** | 25 | Arquipélago Shiranami | Água | 895 | 46 | 42 | 42 | 42 | 42 | SF-WAT-04 |
-| <img src="../assets/avatares/viloes/V047.png" width="64"> | V047 | **Yamanba** | 30 | Pântano Numa-no-Me | Trevas | 950 | 30 | 39 | 69 | 59 | 39 | SF-WAT-05 |
-| <img src="../assets/avatares/viloes/V048.png" width="64"> | V048 | **Tsuchigumo** | 20 | Floresta Kodama | Terra | 625 | 45 | 24 | 24 | 24 | 56 | — |
-| <img src="../assets/avatares/viloes/V049.png" width="64"> | V049 | **Barão Kōsaku** | 24 | Planícies Kogane | Metal | 865 | 45 | 41 | 41 | 41 | 41 | — |
-| <img src="../assets/avatares/viloes/V050.png" width="64"> | V050 | **Tetsuo** | 14 | Iwakura-jō | Terra | 870 | 26 | 42 | 16 | 31 | 16 | SF-DAI-02 |
-| <img src="../assets/avatares/viloes/V051.png" width="64"> | V051 | **Guardião das Raízes** | 20 | Floresta Kodama | Madeira | 1180 | 35 | 56 | 21 | 42 | 21 | SF-DAI-03 |
-| <img src="../assets/avatares/viloes/V052.png" width="64"> | V052 | **Mestre Tetsuzan** | 28 | Cordilheira Tetsuzan | Terra | 990 | 51 | 46 | 46 | 46 | 46 | SF-DAI-05 |
-| <img src="../assets/avatares/viloes/V053.png" width="64"> | V053 | **Hari** | 32 | Minas de Shōseki | Cristal | 895 | 26 | 36 | 83 | 68 | 47 | SF-DAI-04 |
-| <img src="../assets/avatares/viloes/V054.png" width="64"> | V054 | **Kamaitachi** | 18 | Estepe Susuki | Vento | 570 | 41 | 22 | 22 | 22 | 51 | — |
-| <img src="../assets/avatares/viloes/V055.png" width="64"> | V055 | **Kurokaze** | 16 | Amagumo-jō | Vento | 515 | 38 | 20 | 20 | 20 | 46 | SF-FUJ-02 |
-| <img src="../assets/avatares/viloes/V056.png" width="64"> | V056 | **Sōjōbō** | 25 | Picos Tengu | Vento | 895 | 46 | 42 | 42 | 42 | 42 | SF-FUJ-03 |
-| <img src="../assets/avatares/viloes/V057.png" width="64"> | V057 | **Coro de Kazenaki** | 24 | Desfiladeiro Kazenaki | Som | 780 | 24 | 32 | 57 | 49 | 32 | SF-FUJ-04 |
-| <img src="../assets/avatares/viloes/V058.png" width="64"> | V058 | **Hayabusa** | 28 | Ilhas Ukishima | Vento | 845 | 60 | 32 | 32 | 32 | 74 | — |
-| <img src="../assets/avatares/viloes/V059.png" width="64"> | V059 | **Raiko** | 32 | Templo Raijin | Raio | 895 | 26 | 36 | 83 | 68 | 47 | — |
-| <img src="../assets/avatares/viloes/V060.png" width="64"> | V060 | **O Leiloeiro Sem Sombra** | 30 | Kyōkai | Trevas | 950 | 30 | 39 | 69 | 59 | 39 | SF-KOK-01 |
+| <img src="../assets/avatares/viloes/V036.png" width="64"> | V036 | **Kagari** | 20 | Kagutsuchi-jō | Fogo | 1015 | 45 | 24 | 24 | 24 | 56 | — |
+| <img src="../assets/avatares/viloes/V037.png" width="64"> | V037 | **Okibi** | 22 | Deserto de Haijin | Cinzas | 1170 | 23 | 30 | 53 | 45 | 30 | — |
+| <img src="../assets/avatares/viloes/V038.png" width="64"> | V038 | **Ōgama** | 14 | Kagutsuchi-jō | Fogo | 1150 | 37 | 31 | 13 | 18 | 21 | SF-HOM-02 |
+| <img src="../assets/avatares/viloes/V039.png" width="64"> | V039 | **Capitã Mizuchi** | 18 | Deserto de Haijin | Trevas | 1090 | 35 | 32 | 32 | 32 | 32 | SF-HOM-04 |
+| <img src="../assets/avatares/viloes/V040.png" width="64"> | V040 | **Hotaru-hime** | 15 | Floresta Hotaru-bi | Fogo | 840 | 17 | 22 | 39 | 33 | 22 | SF-HOM-03 |
+| <img src="../assets/avatares/viloes/V041.png" width="64"> | V041 | **Gōen** | 28 | Rio Yōgan | Lava | 2580 | 46 | 74 | 28 | 56 | 28 | — |
+| <img src="../assets/avatares/viloes/V042.png" width="64"> | V042 | **Ugetsu** | 22 | Cachoeiras Taki-no-Koe | Água | 1300 | 30 | 34 | 49 | 49 | 41 | SF-WAT-06 |
+| <img src="../assets/avatares/viloes/V043.png" width="64"> | V043 | **Shiori** | 18 | Ryūgū-jō | Água | 875 | 16 | 22 | 51 | 41 | 29 | SF-WAT-02 |
+| <img src="../assets/avatares/viloes/V044.png" width="64"> | V044 | **O Reflexo Invertido** | 22 | Lago Kagami | Espelho | 1300 | 41 | 38 | 38 | 38 | 38 | SF-WAT-03 |
+| <img src="../assets/avatares/viloes/V045.png" width="64"> | V045 | **Namazu** | 26 | Pântano Numa-no-Me | Terra | 1810 | 56 | 43 | 26 | 35 | 52 | — |
+| <img src="../assets/avatares/viloes/V046.png" width="64"> | V046 | **Almirante Kujira** | 25 | Arquipélago Shiranami | Água | 1455 | 46 | 42 | 42 | 42 | 42 | SF-WAT-04 |
+| <img src="../assets/avatares/viloes/V047.png" width="64"> | V047 | **Yamanba** | 30 | Pântano Numa-no-Me | Trevas | 1545 | 30 | 39 | 69 | 59 | 39 | SF-WAT-05 |
+| <img src="../assets/avatares/viloes/V048.png" width="64"> | V048 | **Tsuchigumo** | 20 | Floresta Kodama | Terra | 1015 | 45 | 24 | 24 | 24 | 56 | — |
+| <img src="../assets/avatares/viloes/V049.png" width="64"> | V049 | **Barão Kōsaku** | 24 | Planícies Kogane | Metal | 1405 | 45 | 41 | 41 | 41 | 41 | — |
+| <img src="../assets/avatares/viloes/V050.png" width="64"> | V050 | **Tetsuo** | 14 | Iwakura-jō | Terra | 1415 | 26 | 42 | 16 | 31 | 16 | SF-DAI-02 |
+| <img src="../assets/avatares/viloes/V051.png" width="64"> | V051 | **Guardião das Raízes** | 20 | Floresta Kodama | Madeira | 1915 | 35 | 56 | 21 | 42 | 21 | SF-DAI-03 |
+| <img src="../assets/avatares/viloes/V052.png" width="64"> | V052 | **Mestre Tetsuzan** | 28 | Cordilheira Tetsuzan | Terra | 1610 | 51 | 46 | 46 | 46 | 46 | SF-DAI-05 |
+| <img src="../assets/avatares/viloes/V053.png" width="64"> | V053 | **Hari** | 32 | Minas de Shōseki | Cristal | 1455 | 26 | 36 | 83 | 68 | 47 | SF-DAI-04 |
+| <img src="../assets/avatares/viloes/V054.png" width="64"> | V054 | **Kamaitachi** | 18 | Estepe Susuki | Vento | 930 | 41 | 22 | 22 | 22 | 51 | — |
+| <img src="../assets/avatares/viloes/V055.png" width="64"> | V055 | **Kurokaze** | 16 | Amagumo-jō | Vento | 840 | 38 | 20 | 20 | 20 | 46 | SF-FUJ-02 |
+| <img src="../assets/avatares/viloes/V056.png" width="64"> | V056 | **Sōjōbō** | 25 | Picos Tengu | Vento | 1455 | 46 | 42 | 42 | 42 | 42 | SF-FUJ-03 |
+| <img src="../assets/avatares/viloes/V057.png" width="64"> | V057 | **Coro de Kazenaki** | 24 | Desfiladeiro Kazenaki | Som | 1265 | 24 | 32 | 57 | 49 | 32 | SF-FUJ-04 |
+| <img src="../assets/avatares/viloes/V058.png" width="64"> | V058 | **Hayabusa** | 28 | Ilhas Ukishima | Vento | 1370 | 60 | 32 | 32 | 32 | 74 | — |
+| <img src="../assets/avatares/viloes/V059.png" width="64"> | V059 | **Raiko** | 32 | Templo Raijin | Raio | 1455 | 26 | 36 | 83 | 68 | 47 | — |
+| <img src="../assets/avatares/viloes/V060.png" width="64"> | V060 | **O Leiloeiro Sem Sombra** | 30 | Kyōkai | Trevas | 1545 | 30 | 39 | 69 | 59 | 39 | SF-KOK-01 |
 
 #### V036 · Kagari, a Duelista Sem Rosto
 *Médio Escalão · Nv 20 · Fogo · assassino · Kagutsuchi-jō*  
@@ -466,26 +466,26 @@ Os **4 reis dos reinos** (Ryūen, Kaishin, Gōtetsu, Sorahiko) **não** estão n
 
 | Avatar | ID | Nome | Nv | Região | Elemento | HP | FOR | DEF | MAG | RES | VEL | Chefe de |
 |:---:|---|---|:---:|---|---|---:|---:|---:|---:|---:|---:|---|
-| <img src="../assets/avatares/viloes/V061.png" width="64"> | V061 | **Hyōsuke** | 40 | Kurenai | Fogo | 2235 | 85 | 77 | 77 | 77 | 77 | — |
-| <img src="../assets/avatares/viloes/V062.png" width="64"> | V062 | **Hinotori Corrompida** | 32 | Monte Hinokami | Fogo | 1820 | 50 | 57 | 82 | 82 | 69 | SF-HOM-05 |
-| <img src="../assets/avatares/viloes/V063.png" width="64"> | V063 | **General Bakuen** | 45 | Enjō | Explosão | 3245 | 120 | 103 | 43 | 60 | 68 | — |
-| <img src="../assets/avatares/viloes/V064.png" width="64"> | V064 | **Yōgan-ryū** | 38 | Rio Yōgan | Lava | 2560 | 95 | 73 | 44 | 59 | 88 | SF-HOM-06 |
-| <img src="../assets/avatares/viloes/V065.png" width="64"> | V065 | **Umibōzu** | 42 | Arquipélago Shiranami | Água | 2810 | 104 | 80 | 48 | 64 | 96 | — |
-| <img src="../assets/avatares/viloes/V066.png" width="64"> | V066 | **Hyōō** | 40 | Geleira Hyōga | Gelo | 2010 | 46 | 61 | 108 | 92 | 61 | SF-WAT-07 |
-| <img src="../assets/avatares/viloes/V067.png" width="64"> | V067 | **Nure-onna** | 48 | Fossa Shinkai | Água | 2255 | 118 | 64 | 64 | 64 | 145 | — |
-| <img src="../assets/avatares/viloes/V068.png" width="64"> | V068 | **Saigō Shiogama** | 52 | Ryūgū-jō | Água | 2290 | 49 | 68 | 156 | 127 | 88 | — |
-| <img src="../assets/avatares/viloes/V069.png" width="64"> | V069 | **Ōmukade** | 40 | Cordilheira Tetsuzan | Metal | 2685 | 100 | 77 | 46 | 61 | 92 | — |
-| <img src="../assets/avatares/viloes/V070.png" width="64"> | V070 | **O Crânio de Ryūkotsu** | 38 | Cânion Ryūkotsu | Alma | 1705 | 37 | 51 | 117 | 95 | 66 | SF-DAI-06 |
-| <img src="../assets/avatares/viloes/V071.png" width="64"> | V071 | **Kurogane Masamune** | 50 | Kōgyoku | Metal | 4410 | 94 | 151 | 57 | 113 | 57 | — |
-| <img src="../assets/avatares/viloes/V072.png" width="64"> | V072 | **Yomotsu** | 52 | Cavernas Yomi-no-Ana | Trevas | 2575 | 59 | 78 | 137 | 117 | 78 | SF-DAI-07 |
-| <img src="../assets/avatares/viloes/V073.png" width="64"> | V073 | **Arashimaru** | 45 | Olho da Tempestade Arashi-no-Me | Vento | 1995 | 43 | 60 | 137 | 111 | 77 | — |
-| <img src="../assets/avatares/viloes/V074.png" width="64"> | V074 | **Nue** | 42 | Templo Raijin | Raio | 2810 | 104 | 80 | 48 | 64 | 96 | — |
-| <img src="../assets/avatares/viloes/V075.png" width="64"> | V075 | **Kusarigami** | 38 | Ilhas Ukishima | Metal | 3410 | 73 | 117 | 44 | 88 | 44 | SF-FUJ-05 |
-| <img src="../assets/avatares/viloes/V076.png" width="64"> | V076 | **Hayate Kuroha** | 50 | Amagumo-jō | Vento | 2345 | 123 | 66 | 66 | 66 | 151 | — |
-| <img src="../assets/avatares/viloes/V077.png" width="64"> | V077 | **Kanae** | 55 | Muralha dos Selos | Terra | 4825 | 103 | 165 | 62 | 124 | 62 | SF-KOK-02 |
-| <img src="../assets/avatares/viloes/V078.png" width="64"> | V078 | **Shizuku** | 55 | Muralha dos Selos | Água | 2415 | 51 | 72 | 165 | 134 | 93 | SF-KOK-02 |
-| <img src="../assets/avatares/viloes/V079.png" width="64"> | V079 | **O Guardião sem Vento** | 50 | Estepe Susuki | Luz | 2755 | 104 | 94 | 94 | 94 | 94 | SF-FUJ-07 |
-| <img src="../assets/avatares/viloes/V080.png" width="64"> | V080 | **Zero** | 58 | Kyōkai | Vazio | 2695 | 141 | 76 | 76 | 76 | 173 | SF-KOK-04 |
+| <img src="../assets/avatares/viloes/V061.png" width="64"> | V061 | **Hyōsuke** | 40 | Kurenai | Fogo | 4300 | 85 | 77 | 77 | 77 | 77 | — |
+| <img src="../assets/avatares/viloes/V062.png" width="64"> | V062 | **Hinotori Corrompida** | 32 | Monte Hinokami | Fogo | 3500 | 50 | 57 | 82 | 82 | 69 | SF-HOM-05 |
+| <img src="../assets/avatares/viloes/V063.png" width="64"> | V063 | **General Bakuen** | 45 | Enjō | Explosão | 6240 | 120 | 103 | 43 | 60 | 68 | — |
+| <img src="../assets/avatares/viloes/V064.png" width="64"> | V064 | **Yōgan-ryū** | 38 | Rio Yōgan | Lava | 4920 | 95 | 73 | 44 | 59 | 88 | SF-HOM-06 |
+| <img src="../assets/avatares/viloes/V065.png" width="64"> | V065 | **Umibōzu** | 42 | Arquipélago Shiranami | Água | 5400 | 104 | 80 | 48 | 64 | 96 | — |
+| <img src="../assets/avatares/viloes/V066.png" width="64"> | V066 | **Hyōō** | 40 | Geleira Hyōga | Gelo | 3870 | 46 | 61 | 108 | 92 | 61 | SF-WAT-07 |
+| <img src="../assets/avatares/viloes/V067.png" width="64"> | V067 | **Nure-onna** | 48 | Fossa Shinkai | Água | 4335 | 118 | 64 | 64 | 64 | 145 | — |
+| <img src="../assets/avatares/viloes/V068.png" width="64"> | V068 | **Saigō Shiogama** | 52 | Ryūgū-jō | Água | 4400 | 49 | 68 | 156 | 127 | 88 | — |
+| <img src="../assets/avatares/viloes/V069.png" width="64"> | V069 | **Ōmukade** | 40 | Cordilheira Tetsuzan | Metal | 5160 | 100 | 77 | 46 | 61 | 92 | — |
+| <img src="../assets/avatares/viloes/V070.png" width="64"> | V070 | **O Crânio de Ryūkotsu** | 38 | Cânion Ryūkotsu | Alma | 3280 | 37 | 51 | 117 | 95 | 66 | SF-DAI-06 |
+| <img src="../assets/avatares/viloes/V071.png" width="64"> | V071 | **Kurogane Masamune** | 50 | Kōgyoku | Metal | 8480 | 94 | 151 | 57 | 113 | 57 | — |
+| <img src="../assets/avatares/viloes/V072.png" width="64"> | V072 | **Yomotsu** | 52 | Cavernas Yomi-no-Ana | Trevas | 4950 | 59 | 78 | 137 | 117 | 78 | SF-DAI-07 |
+| <img src="../assets/avatares/viloes/V073.png" width="64"> | V073 | **Arashimaru** | 45 | Olho da Tempestade Arashi-no-Me | Vento | 3840 | 43 | 60 | 137 | 111 | 77 | — |
+| <img src="../assets/avatares/viloes/V074.png" width="64"> | V074 | **Nue** | 42 | Templo Raijin | Raio | 5400 | 104 | 80 | 48 | 64 | 96 | — |
+| <img src="../assets/avatares/viloes/V075.png" width="64"> | V075 | **Kusarigami** | 38 | Ilhas Ukishima | Metal | 6560 | 73 | 117 | 44 | 88 | 44 | SF-FUJ-05 |
+| <img src="../assets/avatares/viloes/V076.png" width="64"> | V076 | **Hayate Kuroha** | 50 | Amagumo-jō | Vento | 4505 | 123 | 66 | 66 | 66 | 151 | — |
+| <img src="../assets/avatares/viloes/V077.png" width="64"> | V077 | **Kanae** | 55 | Muralha dos Selos | Terra | 9280 | 103 | 165 | 62 | 124 | 62 | SF-KOK-02 |
+| <img src="../assets/avatares/viloes/V078.png" width="64"> | V078 | **Shizuku** | 55 | Muralha dos Selos | Água | 4640 | 51 | 72 | 165 | 134 | 93 | SF-KOK-02 |
+| <img src="../assets/avatares/viloes/V079.png" width="64"> | V079 | **O Guardião sem Vento** | 50 | Estepe Susuki | Luz | 5300 | 104 | 94 | 94 | 94 | 94 | SF-FUJ-07 |
+| <img src="../assets/avatares/viloes/V080.png" width="64"> | V080 | **Zero** | 58 | Kyōkai | Vazio | 5185 | 141 | 76 | 76 | 76 | 173 | SF-KOK-04 |
 
 #### V061 · Hyōsuke, o Príncipe Exilado de Kurenai
 *Alto Escalão · Nv 40 · Fogo · equilibrado · Kurenai*  
@@ -614,18 +614,18 @@ Os **4 reis dos reinos** (Ryūen, Kaishin, Gōtetsu, Sorahiko) **não** estão n
 
 | Avatar | ID | Nome | Nv | Região | Elemento | HP | FOR | DEF | MAG | RES | VEL | Chefe de |
 |:---:|---|---|:---:|---|---|---:|---:|---:|---:|---:|---:|---|
-| <img src="../assets/avatares/viloes/V081.png" width="64"> | V081 | **Enma-ō** | 70 | Ruínas de Enma | Fogo | 9490 | 224 | 192 | 80 | 112 | 128 | SF-HOM-07 |
-| <img src="../assets/avatares/viloes/V082.png" width="64"> | V082 | **Kagerō Ryūketsu** | 65 | Kagutsuchi-jō | Fogo | 6800 | 164 | 149 | 149 | 149 | 149 | SF-HOM-08 |
-| <img src="../assets/avatares/viloes/V083.png" width="64"> | V083 | **Leviatã de Shinkai** | 72 | Fossa Shinkai | Água | 9000 | 214 | 165 | 99 | 132 | 197 | SF-WAT-08 |
-| <img src="../assets/avatares/viloes/V084.png" width="64"> | V084 | **Otohime Negra** | 66 | Ryūgū-jō | Tempo | 5520 | 76 | 106 | 242 | 197 | 136 | — |
-| <img src="../assets/avatares/viloes/V085.png" width="64"> | V085 | **Daidarabotchi** | 75 | Planícies Kogane | Terra | 10140 | 239 | 205 | 86 | 120 | 137 | — |
-| <img src="../assets/avatares/viloes/V086.png" width="64"> | V086 | **O Coração da Montanha** | 68 | Iwakura-jō | Alma | 11360 | 156 | 249 | 94 | 187 | 94 | SF-DAI-08 |
-| <img src="../assets/avatares/viloes/V087.png" width="64"> | V087 | **Raijin Desperto** | 72 | Templo Raijin | Raio | 6000 | 82 | 115 | 263 | 214 | 148 | SF-FUJ-06 |
-| <img src="../assets/avatares/viloes/V088.png" width="64"> | V088 | **Kazenaki-no-Haha** | 70 | Desfiladeiro Kazenaki | Alma | 6570 | 96 | 128 | 224 | 192 | 128 | — |
-| <img src="../assets/avatares/viloes/V089.png" width="64"> | V089 | **O Arquivista** | 78 | Olho da Tempestade Arashi-no-Me | Espaço | 6480 | 89 | 124 | 284 | 231 | 160 | SF-FUJ-08 |
-| <img src="../assets/avatares/viloes/V090.png" width="64"> | V090 | **Sekiō** | 80 | Floresta Petrificada Ishi-no-Mori | Terra | 13280 | 182 | 291 | 109 | 218 | 109 | SF-KOK-03 |
-| <img src="../assets/avatares/viloes/V091.png" width="64"> | V091 | **Kanata** | 85 | Kyōkai | Trevas | 7480 | 250 | 135 | 135 | 135 | 308 | SF-KOK-04 |
-| <img src="../assets/avatares/viloes/V092.png" width="64"> | V092 | **Tōya** | 85 | Torre Sem Fim | Vazio | 8800 | 212 | 193 | 193 | 193 | 193 | SF-KOK-04 |
+| <img src="../assets/avatares/viloes/V081.png" width="64"> | V081 | **Enma-ō** | 70 | Ruínas de Enma | Fogo | 22775 | 224 | 192 | 80 | 112 | 128 | SF-HOM-07 |
+| <img src="../assets/avatares/viloes/V082.png" width="64"> | V082 | **Kagerō Ryūketsu** | 65 | Kagutsuchi-jō | Fogo | 16320 | 164 | 149 | 149 | 149 | 149 | SF-HOM-08 |
+| <img src="../assets/avatares/viloes/V083.png" width="64"> | V083 | **Leviatã de Shinkai** | 72 | Fossa Shinkai | Água | 21600 | 214 | 165 | 99 | 132 | 197 | SF-WAT-08 |
+| <img src="../assets/avatares/viloes/V084.png" width="64"> | V084 | **Otohime Negra** | 66 | Ryūgū-jō | Tempo | 13250 | 76 | 106 | 242 | 197 | 136 | — |
+| <img src="../assets/avatares/viloes/V085.png" width="64"> | V085 | **Daidarabotchi** | 75 | Planícies Kogane | Terra | 24335 | 239 | 205 | 86 | 120 | 137 | — |
+| <img src="../assets/avatares/viloes/V086.png" width="64"> | V086 | **O Coração da Montanha** | 68 | Iwakura-jō | Alma | 27265 | 156 | 249 | 94 | 187 | 94 | SF-DAI-08 |
+| <img src="../assets/avatares/viloes/V087.png" width="64"> | V087 | **Raijin Desperto** | 72 | Templo Raijin | Raio | 14400 | 82 | 115 | 263 | 214 | 148 | SF-FUJ-06 |
+| <img src="../assets/avatares/viloes/V088.png" width="64"> | V088 | **Kazenaki-no-Haha** | 70 | Desfiladeiro Kazenaki | Alma | 15770 | 96 | 128 | 224 | 192 | 128 | — |
+| <img src="../assets/avatares/viloes/V089.png" width="64"> | V089 | **O Arquivista** | 78 | Olho da Tempestade Arashi-no-Me | Espaço | 15550 | 89 | 124 | 284 | 231 | 160 | SF-FUJ-08 |
+| <img src="../assets/avatares/viloes/V090.png" width="64"> | V090 | **Sekiō** | 80 | Floresta Petrificada Ishi-no-Mori | Terra | 31870 | 182 | 291 | 109 | 218 | 109 | SF-KOK-03 |
+| <img src="../assets/avatares/viloes/V091.png" width="64"> | V091 | **Kanata** | 85 | Kyōkai | Trevas | 17950 | 250 | 135 | 135 | 135 | 308 | SF-KOK-04 |
+| <img src="../assets/avatares/viloes/V092.png" width="64"> | V092 | **Tōya** | 85 | Torre Sem Fim | Vazio | 21120 | 212 | 193 | 193 | 193 | 193 | SF-KOK-04 |
 
 #### V081 · Enma-ō, o Juiz do Submundo de Fogo
 *Nível Rei · Nv 70 · Fogo · bruto · Ruínas de Enma*  
@@ -710,14 +710,14 @@ Os **4 reis dos reinos** (Ryūen, Kaishin, Gōtetsu, Sorahiko) **não** estão n
 
 | Avatar | ID | Nome | Nv | Região | Elemento | HP | FOR | DEF | MAG | RES | VEL | Chefe de |
 |:---:|---|---|:---:|---|---|---:|---:|---:|---:|---:|---:|---|
-| <img src="../assets/avatares/viloes/V093.png" width="64"> | V093 | **Akatsuki Ryūga** | 88 | Torre Sem Fim | Fogo | 21840 | 345 | 345 | 345 | 345 | 292 | SF-KOK-04 |
-| <img src="../assets/avatares/viloes/V094.png" width="64"> | V094 | **Minazuki Shizuha** | 88 | Torre Sem Fim | Água | 21840 | 345 | 345 | 345 | 345 | 292 | SF-KOK-04 |
-| <img src="../assets/avatares/viloes/V095.png" width="64"> | V095 | **Iwanaga Gōzan** | 88 | Torre Sem Fim | Terra | 21840 | 345 | 345 | 345 | 345 | 292 | SF-KOK-04 |
-| <img src="../assets/avatares/viloes/V096.png" width="64"> | V096 | **Hayate Tsukumo** | 88 | Torre Sem Fim | Vento | 21840 | 345 | 345 | 345 | 345 | 292 | SF-KOK-04 |
-| <img src="../assets/avatares/viloes/V097.png" width="64"> | V097 | **Tsukuyomi Partido** | 93 | Torre Sem Fim | Trevas | 23040 | 364 | 364 | 364 | 364 | 308 | SF-KOK-04 |
-| <img src="../assets/avatares/viloes/V098.png" width="64"> | V098 | **Nisteroy** | 98 | Esquife dos Quatro Céus | Fogo | 24240 | 383 | 383 | 383 | 383 | 324 | SF-KOK-04 |
-| <img src="../assets/avatares/viloes/V099.png" width="64"> | V099 | **Muhyō** | 97 | Cratera do Vazio | Vazio | 24000 | 379 | 379 | 379 | 379 | 320 | SF-KOK-04 |
-| <img src="../assets/avatares/viloes/V100.png" width="64"> | V100 | **Shokuō** | 100 | Esquife dos Quatro Céus | Vazio | 24720 | 390 | 390 | 390 | 390 | 330 | SF-KOK-04 |
+| <img src="../assets/avatares/viloes/V093.png" width="64"> | V093 | **Akatsuki Ryūga** | 88 | Torre Sem Fim | Fogo | 52415 | 345 | 345 | 345 | 345 | 292 | SF-KOK-04 |
+| <img src="../assets/avatares/viloes/V094.png" width="64"> | V094 | **Minazuki Shizuha** | 88 | Torre Sem Fim | Água | 52415 | 345 | 345 | 345 | 345 | 292 | SF-KOK-04 |
+| <img src="../assets/avatares/viloes/V095.png" width="64"> | V095 | **Iwanaga Gōzan** | 88 | Torre Sem Fim | Terra | 52415 | 345 | 345 | 345 | 345 | 292 | SF-KOK-04 |
+| <img src="../assets/avatares/viloes/V096.png" width="64"> | V096 | **Hayate Tsukumo** | 88 | Torre Sem Fim | Vento | 52415 | 345 | 345 | 345 | 345 | 292 | SF-KOK-04 |
+| <img src="../assets/avatares/viloes/V097.png" width="64"> | V097 | **Tsukuyomi Partido** | 93 | Torre Sem Fim | Trevas | 55295 | 364 | 364 | 364 | 364 | 308 | SF-KOK-04 |
+| <img src="../assets/avatares/viloes/V098.png" width="64"> | V098 | **Nisteroy** | 98 | Esquife dos Quatro Céus | Fogo | 58175 | 383 | 383 | 383 | 383 | 324 | SF-KOK-04 |
+| <img src="../assets/avatares/viloes/V099.png" width="64"> | V099 | **Muhyō** | 97 | Cratera do Vazio | Vazio | 57600 | 379 | 379 | 379 | 379 | 320 | SF-KOK-04 |
+| <img src="../assets/avatares/viloes/V100.png" width="64"> | V100 | **Shokuō** | 100 | Esquife dos Quatro Céus | Vazio | 59330 | 390 | 390 | 390 | 390 | 330 | SF-KOK-04 |
 
 #### V093 · Akatsuki Ryūga, o Rei Antigo do Fogo, Corrompido
 *Divindade · Nv 88 · Fogo · divino · Torre Sem Fim*  
