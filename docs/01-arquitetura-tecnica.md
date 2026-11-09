@@ -39,7 +39,7 @@ valida cada evento contra as regras do jogo e só então aplica.
 | Banco | PostgreSQL (Supabase serve) | Relacional, transações para itens únicos |
 | Fila | Redis + BullMQ | Serializa ações por grupo, evita condições de corrida |
 | IA narrativa | Claude API (modelo mais recente da família Claude) com *tool use* e *prompt caching* | Saída estruturada + cache da "Bíblia do Mundo" barateia muito |
-| Arte dos personagens | API de geração de imagem (estilo anime) — gerada **uma vez** por personagem e reaproveitada | Custo controlado |
+| Arte dos personagens | **Criador de avatares em pixel art procedural** (`src/avatar/`, sem dependências) | Custo zero, instantâneo, identidade consistente |
 | Cartas | Template HTML → PNG via Playwright (ou `satori` + `resvg`) | Layout fixo, só troca dados |
 | Hospedagem | VPS com disco persistente (a sessão do WhatsApp precisa persistir) | |
 
@@ -141,8 +141,7 @@ Camadas de proteção:
 - **Prompt caching** da Bíblia do Mundo + regras (~20–40k tokens) reduz custo por mensagem.
 - Comandos determinísticos (`!ficha`, `!inventario`, combate básico) **não chamam IA**.
 - Combate: IA narra **o resultado do turno** (1 chamada curta), não cada cálculo.
-- Retratos de vilões são **pré-gerados** (100 imagens, uma vez). Jogadores: 1 retrato na
-  criação + 1 por "despertar" (evolução de rank).
+- Avatares e mapas são **pixel art procedural**: gerados na hora, sem custo de API.
 - Resumo rolante da memória a cada ~30 mensagens para não estourar o contexto.
 
 ## 1.8 Estrutura de pastas planejada para o código
@@ -153,6 +152,8 @@ src/
   comandos/       # parser e handlers de comandos
   motor/          # regras: sorteio, combate, xp, itens, validação
   narrador/       # prompts, ferramentas, memória, diretor de história
+  avatar/         # criador de avatares em pixel art (já implementado)
+  mapa/           # mapas em pixel art (já implementado)
   render/         # cartas HTML → PNG
   db/             # migrações e repositórios
 data/             # conteúdo do jogo (este repositório)

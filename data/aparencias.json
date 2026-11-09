@@ -1,0 +1,378 @@
+{
+  "estilo": {
+    "nome": "Sumi & Brasa (墨と燠)",
+    "resumo": "Pixel art estilo anime (bustos 64×64 ampliados ×8) com acabamento automático de contorno, sombra com desvio de matiz e luz; fundos e mapas com influência de biombos japoneses (byōbu) e ukiyo-e: névoas douradas, ondas seigaiha, degradê pontilhado.",
+    "regras": [
+      "Silhueta primeiro: todo personagem precisa ser reconhecível só pelo contorno preto.",
+      "No máximo 3 cores principais + 1 cor de destaque (a do elemento).",
+      "Linguagem de forma por reino (tabela formas_por_reino).",
+      "A escala visual cresce com o tier (tabela escala_por_tier).",
+      "Nenhum personagem pode lembrar um personagem conhecido de outra obra (campo nao_parecer).",
+      "Ressurgidos levam o anel negro do eclipse no peito; servos de Kanata, um fio prateado em algum lugar do figurino.",
+      "Sem geração por IA: todo avatar sai do criador procedural (src/avatar) a partir de um DNA."
+    ]
+  },
+  "paletas_por_reino": {
+    "Homura": [
+      {
+        "jp": "朱",
+        "nome": "shu (vermelhão)",
+        "hex": "#EB6101"
+      },
+      {
+        "jp": "紅",
+        "nome": "kurenai (carmim)",
+        "hex": "#D7003A"
+      },
+      {
+        "jp": "墨",
+        "nome": "sumi (tinta)",
+        "hex": "#2B2B2B"
+      },
+      {
+        "jp": "黄金",
+        "nome": "kogane (ouro)",
+        "hex": "#E6B422"
+      }
+    ],
+    "Watatsumi": [
+      {
+        "jp": "藍",
+        "nome": "ai (índigo)",
+        "hex": "#165E83"
+      },
+      {
+        "jp": "群青",
+        "nome": "gunjō (ultramar)",
+        "hex": "#4C6CB3"
+      },
+      {
+        "jp": "水浅葱",
+        "nome": "mizu-asagi",
+        "hex": "#80ABA9"
+      },
+      {
+        "jp": "真珠",
+        "nome": "shinju (pérola)",
+        "hex": "#F8F4E6"
+      }
+    ],
+    "Daichi": [
+      {
+        "jp": "鉄黒",
+        "nome": "tetsuguro (ferro)",
+        "hex": "#281A14"
+      },
+      {
+        "jp": "金茶",
+        "nome": "kincha (ouro-chá)",
+        "hex": "#C47222"
+      },
+      {
+        "jp": "松葉",
+        "nome": "matsuba (pinheiro)",
+        "hex": "#42602D"
+      },
+      {
+        "jp": "琥珀",
+        "nome": "kohaku (âmbar)",
+        "hex": "#BF783A"
+      }
+    ],
+    "Fūjin": [
+      {
+        "jp": "白群",
+        "nome": "byakugun",
+        "hex": "#83CCD2"
+      },
+      {
+        "jp": "若竹",
+        "nome": "wakatake (bambu)",
+        "hex": "#68BE8D"
+      },
+      {
+        "jp": "白練",
+        "nome": "shironeri (seda)",
+        "hex": "#F3F3F2"
+      },
+      {
+        "jp": "山吹",
+        "nome": "yamabuki (raio)",
+        "hex": "#F8B500"
+      }
+    ],
+    "Kokū": [
+      {
+        "jp": "胡粉",
+        "nome": "gofun (branco-concha)",
+        "hex": "#FFFFFC"
+      },
+      {
+        "jp": "鈍",
+        "nome": "nibi (cinza-chumbo)",
+        "hex": "#727171"
+      },
+      {
+        "jp": "墨",
+        "nome": "sumi",
+        "hex": "#2B2B2B"
+      },
+      {
+        "jp": "月白",
+        "nome": "geppaku (luar)",
+        "hex": "#EAF4FC"
+      }
+    ],
+    "Eclipse": [
+      {
+        "jp": "漆黒",
+        "nome": "shikkoku (laca negra)",
+        "hex": "#0D0015"
+      },
+      {
+        "jp": "銀",
+        "nome": "gin (prata)",
+        "hex": "#C9CACA"
+      },
+      {
+        "jp": "蝕紫",
+        "nome": "shoku-murasaki (roxo-eclipse)",
+        "hex": "#5B2A86"
+      },
+      {
+        "jp": "燠",
+        "nome": "oki (brasa)",
+        "hex": "#FF7A3D"
+      }
+    ]
+  },
+  "nota_paletas": "Nomes de cores tradicionais japonesas; os hex são aproximados (as fontes divergem).",
+  "formas_por_reino": {
+    "Homura": "Triângulos: chifres de kabuto, capas cortadas como chamas, pontas para cima. Postura agressiva, peito aberto.",
+    "Watatsumi": "Círculos e curvas em S: mangas fluidas, pérolas, ondas, cabelos longos que se movem como água. Postura serena.",
+    "Daichi": "Quadrados e blocos: ombreiras largas, selos quadrados, base larga, pés plantados. Postura imóvel.",
+    "Fūjin": "Diagonais longas e penas: cachecóis ao vento, capas-asa, assimetria, sempre em movimento.",
+    "Kokū": "Espaço negativo: rachaduras, partes faltando, buracos que mostram o vazio atrás. Cores lavadas.",
+    "Eclipse": "O círculo mordido: um anel com um crescente negro comendo a borda. Aparece em todos os servos de Kanata."
+  },
+  "escala_por_tier": {
+    "comum": "Escala humana/animal, corpo inteiro, silhueta simples, 1 cor de destaque. Cenário comum da região.",
+    "medio": "Um acessório marcante (arma, máscara, instrumento), 2 cores, enquadramento 3/4. Parece um personagem com nome.",
+    "alto": "Figurino elaborado, aura visível, um elemento assimétrico forte na silhueta. Busto com fundo dramático.",
+    "rei": "Motivo de coroa ou halo, o clima reage à presença (chuva, cinzas, raios). Ângulo de baixo para cima.",
+    "divindade": "Escala colossal, halo em mandorla (como estatuária budista), o cenário faz parte do corpo, composição simétrica e iconográfica."
+  },
+  "personagens": [
+    {
+      "id": "NPC-KAIEN",
+      "nome": "Kaien (灰炎)",
+      "papel": "O garoto que roubou o ovo, há 500 anos (aparece em memórias, sonhos e no Esquife)",
+      "idade": "15",
+      "silhueta": "Magro, ombros curvados para a frente, um pano enrolado nos braços (o ovo). Pés descalços.",
+      "paleta": [
+        "#7D7D7D cinza-cinza",
+        "#C47222 ouro-chá (pele queimada de sol)",
+        "#FF7A3D brasa (só nos olhos depois da queda)"
+      ],
+      "cabelo": "Cinza-cinza, curto e desgrenhado, com pontas que parecem queimadas",
+      "olhos": "Castanhos e gentis antes; depois, pupilas verticais de dragão em âmbar",
+      "rosto": "Magro, sardas de fuligem, boca que sorri torto",
+      "figurino": "Quimono curto de lenhador remendado, faixa de corda, bandagens nas mãos",
+      "marca_registrada": "O pano azul da mãe amarrado no pulso — o mesmo que embrulhava o ovo",
+      "expressao": "Determinado e assustado ao mesmo tempo",
+      "aura": "Nenhuma (antes); fumaça negra que sobe dos pés (depois)",
+      "evolucao": [
+        "Garoto do vale (memórias)",
+        "Kaien na queda: olhos de dragão, mãos negras de devorar",
+        "Dentro do Esquife: sentado na soleira, sem idade (V100)"
+      ],
+      "nao_parecer": "Protagonistas shōnen de cabelo espetado amarelo/preto"
+    },
+    {
+      "id": "NPC-SAYO",
+      "nome": "Sayo (小夜)",
+      "papel": "Irmã de Kaien; sobreviveu com o ovo. Aparece como eco translúcido na Floresta Kodama e nas memórias do Poço Seco",
+      "idade": "7 (memória) · eco",
+      "silhueta": "Pequena, abraçando algo redondo maior que o próprio tronco",
+      "paleta": [
+        "#F8F4E6 pérola",
+        "#42602D verde-pinheiro",
+        "#83CCD2 brilho de eco"
+      ],
+      "cabelo": "Preto, duas tranças curtas amarradas com fios vermelhos",
+      "olhos": "Grandes, escuros, sem lágrimas — ela parou de chorar no poço",
+      "figurino": "Quimono infantil verde com padrão de folhas, descalça, sujo de terra",
+      "marca_registrada": "O ovo cinza abraçado; no eco, folhas atravessam o corpo dela",
+      "expressao": "Séria demais para a idade",
+      "aura": "Eco: contorno azul-claro translúcido, partículas de folhas"
+    },
+    {
+      "id": "NPC-RYUEN",
+      "nome": "Rei Akatsuki Ryūen (暁 竜炎)",
+      "papel": "Rei de Homura-koku; guarda o Núcleo Rubro no olho esquerdo",
+      "idade": "40",
+      "silhueta": "Ombros enormes, capa curta em pontas de chama, coroa-sol em leque atrás da cabeça (triângulos)",
+      "paleta": [
+        "#D7003A carmim",
+        "#2B2B2B laca preta",
+        "#E6B422 ouro",
+        "#EB6101 vermelhão (cabelo)"
+      ],
+      "cabelo": "Vermelho, curto e espetado para trás; as pontas queimam de verdade",
+      "olhos": "Direito âmbar; esquerdo uma esfera de obsidiana lisa com uma chama presa dentro",
+      "rosto": "Queixo quadrado, barba curta, cicatriz vertical atravessando o olho de obsidiana",
+      "figurino": "Armadura de laca preta e carmim com escamas de dragão, haori sem mangas, braços nus com tatuagens de chamas",
+      "acessorios": "Ōdachi enorme nas costas; coroa de ouro em forma de sol nascente",
+      "marca_registrada": "O olho de obsidiana com a chama dentro",
+      "expressao": "Sorriso de lado, desafiador",
+      "aura": "Brasas que sobem ao redor quando fala alto",
+      "nao_parecer": "Personagens de cabelo de fogo conhecidos (ex.: heróis de fogo de shōnen populares)"
+    },
+    {
+      "id": "NPC-KAISHIN",
+      "nome": "Rei Minazuki Kaishin (水無月 海神)",
+      "papel": "Rei de Watatsumi; o Núcleo Abissal no coração o mantém vivo há 200 anos; sabe toda a verdade",
+      "idade": "aparenta 25, tem 200+",
+      "silhueta": "Alto e fino, mangas imensas que caem como cachoeira, cabelo que flutua como se estivesse debaixo d'água (curvas)",
+      "paleta": [
+        "#165E83 índigo",
+        "#F8F4E6 pérola",
+        "#80ABA9 verde-água"
+      ],
+      "cabelo": "Muito longo, azul-escuro, flutuando como se estivesse submerso, com pérolas presas",
+      "olhos": "Cinza-mar, cansados, com reflexo de água se movendo",
+      "rosto": "Jovem e perfeito demais; a pele tem um brilho de madrepérola",
+      "figurino": "Jūnihitoe masculino em camadas de azul, mangas com padrão seigaiha, colar de pérolas negras",
+      "acessorios": "Leque de concha; uma gota d'água que orbita ao redor dele",
+      "marca_registrada": "A gota d'água em órbita (é a Maré do Retorno) e uma veia escura no pescoço (veneno)",
+      "expressao": "Calma triste, de quem guarda um segredo há séculos",
+      "aura": "Bolhas lentas subindo"
+    },
+    {
+      "id": "NPC-GOTETSU",
+      "nome": "Rei Gōtetsu Iwanaga (剛鉄 岩長)",
+      "papel": "Rei de Daichi; ligado ao Núcleo Raiz no Coração da Montanha",
+      "idade": "70",
+      "silhueta": "Um bloco: 2,4 m, ombros retos, base enorme, sem pescoço aparente (quadrados)",
+      "paleta": [
+        "#281A14 ferro",
+        "#C47222 ouro-chá",
+        "#42602D musgo"
+      ],
+      "cabelo": "Careca no topo, barba gigante trançada com fios de metal e pequenos cristais",
+      "olhos": "Pequenos e gentis, quase escondidos pelas sobrancelhas grossas",
+      "rosto": "Largo, nariz quebrado, pele com textura de pedra nas bochechas",
+      "figurino": "Armadura de placas quadradas de ferro com musgo crescendo nas juntas; manto de pele de urso-de-ferro",
+      "acessorios": "Martelo de cabo curto com cabeça de pedra bruta; raízes saindo das botas para o chão",
+      "marca_registrada": "Raízes de luz saindo dos pés para o chão (a Raiz do Mundo)",
+      "expressao": "Sorriso de avô, olhos tristes",
+      "aura": "Poeira dourada no chão"
+    },
+    {
+      "id": "NPC-SORAHIKO",
+      "nome": "Rei Hayate Sorahiko (疾風 空彦)",
+      "papel": "Rei de Fūjin; o Núcleo Celeste vive no vento que o escolheu",
+      "idade": "19",
+      "silhueta": "Magro, sempre em salto ou agachado num lugar alto, cachecol longuíssimo em diagonal (diagonais)",
+      "paleta": [
+        "#F3F3F2 seda branca",
+        "#83CCD2 azul-céu",
+        "#68BE8D bambu",
+        "#F8B500 amarelo-raio"
+      ],
+      "cabelo": "Branco com mechas verde-água, curto atrás e franja comprida que nunca para de se mexer",
+      "olhos": "Verde-água, um sempre meio fechado num sorriso",
+      "rosto": "Jovem, sardas, um band-aid no nariz",
+      "figurino": "Roupa leve de mensageiro, jaqueta branca com penas nos ombros, bermuda, sandálias de tengu (geta de um dente)",
+      "acessorios": "Coroa minúscula de penas presa torta na orelha; cachecol verde de 5 metros",
+      "marca_registrada": "O cachecol que se move contra o vento (é o núcleo)",
+      "expressao": "Rindo, língua de fora",
+      "aura": "Penas brancas girando"
+    },
+    {
+      "id": "NPC-HOSHIRYU",
+      "nome": "Hoshiryū (星竜), o filhote",
+      "papel": "Nasce do Ovo Eterno no Final Estelar",
+      "silhueta": "Redondo, asas grandes demais, cauda em espiral",
+      "paleta": [
+        "#FF7A3D brasa",
+        "#5B2A86 crepúsculo",
+        "#E6B422 estrelas"
+      ],
+      "marca_registrada": "Escamas que mostram constelações; casca do ovo ainda no topo da cabeça"
+    }
+  ],
+  "viloes_destaque": {
+    "V091": {
+      "silhueta": "Alto e fino, manto preto longo até o chão, uma única trança branca caindo sobre o ombro, mãos sempre à frente do corpo (como quem oferece algo)",
+      "paleta": [
+        "#0D0015 laca negra",
+        "#C9CACA prata",
+        "#5B2A86 roxo-eclipse"
+      ],
+      "cabelo": "Branco, CURTO e liso, com uma única trança longa do lado esquerdo amarrada com fio prateado",
+      "olhos": "Cinza-prateado que refletem a lua mesmo de dia",
+      "rosto": "Óculos redondos finos de aro prateado, sorriso educado constante",
+      "figurino": "Manto de guilda preto de gola alta com o brasão do círculo mordido bordado em prata; luvas pretas",
+      "marca_registrada": "Fios de prata (contratos) que saem das pontas dos dedos e se prendem ao peito de quem assinou",
+      "expressao": "Gentil — o que é o mais assustador",
+      "evolucao": [
+        "Yoru (máscara pública): capuz, rosto na sombra, só os óculos brilham",
+        "Kanata revelado: sem capuz, à luz do dia",
+        "Kanata final: luvas tiradas, mãos queimadas e negras, os fios viram correntes"
+      ],
+      "nao_parecer": "Vilões de cabelo branco longo e solto de outras franquias — por isso o cabelo é CURTO com trança única e ele usa óculos"
+    },
+    "V100": {
+      "silhueta": "Um menino pequeno sentado na soleira; atrás dele, uma sombra de dragão do tamanho do céu cujo contorno é o eclipse",
+      "paleta": [
+        "#0D0015 laca negra",
+        "#FF7A3D brasa",
+        "#5B2A86 roxo-eclipse",
+        "#7D7D7D cinza"
+      ],
+      "marca_registrada": "O sol negro (eclipse) atrás da cabeça do menino como uma auréola"
+    },
+    "V098": {
+      "silhueta": "Dragão serpentino longo, asas como véus rasgados, chifres em coroa",
+      "paleta": [
+        "#FF7A3D brasa",
+        "#5B2A86 crepúsculo",
+        "#E6B422 ouro"
+      ],
+      "marca_registrada": "Lágrimas de magma secas no rosto; um ninho vazio refletido nos olhos"
+    },
+    "V060": {
+      "silhueta": "Corcunda elegante, cartola baixa, mãos longas demais segurando um martelo de leilão; NENHUMA sombra no chão",
+      "marca_registrada": "Manto desbotado com os quatro brasões reais quase apagados"
+    },
+    "V061": {
+      "silhueta": "Espadachim esguio, capa curta rasgada em chamas, katana em posição baixa",
+      "marca_registrada": "Metade do cabelo cortada rente (vergonha do exílio); fio prateado no punho da katana"
+    },
+    "V068": {
+      "silhueta": "Corpo encolhido dentro de vestes enormes, chapéu de corte alto, dedos cheios de anéis",
+      "marca_registrada": "Uma taça sempre na mão com água preta"
+    },
+    "V071": {
+      "silhueta": "Quadrado e pesado, armadura negra com estandartes de clã nas costas (sashimono)",
+      "marca_registrada": "Elmo com crista em forma de serra"
+    },
+    "V076": {
+      "silhueta": "Asas-capa negras abertas em diagonal, adagas em pegada invertida",
+      "marca_registrada": "Uma pena negra presa atrás da orelha (contrário da coroa de penas brancas do primo)"
+    },
+    "V080": {
+      "silhueta": "Correntes negras enroladas no corpo todo, espada sem cor (branca como recorte do papel)",
+      "marca_registrada": "A lâmina parece um buraco na imagem — não reflete nada"
+    },
+    "V037": {
+      "silhueta": "Vestes de cinza que se desfazem na barra, cajado com caveira de peixe",
+      "marca_registrada": "Rosto pintado com cinza formando um crescente mordido"
+    },
+    "V092": {
+      "silhueta": "Armadura antiga quebrada, mãos negras carbonizadas grandes demais, rosto oco",
+      "marca_registrada": "As mãos queimadas iguais às de Kanata"
+    }
+  }
+}

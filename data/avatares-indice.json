@@ -1,0 +1,2413 @@
+{
+ "V001": {
+  "arquivo": "assets/avatares/viloes/V001.png",
+  "dna": {
+   "id": "V001",
+   "elemento": "Fogo",
+   "reino": "Homura",
+   "brilhoAura": false,
+   "tipo": "fera",
+   "cor": "#8a8580",
+   "cor2": "#c8c0b8",
+   "orelhas": "abanadas",
+   "focinho": "curto",
+   "dentes": true,
+   "corOlhos": "ambar",
+   "marcas": [
+    "brasas"
+   ]
+  }
+ },
+ "V002": {
+  "arquivo": "assets/avatares/viloes/V002.png",
+  "dna": {
+   "id": "V002",
+   "elemento": "Fogo",
+   "reino": "Homura",
+   "brilhoAura": false,
+   "tipo": "serpente",
+   "cor": "#c0401a",
+   "cor2": "#ffb02a",
+   "chifres": false,
+   "corOlhos": "dourado",
+   "marcas": [
+    "magma"
+   ]
+  }
+ },
+ "V003": {
+  "arquivo": "assets/avatares/viloes/V003.png",
+  "dna": {
+   "id": "V003",
+   "elemento": "Fogo",
+   "reino": "Homura",
+   "brilhoAura": false,
+   "tipo": "humanoide",
+   "rosto": "fino",
+   "pele": "morena",
+   "olhos": "afiado",
+   "corOlhos": "castanho",
+   "sobrancelha": "brava",
+   "boca": "sorriso-torto",
+   "cabelo": "baguncado",
+   "corCabelo": "preto",
+   "roupa": "trapos",
+   "acessorios": [
+    "bandana",
+    "cicatriz",
+    "brasas"
+   ],
+   "corRoupa": [
+    "#5a2a1a",
+    "#c0392b",
+    "#c0392b"
+   ]
+  }
+ },
+ "V004": {
+  "arquivo": "assets/avatares/viloes/V004.png",
+  "dna": {
+   "id": "V004",
+   "elemento": "Fogo",
+   "reino": "Homura",
+   "brilhoAura": false,
+   "tipo": "enxame",
+   "cor": "#ffb02a"
+  }
+ },
+ "V005": {
+  "arquivo": "assets/avatares/viloes/V005.png",
+  "dna": {
+   "id": "V005",
+   "elemento": "Fogo",
+   "reino": "Homura",
+   "brilhoAura": false,
+   "tipo": "humanoide",
+   "rosto": "largo",
+   "pele": "media",
+   "olhos": "afiado",
+   "corOlhos": "castanho",
+   "sobrancelha": "brava",
+   "boca": "presa",
+   "cabelo": "careca",
+   "corCabelo": "preto",
+   "roupa": "nu",
+   "acessorios": [
+    "barba-curta",
+    "correntes"
+   ]
+  }
+ },
+ "V006": {
+  "arquivo": "assets/avatares/viloes/V006.png",
+  "dna": {
+   "id": "V006",
+   "elemento": "Trevas",
+   "reino": "Homura",
+   "brilhoAura": false,
+   "tipo": "humanoide",
+   "rosto": "fino",
+   "pele": "osso",
+   "olhos": "vazio",
+   "corOlhos": "preto",
+   "sobrancelha": "nenhuma",
+   "boca": "presa",
+   "cabelo": "careca",
+   "corCabelo": "preto",
+   "roupa": "corte",
+   "acessorios": [
+    "bandana"
+   ],
+   "corRoupa": [
+    "#2a3a5a",
+    "#8a8a7a",
+    "#5a5a6a"
+   ]
+  }
+ },
+ "V007": {
+  "arquivo": "assets/avatares/viloes/V007.png",
+  "dna": {
+   "id": "V007",
+   "elemento": "Fogo",
+   "reino": "Homura",
+   "brilhoAura": false,
+   "tipo": "fera",
+   "cor": "#d8d0c0",
+   "cor2": "#fff4e0",
+   "orelhas": "pontudas",
+   "dentes": true,
+   "corOlhos": "vermelho",
+   "caudas": 3,
+   "corCauda": "#ff6a2a",
+   "marcas": [
+    "mascara-quebrada",
+    "brasas"
+   ]
+  }
+ },
+ "V008": {
+  "arquivo": "assets/avatares/viloes/V008.png",
+  "dna": {
+   "id": "V008",
+   "elemento": "Fogo",
+   "reino": "Homura",
+   "brilhoAura": false,
+   "tipo": "humanoide",
+   "rosto": "quadrado",
+   "pele": "morena",
+   "olhos": "afiado",
+   "corOlhos": "ambar",
+   "sobrancelha": "brava",
+   "boca": "seria",
+   "cabelo": "careca",
+   "corCabelo": "preto",
+   "roupa": "quimono",
+   "acessorios": [
+    "colar-perolas",
+    "brasas"
+   ],
+   "corRoupa": [
+    "#d06a1a",
+    "#8a3a10",
+    "#e6b422"
+   ]
+  }
+ },
+ "V009": {
+  "arquivo": "assets/avatares/viloes/V009.png",
+  "dna": {
+   "id": "V009",
+   "elemento": "Água",
+   "reino": "Watatsumi",
+   "brilhoAura": false,
+   "tipo": "humanoide",
+   "rosto": "redondo",
+   "pele": "esverdeada",
+   "olhos": "redondo",
+   "corOlhos": "dourado",
+   "sobrancelha": "neutra",
+   "boca": "sorriso-torto",
+   "cabelo": "chanel",
+   "corCabelo": "verde",
+   "roupa": "trapos",
+   "acessorios": [
+    "prato"
+   ],
+   "corRoupa": [
+    "#3a5a2a",
+    "#8a7a40",
+    "#5a4a20"
+   ]
+  }
+ },
+ "V010": {
+  "arquivo": "assets/avatares/viloes/V010.png",
+  "dna": {
+   "id": "V010",
+   "elemento": "Água",
+   "reino": "Watatsumi",
+   "brilhoAura": false,
+   "tipo": "espirito",
+   "cor": "#9ad8ff",
+   "tentaculos": true,
+   "translucido": true,
+   "corOlhos": "rosa",
+   "boca": "sorriso"
+  }
+ },
+ "V011": {
+  "arquivo": "assets/avatares/viloes/V011.png",
+  "dna": {
+   "id": "V011",
+   "elemento": "Água",
+   "reino": "Watatsumi",
+   "brilhoAura": false,
+   "tipo": "humanoide",
+   "rosto": "oval",
+   "pele": "media",
+   "olhos": "afiado",
+   "corOlhos": "castanho",
+   "sobrancelha": "brava",
+   "boca": "presa",
+   "cabelo": "baguncado",
+   "corCabelo": "preto",
+   "roupa": "corte",
+   "acessorios": [
+    "tapa-olho",
+    "cartola",
+    "barba-curta"
+   ],
+   "corRoupa": [
+    "#1f3a6a",
+    "#e8e0c8",
+    "#c0392b"
+   ]
+  }
+ },
+ "V012": {
+  "arquivo": "assets/avatares/viloes/V012.png",
+  "dna": {
+   "id": "V012",
+   "elemento": "Veneno",
+   "reino": "Watatsumi",
+   "brilhoAura": false,
+   "tipo": "anfibio",
+   "cor": "#4a6a2a",
+   "cor2": "#c8c070",
+   "corOlhos": "dourado",
+   "marcas": [
+    "moedas"
+   ]
+  }
+ },
+ "V013": {
+  "arquivo": "assets/avatares/viloes/V013.png",
+  "dna": {
+   "id": "V013",
+   "elemento": "Água",
+   "reino": "Watatsumi",
+   "brilhoAura": false,
+   "tipo": "humanoide",
+   "rosto": "oval",
+   "pele": "azulada",
+   "olhos": "cansado",
+   "corOlhos": "cinza",
+   "sobrancelha": "triste",
+   "boca": "triste",
+   "cabelo": "longo",
+   "corCabelo": "verde",
+   "roupa": "trapos",
+   "acessorios": [
+    "fitas-agua"
+   ],
+   "corRoupa": [
+    "#3a4a4a",
+    "#5a6a5a",
+    "#2a3a3a"
+   ]
+  }
+ },
+ "V014": {
+  "arquivo": "assets/avatares/viloes/V014.png",
+  "dna": {
+   "id": "V014",
+   "elemento": "Gelo",
+   "reino": "Watatsumi",
+   "brilhoAura": false,
+   "tipo": "fera",
+   "cor": "#e8eef4",
+   "cor2": "#ffffff",
+   "orelhas": "pontudas",
+   "dentes": true,
+   "corOlhos": "azul",
+   "marcas": [
+    "geada"
+   ]
+  }
+ },
+ "V015": {
+  "arquivo": "assets/avatares/viloes/V015.png",
+  "dna": {
+   "id": "V015",
+   "elemento": "Água",
+   "reino": "Watatsumi",
+   "brilhoAura": false,
+   "tipo": "humanoide",
+   "rosto": "quadrado",
+   "pele": "media",
+   "olhos": "afiado",
+   "corOlhos": "azul",
+   "sobrancelha": "brava",
+   "boca": "seria",
+   "cabelo": "careca",
+   "corCabelo": "preto",
+   "roupa": "placas",
+   "acessorios": [
+    "kabuto",
+    "veias-vazio"
+   ],
+   "corRoupa": [
+    "#165e83",
+    "#2a2a2e",
+    "#c0392b"
+   ]
+  }
+ },
+ "V016": {
+  "arquivo": "assets/avatares/viloes/V016.png",
+  "dna": {
+   "id": "V016",
+   "elemento": "Som",
+   "reino": "Watatsumi",
+   "brilhoAura": false,
+   "tipo": "humanoide",
+   "rosto": "fino",
+   "pele": "clara",
+   "olhos": "afiado",
+   "corOlhos": "rosa",
+   "sobrancelha": "neutra",
+   "boca": "presa",
+   "cabelo": "longo",
+   "corCabelo": "rosa",
+   "roupa": "nu",
+   "acessorios": [
+    "colar-perolas"
+   ]
+  }
+ },
+ "V017": {
+  "arquivo": "assets/avatares/viloes/V017.png",
+  "dna": {
+   "id": "V017",
+   "elemento": "Terra",
+   "reino": "Daichi",
+   "brilhoAura": false,
+   "tipo": "fera",
+   "cor": "#8a6a5a",
+   "orelhas": "redondas",
+   "focinho": "curto",
+   "dentes": true,
+   "corOlhos": "vermelho"
+  }
+ },
+ "V018": {
+  "arquivo": "assets/avatares/viloes/V018.png",
+  "dna": {
+   "id": "V018",
+   "elemento": "Madeira",
+   "reino": "Daichi",
+   "brilhoAura": false,
+   "tipo": "humanoide",
+   "rosto": "redondo",
+   "pele": "osso",
+   "olhos": "vazio",
+   "corOlhos": "preto",
+   "sobrancelha": "nenhuma",
+   "boca": "presa",
+   "cabelo": "careca",
+   "corCabelo": "preto",
+   "roupa": "trapos",
+   "acessorios": [
+    "chapeu-palha"
+   ],
+   "corRoupa": [
+    "#8a6a40",
+    "#5a3a20",
+    "#c0392b"
+   ]
+  }
+ },
+ "V019": {
+  "arquivo": "assets/avatares/viloes/V019.png",
+  "dna": {
+   "id": "V019",
+   "elemento": "Terra",
+   "reino": "Daichi",
+   "brilhoAura": false,
+   "tipo": "golem",
+   "cor": "#9a9080",
+   "corOlhos": "ambar",
+   "corNucleo": "#ff6a2a"
+  }
+ },
+ "V020": {
+  "arquivo": "assets/avatares/viloes/V020.png",
+  "dna": {
+   "id": "V020",
+   "elemento": "Natureza",
+   "reino": "Daichi",
+   "brilhoAura": false,
+   "tipo": "espirito",
+   "cor": "#f0f0e8",
+   "olho": "brilho",
+   "corOlhos": "verde",
+   "boca": "grito",
+   "marcas": [
+    "olho-terceiro"
+   ]
+  }
+ },
+ "V021": {
+  "arquivo": "assets/avatares/viloes/V021.png",
+  "dna": {
+   "id": "V021",
+   "elemento": "Cristal",
+   "reino": "Daichi",
+   "brilhoAura": false,
+   "tipo": "humanoide",
+   "rosto": "largo",
+   "pele": "morena",
+   "olhos": "brilho",
+   "corOlhos": "#f080ff",
+   "sobrancelha": "triste",
+   "boca": "triste",
+   "cabelo": "careca",
+   "corCabelo": "preto",
+   "roupa": "trapos",
+   "acessorios": [
+    "cristais",
+    "hachimaki"
+   ],
+   "corRoupa": [
+    "#4a3a2a",
+    "#6a5a40",
+    "#c47222"
+   ]
+  }
+ },
+ "V022": {
+  "arquivo": "assets/avatares/viloes/V022.png",
+  "dna": {
+   "id": "V022",
+   "elemento": "Terra",
+   "reino": "Daichi",
+   "brilhoAura": false,
+   "tipo": "ave",
+   "cor": "#4a3a30",
+   "cor2": "#e2d8bf",
+   "corBico": "#c8b090",
+   "corOlhos": "vermelho"
+  }
+ },
+ "V023": {
+  "arquivo": "assets/avatares/viloes/V023.png",
+  "dna": {
+   "id": "V023",
+   "elemento": "Metal",
+   "reino": "Daichi",
+   "brilhoAura": false,
+   "tipo": "humanoide",
+   "rosto": "quadrado",
+   "pele": "morena",
+   "olhos": "afiado",
+   "corOlhos": "cinza",
+   "sobrancelha": "brava",
+   "boca": "presa",
+   "cabelo": "espetado",
+   "corCabelo": "preto",
+   "roupa": "nu",
+   "acessorios": [
+    "pelagem",
+    "cicatriz",
+    "barba-curta"
+   ],
+   "corPelagem": "#5a4a3a"
+  }
+ },
+ "V024": {
+  "arquivo": "assets/avatares/viloes/V024.png",
+  "dna": {
+   "id": "V024",
+   "elemento": "Trevas",
+   "reino": "Daichi",
+   "brilhoAura": false,
+   "tipo": "espirito",
+   "cor": "#3a3a5a",
+   "translucido": true,
+   "chama": true,
+   "olho": "brilho",
+   "corOlhos": "#80f0ff",
+   "boca": "sorriso"
+  }
+ },
+ "V025": {
+  "arquivo": "assets/avatares/viloes/V025.png",
+  "dna": {
+   "id": "V025",
+   "elemento": "Vento",
+   "reino": "Fūjin",
+   "brilhoAura": false,
+   "tipo": "humanoide",
+   "rosto": "fino",
+   "pele": "clara",
+   "olhos": "afiado",
+   "corOlhos": "ambar",
+   "sobrancelha": "brava",
+   "boca": "presa",
+   "cabelo": "flutuante",
+   "corCabelo": "prata",
+   "roupa": "nu",
+   "acessorios": [
+    "asas-penas"
+   ],
+   "corAsas": "#c8ccd8"
+  }
+ },
+ "V026": {
+  "arquivo": "assets/avatares/viloes/V026.png",
+  "dna": {
+   "id": "V026",
+   "elemento": "Vento",
+   "reino": "Fūjin",
+   "brilhoAura": false,
+   "tipo": "humanoide",
+   "rosto": "oval",
+   "pele": "media",
+   "olhos": "afiado",
+   "corOlhos": "preto",
+   "sobrancelha": "brava",
+   "boca": "sorriso-torto",
+   "cabelo": "baguncado",
+   "corCabelo": "preto",
+   "roupa": "quimono",
+   "acessorios": [
+    "asas-penas",
+    "mascara-tengu"
+   ],
+   "corAsas": "#1a1a22"
+  }
+ },
+ "V027": {
+  "arquivo": "assets/avatares/viloes/V027.png",
+  "dna": {
+   "id": "V027",
+   "elemento": "Raio",
+   "reino": "Fūjin",
+   "brilhoAura": false,
+   "tipo": "fera",
+   "cor": "#ffe060",
+   "orelhas": "pontudas",
+   "corOlhos": "azul",
+   "caudas": 1,
+   "corCauda": "#fff07a",
+   "marcas": [
+    "raios"
+   ]
+  }
+ },
+ "V028": {
+  "arquivo": "assets/avatares/viloes/V028.png",
+  "dna": {
+   "id": "V028",
+   "elemento": "Vento",
+   "reino": "Fūjin",
+   "brilhoAura": false,
+   "tipo": "humanoide",
+   "rosto": "oval",
+   "pele": "media",
+   "olhos": "afiado",
+   "corOlhos": "cinza",
+   "sobrancelha": "brava",
+   "boca": "seria",
+   "cabelo": "baguncado",
+   "corCabelo": "preto",
+   "roupa": "trapos",
+   "acessorios": [
+    "capuz"
+   ],
+   "corRoupa": [
+    "#1a1a1a",
+    "#3a3a3a",
+    "#7a7a7a"
+   ]
+  }
+ },
+ "V029": {
+  "arquivo": "assets/avatares/viloes/V029.png",
+  "dna": {
+   "id": "V029",
+   "elemento": "Vento",
+   "reino": "Fūjin",
+   "brilhoAura": false,
+   "tipo": "ave",
+   "cor": "#c89a4a",
+   "corAsas": "#8a6a3a",
+   "crista": true,
+   "corCrista": "#e6b422",
+   "corOlhos": "dourado",
+   "marcas": [
+    "ninho-ouro"
+   ]
+  }
+ },
+ "V030": {
+  "arquivo": "assets/avatares/viloes/V030.png",
+  "dna": {
+   "id": "V030",
+   "elemento": "Som",
+   "reino": "Fūjin",
+   "brilhoAura": false,
+   "tipo": "espirito",
+   "cor": "#bfe0ff",
+   "translucido": true,
+   "olho": "vazio",
+   "boca": "grito"
+  }
+ },
+ "V031": {
+  "arquivo": "assets/avatares/viloes/V031.png",
+  "dna": {
+   "id": "V031",
+   "elemento": "Vento",
+   "reino": "Fūjin",
+   "brilhoAura": false,
+   "tipo": "humanoide",
+   "rosto": "quadrado",
+   "pele": "morena",
+   "olhos": "afiado",
+   "corOlhos": "castanho",
+   "sobrancelha": "brava",
+   "boca": "seria",
+   "cabelo": "coque",
+   "corCabelo": "preto",
+   "roupa": "placas",
+   "acessorios": [
+    "hachimaki",
+    "barba-curta"
+   ],
+   "corRoupa": [
+    "#6a5a40",
+    "#46a7ad",
+    "#c0392b"
+   ]
+  }
+ },
+ "V032": {
+  "arquivo": "assets/avatares/viloes/V032.png",
+  "dna": {
+   "id": "V032",
+   "elemento": "Vento",
+   "reino": "Fūjin",
+   "brilhoAura": false,
+   "tipo": "redemoinho",
+   "cor": "#bff0ff",
+   "corOlhos": "verde-agua"
+  }
+ },
+ "V033": {
+  "arquivo": "assets/avatares/viloes/V033.png",
+  "dna": {
+   "id": "V033",
+   "elemento": "Vazio",
+   "reino": "Kokū",
+   "brilhoAura": false,
+   "tipo": "aracnideo",
+   "cor": "#d8d8d8",
+   "corOlhos": "#000000"
+  }
+ },
+ "V034": {
+  "arquivo": "assets/avatares/viloes/V034.png",
+  "dna": {
+   "id": "V034",
+   "elemento": "Metal",
+   "reino": "Kokū",
+   "brilhoAura": false,
+   "tipo": "humanoide",
+   "rosto": "fino",
+   "pele": "media",
+   "olhos": "afiado",
+   "corOlhos": "dourado",
+   "sobrancelha": "neutra",
+   "boca": "sorriso-torto",
+   "cabelo": "rabo",
+   "corCabelo": "preto",
+   "roupa": "samurai",
+   "acessorios": [
+    "cicatriz",
+    "colar-perolas"
+   ],
+   "corRoupa": [
+    "#3a3a3a",
+    "#7a1f3d",
+    "#e6b422"
+   ]
+  }
+ },
+ "V035": {
+  "arquivo": "assets/avatares/viloes/V035.png",
+  "dna": {
+   "id": "V035",
+   "elemento": "Terra",
+   "reino": "Kokū",
+   "brilhoAura": false,
+   "tipo": "humanoide",
+   "rosto": "oval",
+   "pele": "pedra",
+   "olhos": "vazio",
+   "corOlhos": "preto",
+   "sobrancelha": "nenhuma",
+   "boca": "neutra",
+   "cabelo": "chanel",
+   "corCabelo": "#8a857e",
+   "roupa": "quimono",
+   "acessorios": [
+    "cicatriz"
+   ],
+   "corRoupa": [
+    "#7a756e",
+    "#a8a29a",
+    "#4a4640"
+   ]
+  }
+ },
+ "V036": {
+  "arquivo": "assets/avatares/viloes/V036.png",
+  "dna": {
+   "id": "V036",
+   "elemento": "Fogo",
+   "reino": "Homura",
+   "brilhoAura": false,
+   "tipo": "humanoide",
+   "rosto": "fino",
+   "pele": "clara",
+   "olhos": "afiado",
+   "corOlhos": "vermelho",
+   "sobrancelha": "neutra",
+   "boca": "seria",
+   "cabelo": "rabo",
+   "corCabelo": "ruivo",
+   "roupa": "samurai",
+   "acessorios": [
+    "mascara-branca"
+   ]
+  }
+ },
+ "V037": {
+  "arquivo": "assets/avatares/viloes/V037.png",
+  "dna": {
+   "id": "V037",
+   "elemento": "Cinzas",
+   "reino": "Homura",
+   "brilhoAura": false,
+   "tipo": "humanoide",
+   "rosto": "fino",
+   "pele": "palida",
+   "olhos": "afiado",
+   "corOlhos": "vermelho",
+   "sobrancelha": "brava",
+   "boca": "sorriso",
+   "cabelo": "careca",
+   "corCabelo": "preto",
+   "roupa": "robe-mago",
+   "acessorios": [
+    "pintura-crescente",
+    "brasas"
+   ],
+   "corRoupa": [
+    "#6a625c",
+    "#9a948e",
+    "#ff6a2a"
+   ]
+  }
+ },
+ "V038": {
+  "arquivo": "assets/avatares/viloes/V038.png",
+  "dna": {
+   "id": "V038",
+   "elemento": "Fogo",
+   "reino": "Homura",
+   "brilhoAura": false,
+   "tipo": "humanoide",
+   "rosto": "largo",
+   "pele": "morena",
+   "olhos": "grande",
+   "corOlhos": "ambar",
+   "sobrancelha": "brava",
+   "boca": "sorriso",
+   "cabelo": "coque",
+   "corCabelo": "ruivo",
+   "roupa": "nu",
+   "acessorios": [
+    "hachimaki"
+   ]
+  }
+ },
+ "V039": {
+  "arquivo": "assets/avatares/viloes/V039.png",
+  "dna": {
+   "id": "V039",
+   "elemento": "Trevas",
+   "reino": "Homura",
+   "brilhoAura": false,
+   "tipo": "humanoide",
+   "rosto": "fino",
+   "pele": "espectral",
+   "olhos": "afiado",
+   "corOlhos": "azul",
+   "sobrancelha": "neutra",
+   "boca": "sorriso-torto",
+   "cabelo": "longo",
+   "corCabelo": "azul-escuro",
+   "roupa": "corte",
+   "acessorios": [
+    "cartola"
+   ],
+   "corRoupa": [
+    "#2a3a5a",
+    "#c8d8e8",
+    "#8a2030"
+   ]
+  }
+ },
+ "V040": {
+  "arquivo": "assets/avatares/viloes/V040.png",
+  "dna": {
+   "id": "V040",
+   "elemento": "Fogo",
+   "reino": "Homura",
+   "brilhoAura": false,
+   "tipo": "humanoide",
+   "rosto": "fino",
+   "pele": "clara",
+   "olhos": "brilho",
+   "corOlhos": "dourado",
+   "sobrancelha": "neutra",
+   "boca": "sorriso",
+   "cabelo": "flutuante",
+   "corCabelo": "loiro",
+   "roupa": "corte",
+   "acessorios": [
+    "halo"
+   ],
+   "corRoupa": [
+    "#ffd23a",
+    "#ff7a1a",
+    "#fff4b0"
+   ]
+  }
+ },
+ "V041": {
+  "arquivo": "assets/avatares/viloes/V041.png",
+  "dna": {
+   "id": "V041",
+   "elemento": "Lava",
+   "reino": "Homura",
+   "brilhoAura": false,
+   "tipo": "humanoide",
+   "rosto": "quadrado",
+   "pele": "vermelha",
+   "olhos": "brilho",
+   "corOlhos": "dourado",
+   "sobrancelha": "brava",
+   "boca": "presa",
+   "cabelo": "careca",
+   "corCabelo": "#ff7a1a",
+   "roupa": "nu",
+   "acessorios": [
+    "barba-curta",
+    "brasas"
+   ]
+  }
+ },
+ "V042": {
+  "arquivo": "assets/avatares/viloes/V042.png",
+  "dna": {
+   "id": "V042",
+   "elemento": "Água",
+   "reino": "Watatsumi",
+   "brilhoAura": false,
+   "tipo": "peixe",
+   "cor": "#f4f0e6",
+   "manchas": "#e8402a",
+   "corBarbatana": "#ffe0e0",
+   "corOlhos": "preto"
+  }
+ },
+ "V043": {
+  "arquivo": "assets/avatares/viloes/V043.png",
+  "dna": {
+   "id": "V043",
+   "elemento": "Água",
+   "reino": "Watatsumi",
+   "brilhoAura": false,
+   "tipo": "humanoide",
+   "rosto": "redondo",
+   "pele": "azulada",
+   "olhos": "cansado",
+   "corOlhos": "azul",
+   "sobrancelha": "triste",
+   "boca": "neutra",
+   "cabelo": "chanel",
+   "corCabelo": "preto",
+   "roupa": "corte",
+   "acessorios": [
+    "oculos",
+    "fitas-agua"
+   ]
+  }
+ },
+ "V044": {
+  "arquivo": "assets/avatares/viloes/V044.png",
+  "dna": {
+   "id": "V044",
+   "elemento": "Espelho",
+   "reino": "Watatsumi",
+   "brilhoAura": false,
+   "tipo": "humanoide",
+   "rosto": "oval",
+   "pele": "palida",
+   "olhos": "brilho",
+   "corOlhos": "prata",
+   "sobrancelha": "neutra",
+   "boca": "sorriso-torto",
+   "cabelo": "baguncado",
+   "corCabelo": "prata",
+   "roupa": "quimono",
+   "acessorios": [
+    "cicatriz"
+   ],
+   "corRoupa": [
+    "#e0e8f0",
+    "#2a2a3a",
+    "#9ad8ff"
+   ]
+  }
+ },
+ "V045": {
+  "arquivo": "assets/avatares/viloes/V045.png",
+  "dna": {
+   "id": "V045",
+   "elemento": "Terra",
+   "reino": "Watatsumi",
+   "brilhoAura": false,
+   "tipo": "peixe",
+   "cor": "#5a5048",
+   "cor2": "#a89a80",
+   "bigodes": true,
+   "corBigode": "#fff07a",
+   "corOlhos": "dourado",
+   "marcas": [
+    "raios"
+   ]
+  }
+ },
+ "V046": {
+  "arquivo": "assets/avatares/viloes/V046.png",
+  "dna": {
+   "id": "V046",
+   "elemento": "Água",
+   "reino": "Watatsumi",
+   "brilhoAura": false,
+   "tipo": "humanoide",
+   "rosto": "largo",
+   "pele": "morena",
+   "olhos": "afiado",
+   "corOlhos": "azul",
+   "sobrancelha": "brava",
+   "boca": "presa",
+   "cabelo": "baguncado",
+   "corCabelo": "branco",
+   "roupa": "couraca-osso",
+   "acessorios": [
+    "cartola",
+    "barba"
+   ]
+  }
+ },
+ "V047": {
+  "arquivo": "assets/avatares/viloes/V047.png",
+  "dna": {
+   "id": "V047",
+   "elemento": "Trevas",
+   "reino": "Watatsumi",
+   "brilhoAura": false,
+   "tipo": "humanoide",
+   "rosto": "fino",
+   "pele": "palida",
+   "olhos": "afiado",
+   "corOlhos": "verde",
+   "sobrancelha": "brava",
+   "boca": "sorriso",
+   "cabelo": "longo",
+   "corCabelo": "branco",
+   "roupa": "trapos",
+   "acessorios": [
+    "colar-perolas"
+   ],
+   "corRoupa": [
+    "#3a2a4a",
+    "#6a4a7a",
+    "#1a1a1a"
+   ]
+  }
+ },
+ "V048": {
+  "arquivo": "assets/avatares/viloes/V048.png",
+  "dna": {
+   "id": "V048",
+   "elemento": "Terra",
+   "reino": "Daichi",
+   "brilhoAura": false,
+   "tipo": "aracnideo",
+   "cor": "#5a4a30",
+   "corOlhos": "vermelho",
+   "marcaCostas": "#8a8a80"
+  }
+ },
+ "V049": {
+  "arquivo": "assets/avatares/viloes/V049.png",
+  "dna": {
+   "id": "V049",
+   "elemento": "Metal",
+   "reino": "Daichi",
+   "brilhoAura": false,
+   "tipo": "humanoide",
+   "rosto": "largo",
+   "pele": "clara",
+   "olhos": "cansado",
+   "corOlhos": "castanho",
+   "sobrancelha": "neutra",
+   "boca": "sorriso-torto",
+   "cabelo": "careca",
+   "corCabelo": "castanho",
+   "roupa": "placas",
+   "acessorios": [
+    "bigode",
+    "colar-perolas"
+   ],
+   "corRoupa": [
+    "#e6b422",
+    "#7a1f3d",
+    "#ffffff"
+   ]
+  }
+ },
+ "V050": {
+  "arquivo": "assets/avatares/viloes/V050.png",
+  "dna": {
+   "id": "V050",
+   "elemento": "Terra",
+   "reino": "Daichi",
+   "brilhoAura": false,
+   "tipo": "golem",
+   "cor": "#8a8070",
+   "coroa": true,
+   "corOlhos": "ambar"
+  }
+ },
+ "V051": {
+  "arquivo": "assets/avatares/viloes/V051.png",
+  "dna": {
+   "id": "V051",
+   "elemento": "Madeira",
+   "reino": "Daichi",
+   "brilhoAura": false,
+   "tipo": "golem",
+   "cor": "#5a4a30",
+   "musgo": true,
+   "corOlhos": "verde",
+   "corNucleo": "#8ad050"
+  }
+ },
+ "V052": {
+  "arquivo": "assets/avatares/viloes/V052.png",
+  "dna": {
+   "id": "V052",
+   "elemento": "Terra",
+   "reino": "Daichi",
+   "brilhoAura": false,
+   "tipo": "humanoide",
+   "rosto": "largo",
+   "pele": "morena",
+   "olhos": "feliz",
+   "corOlhos": "castanho",
+   "sobrancelha": "grossa",
+   "boca": "neutra",
+   "cabelo": "careca",
+   "corCabelo": "branco",
+   "roupa": "quimono",
+   "acessorios": [
+    "barba-trancada"
+   ],
+   "corRoupa": [
+    "#6a4a2a",
+    "#a08a60",
+    "#3a2a1a"
+   ]
+  }
+ },
+ "V053": {
+  "arquivo": "assets/avatares/viloes/V053.png",
+  "dna": {
+   "id": "V053",
+   "elemento": "Cristal",
+   "reino": "Daichi",
+   "brilhoAura": false,
+   "tipo": "humanoide",
+   "rosto": "fino",
+   "pele": "palida",
+   "olhos": "brilho",
+   "corOlhos": "roxo",
+   "sobrancelha": "neutra",
+   "boca": "seria",
+   "cabelo": "longo",
+   "corCabelo": "rosa",
+   "roupa": "corte",
+   "acessorios": [
+    "coroa-rachada",
+    "cristais"
+   ],
+   "corRoupa": [
+    "#c080ff",
+    "#f0d0ff",
+    "#ffffff"
+   ]
+  }
+ },
+ "V054": {
+  "arquivo": "assets/avatares/viloes/V054.png",
+  "dna": {
+   "id": "V054",
+   "elemento": "Vento",
+   "reino": "Fūjin",
+   "brilhoAura": false,
+   "tipo": "fera",
+   "cor": "#c8a070",
+   "orelhas": "redondas",
+   "focinho": "curto",
+   "dentes": true,
+   "corOlhos": "preto",
+   "caudas": 3,
+   "corCauda": "#c8a070",
+   "marcas": [
+    "raios"
+   ]
+  }
+ },
+ "V055": {
+  "arquivo": "assets/avatares/viloes/V055.png",
+  "dna": {
+   "id": "V055",
+   "elemento": "Vento",
+   "reino": "Fūjin",
+   "brilhoAura": false,
+   "tipo": "humanoide",
+   "rosto": "fino",
+   "pele": "clara",
+   "olhos": "afiado",
+   "corOlhos": "cinza",
+   "sobrancelha": "brava",
+   "boca": "seria",
+   "cabelo": "baguncado",
+   "corCabelo": "preto",
+   "roupa": "jaqueta-penas",
+   "acessorios": [
+    "bandagem-boca"
+   ],
+   "corRoupa": [
+    "#1a1a1a",
+    "#3a3a3a",
+    "#7a7a7a"
+   ]
+  }
+ },
+ "V056": {
+  "arquivo": "assets/avatares/viloes/V056.png",
+  "dna": {
+   "id": "V056",
+   "elemento": "Vento",
+   "reino": "Fūjin",
+   "brilhoAura": false,
+   "tipo": "humanoide",
+   "rosto": "largo",
+   "pele": "vermelha",
+   "olhos": "afiado",
+   "corOlhos": "dourado",
+   "sobrancelha": "grossa",
+   "boca": "seria",
+   "cabelo": "longo",
+   "corCabelo": "branco",
+   "roupa": "corte",
+   "acessorios": [
+    "asas-penas",
+    "nariz-tengu",
+    "barba"
+   ],
+   "corAsas": "#1a1a22"
+  }
+ },
+ "V057": {
+  "arquivo": "assets/avatares/viloes/V057.png",
+  "dna": {
+   "id": "V057",
+   "elemento": "Som",
+   "reino": "Fūjin",
+   "brilhoAura": false,
+   "tipo": "espirito",
+   "cor": "#d0c0e0",
+   "translucido": true,
+   "olho": "vazio",
+   "boca": "grito",
+   "marcas": [
+    "olho-terceiro"
+   ]
+  }
+ },
+ "V058": {
+  "arquivo": "assets/avatares/viloes/V058.png",
+  "dna": {
+   "id": "V058",
+   "elemento": "Vento",
+   "reino": "Fūjin",
+   "brilhoAura": false,
+   "tipo": "humanoide",
+   "rosto": "oval",
+   "pele": "media",
+   "olhos": "grande",
+   "corOlhos": "ambar",
+   "sobrancelha": "neutra",
+   "boca": "sorriso-torto",
+   "cabelo": "rabo",
+   "corCabelo": "ruivo",
+   "roupa": "jaqueta-penas",
+   "acessorios": [
+    "oculos-aviador"
+   ],
+   "corRoupa": [
+    "#8a5a2a",
+    "#e6b422",
+    "#46a7ad"
+   ]
+  }
+ },
+ "V059": {
+  "arquivo": "assets/avatares/viloes/V059.png",
+  "dna": {
+   "id": "V059",
+   "elemento": "Raio",
+   "reino": "Fūjin",
+   "brilhoAura": false,
+   "tipo": "humanoide",
+   "rosto": "fino",
+   "pele": "clara",
+   "olhos": "afiado",
+   "corOlhos": "dourado",
+   "sobrancelha": "brava",
+   "boca": "seria",
+   "cabelo": "longo",
+   "corCabelo": "preto",
+   "roupa": "corte",
+   "acessorios": [
+    "hachimaki",
+    "halo"
+   ],
+   "corRoupa": [
+    "#ffffff",
+    "#c8102e",
+    "#e6b422"
+   ]
+  }
+ },
+ "V060": {
+  "arquivo": "assets/avatares/viloes/V060.png",
+  "dna": {
+   "id": "V060",
+   "elemento": "Trevas",
+   "reino": "Kokū",
+   "brilhoAura": false,
+   "tipo": "humanoide",
+   "rosto": "fino",
+   "pele": "palida",
+   "olhos": "vazio",
+   "corOlhos": "preto",
+   "sobrancelha": "nenhuma",
+   "boca": "sorriso",
+   "cabelo": "careca",
+   "corCabelo": "preto",
+   "roupa": "corte",
+   "acessorios": [
+    "cartola",
+    "mascara-meia"
+   ],
+   "corRoupa": [
+    "#6a6a7a",
+    "#9a9aa8",
+    "#3a3a48"
+   ]
+  }
+ },
+ "V061": {
+  "arquivo": "assets/avatares/viloes/V061.png",
+  "dna": {
+   "id": "V061",
+   "elemento": "Fogo",
+   "reino": "Kokū",
+   "brilhoAura": false,
+   "tipo": "humanoide",
+   "rosto": "fino",
+   "pele": "clara",
+   "olhos": "afiado",
+   "corOlhos": "dourado",
+   "sobrancelha": "brava",
+   "boca": "seria",
+   "cabelo": "meio-raspado",
+   "corCabelo": "ruivo",
+   "roupa": "samurai",
+   "acessorios": [
+    "fios-prata"
+   ]
+  }
+ },
+ "V062": {
+  "arquivo": "assets/avatares/viloes/V062.png",
+  "dna": {
+   "id": "V062",
+   "elemento": "Fogo",
+   "reino": "Homura",
+   "brilhoAura": false,
+   "tipo": "ave",
+   "cor": "#6a2a9a",
+   "corAsas": "#2a0a3a",
+   "crista": true,
+   "corCrista": "#a050ff",
+   "corOlhos": "vermelho",
+   "marcas": [
+    "anel-eclipse"
+   ]
+  }
+ },
+ "V063": {
+  "arquivo": "assets/avatares/viloes/V063.png",
+  "dna": {
+   "id": "V063",
+   "elemento": "Explosão",
+   "reino": "Kokū",
+   "brilhoAura": false,
+   "tipo": "humanoide",
+   "rosto": "quadrado",
+   "pele": "morena",
+   "olhos": "afiado",
+   "corOlhos": "vermelho",
+   "sobrancelha": "brava",
+   "boca": "presa",
+   "cabelo": "espetado",
+   "corCabelo": "preto",
+   "roupa": "samurai",
+   "acessorios": [
+    "cicatriz",
+    "barba-curta",
+    "brasas"
+   ]
+  }
+ },
+ "V064": {
+  "arquivo": "assets/avatares/viloes/V064.png",
+  "dna": {
+   "id": "V064",
+   "elemento": "Lava",
+   "reino": "Homura",
+   "brilhoAura": false,
+   "tipo": "serpente",
+   "cor": "#8a2a10",
+   "cor2": "#ffb02a",
+   "asas": true,
+   "corOlhos": "dourado",
+   "marcas": [
+    "magma",
+    "ponte"
+   ]
+  }
+ },
+ "V065": {
+  "arquivo": "assets/avatares/viloes/V065.png",
+  "dna": {
+   "id": "V065",
+   "elemento": "Água",
+   "reino": "Watatsumi",
+   "brilhoAura": false,
+   "tipo": "espirito",
+   "cor": "#1a1a2a",
+   "corOlhos": "branco",
+   "marcas": [
+    "barcos"
+   ]
+  }
+ },
+ "V066": {
+  "arquivo": "assets/avatares/viloes/V066.png",
+  "dna": {
+   "id": "V066",
+   "elemento": "Gelo",
+   "reino": "Watatsumi",
+   "brilhoAura": false,
+   "tipo": "humanoide",
+   "rosto": "quadrado",
+   "pele": "azulada",
+   "olhos": "afiado",
+   "corOlhos": "azul",
+   "sobrancelha": "brava",
+   "boca": "seria",
+   "cabelo": "longo",
+   "corCabelo": "branco",
+   "roupa": "placas",
+   "acessorios": [
+    "barba",
+    "coroa-rachada"
+   ],
+   "corRoupa": [
+    "#9ad8ff",
+    "#e6fbff",
+    "#3a6a9a"
+   ]
+  }
+ },
+ "V067": {
+  "arquivo": "assets/avatares/viloes/V067.png",
+  "dna": {
+   "id": "V067",
+   "elemento": "Água",
+   "reino": "Watatsumi",
+   "brilhoAura": false,
+   "tipo": "humanoide",
+   "rosto": "fino",
+   "pele": "esverdeada",
+   "olhos": "afiado",
+   "corOlhos": "dourado",
+   "sobrancelha": "neutra",
+   "boca": "presa",
+   "cabelo": "longo",
+   "corCabelo": "#1f3a2a",
+   "roupa": "nu",
+   "acessorios": [
+    "fitas-agua"
+   ]
+  }
+ },
+ "V068": {
+  "arquivo": "assets/avatares/viloes/V068.png",
+  "dna": {
+   "id": "V068",
+   "elemento": "Água",
+   "reino": "Watatsumi",
+   "brilhoAura": false,
+   "tipo": "humanoide",
+   "rosto": "fino",
+   "pele": "clara",
+   "olhos": "cansado",
+   "corOlhos": "cinza",
+   "sobrancelha": "neutra",
+   "boca": "sorriso-torto",
+   "cabelo": "careca",
+   "corCabelo": "preto",
+   "roupa": "corte",
+   "acessorios": [
+    "chapeu-corte",
+    "colar-perolas"
+   ]
+  }
+ },
+ "V069": {
+  "arquivo": "assets/avatares/viloes/V069.png",
+  "dna": {
+   "id": "V069",
+   "elemento": "Metal",
+   "reino": "Daichi",
+   "brilhoAura": false,
+   "tipo": "centopeia",
+   "cor": "#4a4f58",
+   "corOlhos": "vermelho"
+  }
+ },
+ "V070": {
+  "arquivo": "assets/avatares/viloes/V070.png",
+  "dna": {
+   "id": "V070",
+   "elemento": "Alma",
+   "reino": "Daichi",
+   "brilhoAura": false,
+   "tipo": "cranio",
+   "corOlhos": "#80f0ff"
+  }
+ },
+ "V071": {
+  "arquivo": "assets/avatares/viloes/V071.png",
+  "dna": {
+   "id": "V071",
+   "elemento": "Metal",
+   "reino": "Kokū",
+   "brilhoAura": false,
+   "tipo": "humanoide",
+   "rosto": "quadrado",
+   "pele": "media",
+   "olhos": "afiado",
+   "corOlhos": "cinza",
+   "sobrancelha": "brava",
+   "boca": "seria",
+   "cabelo": "coque",
+   "corCabelo": "preto",
+   "roupa": "samurai",
+   "acessorios": [
+    "kabuto",
+    "barba-curta"
+   ],
+   "corRoupa": [
+    "#1c1c1c",
+    "#3a3a3a",
+    "#e6b422"
+   ],
+   "crista": "serra"
+  }
+ },
+ "V072": {
+  "arquivo": "assets/avatares/viloes/V072.png",
+  "dna": {
+   "id": "V072",
+   "elemento": "Trevas",
+   "reino": "Daichi",
+   "brilhoAura": false,
+   "tipo": "humanoide",
+   "rosto": "fino",
+   "pele": "palida",
+   "olhos": "cansado",
+   "corOlhos": "cinza",
+   "sobrancelha": "triste",
+   "boca": "neutra",
+   "cabelo": "longo",
+   "corCabelo": "preto",
+   "roupa": "quimono",
+   "acessorios": [
+    "colar-perolas"
+   ],
+   "corRoupa": [
+    "#f0f0e8",
+    "#2a2a2a",
+    "#8a2030"
+   ]
+  }
+ },
+ "V073": {
+  "arquivo": "assets/avatares/viloes/V073.png",
+  "dna": {
+   "id": "V073",
+   "elemento": "Vento",
+   "reino": "Fūjin",
+   "brilhoAura": false,
+   "tipo": "humanoide",
+   "rosto": "fino",
+   "pele": "clara",
+   "olhos": "brilho",
+   "corOlhos": "verde-agua",
+   "sobrancelha": "brava",
+   "boca": "aberta",
+   "cabelo": "flutuante",
+   "corCabelo": "cinza",
+   "roupa": "robe-mago",
+   "acessorios": [
+    "veias-vazio"
+   ]
+  }
+ },
+ "V074": {
+  "arquivo": "assets/avatares/viloes/V074.png",
+  "dna": {
+   "id": "V074",
+   "elemento": "Raio",
+   "reino": "Fūjin",
+   "brilhoAura": false,
+   "tipo": "fera",
+   "cor": "#8a6a40",
+   "orelhas": "redondas",
+   "focinho": "curto",
+   "dentes": true,
+   "corOlhos": "vermelho",
+   "caudas": 1,
+   "corCauda": "#3a5a2a",
+   "marcas": [
+    "raios"
+   ]
+  }
+ },
+ "V075": {
+  "arquivo": "assets/avatares/viloes/V075.png",
+  "dna": {
+   "id": "V075",
+   "elemento": "Metal",
+   "reino": "Fūjin",
+   "brilhoAura": false,
+   "tipo": "golem",
+   "cor": "#6a6a70",
+   "corOlhos": "vermelho",
+   "marcas": [
+    "corrente"
+   ]
+  }
+ },
+ "V076": {
+  "arquivo": "assets/avatares/viloes/V076.png",
+  "dna": {
+   "id": "V076",
+   "elemento": "Vento",
+   "reino": "Fūjin",
+   "brilhoAura": false,
+   "tipo": "humanoide",
+   "rosto": "fino",
+   "pele": "clara",
+   "olhos": "afiado",
+   "corOlhos": "roxo",
+   "sobrancelha": "brava",
+   "boca": "sorriso-torto",
+   "cabelo": "baguncado",
+   "corCabelo": "preto",
+   "roupa": "jaqueta-penas",
+   "acessorios": [
+    "asas-penas",
+    "pena"
+   ],
+   "corRoupa": [
+    "#1a1a1a",
+    "#3a3a3a",
+    "#7a7a7a"
+   ],
+   "corAsas": "#141418",
+   "corPena": "#141418"
+  }
+ },
+ "V077": {
+  "arquivo": "assets/avatares/viloes/V077.png",
+  "dna": {
+   "id": "V077",
+   "elemento": "Terra",
+   "reino": "Kokū",
+   "brilhoAura": false,
+   "tipo": "humanoide",
+   "rosto": "oval",
+   "pele": "pedra",
+   "olhos": "cansado",
+   "corOlhos": "ambar",
+   "sobrancelha": "triste",
+   "boca": "seria",
+   "cabelo": "chanel",
+   "corCabelo": "#8a857e",
+   "roupa": "placas",
+   "acessorios": [
+    "veias-vazio"
+   ],
+   "corRoupa": [
+    "#7a756e",
+    "#a8a29a",
+    "#4a4640"
+   ]
+  }
+ },
+ "V078": {
+  "arquivo": "assets/avatares/viloes/V078.png",
+  "dna": {
+   "id": "V078",
+   "elemento": "Água",
+   "reino": "Kokū",
+   "brilhoAura": false,
+   "tipo": "humanoide",
+   "rosto": "oval",
+   "pele": "azulada",
+   "olhos": "cansado",
+   "corOlhos": "azul",
+   "sobrancelha": "triste",
+   "boca": "seria",
+   "cabelo": "chanel",
+   "corCabelo": "azul-escuro",
+   "roupa": "corte",
+   "acessorios": [
+    "veias-vazio"
+   ]
+  }
+ },
+ "V079": {
+  "arquivo": "assets/avatares/viloes/V079.png",
+  "dna": {
+   "id": "V079",
+   "elemento": "Luz",
+   "reino": "Fūjin",
+   "brilhoAura": false,
+   "tipo": "humanoide",
+   "rosto": "quadrado",
+   "pele": "espectral",
+   "olhos": "brilho",
+   "corOlhos": "dourado",
+   "sobrancelha": "neutra",
+   "boca": "seria",
+   "cabelo": "careca",
+   "corCabelo": "preto",
+   "roupa": "placas",
+   "acessorios": [
+    "kabuto",
+    "halo"
+   ],
+   "corRoupa": [
+    "#e8e8f0",
+    "#c8c8d8",
+    "#e6b422"
+   ]
+  }
+ },
+ "V080": {
+  "arquivo": "assets/avatares/viloes/V080.png",
+  "dna": {
+   "id": "V080",
+   "elemento": "Vazio",
+   "reino": "Kokū",
+   "brilhoAura": false,
+   "tipo": "humanoide",
+   "rosto": "fino",
+   "pele": "clara",
+   "olhos": "afiado",
+   "corOlhos": "cinza",
+   "sobrancelha": "neutra",
+   "boca": "seria",
+   "cabelo": "baguncado",
+   "corCabelo": "preto",
+   "roupa": "trapos",
+   "acessorios": [
+    "correntes",
+    "bandagem-boca"
+   ],
+   "corRoupa": [
+    "#1a1a1a",
+    "#3a3a3a",
+    "#7a7a7a"
+   ]
+  }
+ },
+ "V081": {
+  "arquivo": "assets/avatares/viloes/V081.png",
+  "dna": {
+   "id": "V081",
+   "elemento": "Fogo",
+   "reino": "Homura",
+   "brilhoAura": true,
+   "tipo": "humanoide",
+   "rosto": "largo",
+   "pele": "vermelha",
+   "olhos": "afiado",
+   "corOlhos": "dourado",
+   "sobrancelha": "brava",
+   "boca": "aberta",
+   "cabelo": "careca",
+   "corCabelo": "preto",
+   "roupa": "corte",
+   "acessorios": [
+    "chapeu-juiz",
+    "barba",
+    "brasas"
+   ],
+   "corRoupa": [
+    "#8a1020",
+    "#1a1a1a",
+    "#e6b422"
+   ]
+  }
+ },
+ "V082": {
+  "arquivo": "assets/avatares/viloes/V082.png",
+  "dna": {
+   "id": "V082",
+   "elemento": "Fogo",
+   "reino": "Homura",
+   "brilhoAura": true,
+   "tipo": "humanoide",
+   "rosto": "quadrado",
+   "pele": "espectral",
+   "olhos": "brilho",
+   "corOlhos": "vermelho",
+   "sobrancelha": "brava",
+   "boca": "seria",
+   "cabelo": "longo",
+   "corCabelo": "ruivo",
+   "roupa": "samurai",
+   "acessorios": [
+    "chifres-dragao"
+   ]
+  }
+ },
+ "V083": {
+  "arquivo": "assets/avatares/viloes/V083.png",
+  "dna": {
+   "id": "V083",
+   "elemento": "Água",
+   "reino": "Watatsumi",
+   "brilhoAura": true,
+   "tipo": "serpente",
+   "cor": "#1a3a5a",
+   "cor2": "#7fd1ff",
+   "bigodes": true,
+   "corBigode": "#7fd1ff",
+   "olho": "brilho",
+   "corOlhos": "#7fffd4"
+  }
+ },
+ "V084": {
+  "arquivo": "assets/avatares/viloes/V084.png",
+  "dna": {
+   "id": "V084",
+   "elemento": "Tempo",
+   "reino": "Watatsumi",
+   "brilhoAura": true,
+   "tipo": "humanoide",
+   "rosto": "fino",
+   "pele": "palida",
+   "olhos": "afiado",
+   "corOlhos": "roxo",
+   "sobrancelha": "neutra",
+   "boca": "sorriso",
+   "cabelo": "longo",
+   "corCabelo": "preto",
+   "roupa": "corte",
+   "acessorios": [
+    "coroa-perolas"
+   ],
+   "corRoupa": [
+    "#2a1a3a",
+    "#c0a0e0",
+    "#e6b422"
+   ]
+  }
+ },
+ "V085": {
+  "arquivo": "assets/avatares/viloes/V085.png",
+  "dna": {
+   "id": "V085",
+   "elemento": "Terra",
+   "reino": "Daichi",
+   "brilhoAura": true,
+   "tipo": "humanoide",
+   "rosto": "largo",
+   "pele": "pedra",
+   "olhos": "brilho",
+   "corOlhos": "ambar",
+   "sobrancelha": "grossa",
+   "boca": "aberta",
+   "cabelo": "careca",
+   "corCabelo": "preto",
+   "roupa": "nu",
+   "acessorios": [
+    "pelagem",
+    "raizes"
+   ],
+   "corPelagem": "#4a6a3a"
+  }
+ },
+ "V086": {
+  "arquivo": "assets/avatares/viloes/V086.png",
+  "dna": {
+   "id": "V086",
+   "elemento": "Alma",
+   "reino": "Daichi",
+   "brilhoAura": true,
+   "tipo": "coracao",
+   "cor": "#7a6a5a"
+  }
+ },
+ "V087": {
+  "arquivo": "assets/avatares/viloes/V087.png",
+  "dna": {
+   "id": "V087",
+   "elemento": "Raio",
+   "reino": "Fūjin",
+   "brilhoAura": true,
+   "tipo": "humanoide",
+   "rosto": "largo",
+   "pele": "azulada",
+   "olhos": "brilho",
+   "corOlhos": "dourado",
+   "sobrancelha": "brava",
+   "boca": "presa",
+   "cabelo": "espetado",
+   "corCabelo": "branco",
+   "roupa": "nu",
+   "acessorios": [
+    "chifres-oni",
+    "halo"
+   ]
+  }
+ },
+ "V088": {
+  "arquivo": "assets/avatares/viloes/V088.png",
+  "dna": {
+   "id": "V088",
+   "elemento": "Alma",
+   "reino": "Fūjin",
+   "brilhoAura": true,
+   "tipo": "humanoide",
+   "rosto": "fino",
+   "pele": "palida",
+   "olhos": "vazio",
+   "corOlhos": "preto",
+   "sobrancelha": "triste",
+   "boca": "neutra",
+   "cabelo": "flutuante",
+   "corCabelo": "branco",
+   "roupa": "corte",
+   "acessorios": [
+    "capuz"
+   ],
+   "corRoupa": [
+    "#e8eef4",
+    "#c8d0dc",
+    "#9ad8ff"
+   ]
+  }
+ },
+ "V089": {
+  "arquivo": "assets/avatares/viloes/V089.png",
+  "dna": {
+   "id": "V089",
+   "elemento": "Espaço",
+   "reino": "Fūjin",
+   "brilhoAura": true,
+   "tipo": "humanoide",
+   "rosto": "fino",
+   "pele": "clara",
+   "olhos": "afiado",
+   "corOlhos": "roxo",
+   "sobrancelha": "neutra",
+   "boca": "seria",
+   "cabelo": "chanel",
+   "corCabelo": "roxo",
+   "roupa": "robe-mago",
+   "acessorios": [
+    "oculos",
+    "halo"
+   ]
+  }
+ },
+ "V090": {
+  "arquivo": "assets/avatares/viloes/V090.png",
+  "dna": {
+   "id": "V090",
+   "elemento": "Terra",
+   "reino": "Kokū",
+   "brilhoAura": true,
+   "tipo": "humanoide",
+   "rosto": "quadrado",
+   "pele": "pedra",
+   "olhos": "brilho",
+   "corOlhos": "cinza",
+   "sobrancelha": "brava",
+   "boca": "seria",
+   "cabelo": "careca",
+   "corCabelo": "cinza",
+   "roupa": "placas",
+   "acessorios": [
+    "coroa-rachada",
+    "barba"
+   ],
+   "corRoupa": [
+    "#7a756e",
+    "#a8a29a",
+    "#4a4640"
+   ]
+  }
+ },
+ "V091": {
+  "arquivo": "assets/avatares/viloes/V091.png",
+  "dna": {
+   "id": "V091",
+   "elemento": "Trevas",
+   "reino": "Kokū",
+   "brilhoAura": true,
+   "tipo": "humanoide",
+   "rosto": "fino",
+   "pele": "palida",
+   "olhos": "afiado",
+   "corOlhos": "prata",
+   "sobrancelha": "neutra",
+   "boca": "sorriso",
+   "cabelo": "tranca-lateral",
+   "corCabelo": "prata",
+   "roupa": "manto-alto",
+   "acessorios": [
+    "oculos",
+    "fios-prata"
+   ]
+  },
+  "mascara": "assets/avatares/viloes/V091-mascara.png"
+ },
+ "V092": {
+  "arquivo": "assets/avatares/viloes/V092.png",
+  "dna": {
+   "id": "V092",
+   "elemento": "Vazio",
+   "reino": "Kokū",
+   "brilhoAura": true,
+   "tipo": "humanoide",
+   "rosto": "oval",
+   "pele": "palida",
+   "olhos": "vazio",
+   "corOlhos": "preto",
+   "sobrancelha": "triste",
+   "boca": "neutra",
+   "cabelo": "baguncado",
+   "corCabelo": "cinza",
+   "roupa": "placas",
+   "acessorios": [
+    "veias-vazio"
+   ],
+   "corRoupa": [
+    "#6a6a7a",
+    "#9a9aa8",
+    "#3a3a48"
+   ]
+  }
+ },
+ "V093": {
+  "arquivo": "assets/avatares/viloes/V093.png",
+  "dna": {
+   "id": "V093",
+   "elemento": "Fogo",
+   "reino": "Kokū",
+   "brilhoAura": true,
+   "tipo": "humanoide",
+   "rosto": "quadrado",
+   "pele": "cinza",
+   "olhos": "brilho",
+   "corOlhos": "vermelho",
+   "sobrancelha": "brava",
+   "boca": "seria",
+   "cabelo": "espetado",
+   "corCabelo": "fogo",
+   "roupa": "samurai",
+   "acessorios": [
+    "coroa-rachada",
+    "veias-vazio",
+    "barba-curta"
+   ],
+   "chamasNoCabelo": true
+  }
+ },
+ "V094": {
+  "arquivo": "assets/avatares/viloes/V094.png",
+  "dna": {
+   "id": "V094",
+   "elemento": "Água",
+   "reino": "Kokū",
+   "brilhoAura": true,
+   "tipo": "humanoide",
+   "rosto": "fino",
+   "pele": "cinza",
+   "olhos": "brilho",
+   "corOlhos": "azul",
+   "sobrancelha": "triste",
+   "boca": "seria",
+   "cabelo": "flutuante",
+   "corCabelo": "azul-escuro",
+   "roupa": "corte",
+   "acessorios": [
+    "coroa-perolas",
+    "veias-vazio"
+   ]
+  }
+ },
+ "V095": {
+  "arquivo": "assets/avatares/viloes/V095.png",
+  "dna": {
+   "id": "V095",
+   "elemento": "Terra",
+   "reino": "Kokū",
+   "brilhoAura": true,
+   "tipo": "humanoide",
+   "rosto": "largo",
+   "pele": "pedra",
+   "olhos": "brilho",
+   "corOlhos": "ambar",
+   "sobrancelha": "grossa",
+   "boca": "seria",
+   "cabelo": "careca",
+   "corCabelo": "cinza",
+   "roupa": "placas",
+   "acessorios": [
+    "barba-trancada",
+    "coroa-rachada",
+    "raizes",
+    "veias-vazio"
+   ]
+  }
+ },
+ "V096": {
+  "arquivo": "assets/avatares/viloes/V096.png",
+  "dna": {
+   "id": "V096",
+   "elemento": "Vento",
+   "reino": "Kokū",
+   "brilhoAura": true,
+   "tipo": "humanoide",
+   "rosto": "fino",
+   "pele": "cinza",
+   "olhos": "brilho",
+   "corOlhos": "verde-agua",
+   "sobrancelha": "brava",
+   "boca": "seria",
+   "cabelo": "franja-longa",
+   "corCabelo": "branco",
+   "roupa": "jaqueta-penas",
+   "acessorios": [
+    "asas-penas",
+    "coroa-penas",
+    "veias-vazio"
+   ],
+   "corAsas": "#8a8a92",
+   "corRoupa": [
+    "#9a9aa0",
+    "#5a6a6a",
+    "#d8d8d8"
+   ]
+  }
+ },
+ "V097": {
+  "arquivo": "assets/avatares/viloes/V097.png",
+  "dna": {
+   "id": "V097",
+   "elemento": "Trevas",
+   "reino": "Kokū",
+   "brilhoAura": true,
+   "tipo": "humanoide",
+   "rosto": "fino",
+   "pele": "palida",
+   "olhos": "brilho",
+   "corOlhos": "prata",
+   "sobrancelha": "neutra",
+   "boca": "seria",
+   "cabelo": "longo",
+   "corCabelo": "prata",
+   "roupa": "corte",
+   "acessorios": [
+    "halo"
+   ],
+   "corRoupa": [
+    "#0e0e1a",
+    "#c9cacd",
+    "#5b2a86"
+   ]
+  }
+ },
+ "V098": {
+  "arquivo": "assets/avatares/viloes/V098.png",
+  "dna": {
+   "id": "V098",
+   "elemento": "Fogo",
+   "reino": "Kokū",
+   "brilhoAura": true,
+   "tipo": "serpente",
+   "cor": "#c0501a",
+   "cor2": "#7b3fb0",
+   "asas": true,
+   "corAsas": "#5b2a86",
+   "lagrimas": true,
+   "corOlhos": "dourado"
+  }
+ },
+ "V099": {
+  "arquivo": "assets/avatares/viloes/V099.png",
+  "dna": {
+   "id": "V099",
+   "elemento": "Vazio",
+   "reino": "Kokū",
+   "brilhoAura": true,
+   "tipo": "humanoide",
+   "rosto": "oval",
+   "pele": "palida",
+   "olhos": "vazio",
+   "corOlhos": "preto",
+   "sobrancelha": "nenhuma",
+   "boca": "neutra",
+   "cabelo": "careca",
+   "corCabelo": "branco",
+   "roupa": "corte",
+   "acessorios": [
+    "capuz",
+    "rosto-buraco"
+   ],
+   "corRoupa": [
+    "#f4f4f0",
+    "#d8d8d4",
+    "#5b2a86"
+   ]
+  }
+ },
+ "V100": {
+  "arquivo": "assets/avatares/viloes/V100.png",
+  "dna": {
+   "id": "V100",
+   "elemento": "Vazio",
+   "reino": "Kokū",
+   "brilhoAura": true,
+   "tipo": "humanoide",
+   "rosto": "redondo",
+   "pele": "media",
+   "olhos": "dragao",
+   "corOlhos": "ambar",
+   "sobrancelha": "triste",
+   "boca": "seria",
+   "cabelo": "baguncado",
+   "corCabelo": "cinza-cinza",
+   "roupa": "trapos",
+   "acessorios": [
+    "sombra-dragao",
+    "veias-vazio"
+   ],
+   "corRoupa": [
+    "#5a5048",
+    "#3f6aa8",
+    "#3a3028"
+   ],
+   "tema": "eclipse",
+   "fundo": [
+    "#05000a",
+    "#14062a",
+    "#2e0e4a"
+   ]
+  },
+  "mascara": "assets/avatares/viloes/V100-mascara.png"
+ },
+ "NPC-RYUEN": {
+  "arquivo": "assets/avatares/npcs/NPC-RYUEN.png",
+  "dna": {
+   "tipo": "humanoide",
+   "rosto": "quadrado",
+   "pele": "media",
+   "olhos": "afiado",
+   "corOlhos": "ambar",
+   "sobrancelha": "brava",
+   "boca": "sorriso-torto",
+   "cabelo": "espetado",
+   "corCabelo": "fogo",
+   "roupa": "samurai",
+   "acessorios": [
+    "coroa-sol",
+    "barba-curta",
+    "cicatriz",
+    "olho-obsidiana",
+    "brasas"
+   ],
+   "reino": "Homura",
+   "elemento": "Fogo",
+   "chamasNoCabelo": true
+  }
+ },
+ "NPC-KAISHIN": {
+  "arquivo": "assets/avatares/npcs/NPC-KAISHIN.png",
+  "dna": {
+   "tipo": "humanoide",
+   "rosto": "fino",
+   "pele": "clara",
+   "olhos": "cansado",
+   "corOlhos": "cinza",
+   "sobrancelha": "triste",
+   "boca": "neutra",
+   "cabelo": "flutuante",
+   "corCabelo": "azul-escuro",
+   "roupa": "corte",
+   "acessorios": [
+    "colar-perolas",
+    "gota",
+    "coroa-perolas"
+   ],
+   "reino": "Watatsumi",
+   "elemento": "Água"
+  }
+ },
+ "NPC-GOTETSU": {
+  "arquivo": "assets/avatares/npcs/NPC-GOTETSU.png",
+  "dna": {
+   "tipo": "humanoide",
+   "rosto": "largo",
+   "pele": "morena",
+   "olhos": "feliz",
+   "corOlhos": "castanho",
+   "sobrancelha": "grossa",
+   "boca": "sorriso",
+   "cabelo": "careca",
+   "corCabelo": "cinza",
+   "roupa": "placas",
+   "acessorios": [
+    "pelagem",
+    "barba-trancada",
+    "raizes"
+   ],
+   "reino": "Daichi",
+   "elemento": "Terra",
+   "corPelagem": "#3a2a20"
+  }
+ },
+ "NPC-SORAHIKO": {
+  "arquivo": "assets/avatares/npcs/NPC-SORAHIKO.png",
+  "dna": {
+   "tipo": "humanoide",
+   "rosto": "oval",
+   "pele": "clara",
+   "olhos": "grande",
+   "corOlhos": "verde-agua",
+   "sobrancelha": "neutra",
+   "boca": "lingua",
+   "cabelo": "franja-longa",
+   "corCabelo": "branco",
+   "roupa": "jaqueta-penas",
+   "acessorios": [
+    "sardas",
+    "curativo",
+    "cachecol",
+    "coroa-penas"
+   ],
+   "reino": "Fūjin",
+   "elemento": "Vento",
+   "corRoupa": [
+    "#eef0f0",
+    "#46a7ad",
+    "#4a8c4a"
+   ]
+  }
+ },
+ "NPC-KAIEN": {
+  "arquivo": "assets/avatares/npcs/NPC-KAIEN.png",
+  "dna": {
+   "tipo": "humanoide",
+   "rosto": "redondo",
+   "pele": "media",
+   "olhos": "grande",
+   "corOlhos": "castanho",
+   "sobrancelha": "triste",
+   "boca": "seria",
+   "cabelo": "baguncado",
+   "corCabelo": "cinza-cinza",
+   "roupa": "trapos",
+   "acessorios": [
+    "sardas"
+   ],
+   "reino": "Kokū",
+   "elemento": "Natureza",
+   "corRoupa": [
+    "#8a7a62",
+    "#3f6aa8",
+    "#6a5a40"
+   ]
+  }
+ },
+ "NPC-SAYO": {
+  "arquivo": "assets/avatares/npcs/NPC-SAYO.png",
+  "dna": {
+   "tipo": "humanoide",
+   "rosto": "redondo",
+   "pele": "clara",
+   "olhos": "redondo",
+   "corOlhos": "preto",
+   "sobrancelha": "neutra",
+   "boca": "seria",
+   "cabelo": "trancas",
+   "corCabelo": "preto",
+   "roupa": "quimono",
+   "acessorios": [
+    "rubor"
+   ],
+   "reino": "Daichi",
+   "elemento": "Alma",
+   "corRoupa": [
+    "#42602d",
+    "#f8f4e6",
+    "#c0392b"
+   ]
+  }
+ },
+ "NPC-HOSHIRYU": {
+  "arquivo": "assets/avatares/npcs/NPC-HOSHIRYU.png",
+  "dna": {
+   "tipo": "serpente",
+   "cor": "#ff7a3d",
+   "cor2": "#ffd23a",
+   "asas": true,
+   "corAsas": "#5b2a86",
+   "corOlhos": "azul",
+   "olho": "brilho",
+   "elemento": "Estelar"
+  }
+ }
+}

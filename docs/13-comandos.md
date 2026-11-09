@@ -18,13 +18,16 @@ Texto livre começando com `>` (ou mencionando o bot) é uma **ação narrativa*
 | `!equipar <item>` | Equipa arma/armadura/grimório |
 | `!distribuir <atributo> <pontos>` | Só quando houver pontos livres (a cada 10 níveis) |
 | `!pet` | Carta do pet (se tiver) |
+| `!aparencia <números>` | Só durante a criação: monta o avatar (doc 21.3) e mostra a prévia; `!aparencia confirmar` trava |
+| `!avatar` | Envia o avatar em pixel art |
 | `!diario` | Seus feitos registrados |
 | `!merito` | Mérito e títulos |
 
 ## Mundo
 | Comando | Efeito |
 |---------|--------|
-| `!mapa` | Imagem do mapa com sua posição |
+| `!mapa` | Mapa do mundo em pixel art com você (vermelho) e sua party (azul) |
+| `!mapa <reino>` | Mapa ampliado de um reino |
 | `!viajar <região>` | Vai para região adjacente |
 | `!explorar` | Explora a região (encontros, segredos, subfases) |
 | `!subfases` | Subfases descobertas na região |

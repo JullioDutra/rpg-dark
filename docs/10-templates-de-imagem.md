@@ -2,19 +2,18 @@
 
 Duas camadas de imagem:
 
-1. **Arte (retrato)** — gerada por IA de imagem **uma única vez** por personagem/vilão e guardada no storage.
+1. **Avatar (retrato)** — pixel art montada pelo **criador de avatares procedural** a partir de um DNA (doc 21). Sem IA: instantâneo, gratuito e sempre igual para o mesmo DNA.
 2. **Carta** — template HTML fixo (`templates/*.html`) onde o motor injeta dados + retrato e tira um
    screenshot PNG de 800×1120 para enviar no WhatsApp.
 
-Assim, a arte cara é gerada pouquíssimas vezes, e a carta (barata, instantânea) é regenerada sempre que
-os atributos mudam (`!ficha`).
+Avatar e carta são baratos e instantâneos: a carta é regenerada sempre que os atributos mudam (`!ficha`).
 
 | Exemplo de carta de personagem | Exemplo de carta de vilão |
 |:---:|:---:|
 | ![personagem](../templates/exemplos/personagem-exemplo.png) | ![vilão](../templates/exemplos/vilao-V090.png) |
 
 Exemplos de todos os tiers em `templates/exemplos/` (gerados com `node scripts/render-cartas.mjs`).
-Sem retrato, o template usa um placeholder com o kanji do elemento (como nas imagens acima).
+Sem retrato, o template usa um placeholder com o kanji do elemento.
 
 ## 10.1 Carta de Personagem (`templates/carta-personagem.html`)
 
@@ -56,37 +55,11 @@ habilidade, fraqueza, descrição e recompensa (XP, ouro, chance de Amuleto).
 > Ao **encontrar** um vilão pela primeira vez, o jogador vê a carta com atributos ocultos (`???`) — só a
 > magia *Ler o Inimigo* (G10), o pet Hakutaku ou derrotá-lo uma vez revelam os números. (Flag `oculto` no render.)
 
-## 10.3 Prompts de arte (IA de imagem)
+## 10.3 Retratos
 
-### Vilões
-Cada vilão em `data/viloes.json` já tem `imagem.prompt` e `imagem.negative_prompt` prontos. Exemplo (V064):
-
-```
-anime style dark fantasy villain character portrait, lava dragon rising from a river of magma,
-broken obsidian bridge, lava elemental aura, dramatic rim lighting, cel shading, highly detailed,
-upper body, centered composition, dark atmospheric background, masterpiece
-```
-
-Gerar as 100 artes uma vez (script futuro `scripts/gerar-arte-viloes.mjs`) e salvar em `assets/viloes/V###.png`.
-
-### Personagens (montado na criação)
-
-```
-anime style fantasy {classe_en} character portrait, {genero_opcional} young {raca}, {traço_da_casta},
-wearing {roupa_do_reino}, {elemento_en} magic aura, {detalhe_classe}, cel shading, highly detailed,
-upper body, centered, {fundo_da_aldeia}
-```
-
-| Variável | Exemplos |
-|----------|----------|
-| `traço_da_casta` | camponês: *simple patched clothes, determined eyes* · realeza: *ornate noble attire, jewelry* · cavaleiro: *light armor with order crest* · indefinido: *mysterious hooded cloak, mismatched eyes* · rei: *subtle crown motif, glowing royal sigil* |
-| `roupa_do_reino` | Homura: *red and black samurai-inspired garments with ember patterns* · Watatsumi: *flowing blue robes with wave patterns and pearls* · Daichi: *earth-toned layered clothing with bronze and stone ornaments* · Fūjin: *light white and teal garments with feathers, scarf blowing in the wind* |
-| `detalhe_classe` | Mago: *holding a glowing grimoire* · Anti-magia: *black chains, aura that dims nearby magic* · Espadachim: *katana at the hip* · Meio-humano: *{animal} ears and tail* · Demônio: *small horns, glowing red eyes* · Paladino: *holy shield with light runes* · Bruxo: *talismans and a pact mark on the hand* · Força da Natureza: *leaves and elements swirling around the body* · Cavaleiro: *heavy armor and greatsword* |
-
-O jogador pode, na criação, descrever **aparência** (cabelo, olhos, gênero) em uma frase — isso entra no prompt,
-mas é filtrado (nada que altere atributos, nada impróprio).
-
-**Regenerar arte:** só no **Despertar** de rank (B, A, S, SS) — o retrato "evolui" junto com o personagem.
+Os retratos são **avatares em pixel art** gerados pelo criador procedural (`src/avatar/`), descrito no
+[doc 21](21-criador-de-avatares-e-mapas.md). A direção de arte (paletas, formas, escala por tier) está no
+[doc 20](20-direcao-de-arte.md). Nas cartas, o retrato usa `image-rendering: pixelated` para os pixels ficarem nítidos.
 
 ## 10.4 Outras imagens planejadas
 

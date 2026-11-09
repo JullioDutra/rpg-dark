@@ -1,6 +1,8 @@
 # 四星 YOTSUHOSHI — *O Eclipse do Ovo Eterno*
 ### RPG de Anime no WhatsApp
 
+![Mapa de Yotsuhoshi](docs/img/mapa-mundo.png)
+
 > *Há 500 anos, um garoto roubou o ovo de um dragão. O mundo queimou, um buraco negro se abriu e quatro reis
 > deram a vida para selar o mal. Agora alguém quer abrir o caixão — e o ovo, perdido, escolheu um de vocês.*
 
@@ -29,7 +31,7 @@ Dificuldade: **difícil** — vilões podem vencer, a morte pode ser permanente,
 | 07 | [Subfases e masmorras](docs/07-subfases.md) | 36 subfases com nível, chefes e drops (gerado) |
 | 08 | [Progressão e combate](docs/08-progressao-e-combate.md) | Atributos, XP, níveis, ranks, mérito, fórmulas de batalha |
 | 09 | [Os 100 vilões](docs/09-viloes.md) | Gerado de `data/viloes.json` (comum → divindade) |
-| 10 | [Templates de imagem](docs/10-templates-de-imagem.md) | Cartas de personagem e vilão, prompts de arte |
+| 10 | [Templates de imagem](docs/10-templates-de-imagem.md) | Cartas de personagem e vilão |
 | 11 | [Motor narrativo de IA](docs/11-motor-narrativo-ia.md) | Como a IA continua a história e chega ao final definido |
 | 12 | [Roteiro: status e como editar](docs/12-roteiro-da-historia.md) | Como mexer no `data/historia.yaml` |
 | 13 | [Comandos do jogador](docs/13-comandos.md) | Tudo que o jogador pode digitar no grupo e no privado |
@@ -39,6 +41,8 @@ Dificuldade: **difícil** — vilões podem vencer, a morte pode ser permanente,
 | 17 | [Sub-vilões](docs/17-sub-viloes.md) | Arautos do Eclipse, Ressurgidos e servos |
 | 18 | [Bestiário](docs/18-animais.md) | 36 animais (gerado de `data/animais.json`) |
 | 19 | [Dificuldade, derrota e estratégia](docs/19-dificuldade-derrota-estrategia.md) | Morte, Batalhas Mortais, Juiz de Táticas, Relógio do Eclipse |
+| 20 | [**Direção de arte**](docs/20-direcao-de-arte.md) | Pesquisa de referências, paletas, formas por reino, galerias |
+| 21 | [**Criador de avatares e mapas**](docs/21-criador-de-avatares-e-mapas.md) | Pixel art procedural: DNA, catálogo, avatar do jogador, mapas |
 
 ## Dados estruturados (`data/`)
 
@@ -52,7 +56,8 @@ Dificuldade: **difícil** — vilões podem vencer, a morte pode ser permanente,
 | `data/itens-lendarios.json` | 4 Grandes Itens + Amuleto da Perdição |
 | `data/grimorios.json` | 40 grimórios simples |
 | `data/subfases.json` | 36 subfases |
-| `data/viloes.json` | 100 vilões com atributos e prompt de imagem |
+| `data/viloes.json` | 100 vilões com atributos, ficha visual e caminho do avatar |
+| `data/aparencias.json` | Bíblia visual: paletas, formas, escala por tier, fichas completas dos personagens |
 | `data/animais.json` | 36 animais (fauna, montarias, criaturas mágicas) |
 | `data/historia.yaml` | Roteiro executável: atos, marcos, fatos, proibições, finais |
 
@@ -67,6 +72,8 @@ Dificuldade: **difícil** — vilões podem vencer, a morte pode ser permanente,
 
 ```bash
 node scripts/gerar-dados.mjs        # regenera dados/docs e valida tudo
+node scripts/render-avatares.mjs    # avatares em pixel art (vilões, NPCs, exemplos) + galerias
+node scripts/render-mapas.mjs       # mapas em pixel art
 python3 scripts/validar-historia.py # valida o roteiro contra vilões/subfases/regiões
 node scripts/render-cartas.mjs      # gera exemplos de cartas em templates/exemplos/
 ```

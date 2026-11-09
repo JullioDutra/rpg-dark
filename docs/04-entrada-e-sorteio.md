@@ -29,9 +29,11 @@
 ```
 
 6. Jogador escolhe a classe (entre as **permitidas pela sua casta**, ver 4.5).
-7. O motor gera os atributos, o **retrato** (IA de imagem com prompt montado das escolhas) e
+7. **Criador de avatar**: o jogador escolhe rosto, pele, olhos, cabelo e uma marca; roupa, cores e aura já vêm do sorteio
+   (doc 21.3). O bot mostra a prévia em pixel art até o jogador confirmar.
+8. O motor gera os atributos, o **avatar** e
    envia a **Carta de Personagem** (PNG).
-8. A narração de abertura (IA) apresenta a aldeia e o primeiro gancho da história.
+9. A narração de abertura (IA) apresenta a aldeia e o primeiro gancho da história.
 
 **Nada disso pode ser re-rolado.** Existe só um comando de reset, exclusivo do admin
 (`/resetar-jogador @numero`), registrado em log.

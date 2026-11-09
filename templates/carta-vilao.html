@@ -35,7 +35,7 @@
     -webkit-mask-image: linear-gradient(#000 65%, transparent);
             mask-image: linear-gradient(#000 65%, transparent);
   }
-  .retrato img { width: 100%; height: 100%; object-fit: cover; }
+  .retrato img { width: 100%; height: 100%; object-fit: cover; object-position: center 20%; image-rendering: pixelated; }
   .placeholder { width: 100%; height: 100%; display: grid; place-items: center; position: relative;
     background: radial-gradient(circle at 50% 42%, color-mix(in srgb, var(--el) 60%, transparent), transparent 52%); }
   .placeholder .simbolo { font: 900 320px "Noto Serif JP", "IPAGothic", serif; color: #ffffff12; }
@@ -106,7 +106,7 @@ const ELEMENTOS = {
 // v.oculto = true esconde os números (primeiro encontro, antes de 'Ler o Inimigo').
 window.renderCarta = function (v) {
   const $ = (id) => document.getElementById(id);
-  if (v.mascara && !v.revelado) v = { ...v, nome: v.mascara.nome ?? v.nome, titulo: v.mascara.titulo, descricao: v.mascara.descricao, habilidade: "???", fraqueza: "???" };
+  if (v.mascara && !v.revelado) v = { ...v, retrato_url: v.retrato_mascara_url ?? v.retrato_url, nome: v.mascara.nome ?? v.nome, titulo: v.mascara.titulo, descricao: v.mascara.descricao, habilidade: "???", fraqueza: "???" };
   const t = TIERS[v.tier]; const [el, escuro, kanji] = ELEMENTOS[v.elemento] ?? ELEMENTOS.Vazio;
   const r = document.documentElement.style;
   r.setProperty("--tier", t.cor[0]); r.setProperty("--tier2", t.cor[1]);

@@ -7,9 +7,15 @@ import { readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { VILOES, MASCARAS } from "./viloes-fonte.mjs";
+import { APARENCIA_VILOES } from "./aparencia-viloes.mjs";
 
 const raiz = join(dirname(fileURLToPath(import.meta.url)), "..");
 const lerJSON = (p) => JSON.parse(readFileSync(join(raiz, p), "utf8"));
+const APARENCIAS = lerJSON("data/aparencias.json");
+const REINO_DA_REGIAO = {};
+for (const r of lerJSON("data/reinos.json").reinos) for (const g of r.regioes) REINO_DA_REGIAO[g.nome] = r.id;
+// Regiões especiais da história que não estão no mapa como região comum
+Object.assign(REINO_DA_REGIAO, { "Esquife dos Quatro Céus": "Eclipse", Kurenai: "Homura", Enjō: "Homura", Kōgyoku: "Daichi" });
 const escrever = (p, s) => writeFileSync(join(raiz, p), s);
 
 // ───────────────────────── Balanceamento ─────────────────────────
@@ -35,13 +41,6 @@ const ARQUETIPOS = {
   divino:      [1.3,  1.3,  1.3,  1.3,  1.1,  1.2,  1.5],
 };
 
-const ELEMENTO_EN = {
-  Fogo: "fire", Água: "water", Terra: "earth", Vento: "wind", Trevas: "darkness", Luz: "holy light",
-  Gelo: "ice", Raio: "lightning", Veneno: "poison", Som: "sound wave", Madeira: "wood and vines",
-  Natureza: "nature", Cristal: "crystal", Metal: "metal", Vazio: "void black-white", Cinzas: "ash",
-  Lava: "lava", Espelho: "mirror shards", Explosão: "explosive", Alma: "soul", Tempo: "time clock",
-  Espaço: "space portal", Sangue: "blood",
-};
 
 function calcular([id, nome, titulo, tier, nivel, regiao, elemento, arquetipo, habilidade, fraqueza, descricao, visual]) {
   const t = TIERS[tier];
@@ -56,19 +55,32 @@ function calcular([id, nome, titulo, tier, nivel, regiao, elemento, arquetipo, h
     FOR: s(0), DEF: s(1), MAG: s(2), RES: s(3), VEL: s(4),
   };
   const poder = atributos.FOR + atributos.DEF + atributos.MAG + atributos.RES + atributos.VEL + Math.round(atributos.HP / 10);
-  const el = ELEMENTO_EN[elemento] ?? elemento;
-  return {
+    return {
     id, nome, titulo, nome_completo: `${nome}, ${titulo}`,
     tier, tier_rotulo: t.rotulo, nivel, regiao, elemento, arquetipo,
     atributos, poder,
     habilidade, fraqueza, descricao,
     ...(MASCARAS[id] && { mascara: MASCARAS[id] }),
     recompensa: { xp: Math.round(nivel * 15 * t.xp), ouro: Math.round(nivel * 8 * t.xp), amuleto_chance: t.amuleto },
-    imagem: {
-      arquivo: `assets/viloes/${id}.png`,
-      prompt: `anime style dark fantasy villain character portrait, ${visual}, ${el} elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece`,
-      negative_prompt: "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic",
-    },
+    aparencia: aparenciaDe(id, tier, regiao, visual),
+    avatar: { arquivo: `assets/avatares/viloes/${id}.png`, ...(MASCARAS[id] && { mascara: `assets/avatares/viloes/${id}-mascara.png` }) },
+  };
+}
+
+function aparenciaDe(id, tier, regiao, visual) {
+  const [silhueta, marca] = APARENCIA_VILOES[id] ?? [];
+  if (!silhueta) throw new Error(`${id}: sem aparência em aparencia-viloes.mjs`);
+  const reino = REINO_DA_REGIAO[regiao] ?? "Kokū";
+  const destaque = APARENCIAS.viloes_destaque[id] ?? {};
+  return {
+    descricao_visual_en: visual,
+    silhueta: destaque.silhueta ?? silhueta,
+    marca_registrada: destaque.marca_registrada ?? marca,
+    forma: APARENCIAS.formas_por_reino[reino],
+    paleta: destaque.paleta ?? APARENCIAS.paletas_por_reino[reino].map((c) => `${c.hex} ${c.nome}`),
+    escala: APARENCIAS.escala_por_tier[tier],
+    ...(destaque.evolucao && { evolucao: destaque.evolucao }),
+    ...(destaque.nao_parecer && { nao_parecer: destaque.nao_parecer }),
   };
 }
 
@@ -123,7 +135,7 @@ ${Object.entries(TIERS).map(([k, t]) => `| ${t.emoji} ${t.rotulo} | ${contagem[k
 
 **Fórmulas:** \`base = 5 + nível×1,2\` · \`atributo = base × mult_tier × peso_arquétipo\` ·
 \`HP = (60 + nível×20) × mult_HP_tier × peso_HP\` · \`XP = nível × 15 × mult_xp\`.
-Cada vilão tem uma carta gerada a partir de \`templates/carta-vilao.html\` e um prompt de imagem em \`data/viloes.json\`.
+Cada vilão tem um **avatar em pixel art** (\`assets/avatares/viloes/\`, gerado pelo criador de avatares — doc 21) e uma carta (\`templates/carta-vilao.html\`).
 
 ⚠️ Vilões com **🎭 máscara pública** escondem spoilers: a carta mostrada aos jogadores usa a máscara até o marco
 indicado (\`revela_em\`) ser concluído no mundo. Este documento é para o autor/admin — **não compartilhe com jogadores**.
@@ -135,16 +147,17 @@ Os **4 reis dos reinos** (Ryūen, Kaishin, Gōtetsu, Sorahiko) **não** estão n
 for (const [k, t] of Object.entries(TIERS)) {
   const lista = viloes.filter((v) => v.tier === k);
   md += `\n---\n\n## ${t.emoji} ${t.rotulo} (${lista.length})\n\n`;
-  md += `| ID | Nome | Nv | Região | Elemento | HP | FOR | DEF | MAG | RES | VEL | Chefe de |\n|---|---|:---:|---|---|---:|---:|---:|---:|---:|---:|---|\n`;
+  md += `| Avatar | ID | Nome | Nv | Região | Elemento | HP | FOR | DEF | MAG | RES | VEL | Chefe de |\n|:---:|---|---|:---:|---|---|---:|---:|---:|---:|---:|---:|---|\n`;
   for (const v of lista) {
     const a = v.atributos;
-    md += `| ${v.id} | **${v.nome}** | ${v.nivel} | ${v.regiao} | ${v.elemento} | ${a.HP} | ${a.FOR} | ${a.DEF} | ${a.MAG} | ${a.RES} | ${a.VEL} | ${(rotuloSub[v.id] ?? ["—"]).join(", ")} |\n`;
+    md += `| <img src="../${v.avatar.arquivo}" width="64"> | ${v.id} | **${v.nome}** | ${v.nivel} | ${v.regiao} | ${v.elemento} | ${a.HP} | ${a.FOR} | ${a.DEF} | ${a.MAG} | ${a.RES} | ${a.VEL} | ${(rotuloSub[v.id] ?? ["—"]).join(", ")} |\n`;
   }
   md += `\n`;
   for (const v of lista) {
     md += `#### ${v.id} · ${v.nome_completo}\n`;
     md += `*${v.tier_rotulo} · Nv ${v.nivel} · ${v.elemento} · ${v.arquetipo} · ${v.regiao}*  \n`;
     md += `**Habilidade:** ${v.habilidade} · **Fraqueza:** ${v.fraqueza} · **Recompensa:** ${v.recompensa.xp} XP, ${v.recompensa.ouro} ouro${v.recompensa.amuleto_chance ? `, ${Math.round(v.recompensa.amuleto_chance * 100)}% Amuleto` : ""}  \n`;
+    md += `**Visual:** silhueta — ${v.aparencia.silhueta}; marca registrada — ${v.aparencia.marca_registrada}  \n`;
     md += `> ${v.descricao}\n\n`;
     if (v.mascara) md += `🎭 **Máscara pública** (até \`${v.mascara.revela_em}\`): ${v.mascara.nome ?? v.nome}, ${v.mascara.titulo} — *${v.mascara.descricao}*\n\n`;
   }

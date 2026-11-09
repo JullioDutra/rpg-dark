@@ -20,6 +20,9 @@ const ids = process.argv.slice(2).length ? process.argv.slice(2) : ["V005", "V04
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 900, height: 1200 }, deviceScaleFactor: 1 });
 
+const indice = JSON.parse(readFileSync(join(raiz, "data", "avatares-indice.json"), "utf8"));
+const url = (p) => (p ? pathToFileURL(join(raiz, p)).href : undefined);
+
 async function render(template, dados, arquivo) {
   await page.goto(pathToFileURL(join(raiz, "templates", template)).href, { waitUntil: "load", timeout: 15000 }).catch(() => {});
   if (dados) await page.evaluate((d) => window.renderCarta({ revelado: true, ...d }), dados);
@@ -28,9 +31,18 @@ async function render(template, dados, arquivo) {
   console.log("✔", arquivo);
 }
 
-await render("carta-personagem.html", null, "personagem-exemplo.png");
+await render("carta-personagem.html", {
+  nome: "Kaito", titulo: "Aprendiz das Cinzas", rank: "C", reino: "Homura", aldeia: "Haibara",
+  casta: "campones", classe: "⚔️ Espadachim", atributo_magico: "Fogo · Cinzas", elegivel_pet: true,
+  nivel: 24, xp: 4100, xp_prox: 8100, hp: 412, hp_max: 520, mp: 61, mp_max: 98,
+  fluxo: 6, pureza: 14, controle: 41, merito: 180, mundo: "Grupo Alpha",
+  atributos: { FOR: 82, DEF: 31, MAG: 28, RES: 29, VEL: 76, SOR: 30 },
+  equipamento: { arma: "Katana de Obsidiana", grimorio: "G02 Manual do Duelista Rubro", acessorio: "Pena de Fênix" },
+  retrato_url: url("assets/avatares/exemplos-jogador/J-Espadachim-Homura.png"),
+}, "personagem-exemplo.png");
 for (const id of ids) {
-  const v = viloes.find((x) => x.id === id);
+  const v0 = viloes.find((x) => x.id === id);
+  const v = v0 && { ...v0, retrato_url: url(indice[id]?.arquivo), retrato_mascara_url: url(indice[id]?.mascara) };
   if (!v) { console.warn("vilão não encontrado:", id); continue; }
   await render("carta-vilao.html", v, `vilao-${id}.png`);
   if (v.mascara) await render("carta-vilao.html", { ...v, revelado: false }, `vilao-${id}-mascara.png`);

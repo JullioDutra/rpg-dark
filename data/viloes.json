@@ -28,10 +28,21 @@
       "ouro": 16,
       "amuleto_chance": 0
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V001.png",
-      "prompt": "anime style dark fantasy villain character portrait, small kobold covered in grey ash, glowing ember eyes, holding a stolen pickaxe, fire elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "small kobold covered in grey ash, glowing ember eyes, holding a stolen pickaxe",
+      "silhueta": "baixinho e curvado, orelhas enormes em triângulo",
+      "marca_registrada": "rastro de cinza que sai da boca quando ri",
+      "forma": "Triângulos: chifres de kabuto, capas cortadas como chamas, pontas para cima. Postura agressiva, peito aberto.",
+      "paleta": [
+        "#EB6101 shu (vermelhão)",
+        "#D7003A kurenai (carmim)",
+        "#2B2B2B sumi (tinta)",
+        "#E6B422 kogane (ouro)"
+      ],
+      "escala": "Escala humana/animal, corpo inteiro, silhueta simples, 1 cor de destaque. Cenário comum da região."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V001.png"
     }
   },
   {
@@ -63,10 +74,21 @@
       "ouro": 32,
       "amuleto_chance": 0
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V002.png",
-      "prompt": "anime style dark fantasy villain character portrait, lava salamander with cracked magma skin, open jaws dripping molten rock, fire elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "lava salamander with cracked magma skin, open jaws dripping molten rock",
+      "silhueta": "lagarto baixo e comprido, cauda em zigue-zague",
+      "marca_registrada": "rachaduras de magma que pulsam como respiração",
+      "forma": "Triângulos: chifres de kabuto, capas cortadas como chamas, pontas para cima. Postura agressiva, peito aberto.",
+      "paleta": [
+        "#EB6101 shu (vermelhão)",
+        "#D7003A kurenai (carmim)",
+        "#2B2B2B sumi (tinta)",
+        "#E6B422 kogane (ouro)"
+      ],
+      "escala": "Escala humana/animal, corpo inteiro, silhueta simples, 1 cor de destaque. Cenário comum da região."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V002.png"
     }
   },
   {
@@ -98,10 +120,21 @@
       "ouro": 48,
       "amuleto_chance": 0
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V003.png",
-      "prompt": "anime style dark fantasy villain character portrait, scarred smuggler bandit, red bandana, glowing red-hot dagger, crimson mist, fire elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "scarred smuggler bandit, red bandana, glowing red-hot dagger, crimson mist",
+      "silhueta": "magro, bandana longa esvoaçando, faca à frente",
+      "marca_registrada": "mão direita enfaixada e incandescente",
+      "forma": "Triângulos: chifres de kabuto, capas cortadas como chamas, pontas para cima. Postura agressiva, peito aberto.",
+      "paleta": [
+        "#EB6101 shu (vermelhão)",
+        "#D7003A kurenai (carmim)",
+        "#2B2B2B sumi (tinta)",
+        "#E6B422 kogane (ouro)"
+      ],
+      "escala": "Escala humana/animal, corpo inteiro, silhueta simples, 1 cor de destaque. Cenário comum da região."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V003.png"
     }
   },
   {
@@ -133,10 +166,21 @@
       "ouro": 40,
       "amuleto_chance": 0
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V004.png",
-      "prompt": "anime style dark fantasy villain character portrait, swarm of fiery fireflies forming a skull shape, burnt forest at night, fire elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "swarm of fiery fireflies forming a skull shape, burnt forest at night",
+      "silhueta": "nuvem de pontos formando uma caveira",
+      "marca_registrada": "um vagalume maior no lugar de cada olho",
+      "forma": "Triângulos: chifres de kabuto, capas cortadas como chamas, pontas para cima. Postura agressiva, peito aberto.",
+      "paleta": [
+        "#EB6101 shu (vermelhão)",
+        "#D7003A kurenai (carmim)",
+        "#2B2B2B sumi (tinta)",
+        "#E6B422 kogane (ouro)"
+      ],
+      "escala": "Escala humana/animal, corpo inteiro, silhueta simples, 1 cor de destaque. Cenário comum da região."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V004.png"
     }
   },
   {
@@ -168,10 +212,21 @@
       "ouro": 64,
       "amuleto_chance": 0
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V005.png",
-      "prompt": "anime style dark fantasy villain character portrait, burly foreman with obsidian pickaxe, soot-covered muscles, cruel grin, mine entrance, fire elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "burly foreman with obsidian pickaxe, soot-covered muscles, cruel grin, mine entrance",
+      "silhueta": "barril humano, picareta no ombro",
+      "marca_registrada": "corrente de algemas pendurada no cinto",
+      "forma": "Triângulos: chifres de kabuto, capas cortadas como chamas, pontas para cima. Postura agressiva, peito aberto.",
+      "paleta": [
+        "#EB6101 shu (vermelhão)",
+        "#D7003A kurenai (carmim)",
+        "#2B2B2B sumi (tinta)",
+        "#E6B422 kogane (ouro)"
+      ],
+      "escala": "Escala humana/animal, corpo inteiro, silhueta simples, 1 cor de destaque. Cenário comum da região."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V005.png"
     }
   },
   {
@@ -203,10 +258,21 @@
       "ouro": 80,
       "amuleto_chance": 0
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V006.png",
-      "prompt": "anime style dark fantasy villain character portrait, skeleton sailor with tattered coat and ghostly anchor chain, shipwreck in ash dunes, darkness elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "skeleton sailor with tattered coat and ghostly anchor chain, shipwreck in ash dunes",
+      "silhueta": "esqueleto alto com casaco de capitão rasgado",
+      "marca_registrada": "âncora fantasma arrastando na areia",
+      "forma": "Triângulos: chifres de kabuto, capas cortadas como chamas, pontas para cima. Postura agressiva, peito aberto.",
+      "paleta": [
+        "#EB6101 shu (vermelhão)",
+        "#D7003A kurenai (carmim)",
+        "#2B2B2B sumi (tinta)",
+        "#E6B422 kogane (ouro)"
+      ],
+      "escala": "Escala humana/animal, corpo inteiro, silhueta simples, 1 cor de destaque. Cenário comum da região."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V006.png"
     }
   },
   {
@@ -238,10 +304,21 @@
       "ouro": 96,
       "amuleto_chance": 0
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V007.png",
-      "prompt": "anime style dark fantasy villain character portrait, young fire spirit dog with three flaming tails, volcanic slope, fire elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "young fire spirit dog with three flaming tails, volcanic slope",
+      "silhueta": "cão magro com três caudas em chama",
+      "marca_registrada": "máscara ritual quebrada pendurada no pescoço",
+      "forma": "Triângulos: chifres de kabuto, capas cortadas como chamas, pontas para cima. Postura agressiva, peito aberto.",
+      "paleta": [
+        "#EB6101 shu (vermelhão)",
+        "#D7003A kurenai (carmim)",
+        "#2B2B2B sumi (tinta)",
+        "#E6B422 kogane (ouro)"
+      ],
+      "escala": "Escala humana/animal, corpo inteiro, silhueta simples, 1 cor de destaque. Cenário comum da região."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V007.png"
     }
   },
   {
@@ -273,10 +350,21 @@
       "ouro": 120,
       "amuleto_chance": 0
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V008.png",
-      "prompt": "anime style dark fantasy villain character portrait, bald fighting monk with burning fists, torn orange robes, glowing prayer beads, fire elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "bald fighting monk with burning fists, torn orange robes, glowing prayer beads",
+      "silhueta": "monge careca em postura de luta, mantos rasgados",
+      "marca_registrada": "punhos em chamas e terço com contas incandescentes",
+      "forma": "Triângulos: chifres de kabuto, capas cortadas como chamas, pontas para cima. Postura agressiva, peito aberto.",
+      "paleta": [
+        "#EB6101 shu (vermelhão)",
+        "#D7003A kurenai (carmim)",
+        "#2B2B2B sumi (tinta)",
+        "#E6B422 kogane (ouro)"
+      ],
+      "escala": "Escala humana/animal, corpo inteiro, silhueta simples, 1 cor de destaque. Cenário comum da região."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V008.png"
     }
   },
   {
@@ -308,10 +396,21 @@
       "ouro": 16,
       "amuleto_chance": 0
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V009.png",
-      "prompt": "anime style dark fantasy villain character portrait, mischievous kappa with water dish on head, webbed hands, stolen fishing net, water elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "mischievous kappa with water dish on head, webbed hands, stolen fishing net",
+      "silhueta": "criança-tartaruga atarracada, bico",
+      "marca_registrada": "prato d'água na cabeça cheio de moedas roubadas",
+      "forma": "Círculos e curvas em S: mangas fluidas, pérolas, ondas, cabelos longos que se movem como água. Postura serena.",
+      "paleta": [
+        "#165E83 ai (índigo)",
+        "#4C6CB3 gunjō (ultramar)",
+        "#80ABA9 mizu-asagi",
+        "#F8F4E6 shinju (pérola)"
+      ],
+      "escala": "Escala humana/animal, corpo inteiro, silhueta simples, 1 cor de destaque. Cenário comum da região."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V009.png"
     }
   },
   {
@@ -343,10 +442,21 @@
       "ouro": 32,
       "amuleto_chance": 0
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V010.png",
-      "prompt": "anime style dark fantasy villain character portrait, glowing floating jellyfish with hypnotic lantern light, mirror lake at night, water elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "glowing floating jellyfish with hypnotic lantern light, mirror lake at night",
+      "silhueta": "sino flutuante com tentáculos longos",
+      "marca_registrada": "luz hipnótica em espiral dentro do corpo",
+      "forma": "Círculos e curvas em S: mangas fluidas, pérolas, ondas, cabelos longos que se movem como água. Postura serena.",
+      "paleta": [
+        "#165E83 ai (índigo)",
+        "#4C6CB3 gunjō (ultramar)",
+        "#80ABA9 mizu-asagi",
+        "#F8F4E6 shinju (pérola)"
+      ],
+      "escala": "Escala humana/animal, corpo inteiro, silhueta simples, 1 cor de destaque. Cenário comum da região."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V010.png"
     }
   },
   {
@@ -378,10 +488,21 @@
       "ouro": 56,
       "amuleto_chance": 0
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V011.png",
-      "prompt": "anime style dark fantasy villain character portrait, pirate captain with three gold teeth, water pistol, tricorn hat with shark fin, water elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "pirate captain with three gold teeth, water pistol, tricorn hat with shark fin",
+      "silhueta": "pirata de chapéu tricórnio com barbatana",
+      "marca_registrada": "três dentes de ouro e pistola de água em forma de peixe",
+      "forma": "Círculos e curvas em S: mangas fluidas, pérolas, ondas, cabelos longos que se movem como água. Postura serena.",
+      "paleta": [
+        "#165E83 ai (índigo)",
+        "#4C6CB3 gunjō (ultramar)",
+        "#80ABA9 mizu-asagi",
+        "#F8F4E6 shinju (pérola)"
+      ],
+      "escala": "Escala humana/animal, corpo inteiro, silhueta simples, 1 cor de destaque. Cenário comum da região."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V011.png"
     }
   },
   {
@@ -413,10 +534,21 @@
       "ouro": 72,
       "amuleto_chance": 0
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V012.png",
-      "prompt": "anime style dark fantasy villain character portrait, giant swamp toad wearing witch charms, poison dripping tongue, black lotus flowers, poison elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "giant swamp toad wearing witch charms, poison dripping tongue, black lotus flowers",
+      "silhueta": "sapo enorme e redondo",
+      "marca_registrada": "amuletos de bruxa pendurados na papada",
+      "forma": "Círculos e curvas em S: mangas fluidas, pérolas, ondas, cabelos longos que se movem como água. Postura serena.",
+      "paleta": [
+        "#165E83 ai (índigo)",
+        "#4C6CB3 gunjō (ultramar)",
+        "#80ABA9 mizu-asagi",
+        "#F8F4E6 shinju (pérola)"
+      ],
+      "escala": "Escala humana/animal, corpo inteiro, silhueta simples, 1 cor de destaque. Cenário comum da região."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V012.png"
     }
   },
   {
@@ -448,10 +580,21 @@
       "ouro": 40,
       "amuleto_chance": 0
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V013.png",
-      "prompt": "anime style dark fantasy villain character portrait, drowned fisherman ghoul, pale skin, seaweed hair, dripping water, stilt village, water elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "drowned fisherman ghoul, pale skin, seaweed hair, dripping water, stilt village",
+      "silhueta": "pescador inchado e curvado",
+      "marca_registrada": "algas no lugar do cabelo, rede ainda presa ao braço",
+      "forma": "Círculos e curvas em S: mangas fluidas, pérolas, ondas, cabelos longos que se movem como água. Postura serena.",
+      "paleta": [
+        "#165E83 ai (índigo)",
+        "#4C6CB3 gunjō (ultramar)",
+        "#80ABA9 mizu-asagi",
+        "#F8F4E6 shinju (pérola)"
+      ],
+      "escala": "Escala humana/animal, corpo inteiro, silhueta simples, 1 cor de destaque. Cenário comum da região."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V013.png"
     }
   },
   {
@@ -483,10 +626,21 @@
       "ouro": 104,
       "amuleto_chance": 0
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V014.png",
-      "prompt": "anime style dark fantasy villain character portrait, white ice wolf with frost breath and glowing blue eyes, blue glacier, ice elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "white ice wolf with frost breath and glowing blue eyes, blue glacier",
+      "silhueta": "lobo branco alongado, focinho baixo",
+      "marca_registrada": "olhos azuis que deixam rastro de geada",
+      "forma": "Círculos e curvas em S: mangas fluidas, pérolas, ondas, cabelos longos que se movem como água. Postura serena.",
+      "paleta": [
+        "#165E83 ai (índigo)",
+        "#4C6CB3 gunjō (ultramar)",
+        "#80ABA9 mizu-asagi",
+        "#F8F4E6 shinju (pérola)"
+      ],
+      "escala": "Escala humana/animal, corpo inteiro, silhueta simples, 1 cor de destaque. Cenário comum da região."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V014.png"
     }
   },
   {
@@ -518,10 +672,21 @@
       "ouro": 128,
       "amuleto_chance": 0
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V015.png",
-      "prompt": "anime style dark fantasy villain character portrait, armored soldier fused with black coral, trident, underwater palace corridor, water elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "armored soldier fused with black coral, trident, underwater palace corridor",
+      "silhueta": "soldado com tridente, ombreiras de coral",
+      "marca_registrada": "coral negro crescendo para dentro da armadura",
+      "forma": "Círculos e curvas em S: mangas fluidas, pérolas, ondas, cabelos longos que se movem como água. Postura serena.",
+      "paleta": [
+        "#165E83 ai (índigo)",
+        "#4C6CB3 gunjō (ultramar)",
+        "#80ABA9 mizu-asagi",
+        "#F8F4E6 shinju (pérola)"
+      ],
+      "escala": "Escala humana/animal, corpo inteiro, silhueta simples, 1 cor de destaque. Cenário comum da região."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V015.png"
     }
   },
   {
@@ -553,10 +718,21 @@
       "ouro": 144,
       "amuleto_chance": 0
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V016.png",
-      "prompt": "anime style dark fantasy villain character portrait, eerie beautiful siren with cracked voice, sharp-teeth smile, misty waterfall, sound wave elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "eerie beautiful siren with cracked voice, sharp-teeth smile, misty waterfall",
+      "silhueta": "sereia sentada numa pedra, cauda curvada em S",
+      "marca_registrada": "boca com um corte em zigue-zague onde a voz quebrou",
+      "forma": "Círculos e curvas em S: mangas fluidas, pérolas, ondas, cabelos longos que se movem como água. Postura serena.",
+      "paleta": [
+        "#165E83 ai (índigo)",
+        "#4C6CB3 gunjō (ultramar)",
+        "#80ABA9 mizu-asagi",
+        "#F8F4E6 shinju (pérola)"
+      ],
+      "escala": "Escala humana/animal, corpo inteiro, silhueta simples, 1 cor de destaque. Cenário comum da região."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V016.png"
     }
   },
   {
@@ -588,10 +764,21 @@
       "ouro": 16,
       "amuleto_chance": 0
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V017.png",
-      "prompt": "anime style dark fantasy villain character portrait, giant mole rat with crystal claws bursting from a golden wheat field, earth elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "giant mole rat with crystal claws bursting from a golden wheat field",
+      "silhueta": "rato redondo saindo do chão",
+      "marca_registrada": "garras de cristal",
+      "forma": "Quadrados e blocos: ombreiras largas, selos quadrados, base larga, pés plantados. Postura imóvel.",
+      "paleta": [
+        "#281A14 tetsuguro (ferro)",
+        "#C47222 kincha (ouro-chá)",
+        "#42602D matsuba (pinheiro)",
+        "#BF783A kohaku (âmbar)"
+      ],
+      "escala": "Escala humana/animal, corpo inteiro, silhueta simples, 1 cor de destaque. Cenário comum da região."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V017.png"
     }
   },
   {
@@ -623,10 +810,21 @@
       "ouro": 40,
       "amuleto_chance": 0
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V018.png",
-      "prompt": "anime style dark fantasy villain character portrait, living scarecrow with sack head and rusty scythe, golden wheat field at night, wood and vines elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "living scarecrow with sack head and rusty scythe, golden wheat field at night",
+      "silhueta": "espantalho de braços abertos em cruz",
+      "marca_registrada": "foice enferrujada e cabeça de saco costurada com sorriso",
+      "forma": "Quadrados e blocos: ombreiras largas, selos quadrados, base larga, pés plantados. Postura imóvel.",
+      "paleta": [
+        "#281A14 tetsuguro (ferro)",
+        "#C47222 kincha (ouro-chá)",
+        "#42602D matsuba (pinheiro)",
+        "#BF783A kohaku (âmbar)"
+      ],
+      "escala": "Escala humana/animal, corpo inteiro, silhueta simples, 1 cor de destaque. Cenário comum da região."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V018.png"
     }
   },
   {
@@ -658,10 +856,21 @@
       "ouro": 56,
       "amuleto_chance": 0
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V019.png",
-      "prompt": "anime style dark fantasy villain character portrait, cracked stone training golem with glowing rune core, broken chains, earth elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "cracked stone training golem with glowing rune core, broken chains",
+      "silhueta": "golem quadrado e baixo, braços enormes",
+      "marca_registrada": "núcleo rúnico rachado piscando no peito",
+      "forma": "Quadrados e blocos: ombreiras largas, selos quadrados, base larga, pés plantados. Postura imóvel.",
+      "paleta": [
+        "#281A14 tetsuguro (ferro)",
+        "#C47222 kincha (ouro-chá)",
+        "#42602D matsuba (pinheiro)",
+        "#BF783A kohaku (âmbar)"
+      ],
+      "escala": "Escala humana/animal, corpo inteiro, silhueta simples, 1 cor de destaque. Cenário comum da região."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V019.png"
     }
   },
   {
@@ -693,10 +902,21 @@
       "ouro": 72,
       "amuleto_chance": 0
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V020.png",
-      "prompt": "anime style dark fantasy villain character portrait, small white tree spirit with rattling head and furious hollow eyes, giant trees, nature elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "small white tree spirit with rattling head and furious hollow eyes, giant trees",
+      "silhueta": "pequeno espírito branco de cabeça grande",
+      "marca_registrada": "boca aberta em grito, cabeça que chacoalha",
+      "forma": "Quadrados e blocos: ombreiras largas, selos quadrados, base larga, pés plantados. Postura imóvel.",
+      "paleta": [
+        "#281A14 tetsuguro (ferro)",
+        "#C47222 kincha (ouro-chá)",
+        "#42602D matsuba (pinheiro)",
+        "#BF783A kohaku (âmbar)"
+      ],
+      "escala": "Escala humana/animal, corpo inteiro, silhueta simples, 1 cor de destaque. Cenário comum da região."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V020.png"
     }
   },
   {
@@ -728,10 +948,21 @@
       "ouro": 96,
       "amuleto_chance": 0
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V021.png",
-      "prompt": "anime style dark fantasy villain character portrait, miner with crystal growths for eyes, glowing pickaxe, colorful crystal cave, crystal elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "miner with crystal growths for eyes, glowing pickaxe, colorful crystal cave",
+      "silhueta": "minerador encurvado com picareta",
+      "marca_registrada": "cristais crescendo dos olhos",
+      "forma": "Quadrados e blocos: ombreiras largas, selos quadrados, base larga, pés plantados. Postura imóvel.",
+      "paleta": [
+        "#281A14 tetsuguro (ferro)",
+        "#C47222 kincha (ouro-chá)",
+        "#42602D matsuba (pinheiro)",
+        "#BF783A kohaku (âmbar)"
+      ],
+      "escala": "Escala humana/animal, corpo inteiro, silhueta simples, 1 cor de destaque. Cenário comum da região."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V021.png"
     }
   },
   {
@@ -763,10 +994,21 @@
       "ouro": 88,
       "amuleto_chance": 0
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V022.png",
-      "prompt": "anime style dark fantasy villain character portrait, bone-armored vulture with ragged wings, canyon made of dragon bones, earth elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "bone-armored vulture with ragged wings, canyon made of dragon bones",
+      "silhueta": "abutre de asas abertas",
+      "marca_registrada": "couraça de ossos de dragão no peito",
+      "forma": "Quadrados e blocos: ombreiras largas, selos quadrados, base larga, pés plantados. Postura imóvel.",
+      "paleta": [
+        "#281A14 tetsuguro (ferro)",
+        "#C47222 kincha (ouro-chá)",
+        "#42602D matsuba (pinheiro)",
+        "#BF783A kohaku (âmbar)"
+      ],
+      "escala": "Escala humana/animal, corpo inteiro, silhueta simples, 1 cor de destaque. Cenário comum da região."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V022.png"
     }
   },
   {
@@ -798,10 +1040,21 @@
       "ouro": 120,
       "amuleto_chance": 0
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V023.png",
-      "prompt": "anime style dark fantasy villain character portrait, mountain bandit with iron claw gauntlet, fur cloak, lightning over iron mountains, metal elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "mountain bandit with iron claw gauntlet, fur cloak, lightning over iron mountains",
+      "silhueta": "bandido de manto de pele, braço gigante",
+      "marca_registrada": "garra de ferro-estelar com faíscas",
+      "forma": "Quadrados e blocos: ombreiras largas, selos quadrados, base larga, pés plantados. Postura imóvel.",
+      "paleta": [
+        "#281A14 tetsuguro (ferro)",
+        "#C47222 kincha (ouro-chá)",
+        "#42602D matsuba (pinheiro)",
+        "#BF783A kohaku (âmbar)"
+      ],
+      "escala": "Escala humana/animal, corpo inteiro, silhueta simples, 1 cor de destaque. Cenário comum da região."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V023.png"
     }
   },
   {
@@ -833,10 +1086,21 @@
       "ouro": 144,
       "amuleto_chance": 0
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V024.png",
-      "prompt": "anime style dark fantasy villain character portrait, shadowy wraith with hollow face holding a dim lantern, underworld cave, darkness elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "shadowy wraith with hollow face holding a dim lantern, underworld cave",
+      "silhueta": "espectro sem pernas",
+      "marca_registrada": "lanterna fraca que só ilumina o próprio rosto vazio",
+      "forma": "Quadrados e blocos: ombreiras largas, selos quadrados, base larga, pés plantados. Postura imóvel.",
+      "paleta": [
+        "#281A14 tetsuguro (ferro)",
+        "#C47222 kincha (ouro-chá)",
+        "#42602D matsuba (pinheiro)",
+        "#BF783A kohaku (âmbar)"
+      ],
+      "escala": "Escala humana/animal, corpo inteiro, silhueta simples, 1 cor de destaque. Cenário comum da região."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V024.png"
     }
   },
   {
@@ -868,10 +1132,21 @@
       "ouro": 24,
       "amuleto_chance": 0
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V025.png",
-      "prompt": "anime style dark fantasy villain character portrait, harpy with silver feathers and sharp talons, swaying silver grass plains, wind elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "harpy with silver feathers and sharp talons, swaying silver grass plains",
+      "silhueta": "harpia de asas abertas em V",
+      "marca_registrada": "penas prateadas como lâminas",
+      "forma": "Diagonais longas e penas: cachecóis ao vento, capas-asa, assimetria, sempre em movimento.",
+      "paleta": [
+        "#83CCD2 byakugun",
+        "#68BE8D wakatake (bambu)",
+        "#F3F3F2 shironeri (seda)",
+        "#F8B500 yamabuki (raio)"
+      ],
+      "escala": "Escala humana/animal, corpo inteiro, silhueta simples, 1 cor de destaque. Cenário comum da região."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V025.png"
     }
   },
   {
@@ -903,10 +1178,21 @@
       "ouro": 48,
       "amuleto_chance": 0
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V026.png",
-      "prompt": "anime style dark fantasy villain character portrait, young crow tengu with red mask and feather fan, needle-like mountain peaks, wind elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "young crow tengu with red mask and feather fan, needle-like mountain peaks",
+      "silhueta": "tengu jovem de asas de corvo",
+      "marca_registrada": "máscara vermelha de nariz curto (ainda não cresceu)",
+      "forma": "Diagonais longas e penas: cachecóis ao vento, capas-asa, assimetria, sempre em movimento.",
+      "paleta": [
+        "#83CCD2 byakugun",
+        "#68BE8D wakatake (bambu)",
+        "#F3F3F2 shironeri (seda)",
+        "#F8B500 yamabuki (raio)"
+      ],
+      "escala": "Escala humana/animal, corpo inteiro, silhueta simples, 1 cor de destaque. Cenário comum da região."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V026.png"
     }
   },
   {
@@ -938,10 +1224,21 @@
       "ouro": 64,
       "amuleto_chance": 0
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V027.png",
-      "prompt": "anime style dark fantasy villain character portrait, fox with crackling lightning fur, ruined temple under storm, lightning elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "fox with crackling lightning fur, ruined temple under storm",
+      "silhueta": "raposa em salto, cauda em raio",
+      "marca_registrada": "pelagem elétrica em zigue-zague",
+      "forma": "Diagonais longas e penas: cachecóis ao vento, capas-asa, assimetria, sempre em movimento.",
+      "paleta": [
+        "#83CCD2 byakugun",
+        "#68BE8D wakatake (bambu)",
+        "#F3F3F2 shironeri (seda)",
+        "#F8B500 yamabuki (raio)"
+      ],
+      "escala": "Escala humana/animal, corpo inteiro, silhueta simples, 1 cor de destaque. Cenário comum da região."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V027.png"
     }
   },
   {
@@ -973,10 +1270,21 @@
       "ouro": 80,
       "amuleto_chance": 0
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V028.png",
-      "prompt": "anime style dark fantasy villain character portrait, hooded saboteur with smoke bombs and chain cutters, ropes of a floating city, wind elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "hooded saboteur with smoke bombs and chain cutters, ropes of a floating city",
+      "silhueta": "figura encapuzada agachada",
+      "marca_registrada": "alicate gigante de cortar corrente nas costas",
+      "forma": "Diagonais longas e penas: cachecóis ao vento, capas-asa, assimetria, sempre em movimento.",
+      "paleta": [
+        "#83CCD2 byakugun",
+        "#68BE8D wakatake (bambu)",
+        "#F3F3F2 shironeri (seda)",
+        "#F8B500 yamabuki (raio)"
+      ],
+      "escala": "Escala humana/animal, corpo inteiro, silhueta simples, 1 cor de destaque. Cenário comum da região."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V028.png"
     }
   },
   {
@@ -1008,10 +1316,21 @@
       "ouro": 104,
       "amuleto_chance": 0
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V029.png",
-      "prompt": "anime style dark fantasy villain character portrait, wild griffin screeching, floating islands in the sky, wind elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "wild griffin screeching, floating islands in the sky",
+      "silhueta": "grifo empinado",
+      "marca_registrada": "ninho de ouro roubado nas garras",
+      "forma": "Diagonais longas e penas: cachecóis ao vento, capas-asa, assimetria, sempre em movimento.",
+      "paleta": [
+        "#83CCD2 byakugun",
+        "#68BE8D wakatake (bambu)",
+        "#F3F3F2 shironeri (seda)",
+        "#F8B500 yamabuki (raio)"
+      ],
+      "escala": "Escala humana/animal, corpo inteiro, silhueta simples, 1 cor de destaque. Cenário comum da região."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V029.png"
     }
   },
   {
@@ -1043,10 +1362,21 @@
       "ouro": 112,
       "amuleto_chance": 0
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V030.png",
-      "prompt": "anime style dark fantasy villain character portrait, translucent weeping ghost made of wind, narrow canyon, sound wave elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "translucent weeping ghost made of wind, narrow canyon",
+      "silhueta": "fantasma esticado pelo vento",
+      "marca_registrada": "boca que é só um buraco de onde sai o vento",
+      "forma": "Diagonais longas e penas: cachecóis ao vento, capas-asa, assimetria, sempre em movimento.",
+      "paleta": [
+        "#83CCD2 byakugun",
+        "#68BE8D wakatake (bambu)",
+        "#F3F3F2 shironeri (seda)",
+        "#F8B500 yamabuki (raio)"
+      ],
+      "escala": "Escala humana/animal, corpo inteiro, silhueta simples, 1 cor de destaque. Cenário comum da região."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V030.png"
     }
   },
   {
@@ -1078,10 +1408,21 @@
       "ouro": 128,
       "amuleto_chance": 0
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V031.png",
-      "prompt": "anime style dark fantasy villain character portrait, nomad horse rider with long lance and tattered banner, wind horse, wind elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "nomad horse rider with long lance and tattered banner, wind horse",
+      "silhueta": "cavaleiro sobre cavalo em galope, lança longa",
+      "marca_registrada": "estandarte do clã rasgado ao meio",
+      "forma": "Diagonais longas e penas: cachecóis ao vento, capas-asa, assimetria, sempre em movimento.",
+      "paleta": [
+        "#83CCD2 byakugun",
+        "#68BE8D wakatake (bambu)",
+        "#F3F3F2 shironeri (seda)",
+        "#F8B500 yamabuki (raio)"
+      ],
+      "escala": "Escala humana/animal, corpo inteiro, silhueta simples, 1 cor de destaque. Cenário comum da região."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V031.png"
     }
   },
   {
@@ -1113,10 +1454,21 @@
       "ouro": 152,
       "amuleto_chance": 0
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V032.png",
-      "prompt": "anime style dark fantasy villain character portrait, living whirlwind elemental with glowing core, raging storm, wind elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "living whirlwind elemental with glowing core, raging storm",
+      "silhueta": "redemoinho vertical com núcleo",
+      "marca_registrada": "rosto que aparece e some no vento",
+      "forma": "Diagonais longas e penas: cachecóis ao vento, capas-asa, assimetria, sempre em movimento.",
+      "paleta": [
+        "#83CCD2 byakugun",
+        "#68BE8D wakatake (bambu)",
+        "#F3F3F2 shironeri (seda)",
+        "#F8B500 yamabuki (raio)"
+      ],
+      "escala": "Escala humana/animal, corpo inteiro, silhueta simples, 1 cor de destaque. Cenário comum da região."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V032.png"
     }
   },
   {
@@ -1148,10 +1500,21 @@
       "ouro": 112,
       "amuleto_chance": 0
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V033.png",
-      "prompt": "anime style dark fantasy villain character portrait, colorless crawling faceless creature, cracked stone seal pillars, void black-white elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "colorless crawling faceless creature, cracked stone seal pillars",
+      "silhueta": "rastejante baixo sem rosto",
+      "marca_registrada": "sem cor nenhuma — parece um recorte no cenário",
+      "forma": "Espaço negativo: rachaduras, partes faltando, buracos que mostram o vazio atrás. Cores lavadas.",
+      "paleta": [
+        "#FFFFFC gofun (branco-concha)",
+        "#727171 nibi (cinza-chumbo)",
+        "#2B2B2B sumi",
+        "#EAF4FC geppaku (luar)"
+      ],
+      "escala": "Escala humana/animal, corpo inteiro, silhueta simples, 1 cor de destaque. Cenário comum da região."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V033.png"
     }
   },
   {
@@ -1183,10 +1546,21 @@
       "ouro": 136,
       "amuleto_chance": 0
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V034.png",
-      "prompt": "anime style dark fantasy villain character portrait, mercenary with two swords and coin necklace, shady neutral market city, metal elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "mercenary with two swords and coin necklace, shady neutral market city",
+      "silhueta": "mercenário com duas espadas cruzadas nas costas",
+      "marca_registrada": "colar de moedas de todos os reinos",
+      "forma": "Espaço negativo: rachaduras, partes faltando, buracos que mostram o vazio atrás. Cores lavadas.",
+      "paleta": [
+        "#FFFFFC gofun (branco-concha)",
+        "#727171 nibi (cinza-chumbo)",
+        "#2B2B2B sumi",
+        "#EAF4FC geppaku (luar)"
+      ],
+      "escala": "Escala humana/animal, corpo inteiro, silhueta simples, 1 cor de destaque. Cenário comum da região."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V034.png"
     }
   },
   {
@@ -1218,10 +1592,21 @@
       "ouro": 160,
       "amuleto_chance": 0
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V035.png",
-      "prompt": "anime style dark fantasy villain character portrait, grey stone statue of a human with cracked face, petrified forest, earth elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "grey stone statue of a human with cracked face, petrified forest",
+      "silhueta": "estátua humana em passo congelado",
+      "marca_registrada": "rachadura no rosto por onde escorre luz",
+      "forma": "Espaço negativo: rachaduras, partes faltando, buracos que mostram o vazio atrás. Cores lavadas.",
+      "paleta": [
+        "#FFFFFC gofun (branco-concha)",
+        "#727171 nibi (cinza-chumbo)",
+        "#2B2B2B sumi",
+        "#EAF4FC geppaku (luar)"
+      ],
+      "escala": "Escala humana/animal, corpo inteiro, silhueta simples, 1 cor de destaque. Cenário comum da região."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V035.png"
     }
   },
   {
@@ -1253,10 +1638,21 @@
       "ouro": 400,
       "amuleto_chance": 0.01
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V036.png",
-      "prompt": "anime style dark fantasy villain character portrait, masked female duelist with twin flame blades, roaring arena, fire elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "masked female duelist with twin flame blades, roaring arena",
+      "silhueta": "duelista esguia, duas lâminas abertas",
+      "marca_registrada": "máscara branca lisa sem rosto",
+      "forma": "Triângulos: chifres de kabuto, capas cortadas como chamas, pontas para cima. Postura agressiva, peito aberto.",
+      "paleta": [
+        "#EB6101 shu (vermelhão)",
+        "#D7003A kurenai (carmim)",
+        "#2B2B2B sumi (tinta)",
+        "#E6B422 kogane (ouro)"
+      ],
+      "escala": "Um acessório marcante (arma, máscara, instrumento), 2 cores, enquadramento 3/4. Parece um personagem com nome."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V036.png"
     }
   },
   {
@@ -1288,10 +1684,21 @@
       "ouro": 440,
       "amuleto_chance": 0.01
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V037.png",
-      "prompt": "anime style dark fantasy villain character portrait, ash priest with grey robe and skull staff, desert storm of embers, ash elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "ash priest with grey robe and skull staff, desert storm of embers",
+      "silhueta": "Vestes de cinza que se desfazem na barra, cajado com caveira de peixe",
+      "marca_registrada": "Rosto pintado com cinza formando um crescente mordido",
+      "forma": "Triângulos: chifres de kabuto, capas cortadas como chamas, pontas para cima. Postura agressiva, peito aberto.",
+      "paleta": [
+        "#EB6101 shu (vermelhão)",
+        "#D7003A kurenai (carmim)",
+        "#2B2B2B sumi (tinta)",
+        "#E6B422 kogane (ouro)"
+      ],
+      "escala": "Um acessório marcante (arma, máscara, instrumento), 2 cores, enquadramento 3/4. Parece um personagem com nome."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V037.png"
     }
   },
   {
@@ -1323,10 +1730,21 @@
       "ouro": 280,
       "amuleto_chance": 0.01
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V038.png",
-      "prompt": "anime style dark fantasy villain character portrait, huge young gladiator with sun-shaped hammer, cheering arena crowd, fire elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "huge young gladiator with sun-shaped hammer, cheering arena crowd",
+      "silhueta": "gladiador enorme e jovem",
+      "marca_registrada": "martelo com cabeça em forma de sol",
+      "forma": "Triângulos: chifres de kabuto, capas cortadas como chamas, pontas para cima. Postura agressiva, peito aberto.",
+      "paleta": [
+        "#EB6101 shu (vermelhão)",
+        "#D7003A kurenai (carmim)",
+        "#2B2B2B sumi (tinta)",
+        "#E6B422 kogane (ouro)"
+      ],
+      "escala": "Um acessório marcante (arma, máscara, instrumento), 2 cores, enquadramento 3/4. Parece um personagem com nome."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V038.png"
     }
   },
   {
@@ -1358,10 +1776,21 @@
       "ouro": 360,
       "amuleto_chance": 0.01
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V039.png",
-      "prompt": "anime style dark fantasy villain character portrait, ghost pirate captain woman with spectral coat and cutlass, ship stranded in ash desert, darkness elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "ghost pirate captain woman with spectral coat and cutlass, ship stranded in ash desert",
+      "silhueta": "capitã fantasma com casaco longo e chapéu",
+      "marca_registrada": "metade do corpo transparente, sabre de prata",
+      "forma": "Triângulos: chifres de kabuto, capas cortadas como chamas, pontas para cima. Postura agressiva, peito aberto.",
+      "paleta": [
+        "#EB6101 shu (vermelhão)",
+        "#D7003A kurenai (carmim)",
+        "#2B2B2B sumi (tinta)",
+        "#E6B422 kogane (ouro)"
+      ],
+      "escala": "Um acessório marcante (arma, máscara, instrumento), 2 cores, enquadramento 3/4. Parece um personagem com nome."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V039.png"
     }
   },
   {
@@ -1393,10 +1822,21 @@
       "ouro": 300,
       "amuleto_chance": 0.01
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V040.png",
-      "prompt": "anime style dark fantasy villain character portrait, fairy queen made of firefly lights, burnt labyrinth forest, fire elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "fairy queen made of firefly lights, burnt labyrinth forest",
+      "silhueta": "fada alta feita de luzes",
+      "marca_registrada": "coroa de constelações",
+      "forma": "Triângulos: chifres de kabuto, capas cortadas como chamas, pontas para cima. Postura agressiva, peito aberto.",
+      "paleta": [
+        "#EB6101 shu (vermelhão)",
+        "#D7003A kurenai (carmim)",
+        "#2B2B2B sumi (tinta)",
+        "#E6B422 kogane (ouro)"
+      ],
+      "escala": "Um acessório marcante (arma, máscara, instrumento), 2 cores, enquadramento 3/4. Parece um personagem com nome."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V040.png"
     }
   },
   {
@@ -1428,10 +1868,21 @@
       "ouro": 560,
       "amuleto_chance": 0.01
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V041.png",
-      "prompt": "anime style dark fantasy villain character portrait, blacksmith made of molten magma wielding giant tongs and hammer, lava elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "blacksmith made of molten magma wielding giant tongs and hammer",
+      "silhueta": "ferreiro gigante de magma",
+      "marca_registrada": "tenazes e martelo grudados às mãos",
+      "forma": "Triângulos: chifres de kabuto, capas cortadas como chamas, pontas para cima. Postura agressiva, peito aberto.",
+      "paleta": [
+        "#EB6101 shu (vermelhão)",
+        "#D7003A kurenai (carmim)",
+        "#2B2B2B sumi (tinta)",
+        "#E6B422 kogane (ouro)"
+      ],
+      "escala": "Um acessório marcante (arma, máscara, instrumento), 2 cores, enquadramento 3/4. Parece um personagem com nome."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V041.png"
     }
   },
   {
@@ -1463,10 +1914,21 @@
       "ouro": 440,
       "amuleto_chance": 0.01
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V042.png",
-      "prompt": "anime style dark fantasy villain character portrait, giant spirit koi with flowing translucent fins, waterfall shrine, water elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "giant spirit koi with flowing translucent fins, waterfall shrine",
+      "silhueta": "carpa gigante em salto",
+      "marca_registrada": "barbatanas translúcidas como véus de santuário",
+      "forma": "Círculos e curvas em S: mangas fluidas, pérolas, ondas, cabelos longos que se movem como água. Postura serena.",
+      "paleta": [
+        "#165E83 ai (índigo)",
+        "#4C6CB3 gunjō (ultramar)",
+        "#80ABA9 mizu-asagi",
+        "#F8F4E6 shinju (pérola)"
+      ],
+      "escala": "Um acessório marcante (arma, máscara, instrumento), 2 cores, enquadramento 3/4. Parece um personagem com nome."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V042.png"
     }
   },
   {
@@ -1498,10 +1960,21 @@
       "ouro": 360,
       "amuleto_chance": 0.01
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V043.png",
-      "prompt": "anime style dark fantasy villain character portrait, drowned librarian ghost with floating books and round glasses, underwater library, water elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "drowned librarian ghost with floating books and round glasses, underwater library",
+      "silhueta": "bibliotecária afogada flutuando",
+      "marca_registrada": "livros que orbitam e óculos rachados",
+      "forma": "Círculos e curvas em S: mangas fluidas, pérolas, ondas, cabelos longos que se movem como água. Postura serena.",
+      "paleta": [
+        "#165E83 ai (índigo)",
+        "#4C6CB3 gunjō (ultramar)",
+        "#80ABA9 mizu-asagi",
+        "#F8F4E6 shinju (pérola)"
+      ],
+      "escala": "Um acessório marcante (arma, máscara, instrumento), 2 cores, enquadramento 3/4. Parece um personagem com nome."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V043.png"
     }
   },
   {
@@ -1533,10 +2006,21 @@
       "ouro": 440,
       "amuleto_chance": 0.01
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V044.png",
-      "prompt": "anime style dark fantasy villain character portrait, mirror reflection of a warrior with inverted colors, cracked mirror lake, mirror shards elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "mirror reflection of a warrior with inverted colors, cracked mirror lake",
+      "silhueta": "cópia do jogador com cores invertidas",
+      "marca_registrada": "rachaduras de espelho no rosto",
+      "forma": "Círculos e curvas em S: mangas fluidas, pérolas, ondas, cabelos longos que se movem como água. Postura serena.",
+      "paleta": [
+        "#165E83 ai (índigo)",
+        "#4C6CB3 gunjō (ultramar)",
+        "#80ABA9 mizu-asagi",
+        "#F8F4E6 shinju (pérola)"
+      ],
+      "escala": "Um acessório marcante (arma, máscara, instrumento), 2 cores, enquadramento 3/4. Parece um personagem com nome."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V044.png"
     }
   },
   {
@@ -1568,10 +2052,21 @@
       "ouro": 520,
       "amuleto_chance": 0.01
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V045.png",
-      "prompt": "anime style dark fantasy villain character portrait, colossal catfish with glowing whiskers, dark swamp, earth elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "colossal catfish with glowing whiskers, dark swamp",
+      "silhueta": "bagre colossal achatado",
+      "marca_registrada": "bigodes longos brilhando como raios",
+      "forma": "Círculos e curvas em S: mangas fluidas, pérolas, ondas, cabelos longos que se movem como água. Postura serena.",
+      "paleta": [
+        "#165E83 ai (índigo)",
+        "#4C6CB3 gunjō (ultramar)",
+        "#80ABA9 mizu-asagi",
+        "#F8F4E6 shinju (pérola)"
+      ],
+      "escala": "Um acessório marcante (arma, máscara, instrumento), 2 cores, enquadramento 3/4. Parece um personagem com nome."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V045.png"
     }
   },
   {
@@ -1603,10 +2098,21 @@
       "ouro": 500,
       "amuleto_chance": 0.01
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V046.png",
-      "prompt": "anime style dark fantasy villain character portrait, pirate admiral with whale-bone armor and cannon arm, giant turtle island, water elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "pirate admiral with whale-bone armor and cannon arm, giant turtle island",
+      "silhueta": "almirante com braço-canhão",
+      "marca_registrada": "armadura de ossos de baleia",
+      "forma": "Círculos e curvas em S: mangas fluidas, pérolas, ondas, cabelos longos que se movem como água. Postura serena.",
+      "paleta": [
+        "#165E83 ai (índigo)",
+        "#4C6CB3 gunjō (ultramar)",
+        "#80ABA9 mizu-asagi",
+        "#F8F4E6 shinju (pérola)"
+      ],
+      "escala": "Um acessório marcante (arma, máscara, instrumento), 2 cores, enquadramento 3/4. Parece um personagem com nome."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V046.png"
     }
   },
   {
@@ -1638,10 +2144,21 @@
       "ouro": 600,
       "amuleto_chance": 0.01
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V047.png",
-      "prompt": "anime style dark fantasy villain character portrait, old mountain witch with long white hair, black lotus, bubbling cauldron in swamp, darkness elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "old mountain witch with long white hair, black lotus, bubbling cauldron in swamp",
+      "silhueta": "velha alta e magra, cabelo branco até o chão",
+      "marca_registrada": "caldeirão nas costas e lótus negros no cabelo",
+      "forma": "Círculos e curvas em S: mangas fluidas, pérolas, ondas, cabelos longos que se movem como água. Postura serena.",
+      "paleta": [
+        "#165E83 ai (índigo)",
+        "#4C6CB3 gunjō (ultramar)",
+        "#80ABA9 mizu-asagi",
+        "#F8F4E6 shinju (pérola)"
+      ],
+      "escala": "Um acessório marcante (arma, máscara, instrumento), 2 cores, enquadramento 3/4. Parece um personagem com nome."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V047.png"
     }
   },
   {
@@ -1673,10 +2190,21 @@
       "ouro": 400,
       "amuleto_chance": 0.01
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V048.png",
-      "prompt": "anime style dark fantasy villain character portrait, giant earth spider with stone silk web, ancient colossal forest, earth elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "giant earth spider with stone silk web, ancient colossal forest",
+      "silhueta": "aranha gigante com pernas pontudas",
+      "marca_registrada": "teia que vira pedra",
+      "forma": "Quadrados e blocos: ombreiras largas, selos quadrados, base larga, pés plantados. Postura imóvel.",
+      "paleta": [
+        "#281A14 tetsuguro (ferro)",
+        "#C47222 kincha (ouro-chá)",
+        "#42602D matsuba (pinheiro)",
+        "#BF783A kohaku (âmbar)"
+      ],
+      "escala": "Um acessório marcante (arma, máscara, instrumento), 2 cores, enquadramento 3/4. Parece um personagem com nome."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V048.png"
     }
   },
   {
@@ -1708,10 +2236,21 @@
       "ouro": 480,
       "amuleto_chance": 0.01
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V049.png",
-      "prompt": "anime style dark fantasy villain character portrait, corrupt noble in gold armor holding a tax scroll, golden wheat fields, metal elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "corrupt noble in gold armor holding a tax scroll, golden wheat fields",
+      "silhueta": "nobre gordo de armadura dourada",
+      "marca_registrada": "pergaminho de impostos que escorre sangue",
+      "forma": "Quadrados e blocos: ombreiras largas, selos quadrados, base larga, pés plantados. Postura imóvel.",
+      "paleta": [
+        "#281A14 tetsuguro (ferro)",
+        "#C47222 kincha (ouro-chá)",
+        "#42602D matsuba (pinheiro)",
+        "#BF783A kohaku (âmbar)"
+      ],
+      "escala": "Um acessório marcante (arma, máscara, instrumento), 2 cores, enquadramento 3/4. Parece um personagem com nome."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V049.png"
     }
   },
   {
@@ -1743,10 +2282,21 @@
       "ouro": 280,
       "amuleto_chance": 0.01
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V050.png",
-      "prompt": "anime style dark fantasy villain character portrait, commander golem with rune crown leading stone soldiers, earth elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "commander golem with rune crown leading stone soldiers",
+      "silhueta": "golem alto com coroa rúnica",
+      "marca_registrada": "olhos que piscam como lanternas",
+      "forma": "Quadrados e blocos: ombreiras largas, selos quadrados, base larga, pés plantados. Postura imóvel.",
+      "paleta": [
+        "#281A14 tetsuguro (ferro)",
+        "#C47222 kincha (ouro-chá)",
+        "#42602D matsuba (pinheiro)",
+        "#BF783A kohaku (âmbar)"
+      ],
+      "escala": "Um acessório marcante (arma, máscara, instrumento), 2 cores, enquadramento 3/4. Parece um personagem com nome."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V050.png"
     }
   },
   {
@@ -1778,10 +2328,21 @@
       "ouro": 400,
       "amuleto_chance": 0.01
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V051.png",
-      "prompt": "anime style dark fantasy villain character portrait, ancient tree guardian with root body and glowing runes, wood and vines elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "ancient tree guardian with root body and glowing runes",
+      "silhueta": "árvore humanoide",
+      "marca_registrada": "runas brilhando entre as raízes",
+      "forma": "Quadrados e blocos: ombreiras largas, selos quadrados, base larga, pés plantados. Postura imóvel.",
+      "paleta": [
+        "#281A14 tetsuguro (ferro)",
+        "#C47222 kincha (ouro-chá)",
+        "#42602D matsuba (pinheiro)",
+        "#BF783A kohaku (âmbar)"
+      ],
+      "escala": "Um acessório marcante (arma, máscara, instrumento), 2 cores, enquadramento 3/4. Parece um personagem com nome."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V051.png"
     }
   },
   {
@@ -1813,10 +2374,21 @@
       "ouro": 560,
       "amuleto_chance": 0.01
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V052.png",
-      "prompt": "anime style dark fantasy villain character portrait, old hermit martial artist with long beard and iron staff, endless mountain stairs, earth elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "old hermit martial artist with long beard and iron staff, endless mountain stairs",
+      "silhueta": "velho magro com bastão de ferro",
+      "marca_registrada": "barba até os joelhos amarrada num nó",
+      "forma": "Quadrados e blocos: ombreiras largas, selos quadrados, base larga, pés plantados. Postura imóvel.",
+      "paleta": [
+        "#281A14 tetsuguro (ferro)",
+        "#C47222 kincha (ouro-chá)",
+        "#42602D matsuba (pinheiro)",
+        "#BF783A kohaku (âmbar)"
+      ],
+      "escala": "Um acessório marcante (arma, máscara, instrumento), 2 cores, enquadramento 3/4. Parece um personagem com nome."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V052.png"
     }
   },
   {
@@ -1848,10 +2420,21 @@
       "ouro": 640,
       "amuleto_chance": 0.01
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V053.png",
-      "prompt": "anime style dark fantasy villain character portrait, woman made of glowing crystal with crystal crown, deep mine, crystal elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "woman made of glowing crystal with crystal crown, deep mine",
+      "silhueta": "mulher de cristal com vestido facetado",
+      "marca_registrada": "coroa de cristais que refrata luz em arco-íris",
+      "forma": "Quadrados e blocos: ombreiras largas, selos quadrados, base larga, pés plantados. Postura imóvel.",
+      "paleta": [
+        "#281A14 tetsuguro (ferro)",
+        "#C47222 kincha (ouro-chá)",
+        "#42602D matsuba (pinheiro)",
+        "#BF783A kohaku (âmbar)"
+      ],
+      "escala": "Um acessório marcante (arma, máscara, instrumento), 2 cores, enquadramento 3/4. Parece um personagem com nome."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V053.png"
     }
   },
   {
@@ -1883,10 +2466,21 @@
       "ouro": 360,
       "amuleto_chance": 0.01
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V054.png",
-      "prompt": "anime style dark fantasy villain character portrait, three weasels with sickle claws riding a whirlwind, wind elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "three weasels with sickle claws riding a whirlwind",
+      "silhueta": "três doninhas num redemoinho",
+      "marca_registrada": "foices no lugar das patas dianteiras",
+      "forma": "Diagonais longas e penas: cachecóis ao vento, capas-asa, assimetria, sempre em movimento.",
+      "paleta": [
+        "#83CCD2 byakugun",
+        "#68BE8D wakatake (bambu)",
+        "#F3F3F2 shironeri (seda)",
+        "#F8B500 yamabuki (raio)"
+      ],
+      "escala": "Um acessório marcante (arma, máscara, instrumento), 2 cores, enquadramento 3/4. Parece um personagem com nome."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V054.png"
     }
   },
   {
@@ -1918,10 +2512,21 @@
       "ouro": 320,
       "amuleto_chance": 0.01
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V055.png",
-      "prompt": "anime style dark fantasy villain character portrait, spy in black feathered cloak with throwing knives, floating city at night, wind elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "spy in black feathered cloak with throwing knives, floating city at night",
+      "silhueta": "espião com manto de penas pretas",
+      "marca_registrada": "facas de arremesso presas como penas",
+      "forma": "Diagonais longas e penas: cachecóis ao vento, capas-asa, assimetria, sempre em movimento.",
+      "paleta": [
+        "#83CCD2 byakugun",
+        "#68BE8D wakatake (bambu)",
+        "#F3F3F2 shironeri (seda)",
+        "#F8B500 yamabuki (raio)"
+      ],
+      "escala": "Um acessório marcante (arma, máscara, instrumento), 2 cores, enquadramento 3/4. Parece um personagem com nome."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V055.png"
     }
   },
   {
@@ -1953,10 +2558,21 @@
       "ouro": 500,
       "amuleto_chance": 0.01
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V056.png",
-      "prompt": "anime style dark fantasy villain character portrait, great tengu abbot with long nose, feather robe and giant fan, wind elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "great tengu abbot with long nose, feather robe and giant fan",
+      "silhueta": "grande tengu de nariz longo",
+      "marca_registrada": "leque gigante de penas",
+      "forma": "Diagonais longas e penas: cachecóis ao vento, capas-asa, assimetria, sempre em movimento.",
+      "paleta": [
+        "#83CCD2 byakugun",
+        "#68BE8D wakatake (bambu)",
+        "#F3F3F2 shironeri (seda)",
+        "#F8B500 yamabuki (raio)"
+      ],
+      "escala": "Um acessório marcante (arma, máscara, instrumento), 2 cores, enquadramento 3/4. Parece um personagem com nome."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V056.png"
     }
   },
   {
@@ -1988,10 +2604,21 @@
       "ouro": 480,
       "amuleto_chance": 0.01
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V057.png",
-      "prompt": "anime style dark fantasy villain character portrait, mass of wailing ghost faces swirling in wind, canyon, sound wave elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "mass of wailing ghost faces swirling in wind, canyon",
+      "silhueta": "massa de rostos fantasmas girando",
+      "marca_registrada": "bocas abertas em coro",
+      "forma": "Diagonais longas e penas: cachecóis ao vento, capas-asa, assimetria, sempre em movimento.",
+      "paleta": [
+        "#83CCD2 byakugun",
+        "#68BE8D wakatake (bambu)",
+        "#F3F3F2 shironeri (seda)",
+        "#F8B500 yamabuki (raio)"
+      ],
+      "escala": "Um acessório marcante (arma, máscara, instrumento), 2 cores, enquadramento 3/4. Parece um personagem com nome."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V057.png"
     }
   },
   {
@@ -2023,10 +2650,21 @@
       "ouro": 560,
       "amuleto_chance": 0.01
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V058.png",
-      "prompt": "anime style dark fantasy villain character portrait, sky pirate girl with goggles and sword, wind ship among floating islands, wind elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "sky pirate girl with goggles and sword, wind ship among floating islands",
+      "silhueta": "pirata do céu jovem com óculos de aviador",
+      "marca_registrada": "nave de vento ao fundo e sabre curvo",
+      "forma": "Diagonais longas e penas: cachecóis ao vento, capas-asa, assimetria, sempre em movimento.",
+      "paleta": [
+        "#83CCD2 byakugun",
+        "#68BE8D wakatake (bambu)",
+        "#F3F3F2 shironeri (seda)",
+        "#F8B500 yamabuki (raio)"
+      ],
+      "escala": "Um acessório marcante (arma, máscara, instrumento), 2 cores, enquadramento 3/4. Parece um personagem com nome."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V058.png"
     }
   },
   {
@@ -2058,10 +2696,21 @@
       "ouro": 640,
       "amuleto_chance": 0.01
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V059.png",
-      "prompt": "anime style dark fantasy villain character portrait, shrine maiden with lightning drums, ruined temple in thunderstorm, lightning elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "shrine maiden with lightning drums, ruined temple in thunderstorm",
+      "silhueta": "sacerdotisa com anel de tambores",
+      "marca_registrada": "baquetas que são raios",
+      "forma": "Diagonais longas e penas: cachecóis ao vento, capas-asa, assimetria, sempre em movimento.",
+      "paleta": [
+        "#83CCD2 byakugun",
+        "#68BE8D wakatake (bambu)",
+        "#F3F3F2 shironeri (seda)",
+        "#F8B500 yamabuki (raio)"
+      ],
+      "escala": "Um acessório marcante (arma, máscara, instrumento), 2 cores, enquadramento 3/4. Parece um personagem com nome."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V059.png"
     }
   },
   {
@@ -2098,10 +2747,22 @@
       "ouro": 600,
       "amuleto_chance": 0.01
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V060.png",
-      "prompt": "anime style dark fantasy villain character portrait, elegant masked auctioneer with no shadow, faded robe with four royal crests, candlelit auction hall, darkness elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "elegant masked auctioneer with no shadow, faded robe with four royal crests, candlelit auction hall",
+      "silhueta": "Corcunda elegante, cartola baixa, mãos longas demais segurando um martelo de leilão; NENHUMA sombra no chão",
+      "marca_registrada": "Manto desbotado com os quatro brasões reais quase apagados",
+      "forma": "Espaço negativo: rachaduras, partes faltando, buracos que mostram o vazio atrás. Cores lavadas.",
+      "paleta": [
+        "#FFFFFC gofun (branco-concha)",
+        "#727171 nibi (cinza-chumbo)",
+        "#2B2B2B sumi",
+        "#EAF4FC geppaku (luar)"
+      ],
+      "escala": "Um acessório marcante (arma, máscara, instrumento), 2 cores, enquadramento 3/4. Parece um personagem com nome."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V060.png",
+      "mascara": "assets/avatares/viloes/V060-mascara.png"
     }
   },
   {
@@ -2133,10 +2794,21 @@
       "ouro": 1920,
       "amuleto_chance": 0.03
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V061.png",
-      "prompt": "anime style dark fantasy villain character portrait, exiled prince with crimson hair and flaming katana, noble garden of lava, fire elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "exiled prince with crimson hair and flaming katana, noble garden of lava",
+      "silhueta": "Espadachim esguio, capa curta rasgada em chamas, katana em posição baixa",
+      "marca_registrada": "Metade do cabelo cortada rente (vergonha do exílio); fio prateado no punho da katana",
+      "forma": "Triângulos: chifres de kabuto, capas cortadas como chamas, pontas para cima. Postura agressiva, peito aberto.",
+      "paleta": [
+        "#EB6101 shu (vermelhão)",
+        "#D7003A kurenai (carmim)",
+        "#2B2B2B sumi (tinta)",
+        "#E6B422 kogane (ouro)"
+      ],
+      "escala": "Figurino elaborado, aura visível, um elemento assimétrico forte na silhueta. Busto com fundo dramático."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V061.png"
     }
   },
   {
@@ -2168,10 +2840,21 @@
       "ouro": 1536,
       "amuleto_chance": 0.03
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V062.png",
-      "prompt": "anime style dark fantasy villain character portrait, corrupted phoenix with black-violet fire, volcano crater, fire elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "corrupted phoenix with black-violet fire, volcano crater",
+      "silhueta": "fênix de asas abertas",
+      "marca_registrada": "fogo violeta e negro",
+      "forma": "Triângulos: chifres de kabuto, capas cortadas como chamas, pontas para cima. Postura agressiva, peito aberto.",
+      "paleta": [
+        "#EB6101 shu (vermelhão)",
+        "#D7003A kurenai (carmim)",
+        "#2B2B2B sumi (tinta)",
+        "#E6B422 kogane (ouro)"
+      ],
+      "escala": "Figurino elaborado, aura visível, um elemento assimétrico forte na silhueta. Busto com fundo dramático."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V062.png"
     }
   },
   {
@@ -2203,10 +2886,21 @@
       "ouro": 2160,
       "amuleto_chance": 0.03
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V063.png",
-      "prompt": "anime style dark fantasy villain character portrait, general in explosive powder armor, explosions and war banners, explosive elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "general in explosive powder armor, explosions and war banners",
+      "silhueta": "general em armadura de pólvora",
+      "marca_registrada": "barris de explosivo como ombreiras",
+      "forma": "Triângulos: chifres de kabuto, capas cortadas como chamas, pontas para cima. Postura agressiva, peito aberto.",
+      "paleta": [
+        "#EB6101 shu (vermelhão)",
+        "#D7003A kurenai (carmim)",
+        "#2B2B2B sumi (tinta)",
+        "#E6B422 kogane (ouro)"
+      ],
+      "escala": "Figurino elaborado, aura visível, um elemento assimétrico forte na silhueta. Busto com fundo dramático."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V063.png"
     }
   },
   {
@@ -2238,10 +2932,21 @@
       "ouro": 1824,
       "amuleto_chance": 0.03
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V064.png",
-      "prompt": "anime style dark fantasy villain character portrait, lava dragon rising from a river of magma, broken obsidian bridge, lava elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "lava dragon rising from a river of magma, broken obsidian bridge",
+      "silhueta": "dragão de lava saindo do rio",
+      "marca_registrada": "ponte de obsidiana quebrada nas costas",
+      "forma": "Triângulos: chifres de kabuto, capas cortadas como chamas, pontas para cima. Postura agressiva, peito aberto.",
+      "paleta": [
+        "#EB6101 shu (vermelhão)",
+        "#D7003A kurenai (carmim)",
+        "#2B2B2B sumi (tinta)",
+        "#E6B422 kogane (ouro)"
+      ],
+      "escala": "Figurino elaborado, aura visível, um elemento assimétrico forte na silhueta. Busto com fundo dramático."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V064.png"
     }
   },
   {
@@ -2273,10 +2978,21 @@
       "ouro": 2016,
       "amuleto_chance": 0.03
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V065.png",
-      "prompt": "anime style dark fantasy villain character portrait, giant shadowy sea monk rising from a calm ocean, glowing eyes, tiny boats, water elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "giant shadowy sea monk rising from a calm ocean, glowing eyes, tiny boats",
+      "silhueta": "gigante negro saindo do mar",
+      "marca_registrada": "barcos minúsculos ao redor dando escala",
+      "forma": "Círculos e curvas em S: mangas fluidas, pérolas, ondas, cabelos longos que se movem como água. Postura serena.",
+      "paleta": [
+        "#165E83 ai (índigo)",
+        "#4C6CB3 gunjō (ultramar)",
+        "#80ABA9 mizu-asagi",
+        "#F8F4E6 shinju (pérola)"
+      ],
+      "escala": "Figurino elaborado, aura visível, um elemento assimétrico forte na silhueta. Busto com fundo dramático."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V065.png"
     }
   },
   {
@@ -2308,10 +3024,21 @@
       "ouro": 1920,
       "amuleto_chance": 0.03
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V066.png",
-      "prompt": "anime style dark fantasy villain character portrait, frozen general in ancient ice armor commanding ice soldiers on a glacier, ice elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "frozen general in ancient ice armor commanding ice soldiers on a glacier",
+      "silhueta": "general congelado com estandarte",
+      "marca_registrada": "barba de gelo e soldados de gelo atrás",
+      "forma": "Círculos e curvas em S: mangas fluidas, pérolas, ondas, cabelos longos que se movem como água. Postura serena.",
+      "paleta": [
+        "#165E83 ai (índigo)",
+        "#4C6CB3 gunjō (ultramar)",
+        "#80ABA9 mizu-asagi",
+        "#F8F4E6 shinju (pérola)"
+      ],
+      "escala": "Figurino elaborado, aura visível, um elemento assimétrico forte na silhueta. Busto com fundo dramático."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V066.png"
     }
   },
   {
@@ -2343,10 +3070,21 @@
       "ouro": 2304,
       "amuleto_chance": 0.03
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V067.png",
-      "prompt": "anime style dark fantasy villain character portrait, snake woman with long wet hair, bioluminescent abyss, water elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "snake woman with long wet hair, bioluminescent abyss",
+      "silhueta": "mulher-serpente enrolada",
+      "marca_registrada": "cabelo molhado longuíssimo que vira água",
+      "forma": "Círculos e curvas em S: mangas fluidas, pérolas, ondas, cabelos longos que se movem como água. Postura serena.",
+      "paleta": [
+        "#165E83 ai (índigo)",
+        "#4C6CB3 gunjō (ultramar)",
+        "#80ABA9 mizu-asagi",
+        "#F8F4E6 shinju (pérola)"
+      ],
+      "escala": "Figurino elaborado, aura visível, um elemento assimétrico forte na silhueta. Busto com fundo dramático."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V067.png"
     }
   },
   {
@@ -2378,10 +3116,21 @@
       "ouro": 2496,
       "amuleto_chance": 0.03
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V068.png",
-      "prompt": "anime style dark fantasy villain character portrait, elegant court advisor with flowing water ribbons, palace intrigue, water elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "elegant court advisor with flowing water ribbons, palace intrigue",
+      "silhueta": "Corpo encolhido dentro de vestes enormes, chapéu de corte alto, dedos cheios de anéis",
+      "marca_registrada": "Uma taça sempre na mão com água preta",
+      "forma": "Círculos e curvas em S: mangas fluidas, pérolas, ondas, cabelos longos que se movem como água. Postura serena.",
+      "paleta": [
+        "#165E83 ai (índigo)",
+        "#4C6CB3 gunjō (ultramar)",
+        "#80ABA9 mizu-asagi",
+        "#F8F4E6 shinju (pérola)"
+      ],
+      "escala": "Figurino elaborado, aura visível, um elemento assimétrico forte na silhueta. Busto com fundo dramático."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V068.png"
     }
   },
   {
@@ -2413,10 +3162,21 @@
       "ouro": 1920,
       "amuleto_chance": 0.03
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V069.png",
-      "prompt": "anime style dark fantasy villain character portrait, giant iron centipede coiled around a mountain, metal elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "giant iron centipede coiled around a mountain",
+      "silhueta": "centopeia enrolada numa montanha",
+      "marca_registrada": "carapaça de ferro com rebites",
+      "forma": "Quadrados e blocos: ombreiras largas, selos quadrados, base larga, pés plantados. Postura imóvel.",
+      "paleta": [
+        "#281A14 tetsuguro (ferro)",
+        "#C47222 kincha (ouro-chá)",
+        "#42602D matsuba (pinheiro)",
+        "#BF783A kohaku (âmbar)"
+      ],
+      "escala": "Figurino elaborado, aura visível, um elemento assimétrico forte na silhueta. Busto com fundo dramático."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V069.png"
     }
   },
   {
@@ -2448,10 +3208,21 @@
       "ouro": 1824,
       "amuleto_chance": 0.03
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V070.png",
-      "prompt": "anime style dark fantasy villain character portrait, giant dragon skull with glowing soul eyes, bone canyon, soul elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "giant dragon skull with glowing soul eyes, bone canyon",
+      "silhueta": "crânio de dragão gigante",
+      "marca_registrada": "olhos de alma azul-espectral",
+      "forma": "Quadrados e blocos: ombreiras largas, selos quadrados, base larga, pés plantados. Postura imóvel.",
+      "paleta": [
+        "#281A14 tetsuguro (ferro)",
+        "#C47222 kincha (ouro-chá)",
+        "#42602D matsuba (pinheiro)",
+        "#BF783A kohaku (âmbar)"
+      ],
+      "escala": "Figurino elaborado, aura visível, um elemento assimétrico forte na silhueta. Busto com fundo dramático."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V070.png"
     }
   },
   {
@@ -2483,10 +3254,21 @@
       "ouro": 2400,
       "amuleto_chance": 0.03
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V071.png",
-      "prompt": "anime style dark fantasy villain character portrait, warlord in black iron armor with clan banners, crystal citadel, metal elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "warlord in black iron armor with clan banners, crystal citadel",
+      "silhueta": "Quadrado e pesado, armadura negra com estandartes de clã nas costas (sashimono)",
+      "marca_registrada": "Elmo com crista em forma de serra",
+      "forma": "Quadrados e blocos: ombreiras largas, selos quadrados, base larga, pés plantados. Postura imóvel.",
+      "paleta": [
+        "#281A14 tetsuguro (ferro)",
+        "#C47222 kincha (ouro-chá)",
+        "#42602D matsuba (pinheiro)",
+        "#BF783A kohaku (âmbar)"
+      ],
+      "escala": "Figurino elaborado, aura visível, um elemento assimétrico forte na silhueta. Busto com fundo dramático."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V071.png"
     }
   },
   {
@@ -2518,10 +3300,21 @@
       "ouro": 2496,
       "amuleto_chance": 0.03
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V072.png",
-      "prompt": "anime style dark fantasy villain character portrait, pale ferrywoman of the dead with lantern and boat, underground river, darkness elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "pale ferrywoman of the dead with lantern and boat, underground river",
+      "silhueta": "barqueira pálida de pé num barco",
+      "marca_registrada": "lanterna que mostra rostos de mortos",
+      "forma": "Quadrados e blocos: ombreiras largas, selos quadrados, base larga, pés plantados. Postura imóvel.",
+      "paleta": [
+        "#281A14 tetsuguro (ferro)",
+        "#C47222 kincha (ouro-chá)",
+        "#42602D matsuba (pinheiro)",
+        "#BF783A kohaku (âmbar)"
+      ],
+      "escala": "Figurino elaborado, aura visível, um elemento assimétrico forte na silhueta. Busto com fundo dramático."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V072.png"
     }
   },
   {
@@ -2553,10 +3346,21 @@
       "ouro": 2160,
       "amuleto_chance": 0.03
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V073.png",
-      "prompt": "anime style dark fantasy villain character portrait, wind mage with torn cloak standing in the eye of a hurricane, wind elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "wind mage with torn cloak standing in the eye of a hurricane",
+      "silhueta": "mago de manto rasgado no olho do furacão",
+      "marca_registrada": "fitas de vento cortantes",
+      "forma": "Diagonais longas e penas: cachecóis ao vento, capas-asa, assimetria, sempre em movimento.",
+      "paleta": [
+        "#83CCD2 byakugun",
+        "#68BE8D wakatake (bambu)",
+        "#F3F3F2 shironeri (seda)",
+        "#F8B500 yamabuki (raio)"
+      ],
+      "escala": "Figurino elaborado, aura visível, um elemento assimétrico forte na silhueta. Busto com fundo dramático."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V073.png"
     }
   },
   {
@@ -2588,10 +3392,21 @@
       "ouro": 2016,
       "amuleto_chance": 0.03
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V074.png",
-      "prompt": "anime style dark fantasy villain character portrait, nue chimera with monkey face, tiger legs and snake tail, lightning, lightning elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "nue chimera with monkey face, tiger legs and snake tail, lightning",
+      "silhueta": "quimera: rosto de macaco, corpo de tanuki, patas de tigre",
+      "marca_registrada": "cauda que é uma serpente viva",
+      "forma": "Diagonais longas e penas: cachecóis ao vento, capas-asa, assimetria, sempre em movimento.",
+      "paleta": [
+        "#83CCD2 byakugun",
+        "#68BE8D wakatake (bambu)",
+        "#F3F3F2 shironeri (seda)",
+        "#F8B500 yamabuki (raio)"
+      ],
+      "escala": "Figurino elaborado, aura visível, um elemento assimétrico forte na silhueta. Busto com fundo dramático."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V074.png"
     }
   },
   {
@@ -2623,10 +3438,21 @@
       "ouro": 1824,
       "amuleto_chance": 0.03
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V075.png",
-      "prompt": "anime style dark fantasy villain character portrait, chained giant beneath a floating island, breaking shackles, metal elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "chained giant beneath a floating island, breaking shackles",
+      "silhueta": "gigante acorrentado de cabeça baixa",
+      "marca_registrada": "correntes rompendo",
+      "forma": "Diagonais longas e penas: cachecóis ao vento, capas-asa, assimetria, sempre em movimento.",
+      "paleta": [
+        "#83CCD2 byakugun",
+        "#68BE8D wakatake (bambu)",
+        "#F3F3F2 shironeri (seda)",
+        "#F8B500 yamabuki (raio)"
+      ],
+      "escala": "Figurino elaborado, aura visível, um elemento assimétrico forte na silhueta. Busto com fundo dramático."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V075.png"
     }
   },
   {
@@ -2658,10 +3484,21 @@
       "ouro": 2400,
       "amuleto_chance": 0.03
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V076.png",
-      "prompt": "anime style dark fantasy villain character portrait, young noble with black wing cape and wind daggers, smug smile, sky city, wind elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "young noble with black wing cape and wind daggers, smug smile, sky city",
+      "silhueta": "Asas-capa negras abertas em diagonal, adagas em pegada invertida",
+      "marca_registrada": "Uma pena negra presa atrás da orelha (contrário da coroa de penas brancas do primo)",
+      "forma": "Diagonais longas e penas: cachecóis ao vento, capas-asa, assimetria, sempre em movimento.",
+      "paleta": [
+        "#83CCD2 byakugun",
+        "#68BE8D wakatake (bambu)",
+        "#F3F3F2 shironeri (seda)",
+        "#F8B500 yamabuki (raio)"
+      ],
+      "escala": "Figurino elaborado, aura visível, um elemento assimétrico forte na silhueta. Busto com fundo dramático."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V076.png"
     }
   },
   {
@@ -2693,10 +3530,21 @@
       "ouro": 2640,
       "amuleto_chance": 0.03
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V077.png",
-      "prompt": "anime style dark fantasy villain character portrait, stone guardian woman partially dissolving into black void, cracked pillar, earth elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "stone guardian woman partially dissolving into black void, cracked pillar",
+      "silhueta": "guardiã de pedra se desfazendo",
+      "marca_registrada": "metade do corpo vira vazio preto",
+      "forma": "Espaço negativo: rachaduras, partes faltando, buracos que mostram o vazio atrás. Cores lavadas.",
+      "paleta": [
+        "#FFFFFC gofun (branco-concha)",
+        "#727171 nibi (cinza-chumbo)",
+        "#2B2B2B sumi",
+        "#EAF4FC geppaku (luar)"
+      ],
+      "escala": "Figurino elaborado, aura visível, um elemento assimétrico forte na silhueta. Busto com fundo dramático."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V077.png"
     }
   },
   {
@@ -2728,10 +3576,21 @@
       "ouro": 2640,
       "amuleto_chance": 0.03
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V078.png",
-      "prompt": "anime style dark fantasy villain character portrait, water guardian woman half consumed by black void, cracked pillar, water elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "water guardian woman half consumed by black void, cracked pillar",
+      "silhueta": "guardiã de água se desfazendo",
+      "marca_registrada": "metade do corpo vira vazio preto (espelho de V077)",
+      "forma": "Espaço negativo: rachaduras, partes faltando, buracos que mostram o vazio atrás. Cores lavadas.",
+      "paleta": [
+        "#FFFFFC gofun (branco-concha)",
+        "#727171 nibi (cinza-chumbo)",
+        "#2B2B2B sumi",
+        "#EAF4FC geppaku (luar)"
+      ],
+      "escala": "Figurino elaborado, aura visível, um elemento assimétrico forte na silhueta. Busto com fundo dramático."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V078.png"
     }
   },
   {
@@ -2763,10 +3622,21 @@
       "ouro": 2400,
       "amuleto_chance": 0.03
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V079.png",
-      "prompt": "anime style dark fantasy villain character portrait, spectral knight kneeling before a glowing sword in stone, still grass circle, holy light elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "spectral knight kneeling before a glowing sword in stone, still grass circle",
+      "silhueta": "cavaleiro espectral ajoelhado",
+      "marca_registrada": "espada fincada na pedra à frente",
+      "forma": "Diagonais longas e penas: cachecóis ao vento, capas-asa, assimetria, sempre em movimento.",
+      "paleta": [
+        "#83CCD2 byakugun",
+        "#68BE8D wakatake (bambu)",
+        "#F3F3F2 shironeri (seda)",
+        "#F8B500 yamabuki (raio)"
+      ],
+      "escala": "Figurino elaborado, aura visível, um elemento assimétrico forte na silhueta. Busto com fundo dramático."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V079.png"
     }
   },
   {
@@ -2798,10 +3668,21 @@
       "ouro": 2784,
       "amuleto_chance": 0.03
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V080.png",
-      "prompt": "anime style dark fantasy villain character portrait, anti-magic hunter with black chains and void blade, dark neutral city, void black-white elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "anti-magic hunter with black chains and void blade, dark neutral city",
+      "silhueta": "Correntes negras enroladas no corpo todo, espada sem cor (branca como recorte do papel)",
+      "marca_registrada": "A lâmina parece um buraco na imagem — não reflete nada",
+      "forma": "Espaço negativo: rachaduras, partes faltando, buracos que mostram o vazio atrás. Cores lavadas.",
+      "paleta": [
+        "#FFFFFC gofun (branco-concha)",
+        "#727171 nibi (cinza-chumbo)",
+        "#2B2B2B sumi",
+        "#EAF4FC geppaku (luar)"
+      ],
+      "escala": "Figurino elaborado, aura visível, um elemento assimétrico forte na silhueta. Busto com fundo dramático."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V080.png"
     }
   },
   {
@@ -2833,10 +3714,21 @@
       "ouro": 8400,
       "amuleto_chance": 0.1
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V081.png",
-      "prompt": "anime style dark fantasy villain character portrait, colossal fire underworld king with judge hat and ledger, burning ruins, fire elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "colossal fire underworld king with judge hat and ledger, burning ruins",
+      "silhueta": "rei-juiz colossal sentado",
+      "marca_registrada": "chapéu de juiz e livro de registros em chamas",
+      "forma": "Triângulos: chifres de kabuto, capas cortadas como chamas, pontas para cima. Postura agressiva, peito aberto.",
+      "paleta": [
+        "#EB6101 shu (vermelhão)",
+        "#D7003A kurenai (carmim)",
+        "#2B2B2B sumi (tinta)",
+        "#E6B422 kogane (ouro)"
+      ],
+      "escala": "Motivo de coroa ou halo, o clima reage à presença (chuva, cinzas, raios). Ângulo de baixo para cima."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V081.png"
     }
   },
   {
@@ -2868,10 +3760,21 @@
       "ouro": 7800,
       "amuleto_chance": 0.1
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V082.png",
-      "prompt": "anime style dark fantasy villain character portrait, spirit warrior in dragon-blood armor, ancient duel chamber under an arena, fire elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "spirit warrior in dragon-blood armor, ancient duel chamber under an arena",
+      "silhueta": "guerreiro espectral de armadura de sangue de dragão",
+      "marca_registrada": "chifres de dragão no elmo",
+      "forma": "Triângulos: chifres de kabuto, capas cortadas como chamas, pontas para cima. Postura agressiva, peito aberto.",
+      "paleta": [
+        "#EB6101 shu (vermelhão)",
+        "#D7003A kurenai (carmim)",
+        "#2B2B2B sumi (tinta)",
+        "#E6B422 kogane (ouro)"
+      ],
+      "escala": "Motivo de coroa ou halo, o clima reage à presença (chuva, cinzas, raios). Ângulo de baixo para cima."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V082.png"
     }
   },
   {
@@ -2903,10 +3806,21 @@
       "ouro": 8640,
       "amuleto_chance": 0.1
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V083.png",
-      "prompt": "anime style dark fantasy villain character portrait, colossal leviathan with bioluminescent scales in the deep abyss, water elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "colossal leviathan with bioluminescent scales in the deep abyss",
+      "silhueta": "leviatã enorme em espiral",
+      "marca_registrada": "escamas bioluminescentes em padrão de constelação",
+      "forma": "Círculos e curvas em S: mangas fluidas, pérolas, ondas, cabelos longos que se movem como água. Postura serena.",
+      "paleta": [
+        "#165E83 ai (índigo)",
+        "#4C6CB3 gunjō (ultramar)",
+        "#80ABA9 mizu-asagi",
+        "#F8F4E6 shinju (pérola)"
+      ],
+      "escala": "Motivo de coroa ou halo, o clima reage à presença (chuva, cinzas, raios). Ângulo de baixo para cima."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V083.png"
     }
   },
   {
@@ -2938,10 +3852,21 @@
       "ouro": 7920,
       "amuleto_chance": 0.1
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V084.png",
-      "prompt": "anime style dark fantasy villain character portrait, dark princess holding an ornate box releasing smoke, underwater palace, time clock elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "dark princess holding an ornate box releasing smoke, underwater palace",
+      "silhueta": "princesa com caixa ornamentada",
+      "marca_registrada": "fumaça da caixa envelhecendo tudo que toca",
+      "forma": "Círculos e curvas em S: mangas fluidas, pérolas, ondas, cabelos longos que se movem como água. Postura serena.",
+      "paleta": [
+        "#165E83 ai (índigo)",
+        "#4C6CB3 gunjō (ultramar)",
+        "#80ABA9 mizu-asagi",
+        "#F8F4E6 shinju (pérola)"
+      ],
+      "escala": "Motivo de coroa ou halo, o clima reage à presença (chuva, cinzas, raios). Ângulo de baixo para cima."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V084.png"
     }
   },
   {
@@ -2973,10 +3898,21 @@
       "ouro": 9000,
       "amuleto_chance": 0.1
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V085.png",
-      "prompt": "anime style dark fantasy villain character portrait, gigantic giant walking over mountains, footprints forming lakes, earth elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "gigantic giant walking over mountains, footprints forming lakes",
+      "silhueta": "gigante andando sobre montanhas",
+      "marca_registrada": "pegadas que viram lagos",
+      "forma": "Quadrados e blocos: ombreiras largas, selos quadrados, base larga, pés plantados. Postura imóvel.",
+      "paleta": [
+        "#281A14 tetsuguro (ferro)",
+        "#C47222 kincha (ouro-chá)",
+        "#42602D matsuba (pinheiro)",
+        "#BF783A kohaku (âmbar)"
+      ],
+      "escala": "Motivo de coroa ou halo, o clima reage à presença (chuva, cinzas, raios). Ângulo de baixo para cima."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V085.png"
     }
   },
   {
@@ -3008,10 +3944,21 @@
       "ouro": 8160,
       "amuleto_chance": 0.1
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V086.png",
-      "prompt": "anime style dark fantasy villain character portrait, giant beating stone heart with glowing crystal veins, vast cavern, soul elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "giant beating stone heart with glowing crystal veins, vast cavern",
+      "silhueta": "coração de pedra gigante",
+      "marca_registrada": "veias de cristal pulsando",
+      "forma": "Quadrados e blocos: ombreiras largas, selos quadrados, base larga, pés plantados. Postura imóvel.",
+      "paleta": [
+        "#281A14 tetsuguro (ferro)",
+        "#C47222 kincha (ouro-chá)",
+        "#42602D matsuba (pinheiro)",
+        "#BF783A kohaku (âmbar)"
+      ],
+      "escala": "Motivo de coroa ou halo, o clima reage à presença (chuva, cinzas, raios). Ângulo de baixo para cima."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V086.png"
     }
   },
   {
@@ -3043,10 +3990,21 @@
       "ouro": 8640,
       "amuleto_chance": 0.1
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V087.png",
-      "prompt": "anime style dark fantasy villain character portrait, thunder god with ring of drums, lightning storm over temple, lightning elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "thunder god with ring of drums, lightning storm over temple",
+      "silhueta": "deus do trovão com anel de tambores",
+      "marca_registrada": "chifres de oni e olhos de raio",
+      "forma": "Diagonais longas e penas: cachecóis ao vento, capas-asa, assimetria, sempre em movimento.",
+      "paleta": [
+        "#83CCD2 byakugun",
+        "#68BE8D wakatake (bambu)",
+        "#F3F3F2 shironeri (seda)",
+        "#F8B500 yamabuki (raio)"
+      ],
+      "escala": "Motivo de coroa ou halo, o clima reage à presença (chuva, cinzas, raios). Ângulo de baixo para cima."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V087.png"
     }
   },
   {
@@ -3078,10 +4036,21 @@
       "ouro": 8400,
       "amuleto_chance": 0.1
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V088.png",
-      "prompt": "anime style dark fantasy villain character portrait, tall veiled woman made of wind holding cages of glowing voices, canyon, soul elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "tall veiled woman made of wind holding cages of glowing voices, canyon",
+      "silhueta": "mulher alta de véu feita de vento",
+      "marca_registrada": "gaiolas de vozes brilhantes penduradas",
+      "forma": "Diagonais longas e penas: cachecóis ao vento, capas-asa, assimetria, sempre em movimento.",
+      "paleta": [
+        "#83CCD2 byakugun",
+        "#68BE8D wakatake (bambu)",
+        "#F3F3F2 shironeri (seda)",
+        "#F8B500 yamabuki (raio)"
+      ],
+      "escala": "Motivo de coroa ou halo, o clima reage à presença (chuva, cinzas, raios). Ângulo de baixo para cima."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V088.png"
     }
   },
   {
@@ -3113,10 +4082,21 @@
       "ouro": 9360,
       "amuleto_chance": 0.1
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V089.png",
-      "prompt": "anime style dark fantasy villain character portrait, robed archivist with floating portals and keys, impossible tower, space portal elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "robed archivist with floating portals and keys, impossible tower",
+      "silhueta": "arquivista de manto com chaves",
+      "marca_registrada": "portais flutuantes como páginas",
+      "forma": "Diagonais longas e penas: cachecóis ao vento, capas-asa, assimetria, sempre em movimento.",
+      "paleta": [
+        "#83CCD2 byakugun",
+        "#68BE8D wakatake (bambu)",
+        "#F3F3F2 shironeri (seda)",
+        "#F8B500 yamabuki (raio)"
+      ],
+      "escala": "Motivo de coroa ou halo, o clima reage à presença (chuva, cinzas, raios). Ângulo de baixo para cima."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V089.png"
     }
   },
   {
@@ -3148,10 +4128,21 @@
       "ouro": 9600,
       "amuleto_chance": 0.1
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V090.png",
-      "prompt": "anime style dark fantasy villain character portrait, stone king on a throne of petrified people, grey forest, earth elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "stone king on a throne of petrified people, grey forest",
+      "silhueta": "rei de pedra num trono de pessoas petrificadas",
+      "marca_registrada": "olhos que petrificam (brilho cinza)",
+      "forma": "Espaço negativo: rachaduras, partes faltando, buracos que mostram o vazio atrás. Cores lavadas.",
+      "paleta": [
+        "#FFFFFC gofun (branco-concha)",
+        "#727171 nibi (cinza-chumbo)",
+        "#2B2B2B sumi",
+        "#EAF4FC geppaku (luar)"
+      ],
+      "escala": "Motivo de coroa ou halo, o clima reage à presença (chuva, cinzas, raios). Ângulo de baixo para cima."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V090.png"
     }
   },
   {
@@ -3189,10 +4180,27 @@
       "ouro": 10200,
       "amuleto_chance": 0.1
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V091.png",
-      "prompt": "anime style dark fantasy villain character portrait, pale young man with long white hair tied back, moon-reflecting eyes, black guild cloak, burned hands under black gloves, silver contract threads floating around him, darkness elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "pale young man with long white hair tied back, moon-reflecting eyes, black guild cloak, burned hands under black gloves, silver contract threads floating around him",
+      "silhueta": "Alto e fino, manto preto longo até o chão, uma única trança branca caindo sobre o ombro, mãos sempre à frente do corpo (como quem oferece algo)",
+      "marca_registrada": "Fios de prata (contratos) que saem das pontas dos dedos e se prendem ao peito de quem assinou",
+      "forma": "Espaço negativo: rachaduras, partes faltando, buracos que mostram o vazio atrás. Cores lavadas.",
+      "paleta": [
+        "#0D0015 laca negra",
+        "#C9CACA prata",
+        "#5B2A86 roxo-eclipse"
+      ],
+      "escala": "Motivo de coroa ou halo, o clima reage à presença (chuva, cinzas, raios). Ângulo de baixo para cima.",
+      "evolucao": [
+        "Yoru (máscara pública): capuz, rosto na sombra, só os óculos brilham",
+        "Kanata revelado: sem capuz, à luz do dia",
+        "Kanata final: luvas tiradas, mãos queimadas e negras, os fios viram correntes"
+      ],
+      "nao_parecer": "Vilões de cabelo branco longo e solto de outras franquias — por isso o cabelo é CURTO com trança única e ele usa óculos"
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V091.png",
+      "mascara": "assets/avatares/viloes/V091-mascara.png"
     }
   },
   {
@@ -3230,10 +4238,22 @@
       "ouro": 10200,
       "amuleto_chance": 0.1
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V092.png",
-      "prompt": "anime style dark fantasy villain character portrait, hollow-eyed young man in ancient cracked armor with charred black hands, void light leaking from the cracks, endless tower, void black-white elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "hollow-eyed young man in ancient cracked armor with charred black hands, void light leaking from the cracks, endless tower",
+      "silhueta": "Armadura antiga quebrada, mãos negras carbonizadas grandes demais, rosto oco",
+      "marca_registrada": "As mãos queimadas iguais às de Kanata",
+      "forma": "Espaço negativo: rachaduras, partes faltando, buracos que mostram o vazio atrás. Cores lavadas.",
+      "paleta": [
+        "#FFFFFC gofun (branco-concha)",
+        "#727171 nibi (cinza-chumbo)",
+        "#2B2B2B sumi",
+        "#EAF4FC geppaku (luar)"
+      ],
+      "escala": "Motivo de coroa ou halo, o clima reage à presença (chuva, cinzas, raios). Ângulo de baixo para cima."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V092.png",
+      "mascara": "assets/avatares/viloes/V092-mascara.png"
     }
   },
   {
@@ -3271,10 +4291,22 @@
       "ouro": 28160,
       "amuleto_chance": 0.25
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V093.png",
-      "prompt": "anime style dark fantasy villain character portrait, ghostly ancient fire king in cracked crimson armor and burning crown, black void veins, molten throne, fire elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "ghostly ancient fire king in cracked crimson armor and burning crown, black void veins, molten throne",
+      "silhueta": "rei antigo de fogo, coroa rachada",
+      "marca_registrada": "veias de vazio atravessando a armadura carmim",
+      "forma": "Espaço negativo: rachaduras, partes faltando, buracos que mostram o vazio atrás. Cores lavadas.",
+      "paleta": [
+        "#FFFFFC gofun (branco-concha)",
+        "#727171 nibi (cinza-chumbo)",
+        "#2B2B2B sumi",
+        "#EAF4FC geppaku (luar)"
+      ],
+      "escala": "Escala colossal, halo em mandorla (como estatuária budista), o cenário faz parte do corpo, composição simétrica e iconográfica."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V093.png",
+      "mascara": "assets/avatares/viloes/V093-mascara.png"
     }
   },
   {
@@ -3312,10 +4344,22 @@
       "ouro": 28160,
       "amuleto_chance": 0.25
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V094.png",
-      "prompt": "anime style dark fantasy villain character portrait, ghostly ancient water king with flowing robes of black water and a pearl crown, drowning tides, void cracks, water elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "ghostly ancient water king with flowing robes of black water and a pearl crown, drowning tides, void cracks",
+      "silhueta": "rei antigo de água, vestes de água negra",
+      "marca_registrada": "coroa de pérolas rachadas",
+      "forma": "Espaço negativo: rachaduras, partes faltando, buracos que mostram o vazio atrás. Cores lavadas.",
+      "paleta": [
+        "#FFFFFC gofun (branco-concha)",
+        "#727171 nibi (cinza-chumbo)",
+        "#2B2B2B sumi",
+        "#EAF4FC geppaku (luar)"
+      ],
+      "escala": "Escala colossal, halo em mandorla (como estatuária budista), o cenário faz parte do corpo, composição simétrica e iconográfica."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V094.png",
+      "mascara": "assets/avatares/viloes/V094-mascara.png"
     }
   },
   {
@@ -3353,10 +4397,22 @@
       "ouro": 28160,
       "amuleto_chance": 0.25
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V095.png",
-      "prompt": "anime style dark fantasy villain character portrait, ghostly giant ancient earth king made of stone and roots, cracked with black void, mountain throne, earth elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "ghostly giant ancient earth king made of stone and roots, cracked with black void, mountain throne",
+      "silhueta": "rei antigo gigante de pedra e raízes",
+      "marca_registrada": "rachaduras de vazio no peito de pedra",
+      "forma": "Espaço negativo: rachaduras, partes faltando, buracos que mostram o vazio atrás. Cores lavadas.",
+      "paleta": [
+        "#FFFFFC gofun (branco-concha)",
+        "#727171 nibi (cinza-chumbo)",
+        "#2B2B2B sumi",
+        "#EAF4FC geppaku (luar)"
+      ],
+      "escala": "Escala colossal, halo em mandorla (como estatuária budista), o cenário faz parte do corpo, composição simétrica e iconográfica."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V095.png",
+      "mascara": "assets/avatares/viloes/V095-mascara.png"
     }
   },
   {
@@ -3394,10 +4450,22 @@
       "ouro": 28160,
       "amuleto_chance": 0.25
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V096.png",
-      "prompt": "anime style dark fantasy villain character portrait, ghostly ancient wind king with tattered storm-cloud wings and a feather crown, void cracks, howling winds, wind elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "ghostly ancient wind king with tattered storm-cloud wings and a feather crown, void cracks, howling winds",
+      "silhueta": "rei antigo de asas de nuvem rasgadas",
+      "marca_registrada": "coroa de penas cinzentas",
+      "forma": "Espaço negativo: rachaduras, partes faltando, buracos que mostram o vazio atrás. Cores lavadas.",
+      "paleta": [
+        "#FFFFFC gofun (branco-concha)",
+        "#727171 nibi (cinza-chumbo)",
+        "#2B2B2B sumi",
+        "#EAF4FC geppaku (luar)"
+      ],
+      "escala": "Escala colossal, halo em mandorla (como estatuária budista), o cenário faz parte do corpo, composição simétrica e iconográfica."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V096.png",
+      "mascara": "assets/avatares/viloes/V096-mascara.png"
     }
   },
   {
@@ -3429,10 +4497,21 @@
       "ouro": 29760,
       "amuleto_chance": 0.25
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V097.png",
-      "prompt": "anime style dark fantasy villain character portrait, dark moon god with shattered crescent moon halo, starless sky, darkness elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "dark moon god with shattered crescent moon halo, starless sky",
+      "silhueta": "deus da lua com halo de lua partida",
+      "marca_registrada": "céu sem estrelas atrás",
+      "forma": "Espaço negativo: rachaduras, partes faltando, buracos que mostram o vazio atrás. Cores lavadas.",
+      "paleta": [
+        "#FFFFFC gofun (branco-concha)",
+        "#727171 nibi (cinza-chumbo)",
+        "#2B2B2B sumi",
+        "#EAF4FC geppaku (luar)"
+      ],
+      "escala": "Escala colossal, halo em mandorla (como estatuária budista), o cenário faz parte do corpo, composição simétrica e iconográfica."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V097.png"
     }
   },
   {
@@ -3469,10 +4548,21 @@
       "ouro": 31360,
       "amuleto_chance": 0.25
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V098.png",
-      "prompt": "anime style dark fantasy villain character portrait, colossal ancient twilight dragon with ember-orange and dusk-purple scales, grief in its eyes, ruined green valley frozen in time, fire elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "colossal ancient twilight dragon with ember-orange and dusk-purple scales, grief in its eyes, ruined green valley frozen in time",
+      "silhueta": "Dragão serpentino longo, asas como véus rasgados, chifres em coroa",
+      "marca_registrada": "Lágrimas de magma secas no rosto; um ninho vazio refletido nos olhos",
+      "forma": "O círculo mordido: um anel com um crescente negro comendo a borda. Aparece em todos os servos de Kanata.",
+      "paleta": [
+        "#FF7A3D brasa",
+        "#5B2A86 crepúsculo",
+        "#E6B422 ouro"
+      ],
+      "escala": "Escala colossal, halo em mandorla (como estatuária budista), o cenário faz parte do corpo, composição simétrica e iconográfica."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V098.png",
+      "mascara": "assets/avatares/viloes/V098-mascara.png"
     }
   },
   {
@@ -3504,10 +4594,21 @@
       "ouro": 31040,
       "amuleto_chance": 0.25
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V099.png",
-      "prompt": "anime style dark fantasy villain character portrait, faceless herald in white robes with hollow void where the face should be, void black-white elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "faceless herald in white robes with hollow void where the face should be",
+      "silhueta": "arauto de vestes brancas sem rosto",
+      "marca_registrada": "buraco negro no lugar do rosto",
+      "forma": "Espaço negativo: rachaduras, partes faltando, buracos que mostram o vazio atrás. Cores lavadas.",
+      "paleta": [
+        "#FFFFFC gofun (branco-concha)",
+        "#727171 nibi (cinza-chumbo)",
+        "#2B2B2B sumi",
+        "#EAF4FC geppaku (luar)"
+      ],
+      "escala": "Escala colossal, halo em mandorla (como estatuária budista), o cenário faz parte do corpo, composição simétrica e iconográfica."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V099.png"
     }
   },
   {
@@ -3545,10 +4646,22 @@
       "ouro": 32000,
       "amuleto_chance": 0.25
     },
-    "imagem": {
-      "arquivo": "assets/viloes/V100.png",
-      "prompt": "anime style dark fantasy villain character portrait, pale teenage boy with dragon eyes and ash-grey hair sitting on a burnt doorstep, a colossal shadow dragon fused behind him, black eclipse sun, green valley frozen in time, void black-white elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
-      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    "aparencia": {
+      "descricao_visual_en": "pale teenage boy with dragon eyes and ash-grey hair sitting on a burnt doorstep, a colossal shadow dragon fused behind him, black eclipse sun, green valley frozen in time",
+      "silhueta": "Um menino pequeno sentado na soleira; atrás dele, uma sombra de dragão do tamanho do céu cujo contorno é o eclipse",
+      "marca_registrada": "O sol negro (eclipse) atrás da cabeça do menino como uma auréola",
+      "forma": "O círculo mordido: um anel com um crescente negro comendo a borda. Aparece em todos os servos de Kanata.",
+      "paleta": [
+        "#0D0015 laca negra",
+        "#FF7A3D brasa",
+        "#5B2A86 roxo-eclipse",
+        "#7D7D7D cinza"
+      ],
+      "escala": "Escala colossal, halo em mandorla (como estatuária budista), o cenário faz parte do corpo, composição simétrica e iconográfica."
+    },
+    "avatar": {
+      "arquivo": "assets/avatares/viloes/V100.png",
+      "mascara": "assets/avatares/viloes/V100-mascara.png"
     }
   }
 ]
