@@ -23,17 +23,21 @@ openssl rand -hex 32
 
 Guarde as chaves num gerenciador de senhas. **Não mande chaves pelo chat.**
 
-## 2. Vercel: projeto
+## 2. Vercel: projeto ✅ (já criado)
 
-- [ ] No painel da Vercel → **Add New → Project** → importar o repositório **JullioDutra/rpg-dark**.
-- [ ] Em *Settings → Functions*, região **São Paulo (gru1)**.
-- [ ] Ainda não precisa configurar build; o deploy de verdade vem no passo 6.
+- [x] Projeto **`rpg-dark`** no time *julliodutras-projects*, ligado ao GitHub (`JullioDutra/rpg-dark`).
+      Cada push na branch `claude/relaxed-hamilton-0nxloi` (a branch de produção) faz deploy sozinho.
+- [x] Funções em **São Paulo (`gru1`)**, Node 22. Endereço: **https://rpg-dark.vercel.app**
+- [x] Só a pasta `public/` é servida como site: docs e dados (spoilers) dão 404. Teste: `https://rpg-dark.vercel.app/api/saude`
+      mostra quais variáveis já estão configuradas (sem mostrar valores).
+- [x] Variáveis já criadas: `EVOLUTION_INSTANCIA=rpg-yotsuhoshi`, `IA_PROVEDOR=maritaca`.
 
 ## 3. Vercel: banco Neon e Blob
 
-- [ ] No projeto → **Storage → Create Database → Neon** → região **São Paulo** → conectar ao projeto
-      (isso cria a `DATABASE_URL` automaticamente).
-- [ ] **Storage → Create → Blob** → conectar ao projeto (cria o `BLOB_READ_WRITE_TOKEN`; guarda cartas e mapas).
+- [x] **Blob** `rpg-dark-cartas` (São Paulo, público) criado e conectado ao projeto (`BLOB_READ_WRITE_TOKEN`).
+- [ ] **Neon** (é com você — a criação do banco pelo Marketplace pede confirmação no painel):
+      projeto `rpg-dark` → **Storage → Create Database → Neon** → região **São Paulo (gru1)** → plano **Free** →
+      *Auth* pode ficar **desligado** (o jogo não usa) → conectar ao projeto `rpg-dark` (cria a `DATABASE_URL`).
 - [ ] Abrir o **SQL Editor** do Neon e colar/rodar o conteúdo de `db/migrations/0001_esquema_inicial.sql`.
       Deve terminar sem erro e criar o schema `jogo`.
 
@@ -70,7 +74,7 @@ docker build -t rpg-relogio relogio/
 ```
 
 ```bash
-docker run -d --name rpg-relogio --restart unless-stopped -p 8787:8787 -v rpg-relogio:/dados -e RELOGIO_SEGREDO=<segredo> -e RELOGIO_URLS=https://<projeto>.vercel.app/ rpg-relogio
+docker run -d --name rpg-relogio --restart unless-stopped -p 8787:8787 -v rpg-relogio:/dados -e RELOGIO_SEGREDO=<segredo> -e RELOGIO_URLS=https://rpg-dark.vercel.app/ rpg-relogio
 ```
 
 - [ ] Testar: `curl http://localhost:8787/saude` deve responder `{"ok":true,...}`.
@@ -80,27 +84,28 @@ docker run -d --name rpg-relogio --restart unless-stopped -p 8787:8787 -v rpg-re
 
 ## 6. Variáveis e deploy (depois que o servidor do bot estiver pronto)
 
-- [ ] Vercel → *Settings → Environment Variables*:
+- [ ] Vercel → *Settings → Environment Variables* (marque como **Sensitive** as chaves e segredos):
 
 | Variável | Valor |
 |----------|-------|
 | `DATABASE_URL` | (criada pelo Neon) |
-| `BLOB_READ_WRITE_TOKEN` | (criada pelo Blob) |
+| `BLOB_READ_WRITE_TOKEN` | ✅ criada pelo Blob |
 | `EVOLUTION_URL` | URL do seu servidor da Evolution |
 | `EVOLUTION_API_KEY` | API key da Evolution |
-| `EVOLUTION_INSTANCIA` | `rpg-yotsuhoshi` |
+| `EVOLUTION_INSTANCIA` | `rpg-yotsuhoshi` ✅ já criada |
 | `WEBHOOK_SECRET` | segredo 1 |
 | `RELOGIO_URL` | `https://relogio.seudominio.com` |
 | `RELOGIO_SEGREDO` | segredo 2 (o mesmo do container) |
 | `TELEFONE_SAL` | segredo 3 |
-| `IA_PROVEDOR` | `maritaca` |
+| `IA_PROVEDOR` | `maritaca` ✅ já criada |
 | `MARITACA_API_KEY`, `MARITACA_MODELO` | chave e modelo da Maritaca |
 | `ANTHROPIC_API_KEY` | (opcional, reserva) |
 | `ADMINS` | seu número com DDI e DDD, ex. `5511999999999` |
 
 - [ ] Deploy (push na branch principal ou *Redeploy* no painel).
 - [ ] Na Evolution, configurar o webhook **da instância `rpg-yotsuhoshi`** para
-      `https://<projeto>.vercel.app/api/webhook/evolution`, com o header do `WEBHOOK_SECRET`, eventos
+      `https://rpg-dark.vercel.app/api/webhook/evolution`, com o header `x-webhook-secret: <WEBHOOK_SECRET>`
+      (se a sua versão da Evolution não aceitar headers no webhook, use `…/api/webhook/evolution?segredo=<WEBHOOK_SECRET>`), eventos
       `MESSAGES_UPSERT`, `MESSAGES_UPDATE`, `GROUP_PARTICIPANTS_UPDATE`, `CONNECTION_UPDATE`.
 
 ## 7. Primeiro teste

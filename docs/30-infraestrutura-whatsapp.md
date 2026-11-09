@@ -45,7 +45,7 @@
 várias instâncias (uma por número), cada uma com sua sessão.
 
 1. Criar a instância `rpg-yotsuhoshi` (integração **WHATSAPP-BAILEYS**) e ler o QR com o **número dedicado ao RPG**.
-2. Webhook **da instância** (não o global) → `https://<projeto>.vercel.app/api/webhook/evolution`, eventos:
+2. Webhook **da instância** (não o global) → `https://rpg-dark.vercel.app/api/webhook/evolution`, eventos:
    `MESSAGES_UPSERT`, `MESSAGES_UPDATE` (votos de enquete), `GROUP_PARTICIPANTS_UPDATE`, `CONNECTION_UPDATE`.
    Se o servidor usar webhook global, o jogo filtra pelo campo `instance`.
 3. Recursos que o jogo usa (conferir na versão instalada): `sendText` com menções, `sendMedia`, `sendPoll`,
@@ -83,7 +83,7 @@ docker build -t rpg-relogio relogio/
 ```
 
 ```bash
-docker run -d --name rpg-relogio --restart unless-stopped -p 8787:8787 -v rpg-relogio:/dados -e RELOGIO_SEGREDO=<segredo> -e RELOGIO_URLS=https://<projeto>.vercel.app/ rpg-relogio
+docker run -d --name rpg-relogio --restart unless-stopped -p 8787:8787 -v rpg-relogio:/dados -e RELOGIO_SEGREDO=<segredo> -e RELOGIO_URLS=https://rpg-dark.vercel.app/ rpg-relogio
 ```
 
 ## 30.5 IA: Sabiá ou Claude?
