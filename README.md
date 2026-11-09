@@ -53,6 +53,7 @@ Dificuldade: **difícil** — vilões podem vencer, a morte pode ser permanente,
 | 28 | [**Conflito entre jogadores**](docs/28-conflito-entre-jogadores.md) | Rivalidade, disputa, julgamento, facções, furto, terras sem lei, paz |
 | 29 | [**Travas, técnicas e casos especiais**](docs/29-travas-tecnicas-e-casos-especiais.md) | Anti-buff, ver o card de outros jogadores, luta real com Veredito, interferência do destino, teletransporte, interações de habilidades |
 | 30 | [**Infraestrutura WhatsApp**](docs/30-infraestrutura-whatsapp.md) | Evolution API (multi-instância), Vercel, Neon, relógio no VPS, IA Sabiá ou Claude, variáveis, implantação |
+| 31 | [**Passo a passo da implantação**](docs/31-passo-a-passo-implantacao.md) | Checklist: chaves, Vercel, Neon, Evolution sem afetar o outro bot, relógio, deploy, primeiro teste |
 
 ## Dados estruturados (`data/`)
 
