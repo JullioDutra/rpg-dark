@@ -1,0 +1,59 @@
+# Yotsuhoshi no VPS — banco, backups e relógio (o servidor do jogo entra aqui na próxima etapa).
+# Uso:  cp .env.exemplo .env  (preencha)  →  docker compose up -d
+# O Postgres NÃO é exposto à internet: só os containers desta rede o enxergam
+# (e o próprio VPS em 127.0.0.1:5433, para você administrar via túnel SSH).
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: rpg
+      POSTGRES_USER: rpg
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?defina POSTGRES_PASSWORD no .env}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ../db/migrations:/docker-entrypoint-initdb.d:ro   # aplica o esquema na primeira subida
+    ports:
+      - "127.0.0.1:5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U rpg -d rpg"]
+      interval: 10s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          memory: 512m
+
+  backup:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      PGPASSWORD: ${POSTGRES_PASSWORD}
+      MANTER_DIAS: ${BACKUP_MANTER_DIAS:-14}
+    volumes:
+      - ./backups:/backups
+      - ./backup.sh:/backup.sh:ro
+    entrypoint: ["sh", "/backup.sh"]
+
+  relogio:
+    build: ../relogio
+    restart: unless-stopped
+    environment:
+      RELOGIO_SEGREDO: ${RELOGIO_SEGREDO:?defina RELOGIO_SEGREDO no .env}
+      RELOGIO_URLS: ${RELOGIO_URLS:-http://jogo:3000/}
+    volumes:
+      - relogio:/dados
+
+  # jogo:            ← servidor do bot (próxima etapa): recebe o webhook da Evolution e fala com o Postgres
+  #   build: ..
+  #   environment:
+  #     DATABASE_URL: postgres://rpg:${POSTGRES_PASSWORD}@postgres:5432/rpg
+  #   ports: ["127.0.0.1:3000:3000"]
+
+volumes:
+  pgdata:
+  relogio:

@@ -2,6 +2,8 @@
 
 ## 30.1 Decisões
 
+> Duas configurações possíveis, com o mesmo código: **Neon + Vercel** (abaixo) ou **tudo no VPS** (seção 30.7).
+
 | Peça | Escolha | Onde roda |
 |------|---------|-----------|
 | WhatsApp | **Evolution API** — nova instância `rpg-yotsuhoshi` no **seu servidor atual** (o bot do outro número continua igual) | Seu VPS |
@@ -123,7 +125,45 @@ automática, recusa, provedor reserva, eventos proibidos descartados, IA fora do
 
 Chaves e segredos ficam como **variáveis secretas na Vercel**, nunca no código nem no chat.
 
-## 30.7 Ordem de implantação
+## 30.7 Alternativa: banco no seu VPS (e o jogo junto)
+
+Usar um Postgres no VPS **funciona e é a opção mais barata e simples**, com uma condição: **o servidor do jogo vai
+para o VPS também.** Banco no VPS com o jogo na Vercel é a pior das combinações.
+
+| | Neon + Vercel | **Tudo no VPS** (Evolution + Postgres + jogo + relógio) | Postgres no VPS + jogo na Vercel ❌ |
+|--|--|--|--|
+| Custo | Grátis até a cota; depois pago | **Zero extra** (o VPS já existe) | Zero extra |
+| Cota / banco dormindo | Sim (por isso o relógio) | **Não existe** | Não existe |
+| Segurança do banco | Gerenciada pelo Neon | **Banco fechado**: só os containers o enxergam, nenhuma porta aberta para a internet | Postgres **exposto na internet** (a Vercel não tem IP fixo no plano comum para liberar no firewall) |
+| Velocidade | Vercel e Neon em São Paulo | **Mais rápido**: jogo, banco e Evolution na mesma máquina | Cada consulta atravessa a internet |
+| Backups | Automáticos (Neon) | **Sua responsabilidade**: o compose já faz backup diário (`deploy/backup.sh`); copie para fora do VPS de vez em quando | Sua responsabilidade |
+| Se o VPS cair | O jogo fica sem WhatsApp do mesmo jeito (a Evolution está lá) | Tudo cai junto, mas já cairia (Evolution) | Igual |
+| Manutenção | Quase nenhuma | Atualizar containers, olhar disco | A pior das duas |
+| Recursos do VPS | — | Postgres ~150–300 MB de RAM, limitado a 512 MB no compose | — |
+
+**Com tudo no VPS:** o relógio continua útil (prazos exatos), mas sem a pressa de economizar cota. O jogo vira um
+serviço Node comum (`jogo` no `deploy/docker-compose.yml`, próxima etapa), a Evolution manda o webhook para
+`http://jogo:3000` pela rede interna, e a Vercel deixa de ser necessária. **O código é o mesmo nas duas opções:**
+só muda a `DATABASE_URL`.
+
+### Subir no VPS
+
+```bash
+cd deploy && cp .env.exemplo .env
+```
+
+Edite o `.env` (senhas longas) e suba:
+
+```bash
+docker compose up -d
+```
+
+- O esquema do banco é aplicado **automaticamente na primeira subida** (pasta `db/migrations` montada no Postgres).
+- O Postgres fica em `127.0.0.1:5433` só para você administrar por túnel SSH; não abra essa porta no firewall.
+- Backups diários em `deploy/backups/` (mantém 14 dias).
+- Se a sua Evolution já tem um Postgres próprio, **não reutilize**: o container separado isola os dados do jogo.
+
+## 30.8 Ordem de implantação
 
 ```
 1. Vercel: criar o projeto rpg-dark ligado ao GitHub (região gru1)

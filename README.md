@@ -73,6 +73,7 @@ Dificuldade: **difícil** — vilões podem vencer, a morte pode ser permanente,
 | `db/migrations/` | Esquema do banco (Postgres/Neon), testado |
 | `src/ia/` | Camada de IA: Sabiá (Maritaca) ou Claude, narrador com validação |
 | `relogio/` | Serviço de prazos para o VPS (Docker) |
+| `deploy/` | Docker Compose para rodar no VPS: Postgres + backups + relógio (+ jogo na próxima etapa) |
 | `data/contos.yaml` | Contos, flashbacks, Chaves de Conhecimento, desafios, marcas de trajetória |
 
 ## Templates (`templates/`)
