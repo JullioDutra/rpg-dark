@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Carta de Personagem</title>
+<!-- Template da carta do jogador. O servidor abre este arquivo, chama window.renderCarta(dados)
+     e tira um screenshot de #carta (800×1120) para enviar no WhatsApp. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Noto+Serif+JP:wght@700;900&family=Inter:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --el: #ff5a2a; --el2: #ffb347; --el-escuro: #3a0d05;
+    --moldura: #c9a54a; --moldura2: #fff1b8;
+    --fundo: #0d0b12; --texto: #f4efe6; --suave: #b9b1a5;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #222; display: grid; place-items: center; min-height: 100vh; font-family: Inter, "IPAPGothic", sans-serif; }
+  #carta {
+    width: 800px; height: 1120px; position: relative; overflow: hidden; border-radius: 36px;
+    background: var(--fundo); color: var(--texto);
+    padding: 14px;
+    background-image: linear-gradient(135deg, var(--moldura), var(--moldura2) 30%, var(--moldura) 55%, var(--moldura2) 80%, var(--moldura));
+  }
+  .interior {
+    position: absolute; inset: 14px; border-radius: 26px; overflow: hidden;
+    background: radial-gradient(120% 70% at 50% 0%, var(--el-escuro), var(--fundo) 70%);
+  }
+  .topo { display: flex; align-items: center; justify-content: space-between; padding: 22px 28px 0; position: relative; z-index: 3; }
+  .rank {
+    width: 74px; height: 74px; border-radius: 50%; display: grid; place-items: center;
+    font: 900 34px Cinzel, serif; color: #1a1206;
+    background: radial-gradient(circle at 35% 30%, var(--moldura2), var(--moldura));
+    box-shadow: 0 0 0 4px #0008, 0 0 24px var(--moldura);
+  }
+  .reino { text-align: right; }
+  .reino .kanji { font: 900 40px "Noto Serif JP", "IPAGothic", serif; color: var(--el2); text-shadow: 0 0 18px var(--el); line-height: 1; }
+  .reino .nome { font: 700 15px Inter, sans-serif; letter-spacing: .14em; text-transform: uppercase; color: var(--suave); margin-top: 4px; }
+
+  .retrato {
+    position: absolute; top: 0; left: 0; right: 0; height: 640px; z-index: 1;
+    display: grid; place-items: center;
+    -webkit-mask-image: linear-gradient(#000 70%, transparent);
+            mask-image: linear-gradient(#000 70%, transparent);
+  }
+  .retrato img { width: 100%; height: 100%; object-fit: cover; }
+  .placeholder {
+    width: 100%; height: 100%; display: grid; place-items: center; position: relative;
+    background:
+      radial-gradient(circle at 50% 45%, color-mix(in srgb, var(--el) 55%, transparent), transparent 55%),
+      repeating-conic-gradient(from 0deg at 50% 45%, #ffffff08 0 6deg, transparent 6deg 12deg);
+  }
+  .placeholder .simbolo { font: 900 300px "Noto Serif JP", "IPAGothic", serif; color: #ffffff14; }
+  .placeholder .silhueta { position: absolute; bottom: 60px; width: 300px; height: 380px; }
+
+  .info { position: absolute; left: 0; right: 0; top: 520px; padding: 0 34px; z-index: 3; }
+  .titulo { font: 700 16px Inter; letter-spacing: .22em; text-transform: uppercase; color: var(--el2); }
+  .nome { font: 900 58px Cinzel, serif; line-height: 1.05; margin: 4px 0 12px; text-shadow: 0 4px 18px #000; }
+  .tags { display: flex; flex-wrap: wrap; gap: 8px; }
+  .tag { font: 700 15px Inter; padding: 7px 14px; border-radius: 999px; background: #ffffff12; border: 1px solid #ffffff22; }
+  .tag.el { background: linear-gradient(90deg, var(--el), var(--el2)); color: #140804; border: 0; }
+  .tag.pet { border-color: #8fe3ff88; color: #bff0ff; }
+
+  .painel { margin-top: 20px; display: grid; grid-template-columns: 1.15fr 1fr; gap: 18px; }
+  .barras .linha { margin-bottom: 12px; }
+  .barras .rot { display: flex; justify-content: space-between; font: 800 15px Inter; margin-bottom: 5px; }
+  .barra { height: 14px; border-radius: 8px; background: #ffffff14; overflow: hidden; }
+  .barra > i { display: block; height: 100%; border-radius: 8px; }
+  .hp > i { background: linear-gradient(90deg, #d7263d, #ff6b6b); }
+  .mp > i { background: linear-gradient(90deg, #2e86de, #7fd1ff); }
+  .xp > i { background: linear-gradient(90deg, var(--moldura), var(--moldura2)); }
+  .mana { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 6px; }
+  .mana div { background: #ffffff0d; border-radius: 12px; padding: 8px 10px; text-align: center; }
+  .mana b { display: block; font: 800 22px Inter; }
+  .mana span { font: 700 11px Inter; letter-spacing: .1em; color: var(--suave); }
+
+  .atributos { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .atr { background: #ffffff0d; border-radius: 12px; padding: 8px 12px; display: flex; justify-content: space-between; align-items: baseline; }
+  .atr span { font: 800 14px Inter; color: var(--suave); letter-spacing: .08em; }
+  .atr b { font: 900 26px Cinzel, serif; }
+
+  .equip { margin-top: 18px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .equip div { background: #ffffff0a; border: 1px dashed #ffffff22; border-radius: 12px; padding: 10px 12px; min-height: 66px; }
+  .equip span { display: block; font: 800 11px Inter; letter-spacing: .14em; color: var(--suave); margin-bottom: 4px; }
+  .equip b { font: 700 15px/1.25 Inter; }
+  .equip .lend { border: 1px solid var(--moldura2); box-shadow: 0 0 14px var(--moldura); }
+  .rodape {
+    position: absolute; left: 34px; right: 34px; bottom: 22px; z-index: 3;
+    display: flex; justify-content: space-between; font: 700 13px Inter; color: var(--suave); letter-spacing: .1em;
+  }
+  .rodape .mundo { color: var(--moldura2); }
+</style>
+</head>
+<body>
+<div id="carta">
+  <div class="interior">
+    <div class="retrato" id="retrato"></div>
+    <div class="topo">
+      <div class="rank" id="rank">E</div>
+      <div class="reino"><div class="kanji" id="reinoKanji">焔</div><div class="nome" id="reinoNome">Homura-koku</div></div>
+    </div>
+    <div class="info">
+      <div class="titulo" id="titulo"></div>
+      <div class="nome" id="nome"></div>
+      <div class="tags" id="tags"></div>
+      <div class="painel">
+        <div class="barras">
+          <div class="linha"><div class="rot"><span>HP</span><span id="hpTxt"></span></div><div class="barra hp"><i id="hpBar"></i></div></div>
+          <div class="linha"><div class="rot"><span>MP</span><span id="mpTxt"></span></div><div class="barra mp"><i id="mpBar"></i></div></div>
+          <div class="linha"><div class="rot"><span id="nivelTxt"></span><span id="xpTxt"></span></div><div class="barra xp"><i id="xpBar"></i></div></div>
+          <div class="mana" id="mana"></div>
+        </div>
+        <div class="atributos" id="atributos"></div>
+      </div>
+      <div class="equip" id="equip"></div>
+    </div>
+    <div class="rodape"><span class="mundo">四星 YOTSUHOSHI</span><span id="rodapeDir"></span></div>
+  </div>
+</div>
+
+<script>
+const ELEMENTOS = {
+  Fogo:   { el: "#ff5a2a", el2: "#ffb347", escuro: "#3a0d05", kanji: "火" },
+  Água:   { el: "#1e90ff", el2: "#7fe0ff", escuro: "#04203d", kanji: "水" },
+  Terra:  { el: "#8bc34a", el2: "#e0c068", escuro: "#1d2508", kanji: "土" },
+  Vento:  { el: "#4fe3c1", el2: "#e6fffb", escuro: "#062b2a", kanji: "風" },
+  Raio:   { el: "#ffd60a", el2: "#fff7b0", escuro: "#2b2400", kanji: "雷" },
+  Gelo:   { el: "#9be7ff", el2: "#ffffff", escuro: "#0b2533", kanji: "氷" },
+  Luz:    { el: "#ffe08a", el2: "#ffffff", escuro: "#2e2510", kanji: "光" },
+  Trevas: { el: "#8a5cff", el2: "#d6c2ff", escuro: "#140a2b", kanji: "闇" },
+  Vazio:  { el: "#e8e8e8", el2: "#7a7a7a", escuro: "#0a0a0a", kanji: "無" },
+  Estelar:{ el: "#b388ff", el2: "#80d8ff", escuro: "#0d0b2b", kanji: "星" },
+};
+const REINOS = { Homura: ["焔", "Homura-koku"], Watatsumi: ["水", "Watatsumi-koku"], Daichi: ["土", "Daichi-koku"], "Fūjin": ["風", "Fūjin-koku"], "Kokū": ["虚", "Kokū"] };
+const MOLDURAS = { E: ["#7d7d7d", "#cfcfcf"], D: ["#a0603a", "#f0b27a"], C: ["#9aa4b1", "#f2f6fa"], B: ["#c9a54a", "#fff1b8"], A: ["#8fb8c9", "#f0fbff"], S: ["#222", "#8a5cff"], SS: ["#ff5a2a", "#4fe3c1"] };
+const CASTAS = { campones: "🧑‍🌾 Camponês", plebeu: "🧑 Plebeu", cavaleiro: "🛡️ Cavaleiro", realeza: "👑 Realeza", indefinido: "❓ Indefinido", rei: "🔱 Linhagem Real" };
+
+function elementoBase(atributo) {
+  for (const k of Object.keys(ELEMENTOS)) if (atributo.startsWith(k)) return k;
+  return "Vazio";
+}
+
+window.renderCarta = function (d) {
+  const $ = (id) => document.getElementById(id);
+  const e = ELEMENTOS[d.elemento_cor ?? elementoBase(d.atributo_magico)] ?? ELEMENTOS.Vazio;
+  const [m1, m2] = MOLDURAS[d.rank] ?? MOLDURAS.E;
+  const r = document.documentElement.style;
+  r.setProperty("--el", e.el); r.setProperty("--el2", e.el2); r.setProperty("--el-escuro", e.escuro);
+  r.setProperty("--moldura", m1); r.setProperty("--moldura2", m2);
+
+  $("rank").textContent = d.rank;
+  const [k, n] = REINOS[d.reino] ?? ["？", d.reino];
+  $("reinoKanji").textContent = k; $("reinoNome").textContent = `${n} · ${d.aldeia}`;
+  $("titulo").textContent = d.titulo ?? "";
+  $("nome").textContent = d.nome;
+  const tags = [
+    `<span class="tag el">${e.kanji} ${d.atributo_magico}</span>`,
+    `<span class="tag">${d.classe}</span>`,
+    `<span class="tag">${CASTAS[d.casta] ?? d.casta}</span>`,
+  ];
+  if (d.pet) tags.push(`<span class="tag pet">🐾 ${d.pet}</span>`);
+  else if (d.elegivel_pet) tags.push(`<span class="tag pet">✨ Elegível a Pet</span>`);
+  $("tags").innerHTML = tags.join("");
+
+  const pct = (a, b) => `${Math.max(0, Math.min(100, (a / b) * 100))}%`;
+  $("hpTxt").textContent = `${d.hp} / ${d.hp_max}`; $("hpBar").style.width = pct(d.hp, d.hp_max);
+  $("mpTxt").textContent = d.mp_max ? `${d.mp} / ${d.mp_max}` : `VAZIO ${d.vz ?? 0} / 100`;
+  $("mpBar").style.width = d.mp_max ? pct(d.mp, d.mp_max) : pct(d.vz ?? 0, 100);
+  $("nivelTxt").textContent = `NÍVEL ${d.nivel}`; $("xpTxt").textContent = `${d.xp} / ${d.xp_prox} XP`;
+  $("xpBar").style.width = pct(d.xp, d.xp_prox);
+  $("mana").innerHTML = [["FLUXO", d.fluxo], ["PUREZA", `${d.pureza}%`], ["CONTROLE", d.controle]]
+    .map(([a, b]) => `<div><b>${b}</b><span>${a}</span></div>`).join("");
+  $("atributos").innerHTML = ["FOR", "DEF", "MAG", "RES", "VEL", "SOR"]
+    .map((a) => `<div class="atr"><span>${a}</span><b>${d.atributos[a]}</b></div>`).join("");
+  const eq = d.equipamento ?? {};
+  $("equip").innerHTML = [["ARMA", eq.arma], ["GRIMÓRIO", eq.grimorio], ["RELÍQUIA / ACESSÓRIO", eq.reliquia ?? eq.acessorio]]
+    .map(([k, v]) => `<div class="${eq.reliquia && k.startsWith("REL") ? "lend" : ""}"><span>${k}</span><b>${v ?? "—"}</b></div>`).join("");
+  $("rodapeDir").textContent = `MÉRITO ${d.merito} · ${d.mundo ?? ""}`.trim();
+
+  $("retrato").innerHTML = d.retrato_url
+    ? `<img src="${d.retrato_url}" alt="">`
+    : `<div class="placeholder"><div class="simbolo">${e.kanji}</div>
+         <svg class="silhueta" viewBox="0 0 300 380" fill="#000a"><circle cx="150" cy="90" r="62"/><path d="M20 380c0-110 58-190 130-190s130 80 130 190z"/></svg></div>`;
+};
+
+// Dados de exemplo (usados ao abrir o arquivo direto no navegador)
+window.renderCarta({
+  nome: "Kaito", titulo: "Aprendiz das Cinzas", rank: "E", reino: "Homura", aldeia: "Haibara",
+  casta: "campones", classe: "⚔️ Espadachim", atributo_magico: "Fogo · Cinzas", elegivel_pet: true,
+  nivel: 3, xp: 120, xp_prox: 290, hp: 131, hp_max: 147, mp: 38, mp_max: 54,
+  fluxo: 3, pureza: 5, controle: 22, merito: 25, mundo: "Grupo Alpha",
+  atributos: { FOR: 18, DEF: 8, MAG: 6, RES: 6, VEL: 16, SOR: 8 },
+  equipamento: { arma: "Katana Enferrujada", grimorio: "G01 Caderno de Faíscas do Mineiro", acessorio: null },
+});
+</script>
+</body>
+</html>

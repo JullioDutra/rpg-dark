@@ -1,0 +1,3502 @@
+[
+  {
+    "id": "V001",
+    "nome": "Haikobo",
+    "titulo": "o Kobold de Cinzas",
+    "nome_completo": "Haikobo, o Kobold de Cinzas",
+    "tier": "comum",
+    "tier_rotulo": "Nível Comum",
+    "nivel": 2,
+    "regiao": "Deserto de Haijin",
+    "elemento": "Fogo",
+    "arquetipo": "besta",
+    "atributos": {
+      "HP": 120,
+      "MP": 16,
+      "FOR": 10,
+      "DEF": 7,
+      "MAG": 4,
+      "RES": 6,
+      "VEL": 9
+    },
+    "poder": 48,
+    "habilidade": "Sopro de Cinza: cega o alvo por 1 turno",
+    "fraqueza": "Água",
+    "descricao": "Pequenas criaturas que roubam ferramentas dos mineiros e sopram cinza nos olhos de quem os persegue.",
+    "recompensa": {
+      "xp": 30,
+      "ouro": 16,
+      "amuleto_chance": 0
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V001.png",
+      "prompt": "anime style dark fantasy villain character portrait, small kobold covered in grey ash, glowing ember eyes, holding a stolen pickaxe, fire elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V002",
+    "nome": "Salamandra Faminta",
+    "titulo": "a Sombra das Pontes",
+    "nome_completo": "Salamandra Faminta, a Sombra das Pontes",
+    "tier": "comum",
+    "tier_rotulo": "Nível Comum",
+    "nivel": 4,
+    "regiao": "Rio Yōgan",
+    "elemento": "Fogo",
+    "arquetipo": "besta",
+    "atributos": {
+      "HP": 170,
+      "MP": 22,
+      "FOR": 13,
+      "DEF": 10,
+      "MAG": 6,
+      "RES": 8,
+      "VEL": 12
+    },
+    "poder": 66,
+    "habilidade": "Mordida Incandescente: queimadura por 3 turnos",
+    "fraqueza": "Água",
+    "descricao": "Lagartos de lava que seguem viajantes pelas pontes de obsidiana esperando um passo em falso.",
+    "recompensa": {
+      "xp": 60,
+      "ouro": 32,
+      "amuleto_chance": 0
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V002.png",
+      "prompt": "anime style dark fantasy villain character portrait, lava salamander with cracked magma skin, open jaws dripping molten rock, fire elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V003",
+    "nome": "Gonzō Mão-Brasa",
+    "titulo": "o Contrabandista",
+    "nome_completo": "Gonzō Mão-Brasa, o Contrabandista",
+    "tier": "comum",
+    "tier_rotulo": "Nível Comum",
+    "nivel": 6,
+    "regiao": "Costa Akashio",
+    "elemento": "Fogo",
+    "arquetipo": "assassino",
+    "atributos": {
+      "HP": 155,
+      "MP": 39,
+      "FOR": 16,
+      "DEF": 9,
+      "MAG": 9,
+      "RES": 9,
+      "VEL": 20
+    },
+    "poder": 79,
+    "habilidade": "Lâmina Aquecida: ignora 20% da DEF",
+    "fraqueza": "Água",
+    "descricao": "Contrabandista da névoa vermelha que prefere esfaquear a negociar.",
+    "recompensa": {
+      "xp": 90,
+      "ouro": 48,
+      "amuleto_chance": 0
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V003.png",
+      "prompt": "anime style dark fantasy villain character portrait, scarred smuggler bandit, red bandana, glowing red-hot dagger, crimson mist, fire elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V004",
+    "nome": "Enxame Carniceiro",
+    "titulo": "dos Vagalumes Famintos",
+    "nome_completo": "Enxame Carniceiro, dos Vagalumes Famintos",
+    "tier": "comum",
+    "tier_rotulo": "Nível Comum",
+    "nivel": 5,
+    "regiao": "Floresta Hotaru-bi",
+    "elemento": "Fogo",
+    "arquetipo": "besta",
+    "atributos": {
+      "HP": 190,
+      "MP": 25,
+      "FOR": 14,
+      "DEF": 11,
+      "MAG": 7,
+      "RES": 9,
+      "VEL": 13
+    },
+    "poder": 73,
+    "habilidade": "Enxame: 3 ataques fracos por turno",
+    "fraqueza": "Vento",
+    "descricao": "Vagalumes de fogo que, numa noite sem lua, descobriram o gosto de carne.",
+    "recompensa": {
+      "xp": 75,
+      "ouro": 40,
+      "amuleto_chance": 0
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V004.png",
+      "prompt": "anime style dark fantasy villain character portrait, swarm of fiery fireflies forming a skull shape, burnt forest at night, fire elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V005",
+    "nome": "Capataz Kurogane",
+    "titulo": "o Senhor da Mina",
+    "nome_completo": "Capataz Kurogane, o Senhor da Mina",
+    "tier": "comum",
+    "tier_rotulo": "Nível Comum",
+    "nivel": 8,
+    "regiao": "Deserto de Haijin",
+    "elemento": "Fogo",
+    "arquetipo": "bruto",
+    "atributos": {
+      "HP": 285,
+      "MP": 34,
+      "FOR": 20,
+      "DEF": 18,
+      "MAG": 7,
+      "RES": 10,
+      "VEL": 12
+    },
+    "poder": 96,
+    "habilidade": "Golpe de Picareta: atordoa por 1 turno",
+    "fraqueza": "Água",
+    "descricao": "Ex-capataz que tomou a mina de obsidiana abandonada e escraviza mineiros perdidos.",
+    "recompensa": {
+      "xp": 120,
+      "ouro": 64,
+      "amuleto_chance": 0
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V005.png",
+      "prompt": "anime style dark fantasy villain character portrait, burly foreman with obsidian pickaxe, soot-covered muscles, cruel grin, mine entrance, fire elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V006",
+    "nome": "Marinheiro-Esqueleto",
+    "titulo": "da Tripulação Perdida",
+    "nome_completo": "Marinheiro-Esqueleto, da Tripulação Perdida",
+    "tier": "comum",
+    "tier_rotulo": "Nível Comum",
+    "nivel": 10,
+    "regiao": "Deserto de Haijin",
+    "elemento": "Trevas",
+    "arquetipo": "morto-vivo",
+    "atributos": {
+      "HP": 285,
+      "MP": 64,
+      "FOR": 17,
+      "DEF": 19,
+      "MAG": 15,
+      "RES": 10,
+      "VEL": 12
+    },
+    "poder": 102,
+    "habilidade": "Âncora Fantasma: puxa o alvo e reduz sua VEL",
+    "fraqueza": "Luz",
+    "descricao": "Tripulantes de navios que afundaram num mar que virou deserto. Ainda remam na areia.",
+    "recompensa": {
+      "xp": 150,
+      "ouro": 80,
+      "amuleto_chance": 0
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V006.png",
+      "prompt": "anime style dark fantasy villain character portrait, skeleton sailor with tattered coat and ghostly anchor chain, shipwreck in ash dunes, darkness elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V007",
+    "nome": "Inugami Filhote",
+    "titulo": "o Cão das Três Chamas",
+    "nome_completo": "Inugami Filhote, o Cão das Três Chamas",
+    "tier": "comum",
+    "tier_rotulo": "Nível Comum",
+    "nivel": 12,
+    "regiao": "Monte Hinokami",
+    "elemento": "Fogo",
+    "arquetipo": "besta",
+    "atributos": {
+      "HP": 360,
+      "MP": 46,
+      "FOR": 25,
+      "DEF": 19,
+      "MAG": 12,
+      "RES": 16,
+      "VEL": 23
+    },
+    "poder": 131,
+    "habilidade": "Uivo Flamejante: −10% DEF de todos os inimigos",
+    "fraqueza": "Água",
+    "descricao": "Cão-espírito de fogo, ainda jovem e já cruel; anda em matilhas na encosta do vulcão.",
+    "recompensa": {
+      "xp": 180,
+      "ouro": 96,
+      "amuleto_chance": 0
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V007.png",
+      "prompt": "anime style dark fantasy villain character portrait, young fire spirit dog with three flaming tails, volcanic slope, fire elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V008",
+    "nome": "Enkai",
+    "titulo": "o Monge Renegado",
+    "nome_completo": "Enkai, o Monge Renegado",
+    "tier": "comum",
+    "tier_rotulo": "Nível Comum",
+    "nivel": 15,
+    "regiao": "Kagutsuchi-jō",
+    "elemento": "Fogo",
+    "arquetipo": "equilibrado",
+    "atributos": {
+      "HP": 360,
+      "MP": 110,
+      "FOR": 25,
+      "DEF": 23,
+      "MAG": 23,
+      "RES": 23,
+      "VEL": 23
+    },
+    "poder": 153,
+    "habilidade": "Palma Ardente: dano e empurra o alvo para trás na ordem de turno",
+    "fraqueza": "Água",
+    "descricao": "Expulso do Coliseu por matar um oponente que já tinha se rendido. Agora caça duelistas pelas ruas.",
+    "recompensa": {
+      "xp": 225,
+      "ouro": 120,
+      "amuleto_chance": 0
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V008.png",
+      "prompt": "anime style dark fantasy villain character portrait, bald fighting monk with burning fists, torn orange robes, glowing prayer beads, fire elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V009",
+    "nome": "Kappa Ladrão",
+    "titulo": "o Ladrão das Redes",
+    "nome_completo": "Kappa Ladrão, o Ladrão das Redes",
+    "tier": "comum",
+    "tier_rotulo": "Nível Comum",
+    "nivel": 2,
+    "regiao": "Arquipélago Shiranami",
+    "elemento": "Água",
+    "arquetipo": "assassino",
+    "atributos": {
+      "HP": 85,
+      "MP": 22,
+      "FOR": 10,
+      "DEF": 5,
+      "MAG": 5,
+      "RES": 5,
+      "VEL": 12
+    },
+    "poder": 46,
+    "habilidade": "Puxão Traiçoeiro: rouba um item consumível",
+    "fraqueza": "Raio",
+    "descricao": "Rouba redes, sandálias e, dizem, crianças distraídas na beira das palafitas.",
+    "recompensa": {
+      "xp": 30,
+      "ouro": 16,
+      "amuleto_chance": 0
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V009.png",
+      "prompt": "anime style dark fantasy villain character portrait, mischievous kappa with water dish on head, webbed hands, stolen fishing net, water elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V010",
+    "nome": "Medusa-Lanterna",
+    "titulo": "a Luz do Lago",
+    "nome_completo": "Medusa-Lanterna, a Luz do Lago",
+    "tier": "comum",
+    "tier_rotulo": "Nível Comum",
+    "nivel": 4,
+    "regiao": "Lago Kagami",
+    "elemento": "Água",
+    "arquetipo": "mago",
+    "atributos": {
+      "HP": 110,
+      "MP": 70,
+      "FOR": 5,
+      "DEF": 7,
+      "MAG": 16,
+      "RES": 13,
+      "VEL": 9
+    },
+    "poder": 61,
+    "habilidade": "Pulso Hipnótico: confunde por 1 turno",
+    "fraqueza": "Raio",
+    "descricao": "Água-viva que flutua no ar à noite, atraindo viajantes para o fundo do lago.",
+    "recompensa": {
+      "xp": 60,
+      "ouro": 32,
+      "amuleto_chance": 0
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V010.png",
+      "prompt": "anime style dark fantasy villain character portrait, glowing floating jellyfish with hypnotic lantern light, mirror lake at night, water elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V011",
+    "nome": "Sabuurō Dente-de-Ouro",
+    "titulo": "o Pirata",
+    "nome_completo": "Sabuurō Dente-de-Ouro, o Pirata",
+    "tier": "comum",
+    "tier_rotulo": "Nível Comum",
+    "nivel": 7,
+    "regiao": "Arquipélago Shiranami",
+    "elemento": "Água",
+    "arquetipo": "equilibrado",
+    "atributos": {
+      "HP": 200,
+      "MP": 62,
+      "FOR": 15,
+      "DEF": 13,
+      "MAG": 13,
+      "RES": 13,
+      "VEL": 13
+    },
+    "poder": 87,
+    "habilidade": "Pistola de Maré: tiro que ignora esquiva",
+    "fraqueza": "Raio",
+    "descricao": "Capitão pirata de três dentes de ouro e nenhum escrúpulo. Tomou as palafitas de Amiya.",
+    "recompensa": {
+      "xp": 105,
+      "ouro": 56,
+      "amuleto_chance": 0
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V011.png",
+      "prompt": "anime style dark fantasy villain character portrait, pirate captain with three gold teeth, water pistol, tricorn hat with shark fin, water elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V012",
+    "nome": "Sapo-Bruxo",
+    "titulo": "do Pântano Negro",
+    "nome_completo": "Sapo-Bruxo, do Pântano Negro",
+    "tier": "comum",
+    "tier_rotulo": "Nível Comum",
+    "nivel": 9,
+    "regiao": "Pântano Numa-no-Me",
+    "elemento": "Veneno",
+    "arquetipo": "mago",
+    "atributos": {
+      "HP": 190,
+      "MP": 118,
+      "FOR": 8,
+      "DEF": 11,
+      "MAG": 25,
+      "RES": 21,
+      "VEL": 14
+    },
+    "poder": 98,
+    "habilidade": "Língua Venenosa: veneno por 4 turnos",
+    "fraqueza": "Fogo",
+    "descricao": "Sapo gigante que aprendeu maldições ouvindo a bruxa do pântano.",
+    "recompensa": {
+      "xp": 135,
+      "ouro": 72,
+      "amuleto_chance": 0
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V012.png",
+      "prompt": "anime style dark fantasy villain character portrait, giant swamp toad wearing witch charms, poison dripping tongue, black lotus flowers, poison elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V013",
+    "nome": "Afogado de Amiya",
+    "titulo": "o Pescador que Não Aceitou",
+    "nome_completo": "Afogado de Amiya, o Pescador que Não Aceitou",
+    "tier": "comum",
+    "tier_rotulo": "Nível Comum",
+    "nivel": 5,
+    "regiao": "Arquipélago Shiranami",
+    "elemento": "Água",
+    "arquetipo": "morto-vivo",
+    "atributos": {
+      "HP": 175,
+      "MP": 40,
+      "FOR": 11,
+      "DEF": 12,
+      "MAG": 10,
+      "RES": 7,
+      "VEL": 8
+    },
+    "poder": 66,
+    "habilidade": "Abraço Encharcado: prende o alvo por 2 turnos",
+    "fraqueza": "Fogo",
+    "descricao": "Pescadores que morreram no naufrágio de Amiya e ainda tentam voltar para casa.",
+    "recompensa": {
+      "xp": 75,
+      "ouro": 40,
+      "amuleto_chance": 0
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V013.png",
+      "prompt": "anime style dark fantasy villain character portrait, drowned fisherman ghoul, pale skin, seaweed hair, dripping water, stilt village, water elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V014",
+    "nome": "Lobo de Hyōga",
+    "titulo": "o Caçador Branco",
+    "nome_completo": "Lobo de Hyōga, o Caçador Branco",
+    "tier": "comum",
+    "tier_rotulo": "Nível Comum",
+    "nivel": 13,
+    "regiao": "Geleira Hyōga",
+    "elemento": "Gelo",
+    "arquetipo": "besta",
+    "atributos": {
+      "HP": 385,
+      "MP": 49,
+      "FOR": 27,
+      "DEF": 21,
+      "MAG": 12,
+      "RES": 16,
+      "VEL": 25
+    },
+    "poder": 140,
+    "habilidade": "Matilha: invoca +1 lobo se o HP cair abaixo de 50%",
+    "fraqueza": "Fogo",
+    "descricao": "Lobos brancos de olhos azuis que caçam em silêncio absoluto sobre o gelo.",
+    "recompensa": {
+      "xp": 195,
+      "ouro": 104,
+      "amuleto_chance": 0
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V014.png",
+      "prompt": "anime style dark fantasy villain character portrait, white ice wolf with frost breath and glowing blue eyes, blue glacier, ice elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V015",
+    "nome": "Guarda-Coral Corrompido",
+    "titulo": "o Soldado Negro",
+    "nome_completo": "Guarda-Coral Corrompido, o Soldado Negro",
+    "tier": "comum",
+    "tier_rotulo": "Nível Comum",
+    "nivel": 16,
+    "regiao": "Ryūgū-jō",
+    "elemento": "Água",
+    "arquetipo": "tanque",
+    "atributos": {
+      "HP": 610,
+      "MP": 70,
+      "FOR": 24,
+      "DEF": 39,
+      "MAG": 15,
+      "RES": 29,
+      "VEL": 15
+    },
+    "poder": 183,
+    "habilidade": "Carapaça de Coral: −30% dano físico por 2 turnos",
+    "fraqueza": "Raio",
+    "descricao": "Soldado da guarda marinha tomado por um coral negro que cresce para dentro.",
+    "recompensa": {
+      "xp": 240,
+      "ouro": 128,
+      "amuleto_chance": 0
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V015.png",
+      "prompt": "anime style dark fantasy villain character portrait, armored soldier fused with black coral, trident, underwater palace corridor, water elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V016",
+    "nome": "Sereia do Canto Partido",
+    "titulo": "a Que Canta Nomes",
+    "nome_completo": "Sereia do Canto Partido, a Que Canta Nomes",
+    "tier": "comum",
+    "tier_rotulo": "Nível Comum",
+    "nivel": 18,
+    "regiao": "Cachoeiras Taki-no-Koe",
+    "elemento": "Som",
+    "arquetipo": "mago",
+    "atributos": {
+      "HP": 335,
+      "MP": 205,
+      "FOR": 13,
+      "DEF": 19,
+      "MAG": 43,
+      "RES": 35,
+      "VEL": 24
+    },
+    "poder": 168,
+    "habilidade": "Canção Cortante: dano em todos + silêncio 1 turno",
+    "fraqueza": "Terra",
+    "descricao": "Canta o nome de quem vai morrer — e às vezes dá uma mãozinha ao destino.",
+    "recompensa": {
+      "xp": 270,
+      "ouro": 144,
+      "amuleto_chance": 0
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V016.png",
+      "prompt": "anime style dark fantasy villain character portrait, eerie beautiful siren with cracked voice, sharp-teeth smile, misty waterfall, sound wave elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V017",
+    "nome": "Rato-Toupeira Gigante",
+    "titulo": "a Praga dos Trigais",
+    "nome_completo": "Rato-Toupeira Gigante, a Praga dos Trigais",
+    "tier": "comum",
+    "tier_rotulo": "Nível Comum",
+    "nivel": 2,
+    "regiao": "Planícies Kogane",
+    "elemento": "Terra",
+    "arquetipo": "besta",
+    "atributos": {
+      "HP": 120,
+      "MP": 16,
+      "FOR": 10,
+      "DEF": 7,
+      "MAG": 4,
+      "RES": 6,
+      "VEL": 9
+    },
+    "poder": 48,
+    "habilidade": "Emboscada Subterrânea: sempre ataca primeiro no 1º turno",
+    "fraqueza": "Vento",
+    "descricao": "Pragas do tamanho de cães que devoram as plantações de trigo dourado.",
+    "recompensa": {
+      "xp": 30,
+      "ouro": 16,
+      "amuleto_chance": 0
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V017.png",
+      "prompt": "anime style dark fantasy villain character portrait, giant mole rat with crystal claws bursting from a golden wheat field, earth elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V018",
+    "nome": "Kakashi",
+    "titulo": "o Espantalho Vivo",
+    "nome_completo": "Kakashi, o Espantalho Vivo",
+    "tier": "comum",
+    "tier_rotulo": "Nível Comum",
+    "nivel": 5,
+    "regiao": "Planícies Kogane",
+    "elemento": "Madeira",
+    "arquetipo": "equilibrado",
+    "atributos": {
+      "HP": 160,
+      "MP": 50,
+      "FOR": 12,
+      "DEF": 11,
+      "MAG": 11,
+      "RES": 11,
+      "VEL": 11
+    },
+    "poder": 72,
+    "habilidade": "Foice Ceifadora: crítico garantido em alvos abaixo de 30% HP",
+    "fraqueza": "Fogo",
+    "descricao": "Ganha vida nas noites de colheita e protege o campo de qualquer um — inclusive do dono.",
+    "recompensa": {
+      "xp": 75,
+      "ouro": 40,
+      "amuleto_chance": 0
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V018.png",
+      "prompt": "anime style dark fantasy villain character portrait, living scarecrow with sack head and rusty scythe, golden wheat field at night, wood and vines elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V019",
+    "nome": "Golem de Treino Defeituoso",
+    "titulo": "o Que Não Para",
+    "nome_completo": "Golem de Treino Defeituoso, o Que Não Para",
+    "tier": "comum",
+    "tier_rotulo": "Nível Comum",
+    "nivel": 7,
+    "regiao": "Iwakura-jō",
+    "elemento": "Terra",
+    "arquetipo": "tanque",
+    "atributos": {
+      "HP": 320,
+      "MP": 37,
+      "FOR": 13,
+      "DEF": 21,
+      "MAG": 8,
+      "RES": 16,
+      "VEL": 8
+    },
+    "poder": 98,
+    "habilidade": "Soco Pesado: dano alto, mas age por último",
+    "fraqueza": "Água",
+    "descricao": "Golem de treino da guarda que enlouqueceu e não aceita mais comandos.",
+    "recompensa": {
+      "xp": 105,
+      "ouro": 56,
+      "amuleto_chance": 0
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V019.png",
+      "prompt": "anime style dark fantasy villain character portrait, cracked stone training golem with glowing rune core, broken chains, earth elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V020",
+    "nome": "Kodama Raivoso",
+    "titulo": "o Eco da Dor",
+    "nome_completo": "Kodama Raivoso, o Eco da Dor",
+    "tier": "comum",
+    "tier_rotulo": "Nível Comum",
+    "nivel": 9,
+    "regiao": "Floresta Kodama",
+    "elemento": "Natureza",
+    "arquetipo": "mago",
+    "atributos": {
+      "HP": 190,
+      "MP": 118,
+      "FOR": 8,
+      "DEF": 11,
+      "MAG": 25,
+      "RES": 21,
+      "VEL": 14
+    },
+    "poder": 98,
+    "habilidade": "Eco Amaldiçoado: repete o último ataque que recebeu",
+    "fraqueza": "Fogo",
+    "descricao": "Espírito pequenino da floresta que passou a repetir só gritos de dor.",
+    "recompensa": {
+      "xp": 135,
+      "ouro": 72,
+      "amuleto_chance": 0
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V020.png",
+      "prompt": "anime style dark fantasy villain character portrait, small white tree spirit with rattling head and furious hollow eyes, giant trees, nature elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V021",
+    "nome": "Minerador de Olhos de Cristal",
+    "titulo": "o Que Viu Demais",
+    "nome_completo": "Minerador de Olhos de Cristal, o Que Viu Demais",
+    "tier": "comum",
+    "tier_rotulo": "Nível Comum",
+    "nivel": 12,
+    "regiao": "Minas de Shōseki",
+    "elemento": "Cristal",
+    "arquetipo": "bruto",
+    "atributos": {
+      "HP": 390,
+      "MP": 46,
+      "FOR": 27,
+      "DEF": 23,
+      "MAG": 10,
+      "RES": 14,
+      "VEL": 16
+    },
+    "poder": 129,
+    "habilidade": "Estilhaço: dano + sangramento",
+    "fraqueza": "Vento",
+    "descricao": "Ficou tempo demais perto dos cristais de mana. Agora os cristais enxergam por ele.",
+    "recompensa": {
+      "xp": 180,
+      "ouro": 96,
+      "amuleto_chance": 0
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V021.png",
+      "prompt": "anime style dark fantasy villain character portrait, miner with crystal growths for eyes, glowing pickaxe, colorful crystal cave, crystal elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V022",
+    "nome": "Abutre-Osso",
+    "titulo": "o Comedor de Medula",
+    "nome_completo": "Abutre-Osso, o Comedor de Medula",
+    "tier": "comum",
+    "tier_rotulo": "Nível Comum",
+    "nivel": 11,
+    "regiao": "Cânion Ryūkotsu",
+    "elemento": "Terra",
+    "arquetipo": "besta",
+    "atributos": {
+      "HP": 335,
+      "MP": 43,
+      "FOR": 24,
+      "DEF": 18,
+      "MAG": 11,
+      "RES": 15,
+      "VEL": 22
+    },
+    "poder": 124,
+    "habilidade": "Mergulho: +20% chance de crítico",
+    "fraqueza": "Raio",
+    "descricao": "Abutres que se alimentam da medula do dragão colossal que forma o cânion.",
+    "recompensa": {
+      "xp": 165,
+      "ouro": 88,
+      "amuleto_chance": 0
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V022.png",
+      "prompt": "anime style dark fantasy villain character portrait, bone-armored vulture with ragged wings, canyon made of dragon bones, earth elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V023",
+    "nome": "Jūbei Garra-de-Ferro",
+    "titulo": "o Bandoleiro da Trilha",
+    "nome_completo": "Jūbei Garra-de-Ferro, o Bandoleiro da Trilha",
+    "tier": "comum",
+    "tier_rotulo": "Nível Comum",
+    "nivel": 15,
+    "regiao": "Cordilheira Tetsuzan",
+    "elemento": "Metal",
+    "arquetipo": "assassino",
+    "atributos": {
+      "HP": 305,
+      "MP": 77,
+      "FOR": 30,
+      "DEF": 16,
+      "MAG": 16,
+      "RES": 16,
+      "VEL": 37
+    },
+    "poder": 146,
+    "habilidade": "Garra de Ferro-Estelar: ignora escudos mágicos",
+    "fraqueza": "Fogo",
+    "descricao": "Saqueia peregrinos que tentam o Teste dos 1000 Degraus.",
+    "recompensa": {
+      "xp": 225,
+      "ouro": 120,
+      "amuleto_chance": 0
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V023.png",
+      "prompt": "anime style dark fantasy villain character portrait, mountain bandit with iron claw gauntlet, fur cloak, lightning over iron mountains, metal elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V024",
+    "nome": "Sombra de Yomi",
+    "titulo": "a Alma Perdida",
+    "nome_completo": "Sombra de Yomi, a Alma Perdida",
+    "tier": "comum",
+    "tier_rotulo": "Nível Comum",
+    "nivel": 18,
+    "regiao": "Cavernas Yomi-no-Ana",
+    "elemento": "Trevas",
+    "arquetipo": "morto-vivo",
+    "atributos": {
+      "HP": 460,
+      "MP": 102,
+      "FOR": 27,
+      "DEF": 29,
+      "MAG": 24,
+      "RES": 16,
+      "VEL": 19
+    },
+    "poder": 161,
+    "habilidade": "Toque Gélido: drena 10% do MP",
+    "fraqueza": "Luz",
+    "descricao": "Restos de almas que se perderam na descida para o mundo dos mortos.",
+    "recompensa": {
+      "xp": 270,
+      "ouro": 144,
+      "amuleto_chance": 0
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V024.png",
+      "prompt": "anime style dark fantasy villain character portrait, shadowy wraith with hollow face holding a dim lantern, underworld cave, darkness elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V025",
+    "nome": "Harpia da Estepe",
+    "titulo": "a Ladra de Cavalos",
+    "nome_completo": "Harpia da Estepe, a Ladra de Cavalos",
+    "tier": "comum",
+    "tier_rotulo": "Nível Comum",
+    "nivel": 3,
+    "regiao": "Estepe Susuki",
+    "elemento": "Vento",
+    "arquetipo": "assassino",
+    "atributos": {
+      "HP": 100,
+      "MP": 27,
+      "FOR": 11,
+      "DEF": 6,
+      "MAG": 6,
+      "RES": 6,
+      "VEL": 14
+    },
+    "poder": 53,
+    "habilidade": "Rasante: ataca e ganha +30% esquiva no turno",
+    "fraqueza": "Raio",
+    "descricao": "Roubam os cavalos-vento dos nômades e os largam do alto.",
+    "recompensa": {
+      "xp": 45,
+      "ouro": 24,
+      "amuleto_chance": 0
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V025.png",
+      "prompt": "anime style dark fantasy villain character portrait, harpy with silver feathers and sharp talons, swaying silver grass plains, wind elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V026",
+    "nome": "Karasu",
+    "titulo": "o Tengu Novato",
+    "nome_completo": "Karasu, o Tengu Novato",
+    "tier": "comum",
+    "tier_rotulo": "Nível Comum",
+    "nivel": 6,
+    "regiao": "Picos Tengu",
+    "elemento": "Vento",
+    "arquetipo": "equilibrado",
+    "atributos": {
+      "HP": 180,
+      "MP": 56,
+      "FOR": 13,
+      "DEF": 12,
+      "MAG": 12,
+      "RES": 12,
+      "VEL": 12
+    },
+    "poder": 79,
+    "habilidade": "Leque Cortante: dano em 2 alvos",
+    "fraqueza": "Fogo",
+    "descricao": "Aprendiz tengu arrogante que desafia todo viajante para provar seu valor.",
+    "recompensa": {
+      "xp": 90,
+      "ouro": 48,
+      "amuleto_chance": 0
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V026.png",
+      "prompt": "anime style dark fantasy villain character portrait, young crow tengu with red mask and feather fan, needle-like mountain peaks, wind elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V027",
+    "nome": "Raposa-Trovão",
+    "titulo": "a Faísca Viva",
+    "nome_completo": "Raposa-Trovão, a Faísca Viva",
+    "tier": "comum",
+    "tier_rotulo": "Nível Comum",
+    "nivel": 8,
+    "regiao": "Templo Raijin",
+    "elemento": "Raio",
+    "arquetipo": "besta",
+    "atributos": {
+      "HP": 265,
+      "MP": 34,
+      "FOR": 19,
+      "DEF": 15,
+      "MAG": 9,
+      "RES": 12,
+      "VEL": 18
+    },
+    "poder": 100,
+    "habilidade": "Choque: 20% de chance de paralisar",
+    "fraqueza": "Terra",
+    "descricao": "Raposas de pelagem elétrica que nascem dos raios que caem no templo.",
+    "recompensa": {
+      "xp": 120,
+      "ouro": 64,
+      "amuleto_chance": 0
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V027.png",
+      "prompt": "anime style dark fantasy villain character portrait, fox with crackling lightning fur, ruined temple under storm, lightning elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V028",
+    "nome": "Sabotador Encapuzado",
+    "titulo": "o Cortador de Correntes",
+    "nome_completo": "Sabotador Encapuzado, o Cortador de Correntes",
+    "tier": "comum",
+    "tier_rotulo": "Nível Comum",
+    "nivel": 10,
+    "regiao": "Amagumo-jō",
+    "elemento": "Vento",
+    "arquetipo": "assassino",
+    "atributos": {
+      "HP": 220,
+      "MP": 56,
+      "FOR": 22,
+      "DEF": 12,
+      "MAG": 12,
+      "RES": 12,
+      "VEL": 27
+    },
+    "poder": 107,
+    "habilidade": "Bomba de Fumaça: foge garantido se HP < 30%",
+    "fraqueza": "Terra",
+    "descricao": "Agente que enfraquece, uma a uma, as correntes que prendem a cidade flutuante.",
+    "recompensa": {
+      "xp": 150,
+      "ouro": 80,
+      "amuleto_chance": 0
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V028.png",
+      "prompt": "anime style dark fantasy villain character portrait, hooded saboteur with smoke bombs and chain cutters, ropes of a floating city, wind elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V029",
+    "nome": "Grifo Selvagem",
+    "titulo": "o Senhor do Ninho",
+    "nome_completo": "Grifo Selvagem, o Senhor do Ninho",
+    "tier": "comum",
+    "tier_rotulo": "Nível Comum",
+    "nivel": 13,
+    "regiao": "Ilhas Ukishima",
+    "elemento": "Vento",
+    "arquetipo": "besta",
+    "atributos": {
+      "HP": 385,
+      "MP": 49,
+      "FOR": 27,
+      "DEF": 21,
+      "MAG": 12,
+      "RES": 16,
+      "VEL": 25
+    },
+    "poder": 140,
+    "habilidade": "Garras do Céu: dano dobrado em alvos voando",
+    "fraqueza": "Raio",
+    "descricao": "Grifos não domados, extremamente territoriais.",
+    "recompensa": {
+      "xp": 195,
+      "ouro": 104,
+      "amuleto_chance": 0
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V029.png",
+      "prompt": "anime style dark fantasy villain character portrait, wild griffin screeching, floating islands in the sky, wind elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V030",
+    "nome": "Fantasma Chorão",
+    "titulo": "a Voz no Vento",
+    "nome_completo": "Fantasma Chorão, a Voz no Vento",
+    "tier": "comum",
+    "tier_rotulo": "Nível Comum",
+    "nivel": 14,
+    "regiao": "Desfiladeiro Kazenaki",
+    "elemento": "Som",
+    "arquetipo": "mago",
+    "atributos": {
+      "HP": 270,
+      "MP": 166,
+      "FOR": 11,
+      "DEF": 15,
+      "MAG": 35,
+      "RES": 28,
+      "VEL": 20
+    },
+    "poder": 136,
+    "habilidade": "Lamento: medo, −15% FOR por 2 turnos",
+    "fraqueza": "Luz",
+    "descricao": "Uma das vozes presas no vento do desfiladeiro que ganhou forma — e raiva.",
+    "recompensa": {
+      "xp": 210,
+      "ouro": 112,
+      "amuleto_chance": 0
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V030.png",
+      "prompt": "anime style dark fantasy villain character portrait, translucent weeping ghost made of wind, narrow canyon, sound wave elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V031",
+    "nome": "Tōgo",
+    "titulo": "o Cavaleiro Nômade Desonrado",
+    "nome_completo": "Tōgo, o Cavaleiro Nômade Desonrado",
+    "tier": "comum",
+    "tier_rotulo": "Nível Comum",
+    "nivel": 16,
+    "regiao": "Estepe Susuki",
+    "elemento": "Vento",
+    "arquetipo": "bruto",
+    "atributos": {
+      "HP": 495,
+      "MP": 58,
+      "FOR": 34,
+      "DEF": 29,
+      "MAG": 12,
+      "RES": 17,
+      "VEL": 19
+    },
+    "poder": 161,
+    "habilidade": "Investida: dano dobrado no 1º turno",
+    "fraqueza": "Terra",
+    "descricao": "Expulso do clã por covardia; vende a lança para quem pagar.",
+    "recompensa": {
+      "xp": 240,
+      "ouro": 128,
+      "amuleto_chance": 0
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V031.png",
+      "prompt": "anime style dark fantasy villain character portrait, nomad horse rider with long lance and tattered banner, wind horse, wind elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V032",
+    "nome": "Elemental de Rajada",
+    "titulo": "o Fragmento do Furacão",
+    "nome_completo": "Elemental de Rajada, o Fragmento do Furacão",
+    "tier": "comum",
+    "tier_rotulo": "Nível Comum",
+    "nivel": 19,
+    "regiao": "Olho da Tempestade Arashi-no-Me",
+    "elemento": "Vento",
+    "arquetipo": "mago",
+    "atributos": {
+      "HP": 350,
+      "MP": 214,
+      "FOR": 14,
+      "DEF": 19,
+      "MAG": 44,
+      "RES": 36,
+      "VEL": 25
+    },
+    "poder": 173,
+    "habilidade": "Ciclone: dano em área",
+    "fraqueza": "Terra",
+    "descricao": "Pedaço vivo do furacão eterno, que se desprendeu e vaga com fome de movimento.",
+    "recompensa": {
+      "xp": 285,
+      "ouro": 152,
+      "amuleto_chance": 0
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V032.png",
+      "prompt": "anime style dark fantasy villain character portrait, living whirlwind elemental with glowing core, raging storm, wind elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V033",
+    "nome": "Rastejante do Vazio",
+    "titulo": "o Sem Cor",
+    "nome_completo": "Rastejante do Vazio, o Sem Cor",
+    "tier": "comum",
+    "tier_rotulo": "Nível Comum",
+    "nivel": 14,
+    "regiao": "Muralha dos Selos",
+    "elemento": "Vazio",
+    "arquetipo": "besta",
+    "atributos": {
+      "HP": 410,
+      "MP": 52,
+      "FOR": 28,
+      "DEF": 22,
+      "MAG": 13,
+      "RES": 17,
+      "VEL": 26
+    },
+    "poder": 147,
+    "habilidade": "Mordida Anuladora: drena 20% do MP",
+    "fraqueza": "Luz",
+    "descricao": "Criaturas sem cor e sem rosto que saem pelas rachaduras dos pilares.",
+    "recompensa": {
+      "xp": 210,
+      "ouro": 112,
+      "amuleto_chance": 0
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V033.png",
+      "prompt": "anime style dark fantasy villain character portrait, colorless crawling faceless creature, cracked stone seal pillars, void black-white elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V034",
+    "nome": "Tatsu Dois-Preços",
+    "titulo": "o Mercenário",
+    "nome_completo": "Tatsu Dois-Preços, o Mercenário",
+    "tier": "comum",
+    "tier_rotulo": "Nível Comum",
+    "nivel": 17,
+    "regiao": "Kyōkai",
+    "elemento": "Metal",
+    "arquetipo": "assassino",
+    "atributos": {
+      "HP": 340,
+      "MP": 85,
+      "FOR": 33,
+      "DEF": 18,
+      "MAG": 18,
+      "RES": 18,
+      "VEL": 41
+    },
+    "poder": 162,
+    "habilidade": "Contrato Duplo: se receber suborno, troca de lado no meio da luta",
+    "fraqueza": "Nenhuma",
+    "descricao": "Trabalha para quem paga mais — e costuma cobrar dos dois lados.",
+    "recompensa": {
+      "xp": 255,
+      "ouro": 136,
+      "amuleto_chance": 0
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V034.png",
+      "prompt": "anime style dark fantasy villain character portrait, mercenary with two swords and coin necklace, shady neutral market city, metal elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V035",
+    "nome": "Estátua Andante",
+    "titulo": "o Que Se Move no Escuro",
+    "nome_completo": "Estátua Andante, o Que Se Move no Escuro",
+    "tier": "comum",
+    "tier_rotulo": "Nível Comum",
+    "nivel": 20,
+    "regiao": "Floresta Petrificada Ishi-no-Mori",
+    "elemento": "Terra",
+    "arquetipo": "tanque",
+    "atributos": {
+      "HP": 735,
+      "MP": 84,
+      "FOR": 29,
+      "DEF": 46,
+      "MAG": 17,
+      "RES": 35,
+      "VEL": 17
+    },
+    "poder": 218,
+    "habilidade": "Imóvel ao Olhar: só pode ser atingida se o jogador passar num teste de VEL",
+    "fraqueza": "Raio",
+    "descricao": "Pessoas petrificadas que se movem quando ninguém está olhando.",
+    "recompensa": {
+      "xp": 300,
+      "ouro": 160,
+      "amuleto_chance": 0
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V035.png",
+      "prompt": "anime style dark fantasy villain character portrait, grey stone statue of a human with cracked face, petrified forest, earth elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V036",
+    "nome": "Kagari",
+    "titulo": "a Duelista Sem Rosto",
+    "nome_completo": "Kagari, a Duelista Sem Rosto",
+    "tier": "medio",
+    "tier_rotulo": "Médio Escalão",
+    "nivel": 20,
+    "regiao": "Kagutsuchi-jō",
+    "elemento": "Fogo",
+    "arquetipo": "assassino",
+    "atributos": {
+      "HP": 625,
+      "MP": 118,
+      "FOR": 45,
+      "DEF": 24,
+      "MAG": 24,
+      "RES": 24,
+      "VEL": 56
+    },
+    "poder": 236,
+    "habilidade": "Contra-Ataque Espelhado: devolve 50% do dano do 1º golpe recebido",
+    "fraqueza": "Água",
+    "descricao": "Campeã mascarada do Coliseu de Brasas. Ninguém sabe quem ela é — talvez alguém da corte.",
+    "recompensa": {
+      "xp": 750,
+      "ouro": 400,
+      "amuleto_chance": 0.01
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V036.png",
+      "prompt": "anime style dark fantasy villain character portrait, masked female duelist with twin flame blades, roaring arena, fire elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V037",
+    "nome": "Okibi",
+    "titulo": "o Sacerdote da Cinza",
+    "nome_completo": "Okibi, o Sacerdote da Cinza",
+    "tier": "medio",
+    "tier_rotulo": "Médio Escalão",
+    "nivel": 22,
+    "regiao": "Deserto de Haijin",
+    "elemento": "Cinzas",
+    "arquetipo": "invocador",
+    "atributos": {
+      "HP": 720,
+      "MP": 274,
+      "FOR": 23,
+      "DEF": 30,
+      "MAG": 53,
+      "RES": 45,
+      "VEL": 30
+    },
+    "poder": 253,
+    "habilidade": "Chamado dos Afogados: invoca 2 Marinheiros-Esqueleto",
+    "fraqueza": "Água",
+    "descricao": "Lidera um culto que quer 'devolver o mar ao deserto' — com sacrifícios humanos.",
+    "recompensa": {
+      "xp": 825,
+      "ouro": 440,
+      "amuleto_chance": 0.01
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V037.png",
+      "prompt": "anime style dark fantasy villain character portrait, ash priest with grey robe and skull staff, desert storm of embers, ash elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V038",
+    "nome": "Ōgama",
+    "titulo": "o Campeão Invicto",
+    "nome_completo": "Ōgama, o Campeão Invicto",
+    "tier": "medio",
+    "tier_rotulo": "Médio Escalão",
+    "nivel": 14,
+    "regiao": "Kagutsuchi-jō",
+    "elemento": "Fogo",
+    "arquetipo": "bruto",
+    "atributos": {
+      "HP": 705,
+      "MP": 62,
+      "FOR": 37,
+      "DEF": 31,
+      "MAG": 13,
+      "RES": 18,
+      "VEL": 21
+    },
+    "poder": 191,
+    "habilidade": "Martelo-Sol: dano muito alto a cada 2 turnos",
+    "fraqueza": "Água",
+    "descricao": "Campeão do Torneio dos Novatos há três anos. Arrogante, mas honrado — respeita quem o vence.",
+    "recompensa": {
+      "xp": 525,
+      "ouro": 280,
+      "amuleto_chance": 0.01
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V038.png",
+      "prompt": "anime style dark fantasy villain character portrait, huge young gladiator with sun-shaped hammer, cheering arena crowd, fire elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V039",
+    "nome": "Capitã Mizuchi",
+    "titulo": "a Fantasma do Mar Perdido",
+    "nome_completo": "Capitã Mizuchi, a Fantasma do Mar Perdido",
+    "tier": "medio",
+    "tier_rotulo": "Médio Escalão",
+    "nivel": 18,
+    "regiao": "Deserto de Haijin",
+    "elemento": "Trevas",
+    "arquetipo": "equilibrado",
+    "atributos": {
+      "HP": 670,
+      "MP": 154,
+      "FOR": 35,
+      "DEF": 32,
+      "MAG": 32,
+      "RES": 32,
+      "VEL": 32
+    },
+    "poder": 230,
+    "habilidade": "Comando da Tripulação: aliados mortos-vivos +30% dano",
+    "fraqueza": "Luz",
+    "descricao": "Capitã do maior navio afundado no deserto. Procura o mar que desapareceu.",
+    "recompensa": {
+      "xp": 675,
+      "ouro": 360,
+      "amuleto_chance": 0.01
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V039.png",
+      "prompt": "anime style dark fantasy villain character portrait, ghost pirate captain woman with spectral coat and cutlass, ship stranded in ash desert, darkness elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V040",
+    "nome": "Hotaru-hime",
+    "titulo": "a Rainha dos Vagalumes",
+    "nome_completo": "Hotaru-hime, a Rainha dos Vagalumes",
+    "tier": "medio",
+    "tier_rotulo": "Médio Escalão",
+    "nivel": 15,
+    "regiao": "Floresta Hotaru-bi",
+    "elemento": "Fogo",
+    "arquetipo": "invocador",
+    "atributos": {
+      "HP": 520,
+      "MP": 198,
+      "FOR": 17,
+      "DEF": 22,
+      "MAG": 39,
+      "RES": 33,
+      "VEL": 22
+    },
+    "poder": 185,
+    "habilidade": "Constelação: invoca 2 Enxames Carniceiros",
+    "fraqueza": "Vento",
+    "descricao": "Espírito antigo que guarda o labirinto da floresta. Testa todos que entram.",
+    "recompensa": {
+      "xp": 563,
+      "ouro": 300,
+      "amuleto_chance": 0.01
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V040.png",
+      "prompt": "anime style dark fantasy villain character portrait, fairy queen made of firefly lights, burnt labyrinth forest, fire elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V041",
+    "nome": "Gōen",
+    "titulo": "o Forjador Traído",
+    "nome_completo": "Gōen, o Forjador Traído",
+    "tier": "medio",
+    "tier_rotulo": "Médio Escalão",
+    "nivel": 28,
+    "regiao": "Rio Yōgan",
+    "elemento": "Lava",
+    "arquetipo": "tanque",
+    "atributos": {
+      "HP": 1585,
+      "MP": 135,
+      "FOR": 46,
+      "DEF": 74,
+      "MAG": 28,
+      "RES": 56,
+      "VEL": 28
+    },
+    "poder": 391,
+    "habilidade": "Armadura de Magma: reflete 25% do dano físico",
+    "fraqueza": "Água",
+    "descricao": "Ferreiro real que foi jogado no rio de lava por inveja. Voltou feito de magma.",
+    "recompensa": {
+      "xp": 1050,
+      "ouro": 560,
+      "amuleto_chance": 0.01
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V041.png",
+      "prompt": "anime style dark fantasy villain character portrait, blacksmith made of molten magma wielding giant tongs and hammer, lava elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V042",
+    "nome": "Ugetsu",
+    "titulo": "o Guardião da Queda",
+    "nome_completo": "Ugetsu, o Guardião da Queda",
+    "tier": "medio",
+    "tier_rotulo": "Médio Escalão",
+    "nivel": 22,
+    "regiao": "Cachoeiras Taki-no-Koe",
+    "elemento": "Água",
+    "arquetipo": "espiritual",
+    "atributos": {
+      "HP": 800,
+      "MP": 237,
+      "FOR": 30,
+      "DEF": 34,
+      "MAG": 49,
+      "RES": 49,
+      "VEL": 41
+    },
+    "poder": 283,
+    "habilidade": "Véu d'Água: +40% esquiva",
+    "fraqueza": "Raio",
+    "descricao": "Espírito-carpa que testa quem é digno de um pet espiritual. Não é mau — é exigente.",
+    "recompensa": {
+      "xp": 825,
+      "ouro": 440,
+      "amuleto_chance": 0.01
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V042.png",
+      "prompt": "anime style dark fantasy villain character portrait, giant spirit koi with flowing translucent fins, waterfall shrine, water elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V043",
+    "nome": "Shiori",
+    "titulo": "a Bibliotecária Afogada",
+    "nome_completo": "Shiori, a Bibliotecária Afogada",
+    "tier": "medio",
+    "tier_rotulo": "Médio Escalão",
+    "nivel": 18,
+    "regiao": "Ryūgū-jō",
+    "elemento": "Água",
+    "arquetipo": "mago",
+    "atributos": {
+      "HP": 540,
+      "MP": 246,
+      "FOR": 16,
+      "DEF": 22,
+      "MAG": 51,
+      "RES": 41,
+      "VEL": 29
+    },
+    "poder": 213,
+    "habilidade": "Página Proibida: sela uma magia do alvo por 3 turnos",
+    "fraqueza": "Fogo",
+    "descricao": "Morreu lendo o livro proibido. Continua lendo. Não gosta de barulho.",
+    "recompensa": {
+      "xp": 675,
+      "ouro": 360,
+      "amuleto_chance": 0.01
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V043.png",
+      "prompt": "anime style dark fantasy villain character portrait, drowned librarian ghost with floating books and round glasses, underwater library, water elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V044",
+    "nome": "O Reflexo Invertido",
+    "titulo": "Você, de Ontem",
+    "nome_completo": "O Reflexo Invertido, Você, de Ontem",
+    "tier": "medio",
+    "tier_rotulo": "Médio Escalão",
+    "nivel": 22,
+    "regiao": "Lago Kagami",
+    "elemento": "Espelho",
+    "arquetipo": "equilibrado",
+    "atributos": {
+      "HP": 800,
+      "MP": 182,
+      "FOR": 41,
+      "DEF": 38,
+      "MAG": 38,
+      "RES": 38,
+      "VEL": 38
+    },
+    "poder": 273,
+    "habilidade": "Cópia: assume os atributos e a habilidade do jogador que o enfrenta",
+    "fraqueza": "A fraqueza do próprio jogador",
+    "descricao": "Seu reflexo do passado decidiu que ele merece ser você.",
+    "recompensa": {
+      "xp": 825,
+      "ouro": 440,
+      "amuleto_chance": 0.01
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V044.png",
+      "prompt": "anime style dark fantasy villain character portrait, mirror reflection of a warrior with inverted colors, cracked mirror lake, mirror shards elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V045",
+    "nome": "Namazu",
+    "titulo": "o Bagre do Terremoto",
+    "nome_completo": "Namazu, o Bagre do Terremoto",
+    "tier": "medio",
+    "tier_rotulo": "Médio Escalão",
+    "nivel": 26,
+    "regiao": "Pântano Numa-no-Me",
+    "elemento": "Terra",
+    "arquetipo": "besta",
+    "atributos": {
+      "HP": 1115,
+      "MP": 106,
+      "FOR": 56,
+      "DEF": 43,
+      "MAG": 26,
+      "RES": 35,
+      "VEL": 52
+    },
+    "poder": 324,
+    "habilidade": "Tremor: atordoa todos por 1 turno (recarga 3)",
+    "fraqueza": "Raio",
+    "descricao": "Bagre colossal que faz o chão tremer ao se mexer.",
+    "recompensa": {
+      "xp": 975,
+      "ouro": 520,
+      "amuleto_chance": 0.01
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V045.png",
+      "prompt": "anime style dark fantasy villain character portrait, colossal catfish with glowing whiskers, dark swamp, earth elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V046",
+    "nome": "Almirante Kujira",
+    "titulo": "o Senhor da Ilha que Anda",
+    "nome_completo": "Almirante Kujira, o Senhor da Ilha que Anda",
+    "tier": "medio",
+    "tier_rotulo": "Médio Escalão",
+    "nivel": 25,
+    "regiao": "Arquipélago Shiranami",
+    "elemento": "Água",
+    "arquetipo": "equilibrado",
+    "atributos": {
+      "HP": 895,
+      "MP": 204,
+      "FOR": 46,
+      "DEF": 42,
+      "MAG": 42,
+      "RES": 42,
+      "VEL": 42
+    },
+    "poder": 304,
+    "habilidade": "Canhonaço de Maré: dano em linha",
+    "fraqueza": "Raio",
+    "descricao": "Lidera a frota pirata que acampou no casco da tartaruga ancestral.",
+    "recompensa": {
+      "xp": 938,
+      "ouro": 500,
+      "amuleto_chance": 0.01
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V046.png",
+      "prompt": "anime style dark fantasy villain character portrait, pirate admiral with whale-bone armor and cannon arm, giant turtle island, water elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V047",
+    "nome": "Yamanba",
+    "titulo": "a Bruxa-Mãe",
+    "nome_completo": "Yamanba, a Bruxa-Mãe",
+    "tier": "medio",
+    "tier_rotulo": "Médio Escalão",
+    "nivel": 30,
+    "regiao": "Pântano Numa-no-Me",
+    "elemento": "Trevas",
+    "arquetipo": "invocador",
+    "atributos": {
+      "HP": 950,
+      "MP": 360,
+      "FOR": 30,
+      "DEF": 39,
+      "MAG": 69,
+      "RES": 59,
+      "VEL": 39
+    },
+    "poder": 331,
+    "habilidade": "Pacto Cobrado: rouba 20% do MP de todos",
+    "fraqueza": "Luz",
+    "descricao": "Vende grimórios em troca de anos de vida. Dizem que tem 900 anos 'emprestados'.",
+    "recompensa": {
+      "xp": 1125,
+      "ouro": 600,
+      "amuleto_chance": 0.01
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V047.png",
+      "prompt": "anime style dark fantasy villain character portrait, old mountain witch with long white hair, black lotus, bubbling cauldron in swamp, darkness elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V048",
+    "nome": "Tsuchigumo",
+    "titulo": "a Aranha da Terra",
+    "nome_completo": "Tsuchigumo, a Aranha da Terra",
+    "tier": "medio",
+    "tier_rotulo": "Médio Escalão",
+    "nivel": 20,
+    "regiao": "Floresta Kodama",
+    "elemento": "Terra",
+    "arquetipo": "assassino",
+    "atributos": {
+      "HP": 625,
+      "MP": 118,
+      "FOR": 45,
+      "DEF": 24,
+      "MAG": 24,
+      "RES": 24,
+      "VEL": 56
+    },
+    "poder": 236,
+    "habilidade": "Teia de Pedra: prende o alvo por 2 turnos",
+    "fraqueza": "Fogo",
+    "descricao": "Tece teias de seda que petrificam ao contato com o ar.",
+    "recompensa": {
+      "xp": 750,
+      "ouro": 400,
+      "amuleto_chance": 0.01
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V048.png",
+      "prompt": "anime style dark fantasy villain character portrait, giant earth spider with stone silk web, ancient colossal forest, earth elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V049",
+    "nome": "Barão Kōsaku",
+    "titulo": "o Coletor de Sangue",
+    "nome_completo": "Barão Kōsaku, o Coletor de Sangue",
+    "tier": "medio",
+    "tier_rotulo": "Médio Escalão",
+    "nivel": 24,
+    "regiao": "Planícies Kogane",
+    "elemento": "Metal",
+    "arquetipo": "equilibrado",
+    "atributos": {
+      "HP": 865,
+      "MP": 197,
+      "FOR": 45,
+      "DEF": 41,
+      "MAG": 41,
+      "RES": 41,
+      "VEL": 41
+    },
+    "poder": 296,
+    "habilidade": "Imposto de Sangue: drena 5% do HP de todos por turno",
+    "fraqueza": "Fogo",
+    "descricao": "Nobre corrupto que escraviza a aldeia de Mugibatake e esconde do rei.",
+    "recompensa": {
+      "xp": 900,
+      "ouro": 480,
+      "amuleto_chance": 0.01
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V049.png",
+      "prompt": "anime style dark fantasy villain character portrait, corrupt noble in gold armor holding a tax scroll, golden wheat fields, metal elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V050",
+    "nome": "Tetsuo",
+    "titulo": "o Golem-Comandante",
+    "nome_completo": "Tetsuo, o Golem-Comandante",
+    "tier": "medio",
+    "tier_rotulo": "Médio Escalão",
+    "nivel": 14,
+    "regiao": "Iwakura-jō",
+    "elemento": "Terra",
+    "arquetipo": "tanque",
+    "atributos": {
+      "HP": 870,
+      "MP": 75,
+      "FOR": 26,
+      "DEF": 42,
+      "MAG": 16,
+      "RES": 31,
+      "VEL": 16
+    },
+    "poder": 218,
+    "habilidade": "Comando Rúnico: golens aliados +30% DEF",
+    "fraqueza": "Água",
+    "descricao": "O primeiro golem que pensou. Liderou a rebelião dos golens.",
+    "recompensa": {
+      "xp": 525,
+      "ouro": 280,
+      "amuleto_chance": 0.01
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V050.png",
+      "prompt": "anime style dark fantasy villain character portrait, commander golem with rune crown leading stone soldiers, earth elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V051",
+    "nome": "Guardião das Raízes",
+    "titulo": "o Porteiro da Árvore",
+    "nome_completo": "Guardião das Raízes, o Porteiro da Árvore",
+    "tier": "medio",
+    "tier_rotulo": "Médio Escalão",
+    "nivel": 20,
+    "regiao": "Floresta Kodama",
+    "elemento": "Madeira",
+    "arquetipo": "tanque",
+    "atributos": {
+      "HP": 1180,
+      "MP": 101,
+      "FOR": 35,
+      "DEF": 56,
+      "MAG": 21,
+      "RES": 42,
+      "VEL": 21
+    },
+    "poder": 293,
+    "habilidade": "Raízes Profundas: regenera 10% HP por turno",
+    "fraqueza": "Fogo",
+    "descricao": "Protege a biblioteca escondida dentro da árvore-colosso.",
+    "recompensa": {
+      "xp": 750,
+      "ouro": 400,
+      "amuleto_chance": 0.01
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V051.png",
+      "prompt": "anime style dark fantasy villain character portrait, ancient tree guardian with root body and glowing runes, wood and vines elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V052",
+    "nome": "Mestre Tetsuzan",
+    "titulo": "o Eremita do Degrau Mil",
+    "nome_completo": "Mestre Tetsuzan, o Eremita do Degrau Mil",
+    "tier": "medio",
+    "tier_rotulo": "Médio Escalão",
+    "nivel": 28,
+    "regiao": "Cordilheira Tetsuzan",
+    "elemento": "Terra",
+    "arquetipo": "equilibrado",
+    "atributos": {
+      "HP": 990,
+      "MP": 226,
+      "FOR": 51,
+      "DEF": 46,
+      "MAG": 46,
+      "RES": 46,
+      "VEL": 46
+    },
+    "poder": 334,
+    "habilidade": "Mil Golpes: ataque extra a cada 3 turnos",
+    "fraqueza": "Nenhuma",
+    "descricao": "Não é mau: ele é o teste. Mas não pega leve com ninguém.",
+    "recompensa": {
+      "xp": 1050,
+      "ouro": 560,
+      "amuleto_chance": 0.01
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V052.png",
+      "prompt": "anime style dark fantasy villain character portrait, old hermit martial artist with long beard and iron staff, endless mountain stairs, earth elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V053",
+    "nome": "Hari",
+    "titulo": "a Rainha Cristalina",
+    "nome_completo": "Hari, a Rainha Cristalina",
+    "tier": "medio",
+    "tier_rotulo": "Médio Escalão",
+    "nivel": 32,
+    "regiao": "Minas de Shōseki",
+    "elemento": "Cristal",
+    "arquetipo": "mago",
+    "atributos": {
+      "HP": 895,
+      "MP": 407,
+      "FOR": 26,
+      "DEF": 36,
+      "MAG": 83,
+      "RES": 68,
+      "VEL": 47
+    },
+    "poder": 350,
+    "habilidade": "Prisão de Cristal: congela 1 alvo por 2 turnos",
+    "fraqueza": "Som",
+    "descricao": "Mineradora transformada em cristal vivo. Controla todos os mineiros de olhos de cristal.",
+    "recompensa": {
+      "xp": 1200,
+      "ouro": 640,
+      "amuleto_chance": 0.01
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V053.png",
+      "prompt": "anime style dark fantasy villain character portrait, woman made of glowing crystal with crystal crown, deep mine, crystal elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V054",
+    "nome": "Kamaitachi",
+    "titulo": "as Três Doninhas-Foice",
+    "nome_completo": "Kamaitachi, as Três Doninhas-Foice",
+    "tier": "medio",
+    "tier_rotulo": "Médio Escalão",
+    "nivel": 18,
+    "regiao": "Estepe Susuki",
+    "elemento": "Vento",
+    "arquetipo": "assassino",
+    "atributos": {
+      "HP": 570,
+      "MP": 108,
+      "FOR": 41,
+      "DEF": 22,
+      "MAG": 22,
+      "RES": 22,
+      "VEL": 51
+    },
+    "poder": 215,
+    "habilidade": "Corte Triplo: 3 ataques por turno (uma derruba, uma corta, uma cura)",
+    "fraqueza": "Terra",
+    "descricao": "Trio de doninhas que viajam num redemoinho. Nunca se separam.",
+    "recompensa": {
+      "xp": 675,
+      "ouro": 360,
+      "amuleto_chance": 0.01
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V054.png",
+      "prompt": "anime style dark fantasy villain character portrait, three weasels with sickle claws riding a whirlwind, wind elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V055",
+    "nome": "Kurokaze",
+    "titulo": "o Mestre Espião Traidor",
+    "nome_completo": "Kurokaze, o Mestre Espião Traidor",
+    "tier": "medio",
+    "tier_rotulo": "Médio Escalão",
+    "nivel": 16,
+    "regiao": "Amagumo-jō",
+    "elemento": "Vento",
+    "arquetipo": "assassino",
+    "atributos": {
+      "HP": 515,
+      "MP": 97,
+      "FOR": 38,
+      "DEF": 20,
+      "MAG": 20,
+      "RES": 20,
+      "VEL": 46
+    },
+    "poder": 196,
+    "habilidade": "Desaparecer: invisível por 1 turno",
+    "fraqueza": "Luz",
+    "descricao": "Infiltrado na rede de espiões do rei. Quem está pagando por ele?",
+    "recompensa": {
+      "xp": 600,
+      "ouro": 320,
+      "amuleto_chance": 0.01
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V055.png",
+      "prompt": "anime style dark fantasy villain character portrait, spy in black feathered cloak with throwing knives, floating city at night, wind elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V056",
+    "nome": "Sōjōbō",
+    "titulo": "o Grande Abade Tengu",
+    "nome_completo": "Sōjōbō, o Grande Abade Tengu",
+    "tier": "medio",
+    "tier_rotulo": "Médio Escalão",
+    "nivel": 25,
+    "regiao": "Picos Tengu",
+    "elemento": "Vento",
+    "arquetipo": "equilibrado",
+    "atributos": {
+      "HP": 895,
+      "MP": 204,
+      "FOR": 46,
+      "DEF": 42,
+      "MAG": 42,
+      "RES": 42,
+      "VEL": 42
+    },
+    "poder": 304,
+    "habilidade": "Leque dos Mil Ventos: dano em área + empurra",
+    "fraqueza": "Raio",
+    "descricao": "Mestre do mosteiro tengu. Quem o vencer recebe o Livro da Espada-Vento.",
+    "recompensa": {
+      "xp": 938,
+      "ouro": 500,
+      "amuleto_chance": 0.01
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V056.png",
+      "prompt": "anime style dark fantasy villain character portrait, great tengu abbot with long nose, feather robe and giant fan, wind elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V057",
+    "nome": "Coro de Kazenaki",
+    "titulo": "as Mil Vozes",
+    "nome_completo": "Coro de Kazenaki, as Mil Vozes",
+    "tier": "medio",
+    "tier_rotulo": "Médio Escalão",
+    "nivel": 24,
+    "regiao": "Desfiladeiro Kazenaki",
+    "elemento": "Som",
+    "arquetipo": "invocador",
+    "atributos": {
+      "HP": 780,
+      "MP": 295,
+      "FOR": 24,
+      "DEF": 32,
+      "MAG": 57,
+      "RES": 49,
+      "VEL": 32
+    },
+    "poder": 272,
+    "habilidade": "Crescendo: dano aumenta 15% a cada turno",
+    "fraqueza": "Terra",
+    "descricao": "As vozes presas no vento unidas em um só ser.",
+    "recompensa": {
+      "xp": 900,
+      "ouro": 480,
+      "amuleto_chance": 0.01
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V057.png",
+      "prompt": "anime style dark fantasy villain character portrait, mass of wailing ghost faces swirling in wind, canyon, sound wave elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V058",
+    "nome": "Hayabusa",
+    "titulo": "a Corsária dos Céus",
+    "nome_completo": "Hayabusa, a Corsária dos Céus",
+    "tier": "medio",
+    "tier_rotulo": "Médio Escalão",
+    "nivel": 28,
+    "regiao": "Ilhas Ukishima",
+    "elemento": "Vento",
+    "arquetipo": "assassino",
+    "atributos": {
+      "HP": 845,
+      "MP": 158,
+      "FOR": 60,
+      "DEF": 32,
+      "MAG": 32,
+      "RES": 32,
+      "VEL": 74
+    },
+    "poder": 315,
+    "habilidade": "Abordagem: rouba um buff do alvo",
+    "fraqueza": "Raio",
+    "descricao": "Pirata de nave de vento, rápida, debochada e surpreendentemente justa.",
+    "recompensa": {
+      "xp": 1050,
+      "ouro": 560,
+      "amuleto_chance": 0.01
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V058.png",
+      "prompt": "anime style dark fantasy villain character portrait, sky pirate girl with goggles and sword, wind ship among floating islands, wind elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V059",
+    "nome": "Raiko",
+    "titulo": "a Sacerdotisa do Trovão",
+    "nome_completo": "Raiko, a Sacerdotisa do Trovão",
+    "tier": "medio",
+    "tier_rotulo": "Médio Escalão",
+    "nivel": 32,
+    "regiao": "Templo Raijin",
+    "elemento": "Raio",
+    "arquetipo": "mago",
+    "atributos": {
+      "HP": 895,
+      "MP": 407,
+      "FOR": 26,
+      "DEF": 36,
+      "MAG": 83,
+      "RES": 68,
+      "VEL": 47
+    },
+    "poder": 350,
+    "habilidade": "Julgamento do Raio: dano alto em alvo aleatório",
+    "fraqueza": "Terra",
+    "descricao": "Tenta acordar o deus do trovão com sacrifícios.",
+    "recompensa": {
+      "xp": 1200,
+      "ouro": 640,
+      "amuleto_chance": 0.01
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V059.png",
+      "prompt": "anime style dark fantasy villain character portrait, shrine maiden with lightning drums, ruined temple in thunderstorm, lightning elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V060",
+    "nome": "O Leiloeiro Sem Sombra",
+    "titulo": "o Dono do Mercado Negro",
+    "nome_completo": "O Leiloeiro Sem Sombra, o Dono do Mercado Negro",
+    "tier": "medio",
+    "tier_rotulo": "Médio Escalão",
+    "nivel": 30,
+    "regiao": "Kyōkai",
+    "elemento": "Trevas",
+    "arquetipo": "invocador",
+    "atributos": {
+      "HP": 950,
+      "MP": 360,
+      "FOR": 30,
+      "DEF": 39,
+      "MAG": 69,
+      "RES": 59,
+      "VEL": 39
+    },
+    "poder": 331,
+    "habilidade": "Lance Final: força o alvo a escolher entre perder um item ou 30% do HP",
+    "fraqueza": "Luz",
+    "descricao": "Comanda o leilão das sombras. Não projeta sombra alguma.",
+    "recompensa": {
+      "xp": 1125,
+      "ouro": 600,
+      "amuleto_chance": 0.01
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V060.png",
+      "prompt": "anime style dark fantasy villain character portrait, elegant masked auctioneer with no shadow, candlelit auction hall, darkness elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V061",
+    "nome": "Hyōsuke",
+    "titulo": "o Príncipe Exilado de Kurenai",
+    "nome_completo": "Hyōsuke, o Príncipe Exilado de Kurenai",
+    "tier": "alto",
+    "tier_rotulo": "Alto Escalão",
+    "nivel": 40,
+    "regiao": "Kurenai",
+    "elemento": "Fogo",
+    "arquetipo": "equilibrado",
+    "atributos": {
+      "HP": 2235,
+      "MP": 377,
+      "FOR": 85,
+      "DEF": 77,
+      "MAG": 77,
+      "RES": 77,
+      "VEL": 77
+    },
+    "poder": 617,
+    "habilidade": "Lâmina Rubra: queimadura que impede cura",
+    "fraqueza": "Água",
+    "descricao": "Irmão do rei Ryūen. Perdeu o duelo pelo trono e jurou queimar o reino que o rejeitou.",
+    "recompensa": {
+      "xp": 3600,
+      "ouro": 1920,
+      "amuleto_chance": 0.03
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V061.png",
+      "prompt": "anime style dark fantasy villain character portrait, exiled prince with crimson hair and flaming katana, noble garden of lava, fire elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V062",
+    "nome": "Hinotori Corrompida",
+    "titulo": "a Fênix do Vazio",
+    "nome_completo": "Hinotori Corrompida, a Fênix do Vazio",
+    "tier": "alto",
+    "tier_rotulo": "Alto Escalão",
+    "nivel": 32,
+    "regiao": "Monte Hinokami",
+    "elemento": "Fogo",
+    "arquetipo": "espiritual",
+    "atributos": {
+      "HP": 1820,
+      "MP": 400,
+      "FOR": 50,
+      "DEF": 57,
+      "MAG": 82,
+      "RES": 82,
+      "VEL": 69
+    },
+    "poder": 522,
+    "habilidade": "Renascer: revive 1× com 50% do HP",
+    "fraqueza": "Água",
+    "descricao": "A fênix sagrada do vulcão foi infectada pelo Vazio. Suas chamas agora são violeta.",
+    "recompensa": {
+      "xp": 2880,
+      "ouro": 1536,
+      "amuleto_chance": 0.03
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V062.png",
+      "prompt": "anime style dark fantasy villain character portrait, corrupted phoenix with black-violet fire, volcano crater, fire elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V063",
+    "nome": "General Bakuen",
+    "titulo": "o Senhor da Guerra",
+    "nome_completo": "General Bakuen, o Senhor da Guerra",
+    "tier": "alto",
+    "tier_rotulo": "Alto Escalão",
+    "nivel": 45,
+    "regiao": "Enjō",
+    "elemento": "Explosão",
+    "arquetipo": "bruto",
+    "atributos": {
+      "HP": 3245,
+      "MP": 210,
+      "FOR": 120,
+      "DEF": 103,
+      "MAG": 43,
+      "RES": 60,
+      "VEL": 68
+    },
+    "poder": 719,
+    "habilidade": "Detonação: dano em área, também se fere em 10%",
+    "fraqueza": "Água",
+    "descricao": "General de Homura que quer guerra total contra Watatsumi, com ou sem o rei.",
+    "recompensa": {
+      "xp": 4050,
+      "ouro": 2160,
+      "amuleto_chance": 0.03
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V063.png",
+      "prompt": "anime style dark fantasy villain character portrait, general in explosive powder armor, explosions and war banners, explosive elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V064",
+    "nome": "Yōgan-ryū",
+    "titulo": "o Dragão da Ponte",
+    "nome_completo": "Yōgan-ryū, o Dragão da Ponte",
+    "tier": "alto",
+    "tier_rotulo": "Alto Escalão",
+    "nivel": 38,
+    "regiao": "Rio Yōgan",
+    "elemento": "Lava",
+    "arquetipo": "besta",
+    "atributos": {
+      "HP": 2560,
+      "MP": 180,
+      "FOR": 95,
+      "DEF": 73,
+      "MAG": 44,
+      "RES": 59,
+      "VEL": 88
+    },
+    "poder": 615,
+    "habilidade": "Sopro de Magma: dano em linha + queimadura",
+    "fraqueza": "Água",
+    "descricao": "Fingiu ser uma ponte por mil anos. Acordou com fome.",
+    "recompensa": {
+      "xp": 3420,
+      "ouro": 1824,
+      "amuleto_chance": 0.03
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V064.png",
+      "prompt": "anime style dark fantasy villain character portrait, lava dragon rising from a river of magma, broken obsidian bridge, lava elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V065",
+    "nome": "Umibōzu",
+    "titulo": "o Monge do Mar",
+    "nome_completo": "Umibōzu, o Monge do Mar",
+    "tier": "alto",
+    "tier_rotulo": "Alto Escalão",
+    "nivel": 42,
+    "regiao": "Arquipélago Shiranami",
+    "elemento": "Água",
+    "arquetipo": "besta",
+    "atributos": {
+      "HP": 2810,
+      "MP": 197,
+      "FOR": 104,
+      "DEF": 80,
+      "MAG": 48,
+      "RES": 64,
+      "VEL": 96
+    },
+    "poder": 673,
+    "habilidade": "Engolir: tira um aliado da batalha por 2 turnos",
+    "fraqueza": "Raio",
+    "descricao": "Gigante negro que surge do mar em noites calmas e pede um barril. Se você der um balde, ele afunda o barco.",
+    "recompensa": {
+      "xp": 3780,
+      "ouro": 2016,
+      "amuleto_chance": 0.03
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V065.png",
+      "prompt": "anime style dark fantasy villain character portrait, giant shadowy sea monk rising from a calm ocean, glowing eyes, tiny boats, water elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V066",
+    "nome": "Hyōō",
+    "titulo": "o Rei do Exército Congelado",
+    "nome_completo": "Hyōō, o Rei do Exército Congelado",
+    "tier": "alto",
+    "tier_rotulo": "Alto Escalão",
+    "nivel": 40,
+    "regiao": "Geleira Hyōga",
+    "elemento": "Gelo",
+    "arquetipo": "invocador",
+    "atributos": {
+      "HP": 2010,
+      "MP": 566,
+      "FOR": 46,
+      "DEF": 61,
+      "MAG": 108,
+      "RES": 92,
+      "VEL": 61
+    },
+    "poder": 569,
+    "habilidade": "Despertar das Legiões: invoca 3 soldados de gelo",
+    "fraqueza": "Fogo",
+    "descricao": "General de uma guerra que ninguém lembra, ainda dando ordens a um exército de gelo.",
+    "recompensa": {
+      "xp": 3600,
+      "ouro": 1920,
+      "amuleto_chance": 0.03
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V066.png",
+      "prompt": "anime style dark fantasy villain character portrait, frozen general in ancient ice armor commanding ice soldiers on a glacier, ice elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V067",
+    "nome": "Nure-onna",
+    "titulo": "a Serpente das Profundezas",
+    "nome_completo": "Nure-onna, a Serpente das Profundezas",
+    "tier": "alto",
+    "tier_rotulo": "Alto Escalão",
+    "nivel": 48,
+    "regiao": "Fossa Shinkai",
+    "elemento": "Água",
+    "arquetipo": "assassino",
+    "atributos": {
+      "HP": 2255,
+      "MP": 313,
+      "FOR": 118,
+      "DEF": 64,
+      "MAG": 64,
+      "RES": 64,
+      "VEL": 145
+    },
+    "poder": 681,
+    "habilidade": "Sangue de Serpente: drena HP igual a 30% do dano",
+    "fraqueza": "Raio",
+    "descricao": "Mulher-serpente que caça nas profundezas onde a luz não chega.",
+    "recompensa": {
+      "xp": 4320,
+      "ouro": 2304,
+      "amuleto_chance": 0.03
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V067.png",
+      "prompt": "anime style dark fantasy villain character portrait, snake woman with long wet hair, bioluminescent abyss, water elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V068",
+    "nome": "Saigō Shiogama",
+    "titulo": "o Conselheiro das Marés",
+    "nome_completo": "Saigō Shiogama, o Conselheiro das Marés",
+    "tier": "alto",
+    "tier_rotulo": "Alto Escalão",
+    "nivel": 52,
+    "regiao": "Ryūgū-jō",
+    "elemento": "Água",
+    "arquetipo": "mago",
+    "atributos": {
+      "HP": 2290,
+      "MP": 770,
+      "FOR": 49,
+      "DEF": 68,
+      "MAG": 156,
+      "RES": 127,
+      "VEL": 88
+    },
+    "poder": 717,
+    "habilidade": "Maré Política: controla um inimigo por 1 turno",
+    "fraqueza": "Raio",
+    "descricao": "Conselheiro do rei Kaishin. Manipula a corte há décadas.",
+    "recompensa": {
+      "xp": 4680,
+      "ouro": 2496,
+      "amuleto_chance": 0.03
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V068.png",
+      "prompt": "anime style dark fantasy villain character portrait, elegant court advisor with flowing water ribbons, palace intrigue, water elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V069",
+    "nome": "Ōmukade",
+    "titulo": "a Centopeia-Montanha",
+    "nome_completo": "Ōmukade, a Centopeia-Montanha",
+    "tier": "alto",
+    "tier_rotulo": "Alto Escalão",
+    "nivel": 40,
+    "regiao": "Cordilheira Tetsuzan",
+    "elemento": "Metal",
+    "arquetipo": "besta",
+    "atributos": {
+      "HP": 2685,
+      "MP": 189,
+      "FOR": 100,
+      "DEF": 77,
+      "MAG": 46,
+      "RES": 61,
+      "VEL": 92
+    },
+    "poder": 645,
+    "habilidade": "Carapaça de Ferro: imune a acertos críticos",
+    "fraqueza": "Fogo",
+    "descricao": "Centopeia gigantesca que dá sete voltas numa montanha.",
+    "recompensa": {
+      "xp": 3600,
+      "ouro": 1920,
+      "amuleto_chance": 0.03
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V069.png",
+      "prompt": "anime style dark fantasy villain character portrait, giant iron centipede coiled around a mountain, metal elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V070",
+    "nome": "O Crânio de Ryūkotsu",
+    "titulo": "a Mente do Dragão Morto",
+    "nome_completo": "O Crânio de Ryūkotsu, a Mente do Dragão Morto",
+    "tier": "alto",
+    "tier_rotulo": "Alto Escalão",
+    "nivel": 38,
+    "regiao": "Cânion Ryūkotsu",
+    "elemento": "Alma",
+    "arquetipo": "mago",
+    "atributos": {
+      "HP": 1705,
+      "MP": 575,
+      "FOR": 37,
+      "DEF": 51,
+      "MAG": 117,
+      "RES": 95,
+      "VEL": 66
+    },
+    "poder": 537,
+    "habilidade": "Memória Ancestral: usa uma magia aleatória do grupo inimigo",
+    "fraqueza": "Luz",
+    "descricao": "O crânio do dragão que forma o cânion ainda pensa — e quer um corpo novo.",
+    "recompensa": {
+      "xp": 3420,
+      "ouro": 1824,
+      "amuleto_chance": 0.03
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V070.png",
+      "prompt": "anime style dark fantasy villain character portrait, giant dragon skull with glowing soul eyes, bone canyon, soul elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V071",
+    "nome": "Kurogane Masamune",
+    "titulo": "o Senhor dos Clãs",
+    "nome_completo": "Kurogane Masamune, o Senhor dos Clãs",
+    "tier": "alto",
+    "tier_rotulo": "Alto Escalão",
+    "nivel": 50,
+    "regiao": "Kōgyoku",
+    "elemento": "Metal",
+    "arquetipo": "tanque",
+    "atributos": {
+      "HP": 4410,
+      "MP": 278,
+      "FOR": 94,
+      "DEF": 151,
+      "MAG": 57,
+      "RES": 113,
+      "VEL": 57
+    },
+    "poder": 913,
+    "habilidade": "Juramento de Sangue: guardas aliados recebem o dano por ele",
+    "fraqueza": "Fogo",
+    "descricao": "Nobre que conspira para derrubar o rei Gōtetsu e tomar Daichi-koku.",
+    "recompensa": {
+      "xp": 4500,
+      "ouro": 2400,
+      "amuleto_chance": 0.03
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V071.png",
+      "prompt": "anime style dark fantasy villain character portrait, warlord in black iron armor with clan banners, crystal citadel, metal elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V072",
+    "nome": "Yomotsu",
+    "titulo": "a Barqueira de Yomi",
+    "nome_completo": "Yomotsu, a Barqueira de Yomi",
+    "tier": "alto",
+    "tier_rotulo": "Alto Escalão",
+    "nivel": 52,
+    "regiao": "Cavernas Yomi-no-Ana",
+    "elemento": "Trevas",
+    "arquetipo": "invocador",
+    "atributos": {
+      "HP": 2575,
+      "MP": 722,
+      "FOR": 59,
+      "DEF": 78,
+      "MAG": 137,
+      "RES": 117,
+      "VEL": 78
+    },
+    "poder": 727,
+    "habilidade": "Rio dos Mortos: aliados caídos voltam lutando por ela",
+    "fraqueza": "Luz",
+    "descricao": "Leva almas pelo rio subterrâneo. Decide quem não volta.",
+    "recompensa": {
+      "xp": 4680,
+      "ouro": 2496,
+      "amuleto_chance": 0.03
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V072.png",
+      "prompt": "anime style dark fantasy villain character portrait, pale ferrywoman of the dead with lantern and boat, underground river, darkness elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V073",
+    "nome": "Arashimaru",
+    "titulo": "o Guardião Enlouquecido",
+    "nome_completo": "Arashimaru, o Guardião Enlouquecido",
+    "tier": "alto",
+    "tier_rotulo": "Alto Escalão",
+    "nivel": 45,
+    "regiao": "Olho da Tempestade Arashi-no-Me",
+    "elemento": "Vento",
+    "arquetipo": "mago",
+    "atributos": {
+      "HP": 1995,
+      "MP": 673,
+      "FOR": 43,
+      "DEF": 60,
+      "MAG": 137,
+      "RES": 111,
+      "VEL": 77
+    },
+    "poder": 628,
+    "habilidade": "Tufão Cortante: dano em área + sangramento",
+    "fraqueza": "Terra",
+    "descricao": "Ex-guardião da torre que enlouqueceu no silêncio do olho do furacão.",
+    "recompensa": {
+      "xp": 4050,
+      "ouro": 2160,
+      "amuleto_chance": 0.03
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V073.png",
+      "prompt": "anime style dark fantasy villain character portrait, wind mage with torn cloak standing in the eye of a hurricane, wind elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V074",
+    "nome": "Nue",
+    "titulo": "a Quimera do Trovão",
+    "nome_completo": "Nue, a Quimera do Trovão",
+    "tier": "alto",
+    "tier_rotulo": "Alto Escalão",
+    "nivel": 42,
+    "regiao": "Templo Raijin",
+    "elemento": "Raio",
+    "arquetipo": "besta",
+    "atributos": {
+      "HP": 2810,
+      "MP": 197,
+      "FOR": 104,
+      "DEF": 80,
+      "MAG": 48,
+      "RES": 64,
+      "VEL": 96
+    },
+    "poder": 673,
+    "habilidade": "Cauda-Serpente: veneno + paralisia",
+    "fraqueza": "Terra",
+    "descricao": "Rosto de macaco, corpo de tanuki, patas de tigre e cauda de serpente. Seu grito traz azar.",
+    "recompensa": {
+      "xp": 3780,
+      "ouro": 2016,
+      "amuleto_chance": 0.03
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V074.png",
+      "prompt": "anime style dark fantasy villain character portrait, nue chimera with monkey face, tiger legs and snake tail, lightning, lightning elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V075",
+    "nome": "Kusarigami",
+    "titulo": "o Acorrentado",
+    "nome_completo": "Kusarigami, o Acorrentado",
+    "tier": "alto",
+    "tier_rotulo": "Alto Escalão",
+    "nivel": 38,
+    "regiao": "Ilhas Ukishima",
+    "elemento": "Metal",
+    "arquetipo": "tanque",
+    "atributos": {
+      "HP": 3410,
+      "MP": 216,
+      "FOR": 73,
+      "DEF": 117,
+      "MAG": 44,
+      "RES": 88,
+      "VEL": 44
+    },
+    "poder": 707,
+    "habilidade": "Correntes: prende 2 alvos por 2 turnos",
+    "fraqueza": "Raio",
+    "descricao": "O ser acorrentado sob a ilha que nunca se move. Quem o prendeu ali?",
+    "recompensa": {
+      "xp": 3420,
+      "ouro": 1824,
+      "amuleto_chance": 0.03
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V075.png",
+      "prompt": "anime style dark fantasy villain character portrait, chained giant beneath a floating island, breaking shackles, metal elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V076",
+    "nome": "Hayate Kuroha",
+    "titulo": "o Primo Rival",
+    "nome_completo": "Hayate Kuroha, o Primo Rival",
+    "tier": "alto",
+    "tier_rotulo": "Alto Escalão",
+    "nivel": 50,
+    "regiao": "Amagumo-jō",
+    "elemento": "Vento",
+    "arquetipo": "assassino",
+    "atributos": {
+      "HP": 2345,
+      "MP": 325,
+      "FOR": 123,
+      "DEF": 66,
+      "MAG": 66,
+      "RES": 66,
+      "VEL": 151
+    },
+    "poder": 707,
+    "habilidade": "Passo Negro: ataca 2× por turno",
+    "fraqueza": "Luz",
+    "descricao": "Primo do rei Sorahiko. Acha que o tornado errou de pessoa.",
+    "recompensa": {
+      "xp": 4500,
+      "ouro": 2400,
+      "amuleto_chance": 0.03
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V076.png",
+      "prompt": "anime style dark fantasy villain character portrait, young noble with black wing cape and wind daggers, smug smile, sky city, wind elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V077",
+    "nome": "Kanae",
+    "titulo": "a Guardiã do Pilar Leste",
+    "nome_completo": "Kanae, a Guardiã do Pilar Leste",
+    "tier": "alto",
+    "tier_rotulo": "Alto Escalão",
+    "nivel": 55,
+    "regiao": "Muralha dos Selos",
+    "elemento": "Terra",
+    "arquetipo": "tanque",
+    "atributos": {
+      "HP": 4825,
+      "MP": 305,
+      "FOR": 103,
+      "DEF": 165,
+      "MAG": 62,
+      "RES": 124,
+      "VEL": 62
+    },
+    "poder": 999,
+    "habilidade": "Selo Rachado: a cada turno perde DEF e ganha FOR",
+    "fraqueza": "Raio",
+    "descricao": "Uma das guardiãs dos selos, sendo devorada pelo Vazio aos poucos.",
+    "recompensa": {
+      "xp": 4950,
+      "ouro": 2640,
+      "amuleto_chance": 0.03
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V077.png",
+      "prompt": "anime style dark fantasy villain character portrait, stone guardian woman partially dissolving into black void, cracked pillar, earth elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V078",
+    "nome": "Shizuku",
+    "titulo": "a Guardiã do Pilar Oeste",
+    "nome_completo": "Shizuku, a Guardiã do Pilar Oeste",
+    "tier": "alto",
+    "tier_rotulo": "Alto Escalão",
+    "nivel": 55,
+    "regiao": "Muralha dos Selos",
+    "elemento": "Água",
+    "arquetipo": "mago",
+    "atributos": {
+      "HP": 2415,
+      "MP": 812,
+      "FOR": 51,
+      "DEF": 72,
+      "MAG": 165,
+      "RES": 134,
+      "VEL": 93
+    },
+    "poder": 757,
+    "habilidade": "Maré Negra: dano + reduz cura recebida em 50%",
+    "fraqueza": "Raio",
+    "descricao": "Irmã gêmea de Kanae. Luta ao lado dela; se uma cair, a outra enlouquece (+50% dano).",
+    "recompensa": {
+      "xp": 4950,
+      "ouro": 2640,
+      "amuleto_chance": 0.03
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V078.png",
+      "prompt": "anime style dark fantasy villain character portrait, water guardian woman half consumed by black void, cracked pillar, water elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V079",
+    "nome": "O Guardião sem Vento",
+    "titulo": "o Cavaleiro da Pedra",
+    "nome_completo": "O Guardião sem Vento, o Cavaleiro da Pedra",
+    "tier": "alto",
+    "tier_rotulo": "Alto Escalão",
+    "nivel": 50,
+    "regiao": "Estepe Susuki",
+    "elemento": "Luz",
+    "arquetipo": "equilibrado",
+    "atributos": {
+      "HP": 2755,
+      "MP": 464,
+      "FOR": 104,
+      "DEF": 94,
+      "MAG": 94,
+      "RES": 94,
+      "VEL": 94
+    },
+    "poder": 756,
+    "habilidade": "Prova do Coração: quanto menor o Mérito do jogador, maior o dano",
+    "fraqueza": "Nenhuma",
+    "descricao": "Cavaleiro espectral que protege a Excalibur há séculos. Não luta para matar — luta para julgar.",
+    "recompensa": {
+      "xp": 4500,
+      "ouro": 2400,
+      "amuleto_chance": 0.03
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V079.png",
+      "prompt": "anime style dark fantasy villain character portrait, spectral knight kneeling before a glowing sword in stone, still grass circle, holy light elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V080",
+    "nome": "Zero",
+    "titulo": "o Caçador de Magos",
+    "nome_completo": "Zero, o Caçador de Magos",
+    "tier": "alto",
+    "tier_rotulo": "Alto Escalão",
+    "nivel": 58,
+    "regiao": "Kyōkai",
+    "elemento": "Vazio",
+    "arquetipo": "assassino",
+    "atributos": {
+      "HP": 2695,
+      "MP": 374,
+      "FOR": 141,
+      "DEF": 76,
+      "MAG": 76,
+      "RES": 76,
+      "VEL": 173
+    },
+    "poder": 812,
+    "habilidade": "Anulação Total: cancela todas as magias do turno",
+    "fraqueza": "Luz",
+    "descricao": "Anti-magia que caça magos por recompensa. Pode virar aliado se for vencido sem magia.",
+    "recompensa": {
+      "xp": 5220,
+      "ouro": 2784,
+      "amuleto_chance": 0.03
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V080.png",
+      "prompt": "anime style dark fantasy villain character portrait, anti-magic hunter with black chains and void blade, dark neutral city, void black-white elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V081",
+    "nome": "Enma-ō",
+    "titulo": "o Juiz do Submundo de Fogo",
+    "nome_completo": "Enma-ō, o Juiz do Submundo de Fogo",
+    "tier": "rei",
+    "tier_rotulo": "Nível Rei",
+    "nivel": 70,
+    "regiao": "Ruínas de Enma",
+    "elemento": "Fogo",
+    "arquetipo": "bruto",
+    "atributos": {
+      "HP": 9490,
+      "MP": 396,
+      "FOR": 224,
+      "DEF": 192,
+      "MAG": 80,
+      "RES": 112,
+      "VEL": 128
+    },
+    "poder": 1685,
+    "habilidade": "Julgamento Infernal: dano proporcional às vitórias do alvo",
+    "fraqueza": "Água",
+    "descricao": "Juiz dos mortos do fogo, aprisionado sob as ruínas da cidade que ele mesmo condenou.",
+    "recompensa": {
+      "xp": 15750,
+      "ouro": 8400,
+      "amuleto_chance": 0.1
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V081.png",
+      "prompt": "anime style dark fantasy villain character portrait, colossal fire underworld king with judge hat and ledger, burning ruins, fire elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V082",
+    "nome": "Kagerō Ryūketsu",
+    "titulo": "o Primeiro Dragão-Sangue",
+    "nome_completo": "Kagerō Ryūketsu, o Primeiro Dragão-Sangue",
+    "tier": "rei",
+    "tier_rotulo": "Nível Rei",
+    "nivel": 65,
+    "regiao": "Kagutsuchi-jō",
+    "elemento": "Fogo",
+    "arquetipo": "equilibrado",
+    "atributos": {
+      "HP": 6800,
+      "MP": 738,
+      "FOR": 164,
+      "DEF": 149,
+      "MAG": 149,
+      "RES": 149,
+      "VEL": 149
+    },
+    "poder": 1440,
+    "habilidade": "Duelo Eterno: força 1×1 com um único jogador por 3 turnos",
+    "fraqueza": "Água",
+    "descricao": "Espírito do duelista que enfrentou o Quinto Portador. Guarda o capítulo Céu Rubro do Shitenchō.",
+    "recompensa": {
+      "xp": 14625,
+      "ouro": 7800,
+      "amuleto_chance": 0.1
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V082.png",
+      "prompt": "anime style dark fantasy villain character portrait, spirit warrior in dragon-blood armor, ancient duel chamber under an arena, fire elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V083",
+    "nome": "Leviatã de Shinkai",
+    "titulo": "a Serpente do Abismo",
+    "nome_completo": "Leviatã de Shinkai, a Serpente do Abismo",
+    "tier": "rei",
+    "tier_rotulo": "Nível Rei",
+    "nivel": 72,
+    "regiao": "Fossa Shinkai",
+    "elemento": "Água",
+    "arquetipo": "besta",
+    "atributos": {
+      "HP": 9000,
+      "MP": 407,
+      "FOR": 214,
+      "DEF": 165,
+      "MAG": 99,
+      "RES": 132,
+      "VEL": 197
+    },
+    "poder": 1707,
+    "habilidade": "Maelstrom: dano em todos + puxa para o fundo (−VEL)",
+    "fraqueza": "Raio",
+    "descricao": "Serpente do abismo, maior que uma cidade. Guarda o capítulo Céu Profundo.",
+    "recompensa": {
+      "xp": 16200,
+      "ouro": 8640,
+      "amuleto_chance": 0.1
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V083.png",
+      "prompt": "anime style dark fantasy villain character portrait, colossal leviathan with bioluminescent scales in the deep abyss, water elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V084",
+    "nome": "Otohime Negra",
+    "titulo": "a Princesa que Roubou o Tempo",
+    "nome_completo": "Otohime Negra, a Princesa que Roubou o Tempo",
+    "tier": "rei",
+    "tier_rotulo": "Nível Rei",
+    "nivel": 66,
+    "regiao": "Ryūgū-jō",
+    "elemento": "Tempo",
+    "arquetipo": "mago",
+    "atributos": {
+      "HP": 5520,
+      "MP": 1198,
+      "FOR": 76,
+      "DEF": 106,
+      "MAG": 242,
+      "RES": 197,
+      "VEL": 136
+    },
+    "poder": 1309,
+    "habilidade": "Tamatebako: envelhece o alvo (−15% em todos os atributos por 3 turnos)",
+    "fraqueza": "Luz",
+    "descricao": "Antiga princesa do palácio submerso que vive roubando os anos dos outros.",
+    "recompensa": {
+      "xp": 14850,
+      "ouro": 7920,
+      "amuleto_chance": 0.1
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V084.png",
+      "prompt": "anime style dark fantasy villain character portrait, dark princess holding an ornate box releasing smoke, underwater palace, time clock elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V085",
+    "nome": "Daidarabotchi",
+    "titulo": "o Gigante dos Lagos",
+    "nome_completo": "Daidarabotchi, o Gigante dos Lagos",
+    "tier": "rei",
+    "tier_rotulo": "Nível Rei",
+    "nivel": 75,
+    "regiao": "Planícies Kogane",
+    "elemento": "Terra",
+    "arquetipo": "bruto",
+    "atributos": {
+      "HP": 10140,
+      "MP": 423,
+      "FOR": 239,
+      "DEF": 205,
+      "MAG": 86,
+      "RES": 120,
+      "VEL": 137
+    },
+    "poder": 1801,
+    "habilidade": "Passo do Gigante: dano em todos + derruba",
+    "fraqueza": "Vento",
+    "descricao": "Gigante tão grande que suas pegadas viraram lagos.",
+    "recompensa": {
+      "xp": 16875,
+      "ouro": 9000,
+      "amuleto_chance": 0.1
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V085.png",
+      "prompt": "anime style dark fantasy villain character portrait, gigantic giant walking over mountains, footprints forming lakes, earth elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V086",
+    "nome": "O Coração da Montanha",
+    "titulo": "o Que Bate Sob Iwakura",
+    "nome_completo": "O Coração da Montanha, o Que Bate Sob Iwakura",
+    "tier": "rei",
+    "tier_rotulo": "Nível Rei",
+    "nivel": 68,
+    "regiao": "Iwakura-jō",
+    "elemento": "Alma",
+    "arquetipo": "tanque",
+    "atributos": {
+      "HP": 11360,
+      "MP": 462,
+      "FOR": 156,
+      "DEF": 249,
+      "MAG": 94,
+      "RES": 187,
+      "VEL": 94
+    },
+    "poder": 1916,
+    "habilidade": "Batida: a cada 3 turnos, pulso que atordoa todos",
+    "fraqueza": "Vento",
+    "descricao": "O coração que bate dentro da montanha. Guarda o capítulo Céu de Pedra.",
+    "recompensa": {
+      "xp": 15300,
+      "ouro": 8160,
+      "amuleto_chance": 0.1
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V086.png",
+      "prompt": "anime style dark fantasy villain character portrait, giant beating stone heart with glowing crystal veins, vast cavern, soul elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V087",
+    "nome": "Raijin Desperto",
+    "titulo": "o Deus do Trovão Furioso",
+    "nome_completo": "Raijin Desperto, o Deus do Trovão Furioso",
+    "tier": "rei",
+    "tier_rotulo": "Nível Rei",
+    "nivel": 72,
+    "regiao": "Templo Raijin",
+    "elemento": "Raio",
+    "arquetipo": "mago",
+    "atributos": {
+      "HP": 6000,
+      "MP": 1302,
+      "FOR": 82,
+      "DEF": 115,
+      "MAG": 263,
+      "RES": 214,
+      "VEL": 148
+    },
+    "poder": 1422,
+    "habilidade": "Tambores do Trovão: 3 raios aleatórios por turno",
+    "fraqueza": "Terra",
+    "descricao": "O deus do trovão acordou — e quer saber quem o acordou. Guarda o capítulo Céu Errante.",
+    "recompensa": {
+      "xp": 16200,
+      "ouro": 8640,
+      "amuleto_chance": 0.1
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V087.png",
+      "prompt": "anime style dark fantasy villain character portrait, thunder god with ring of drums, lightning storm over temple, lightning elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V088",
+    "nome": "Kazenaki-no-Haha",
+    "titulo": "a Mãe dos Ventos Mortos",
+    "nome_completo": "Kazenaki-no-Haha, a Mãe dos Ventos Mortos",
+    "tier": "rei",
+    "tier_rotulo": "Nível Rei",
+    "nivel": 70,
+    "regiao": "Desfiladeiro Kazenaki",
+    "elemento": "Alma",
+    "arquetipo": "invocador",
+    "atributos": {
+      "HP": 6570,
+      "MP": 1188,
+      "FOR": 96,
+      "DEF": 128,
+      "MAG": 224,
+      "RES": 192,
+      "VEL": 128
+    },
+    "poder": 1425,
+    "habilidade": "Prisão de Vozes: sela a voz (magias) de um jogador por 3 turnos",
+    "fraqueza": "Terra",
+    "descricao": "Ela prende as vozes das pessoas no vento. Para quê?",
+    "recompensa": {
+      "xp": 15750,
+      "ouro": 8400,
+      "amuleto_chance": 0.1
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V088.png",
+      "prompt": "anime style dark fantasy villain character portrait, tall veiled woman made of wind holding cages of glowing voices, canyon, soul elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V089",
+    "nome": "O Arquivista",
+    "titulo": "o Guardião da Torre Fora do Mapa",
+    "nome_completo": "O Arquivista, o Guardião da Torre Fora do Mapa",
+    "tier": "rei",
+    "tier_rotulo": "Nível Rei",
+    "nivel": 78,
+    "regiao": "Olho da Tempestade Arashi-no-Me",
+    "elemento": "Espaço",
+    "arquetipo": "mago",
+    "atributos": {
+      "HP": 6480,
+      "MP": 1405,
+      "FOR": 89,
+      "DEF": 124,
+      "MAG": 284,
+      "RES": 231,
+      "VEL": 160
+    },
+    "poder": 1536,
+    "habilidade": "Dobra Espacial: troca posições e redireciona ataques",
+    "fraqueza": "Vazio",
+    "descricao": "Guarda a Joia dos Portões Celestes e um arquivo de tudo que já aconteceu.",
+    "recompensa": {
+      "xp": 17550,
+      "ouro": 9360,
+      "amuleto_chance": 0.1
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V089.png",
+      "prompt": "anime style dark fantasy villain character portrait, robed archivist with floating portals and keys, impossible tower, space portal elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V090",
+    "nome": "Sekiō",
+    "titulo": "o Rei de Pedra",
+    "nome_completo": "Sekiō, o Rei de Pedra",
+    "tier": "rei",
+    "tier_rotulo": "Nível Rei",
+    "nivel": 80,
+    "regiao": "Floresta Petrificada Ishi-no-Mori",
+    "elemento": "Terra",
+    "arquetipo": "tanque",
+    "atributos": {
+      "HP": 13280,
+      "MP": 540,
+      "FOR": 182,
+      "DEF": 291,
+      "MAG": 109,
+      "RES": 218,
+      "VEL": 109
+    },
+    "poder": 2237,
+    "habilidade": "Olhar Petrificante: petrifica 1 alvo (2 turnos ou até ser curado)",
+    "fraqueza": "Espelho",
+    "descricao": "Petrificou a floresta inteira. Sentado sobre a Égide do Quinto Portador.",
+    "recompensa": {
+      "xp": 18000,
+      "ouro": 9600,
+      "amuleto_chance": 0.1
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V090.png",
+      "prompt": "anime style dark fantasy villain character portrait, stone king on a throne of petrified people, grey forest, earth elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V091",
+    "nome": "Yoru",
+    "titulo": "o Mestre da Guilda de Kyōkai",
+    "nome_completo": "Yoru, o Mestre da Guilda de Kyōkai",
+    "tier": "rei",
+    "tier_rotulo": "Nível Rei",
+    "nivel": 82,
+    "regiao": "Kyōkai",
+    "elemento": "Trevas",
+    "arquetipo": "assassino",
+    "atributos": {
+      "HP": 7225,
+      "MP": 645,
+      "FOR": 242,
+      "DEF": 130,
+      "MAG": 130,
+      "RES": 130,
+      "VEL": 298
+    },
+    "poder": 1653,
+    "habilidade": "Mil Contratos: cada jogador que já aceitou missão da guilda recebe −20% em tudo",
+    "fraqueza": "Luz",
+    "descricao": "Nunca foi visto de dia. Sabe de todos os segredos — porque é ele quem os vende.",
+    "recompensa": {
+      "xp": 18450,
+      "ouro": 9840,
+      "amuleto_chance": 0.1
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V091.png",
+      "prompt": "anime style dark fantasy villain character portrait, guild master in black hood with moon eyes, night city, darkness elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V092",
+    "nome": "O Quinto que Falhou",
+    "titulo": "o Eco do Portador",
+    "nome_completo": "O Quinto que Falhou, o Eco do Portador",
+    "tier": "rei",
+    "tier_rotulo": "Nível Rei",
+    "nivel": 85,
+    "regiao": "Torre Sem Fim",
+    "elemento": "Vazio",
+    "arquetipo": "equilibrado",
+    "atributos": {
+      "HP": 8800,
+      "MP": 954,
+      "FOR": 212,
+      "DEF": 193,
+      "MAG": 193,
+      "RES": 193,
+      "VEL": 193
+    },
+    "poder": 1864,
+    "habilidade": "Eco do Portador: usa as 4 afinidades elementais",
+    "fraqueza": "Nenhuma",
+    "descricao": "Alguém que tentou ser o Quinto Portador antes. O Vazio o devolveu — vazio.",
+    "recompensa": {
+      "xp": 19125,
+      "ouro": 10200,
+      "amuleto_chance": 0.1
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V092.png",
+      "prompt": "anime style dark fantasy villain character portrait, broken hero in cracked armor leaking void light, endless descending tower, void black-white elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V093",
+    "nome": "Kagutsuchi",
+    "titulo": "o Deus-Patrono Caído do Fogo",
+    "nome_completo": "Kagutsuchi, o Deus-Patrono Caído do Fogo",
+    "tier": "divindade",
+    "tier_rotulo": "Divindade",
+    "nivel": 88,
+    "regiao": "Torre Sem Fim",
+    "elemento": "Fogo",
+    "arquetipo": "divino",
+    "atributos": {
+      "HP": 21840,
+      "MP": 1973,
+      "FOR": 345,
+      "DEF": 345,
+      "MAG": 345,
+      "RES": 345,
+      "VEL": 292
+    },
+    "poder": 3856,
+    "habilidade": "Nascimento Ardente: o campo de batalha vira lava (dano por turno a todos)",
+    "fraqueza": "Água",
+    "descricao": "O deus que deu nome à capital do fogo. Caiu ao tentar devorar o Vazio sozinho.",
+    "recompensa": {
+      "xp": 52800,
+      "ouro": 28160,
+      "amuleto_chance": 0.25
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V093.png",
+      "prompt": "anime style dark fantasy villain character portrait, fallen fire god of colossal size with burning halo, molten throne, fire elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V094",
+    "nome": "Watatsumi",
+    "titulo": "o Deus-Patrono Caído do Mar",
+    "nome_completo": "Watatsumi, o Deus-Patrono Caído do Mar",
+    "tier": "divindade",
+    "tier_rotulo": "Divindade",
+    "nivel": 88,
+    "regiao": "Torre Sem Fim",
+    "elemento": "Água",
+    "arquetipo": "divino",
+    "atributos": {
+      "HP": 21840,
+      "MP": 1973,
+      "FOR": 345,
+      "DEF": 345,
+      "MAG": 345,
+      "RES": 345,
+      "VEL": 292
+    },
+    "poder": 3856,
+    "habilidade": "Dilúvio do Fim: afoga — dano crescente a cada turno",
+    "fraqueza": "Raio",
+    "descricao": "Patrono do reino da água. Seu corpo virou o abismo de Shinkai.",
+    "recompensa": {
+      "xp": 52800,
+      "ouro": 28160,
+      "amuleto_chance": 0.25
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V094.png",
+      "prompt": "anime style dark fantasy villain character portrait, fallen sea god with dragon features and drowning tides, water elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V095",
+    "nome": "Ōyamatsumi",
+    "titulo": "o Deus-Patrono Caído da Montanha",
+    "nome_completo": "Ōyamatsumi, o Deus-Patrono Caído da Montanha",
+    "tier": "divindade",
+    "tier_rotulo": "Divindade",
+    "nivel": 88,
+    "regiao": "Torre Sem Fim",
+    "elemento": "Terra",
+    "arquetipo": "divino",
+    "atributos": {
+      "HP": 21840,
+      "MP": 1973,
+      "FOR": 345,
+      "DEF": 345,
+      "MAG": 345,
+      "RES": 345,
+      "VEL": 292
+    },
+    "poder": 3856,
+    "habilidade": "Peso do Mundo: VEL de todos cai pela metade",
+    "fraqueza": "Vento",
+    "descricao": "Patrono da terra. Dorme dentro da montanha — ou dormia.",
+    "recompensa": {
+      "xp": 52800,
+      "ouro": 28160,
+      "amuleto_chance": 0.25
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V095.png",
+      "prompt": "anime style dark fantasy villain character portrait, fallen mountain god made of stone and ancient forest, earth elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V096",
+    "nome": "Shinatsuhiko",
+    "titulo": "o Deus-Patrono Caído do Vento",
+    "nome_completo": "Shinatsuhiko, o Deus-Patrono Caído do Vento",
+    "tier": "divindade",
+    "tier_rotulo": "Divindade",
+    "nivel": 88,
+    "regiao": "Torre Sem Fim",
+    "elemento": "Vento",
+    "arquetipo": "divino",
+    "atributos": {
+      "HP": 21840,
+      "MP": 1973,
+      "FOR": 345,
+      "DEF": 345,
+      "MAG": 345,
+      "RES": 345,
+      "VEL": 292
+    },
+    "poder": 3856,
+    "habilidade": "Sopro que Apaga Nomes: silencia todo o grupo 1 turno",
+    "fraqueza": "Terra",
+    "descricao": "Patrono do vento, que escolhe os reis de Fūjin. Escolheu errado de propósito?",
+    "recompensa": {
+      "xp": 52800,
+      "ouro": 28160,
+      "amuleto_chance": 0.25
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V096.png",
+      "prompt": "anime style dark fantasy villain character portrait, fallen wind god with tattered wings of storm clouds, wind elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V097",
+    "nome": "Tsukuyomi Partido",
+    "titulo": "o Deus da Lua Quebrada",
+    "nome_completo": "Tsukuyomi Partido, o Deus da Lua Quebrada",
+    "tier": "divindade",
+    "tier_rotulo": "Divindade",
+    "nivel": 93,
+    "regiao": "Torre Sem Fim",
+    "elemento": "Trevas",
+    "arquetipo": "divino",
+    "atributos": {
+      "HP": 23040,
+      "MP": 2081,
+      "FOR": 364,
+      "DEF": 364,
+      "MAG": 364,
+      "RES": 364,
+      "VEL": 308
+    },
+    "poder": 4068,
+    "habilidade": "Noite Eterna: Demônios inimigos +50%, cura −50%",
+    "fraqueza": "Luz",
+    "descricao": "A lua do mundo foi partida em uma guerra antiga. Ele é o que sobrou.",
+    "recompensa": {
+      "xp": 55800,
+      "ouro": 29760,
+      "amuleto_chance": 0.25
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V097.png",
+      "prompt": "anime style dark fantasy villain character portrait, dark moon god with shattered crescent moon halo, starless sky, darkness elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V098",
+    "nome": "Hiruko",
+    "titulo": "o Deus Esquecido",
+    "nome_completo": "Hiruko, o Deus Esquecido",
+    "tier": "divindade",
+    "tier_rotulo": "Divindade",
+    "nivel": 95,
+    "regiao": "Torre Sem Fim",
+    "elemento": "Alma",
+    "arquetipo": "divino",
+    "atributos": {
+      "HP": 23520,
+      "MP": 2124,
+      "FOR": 371,
+      "DEF": 371,
+      "MAG": 371,
+      "RES": 371,
+      "VEL": 314
+    },
+    "poder": 4150,
+    "habilidade": "Esquecimento: apaga 1 habilidade aleatória do alvo pela batalha",
+    "fraqueza": "Nenhuma",
+    "descricao": "O primeiro deus, descartado pelos outros ao nascer. Nunca perdoou.",
+    "recompensa": {
+      "xp": 57000,
+      "ouro": 30400,
+      "amuleto_chance": 0.25
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V098.png",
+      "prompt": "anime style dark fantasy villain character portrait, pale boneless child-like god floating on a reed boat, eerie calm, soul elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V099",
+    "nome": "Muhyō",
+    "titulo": "o Arauto do Vazio",
+    "nome_completo": "Muhyō, o Arauto do Vazio",
+    "tier": "divindade",
+    "tier_rotulo": "Divindade",
+    "nivel": 97,
+    "regiao": "Cratera do Vazio",
+    "elemento": "Vazio",
+    "arquetipo": "divino",
+    "atributos": {
+      "HP": 24000,
+      "MP": 2167,
+      "FOR": 379,
+      "DEF": 379,
+      "MAG": 379,
+      "RES": 379,
+      "VEL": 320
+    },
+    "poder": 4236,
+    "habilidade": "Silêncio Absoluto: nenhuma magia funciona por 2 turnos",
+    "fraqueza": "Luz",
+    "descricao": "A voz do Vazio no mundo. Fala pelas bocas de quem ouviu o Vazio demais.",
+    "recompensa": {
+      "xp": 58200,
+      "ouro": 31040,
+      "amuleto_chance": 0.25
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V099.png",
+      "prompt": "anime style dark fantasy villain character portrait, faceless herald in white robes with hollow void where the face should be, void black-white elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  },
+  {
+    "id": "V100",
+    "nome": "KOKŪ",
+    "titulo": "o Vazio Primordial",
+    "nome_completo": "KOKŪ, o Vazio Primordial",
+    "tier": "divindade",
+    "tier_rotulo": "Divindade",
+    "nivel": 100,
+    "regiao": "Trono dos Deuses Caídos",
+    "elemento": "Vazio",
+    "arquetipo": "divino",
+    "atributos": {
+      "HP": 24720,
+      "MP": 2232,
+      "FOR": 390,
+      "DEF": 390,
+      "MAG": 390,
+      "RES": 390,
+      "VEL": 330
+    },
+    "poder": 4362,
+    "habilidade": "Fome Primordial: devora um elemento do campo por turno (provisório — definido pela história)",
+    "fraqueza": "A definir pela história",
+    "descricao": "A fome sem forma que o Quinto Portador selou. Chefe final provisório: o autor define o verdadeiro final.",
+    "recompensa": {
+      "xp": 60000,
+      "ouro": 32000,
+      "amuleto_chance": 0.25
+    },
+    "imagem": {
+      "arquivo": "assets/viloes/V100.png",
+      "prompt": "anime style dark fantasy villain character portrait, formless cosmic void entity, black hole with eyes, crumbling throne of gods, void black-white elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
+    }
+  }
+]

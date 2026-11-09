@@ -1,0 +1,35 @@
+{
+  "atributos": ["FOR", "DEF", "MAG", "RES", "VEL", "SOR"],
+  "classes": {
+    "Mago":              {"base": {"FOR": 4,  "DEF": 5,  "MAG": 14, "RES": 10, "VEL": 7,  "SOR": 6}, "cresc": {"FOR": 1, "DEF": 1, "MAG": 3, "RES": 2, "VEL": 1, "SOR": 1}, "hp_base": 90,  "mult_mp": 1.4, "grimorios_max": 3},
+    "Cavaleiro":         {"base": {"FOR": 12, "DEF": 13, "MAG": 4,  "RES": 7,  "VEL": 6,  "SOR": 5}, "cresc": {"FOR": 2, "DEF": 3, "MAG": 1, "RES": 1, "VEL": 1, "SOR": 1}, "hp_base": 140, "mult_mp": 0.8, "grimorios_max": 1},
+    "Bruxo":             {"base": {"FOR": 5,  "DEF": 6,  "MAG": 12, "RES": 8,  "VEL": 7,  "SOR": 9}, "cresc": {"FOR": 1, "DEF": 1, "MAG": 3, "RES": 2, "VEL": 1, "SOR": 2}, "hp_base": 95,  "mult_mp": 1.1, "grimorios_max": 1, "recurso_extra": "Dívida"},
+    "Anti-magia":        {"base": {"FOR": 13, "DEF": 9,  "MAG": 0,  "RES": 15, "VEL": 10, "SOR": 4}, "cresc": {"FOR": 3, "DEF": 2, "MAG": 0, "RES": 3, "VEL": 2, "SOR": 1}, "hp_base": 120, "mult_mp": 0,   "grimorios_max": 1, "recurso_extra": "Vazio (VZ)", "grimorios_permitidos": ["G32", "G34", "G38", "G21", "G26"]},
+    "Espadachim":        {"base": {"FOR": 13, "DEF": 7,  "MAG": 5,  "RES": 6,  "VEL": 13, "SOR": 7}, "cresc": {"FOR": 3, "DEF": 1, "MAG": 1, "RES": 1, "VEL": 3, "SOR": 1}, "hp_base": 110, "mult_mp": 0.7, "grimorios_max": 1},
+    "Meio-humano":       {"base": {"FOR": 11, "DEF": 8,  "MAG": 6,  "RES": 6,  "VEL": 12, "SOR": 8}, "cresc": {"FOR": 2, "DEF": 2, "MAG": 1, "RES": 1, "VEL": 2, "SOR": 1}, "hp_base": 115, "mult_mp": 0.8, "grimorios_max": 1, "recurso_extra": "Fera", "tipos": {"raposa": 18, "lobo": 18, "tigre": 16, "corvo": 16, "serpente": 15, "coelho": 15, "dragao_menor": 2}},
+    "Força da Natureza": {"base": {"FOR": 7,  "DEF": 8,  "MAG": 11, "RES": 9,  "VEL": 7,  "SOR": 7}, "cresc": {"FOR": 1, "DEF": 2, "MAG": 2, "RES": 2, "VEL": 1, "SOR": 1}, "hp_base": 105, "mult_mp": 0.9, "grimorios_max": 1},
+    "Demônio":           {"base": {"FOR": 12, "DEF": 7,  "MAG": 12, "RES": 6,  "VEL": 10, "SOR": 6}, "cresc": {"FOR": 2, "DEF": 1, "MAG": 2, "RES": 1, "VEL": 2, "SOR": 1}, "hp_base": 110, "mult_mp": 1.0, "grimorios_max": 1, "recurso_extra": "Miasma"},
+    "Paladino":          {"base": {"FOR": 10, "DEF": 12, "MAG": 8,  "RES": 11, "VEL": 5,  "SOR": 6}, "cresc": {"FOR": 2, "DEF": 2, "MAG": 2, "RES": 2, "VEL": 1, "SOR": 1}, "hp_base": 130, "mult_mp": 0.9, "grimorios_max": 1}
+  },
+  "permissao_por_casta": {
+    "campones":   ["Cavaleiro", "Espadachim", "Meio-humano", "Força da Natureza"],
+    "plebeu":     ["Mago", "Cavaleiro", "Bruxo", "Espadachim", "Força da Natureza"],
+    "cavaleiro":  ["Cavaleiro", "Espadachim", "Paladino"],
+    "realeza":    ["Mago", "Cavaleiro", "Bruxo", "Paladino"],
+    "indefinido": ["Mago", "Bruxo", "Espadachim", "Meio-humano", "Força da Natureza"],
+    "rei":        ["Mago", "Cavaleiro", "Espadachim", "Força da Natureza", "Paladino"]
+  },
+  "regras_especiais": {
+    "Anti-magia": "somente indefinido com mana < 15; nesse caso é a única classe disponível ou pode escolher Espadachim",
+    "Demônio": "indefinido com 25% de chance de 'sangue demoníaco' desbloqueia a opção"
+  },
+  "bonus_casta": {
+    "campones":   {"xp": 0.20, "hp": 0.15, "mp_faixa": [40, 70]},
+    "plebeu":     {"mp_faixa": [80, 120]},
+    "cavaleiro":  {"FOR": 0.20, "DEF": 0.20, "mp_faixa": [60, 90]},
+    "realeza":    {"hp": -0.10, "mp_faixa": [150, 200]},
+    "indefinido": {"mp_faixa": [10, 250], "distribuicao": "U"},
+    "rei":        {"mp_faixa": [220, 260], "mana_unica": true}
+  },
+  "bonus_reino_nativo": {"Homura": ["FOR", "MAG"], "Watatsumi": ["RES"], "Daichi": ["DEF", "HP"], "Fūjin": ["VEL", "SOR"], "valor": 0.10}
+}

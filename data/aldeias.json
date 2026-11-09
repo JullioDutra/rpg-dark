@@ -1,0 +1,34 @@
+{
+  "pesos_casta": {"campones": 32, "plebeu": 28, "cavaleiro": 16, "realeza": 12, "indefinido": 10, "rei": 2},
+  "limite_rei_por_reino_por_mundo": 1,
+  "chance_indefinido_de_kyokai": 0.15,
+  "aldeias": [
+    {"id": "A-HOM-CAM", "nome": "Haibara", "jp": "灰原", "reino": "Homura", "casta": "campones", "regiao": "Deserto de Haijin", "descricao": "Vila de mineiros de obsidiana nas dunas de cinza."},
+    {"id": "A-HOM-PLE", "nome": "Hibashira", "jp": "火柱", "reino": "Homura", "casta": "plebeu", "regiao": "Kagutsuchi-jō", "descricao": "Cidade-mercado construída ao redor de um pilar de fogo que nunca se apaga."},
+    {"id": "A-HOM-CAV", "nome": "Enjō", "jp": "炎城", "reino": "Homura", "casta": "cavaleiro", "regiao": "Monte Hinokami", "descricao": "Vila-quartel aos pés do vulcão; crianças treinam com espadas de madeira queimada."},
+    {"id": "A-HOM-REA", "nome": "Kurenai", "jp": "紅", "reino": "Homura", "casta": "realeza", "regiao": "Kagutsuchi-jō", "descricao": "Distrito nobre de jardins de lava e pavilhões vermelhos."},
+    {"id": "A-HOM-IND", "nome": "Kagerō", "jp": "陽炎", "reino": "Homura", "casta": "indefinido", "regiao": "Deserto de Haijin", "descricao": "Vila que aparece e some como miragem; seus moradores não aparecem em registros."},
+    {"id": "A-HOM-REI", "nome": "Ryūketsu", "jp": "竜血", "reino": "Homura", "casta": "rei", "regiao": "Kagutsuchi-jō", "descricao": "Câmara secreta onde nascem herdeiros ocultos da linhagem do dragão."},
+
+    {"id": "A-WAT-CAM", "nome": "Amiya", "jp": "網屋", "reino": "Watatsumi", "casta": "campones", "regiao": "Arquipélago Shiranami", "descricao": "Vila de pescadores sobre palafitas."},
+    {"id": "A-WAT-PLE", "nome": "Minato", "jp": "港", "reino": "Watatsumi", "casta": "plebeu", "regiao": "Lago Kagami", "descricao": "Porto movimentado onde se fala a língua de todos os reinos."},
+    {"id": "A-WAT-CAV", "nome": "Kaigarajō", "jp": "貝殻城", "reino": "Watatsumi", "casta": "cavaleiro", "regiao": "Arquipélago Shiranami", "descricao": "Fortaleza de conchas da guarda marinha."},
+    {"id": "A-WAT-REA", "nome": "Shinju", "jp": "真珠", "reino": "Watatsumi", "casta": "realeza", "regiao": "Ryūgū-jō", "descricao": "Ilha nobre das pérolas, com palácios de madrepérola."},
+    {"id": "A-WAT-IND", "nome": "Kirigakure", "jp": "霧隠", "reino": "Watatsumi", "casta": "indefinido", "regiao": "Pântano Numa-no-Me", "descricao": "Vila escondida na névoa; ninguém lembra de ter ido lá."},
+    {"id": "A-WAT-REI", "nome": "Ryūjin-no-Ma", "jp": "竜神の間", "reino": "Watatsumi", "casta": "rei", "regiao": "Ryūgū-jō", "descricao": "Salão abissal sob o palácio, berço dos herdeiros do mar."},
+
+    {"id": "A-DAI-CAM", "nome": "Mugibatake", "jp": "麦畑", "reino": "Daichi", "casta": "campones", "regiao": "Planícies Kogane", "descricao": "Vila do trigo dourado, oprimida pelo Barão Kōsaku."},
+    {"id": "A-DAI-PLE", "nome": "Kanayama", "jp": "金山", "reino": "Daichi", "casta": "plebeu", "regiao": "Iwakura-jō", "descricao": "Cidade dos ferreiros; o som de martelos nunca para."},
+    {"id": "A-DAI-CAV", "nome": "Ishigaki", "jp": "石垣", "reino": "Daichi", "casta": "cavaleiro", "regiao": "Cordilheira Tetsuzan", "descricao": "Vila-muralha dos guardiões da fronteira."},
+    {"id": "A-DAI-REA", "nome": "Kōgyoku", "jp": "鋼玉", "reino": "Daichi", "casta": "realeza", "regiao": "Minas de Shōseki", "descricao": "Cidadela de cristal dos clãs nobres."},
+    {"id": "A-DAI-IND", "nome": "Kodama-mura", "jp": "木霊村", "reino": "Daichi", "casta": "indefinido", "regiao": "Floresta Kodama", "descricao": "Vila dentro de uma árvore; alguns moradores não são humanos."},
+    {"id": "A-DAI-REI", "nome": "Iwane", "jp": "岩根", "reino": "Daichi", "casta": "rei", "regiao": "Iwakura-jō", "descricao": "A raiz da montanha, onde nascem os reis da terra."},
+
+    {"id": "A-FUJ-CAM", "nome": "Susukino", "jp": "薄野", "reino": "Fūjin", "casta": "campones", "regiao": "Estepe Susuki", "descricao": "Acampamento de pastores no capim prateado."},
+    {"id": "A-FUJ-PLE", "nome": "Kazamachi", "jp": "風待", "reino": "Fūjin", "casta": "plebeu", "regiao": "Amagumo-jō", "descricao": "Cidade dos mensageiros, cheia de pombais e velas."},
+    {"id": "A-FUJ-CAV", "nome": "Tsubasa", "jp": "翼", "reino": "Fūjin", "casta": "cavaleiro", "regiao": "Picos Tengu", "descricao": "Ninho dos cavaleiros-grifo."},
+    {"id": "A-FUJ-REA", "nome": "Hagoromo", "jp": "羽衣", "reino": "Fūjin", "casta": "realeza", "regiao": "Ilhas Ukishima", "descricao": "Mansões flutuantes da aristocracia do vento."},
+    {"id": "A-FUJ-IND", "nome": "Mayoi", "jp": "迷い", "reino": "Fūjin", "casta": "indefinido", "regiao": "Estepe Susuki", "descricao": "Vila nômade que vive dentro de um redemoinho."},
+    {"id": "A-FUJ-REI", "nome": "Sora-no-Za", "jp": "空の座", "reino": "Fūjin", "casta": "rei", "regiao": "Amagumo-jō", "descricao": "O assento do céu, onde o vento escolhe os reis."}
+  ]
+}

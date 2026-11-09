@@ -1,0 +1,36 @@
+{
+  "passo_A": {"elemento_do_reino": 0.70, "outro_elemento_base": 0.30},
+  "passo_B_d1000": {"variante_comum": 750, "variante_incomum": 170, "raro": 60, "muito_raro": 17, "lendario": 3},
+  "modificadores_casta_raro_ou_mais": {"campones": 0.8, "plebeu": 1.0, "cavaleiro": 1.0, "realeza": 1.5, "indefinido": 2.0, "rei": 3.0},
+  "variantes": {
+    "Fogo":  {"comum": ["Chama", "Cinzas", "Brasas"], "incomum": ["Lava", "Explosão"]},
+    "Água":  {"comum": ["Correnteza", "Névoa", "Chuva"], "incomum": ["Gelo", "Cura"]},
+    "Terra": {"comum": ["Rocha", "Areia", "Lama"], "incomum": ["Metal", "Cristal", "Madeira"]},
+    "Vento": {"comum": ["Brisa", "Rajada", "Corte"], "incomum": ["Raio", "Som"]}
+  },
+  "raros": {
+    "raro": ["Luz", "Trevas", "Natureza", "Gravidade", "Sangue", "Veneno"],
+    "muito_raro": ["Tempo", "Espaço", "Alma", "Sonho"],
+    "lendario": [
+      {"nome": "Vazio", "restricao": "somente casta indefinido (ou mana < 15)"},
+      {"nome": "Estelar", "restricao": "somente casta realeza ou rei"}
+    ]
+  },
+  "relacoes_especiais": {
+    "Luz": {"forte_contra": ["Trevas", "Vazio"], "fraco_contra": ["Trevas"]},
+    "Trevas": {"forte_contra": ["Luz", "Alma"], "fraco_contra": ["Luz"]},
+    "Raio": {"forte_contra": ["Água", "Metal"], "fraco_contra": ["Terra"]},
+    "Gelo": {"forte_contra": ["Vento", "Natureza"], "fraco_contra": ["Fogo"]},
+    "Natureza": {"forte_contra": ["Terra", "Água"], "fraco_contra": ["Fogo", "Gelo"]},
+    "Gravidade": {"forte_contra": ["Vento", "Espaço"], "fraco_contra": ["Tempo"]},
+    "Tempo": {"forte_contra": ["Gravidade", "Alma"], "fraco_contra": ["Espaço"]},
+    "Espaço": {"forte_contra": ["Tempo"], "fraco_contra": ["Vazio", "Gravidade"]},
+    "Vazio": {"forte_contra": ["todas as magias (anula bônus)"], "fraco_contra": ["Luz", "Estelar", "físico puro"]},
+    "Estelar": {"forte_contra": ["Vazio", "Trevas"], "fraco_contra": ["Gravidade"]}
+  },
+  "mana_unica_rei": {
+    "formula": "elemento do reino + conceito raro, único no mundo",
+    "conceitos": ["Memória", "Gravidade", "Tempo", "Som", "Sombra", "Cristal", "Sangue", "Sonho", "Destino", "Espelho", "Eco", "Juramento"],
+    "exemplos": ["Chama da Memória", "Maré Gravitacional", "Cristal do Tempo", "Vento Espelhado", "Rocha do Juramento"]
+  }
+}

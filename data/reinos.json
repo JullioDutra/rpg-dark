@@ -1,0 +1,79 @@
+{
+  "continente": {"nome": "Yotsuhoshi", "jp": "四星", "significado": "Quatro Estrelas"},
+  "ciclo_elemental": {"Água": "Fogo", "Fogo": "Vento", "Vento": "Terra", "Terra": "Água", "bonus_vantagem": 0.25, "penalidade_desvantagem": -0.20},
+  "estacoes": [
+    {"estacao": "Primavera", "reino": "Fūjin"}, {"estacao": "Verão", "reino": "Homura"},
+    {"estacao": "Outono", "reino": "Daichi"}, {"estacao": "Inverno", "reino": "Watatsumi"}
+  ],
+  "duracao_estacao_dias_reais": 7,
+  "noite_do_selo_a_cada_dias": 28,
+  "reinos": [
+    {"id": "Homura", "nome": "Homura-koku", "jp": "焔国", "elemento": "Fogo", "posicao": "sul",
+     "rei": {"nome": "Akatsuki Ryūen", "jp": "暁 竜炎", "titulo": "O Sol que Não se Põe", "mana_unica": "Chama Solar Eterna"},
+     "capital": "Kagutsuchi-jō", "natureza_mana": "Volátil", "atributos_fortes": ["FOR", "MAG"], "fraqueza": "RES",
+     "regioes": [
+       {"id": "R-HOM-1", "nome": "Kagutsuchi-jō", "densidade": 3, "perigo": "baixo"},
+       {"id": "R-HOM-2", "nome": "Monte Hinokami", "densidade": 5, "perigo": "alto"},
+       {"id": "R-HOM-3", "nome": "Deserto de Haijin", "densidade": 2, "perigo": "medio"},
+       {"id": "R-HOM-4", "nome": "Floresta Hotaru-bi", "densidade": 3, "perigo": "medio"},
+       {"id": "R-HOM-5", "nome": "Rio Yōgan", "densidade": 4, "perigo": "alto"},
+       {"id": "R-HOM-6", "nome": "Costa Akashio", "densidade": 2, "perigo": "medio", "fronteira": "Watatsumi"},
+       {"id": "R-HOM-7", "nome": "Ruínas de Enma", "densidade": 4, "perigo": "muito alto"}
+     ]},
+    {"id": "Watatsumi", "nome": "Watatsumi-koku", "jp": "海神国", "elemento": "Água", "posicao": "oeste",
+     "rei": {"nome": "Minazuki Kaishin", "jp": "水無月 海神", "titulo": "O Rei das Marés", "mana_unica": "Maré do Retorno"},
+     "capital": "Ryūgū-jō", "natureza_mana": "Fluida", "atributos_fortes": ["RES", "FLX"], "fraqueza": "FOR",
+     "regioes": [
+       {"id": "R-WAT-1", "nome": "Ryūgū-jō", "densidade": 4, "perigo": "baixo"},
+       {"id": "R-WAT-2", "nome": "Lago Kagami", "densidade": 3, "perigo": "baixo"},
+       {"id": "R-WAT-3", "nome": "Arquipélago Shiranami", "densidade": 2, "perigo": "medio"},
+       {"id": "R-WAT-4", "nome": "Pântano Numa-no-Me", "densidade": 3, "perigo": "alto"},
+       {"id": "R-WAT-5", "nome": "Geleira Hyōga", "densidade": 3, "perigo": "alto", "fronteira": "Fūjin"},
+       {"id": "R-WAT-6", "nome": "Cachoeiras Taki-no-Koe", "densidade": 4, "perigo": "medio"},
+       {"id": "R-WAT-7", "nome": "Fossa Shinkai", "densidade": 5, "perigo": "muito alto"}
+     ]},
+    {"id": "Daichi", "nome": "Daichi-koku", "jp": "大地国", "elemento": "Terra", "posicao": "leste",
+     "rei": {"nome": "Gōtetsu Iwanaga", "jp": "剛鉄 岩長", "titulo": "A Montanha que Anda", "mana_unica": "Raiz do Mundo"},
+     "capital": "Iwakura-jō", "natureza_mana": "Densa", "atributos_fortes": ["DEF", "HP"], "fraqueza": "VEL",
+     "regioes": [
+       {"id": "R-DAI-1", "nome": "Iwakura-jō", "densidade": 3, "perigo": "baixo"},
+       {"id": "R-DAI-2", "nome": "Floresta Kodama", "densidade": 4, "perigo": "medio"},
+       {"id": "R-DAI-3", "nome": "Minas de Shōseki", "densidade": 5, "perigo": "alto"},
+       {"id": "R-DAI-4", "nome": "Cânion Ryūkotsu", "densidade": 3, "perigo": "alto", "fronteira": "Homura"},
+       {"id": "R-DAI-5", "nome": "Planícies Kogane", "densidade": 2, "perigo": "baixo"},
+       {"id": "R-DAI-6", "nome": "Cordilheira Tetsuzan", "densidade": 3, "perigo": "alto", "fronteira": "Fūjin"},
+       {"id": "R-DAI-7", "nome": "Cavernas Yomi-no-Ana", "densidade": 4, "perigo": "muito alto"}
+     ]},
+    {"id": "Fūjin", "nome": "Fūjin-koku", "jp": "風神国", "elemento": "Vento", "posicao": "norte",
+     "rei": {"nome": "Hayate Sorahiko", "jp": "疾風 空彦", "titulo": "O Rei que Ninguém Viu Parado", "mana_unica": "Passo do Céu"},
+     "capital": "Amagumo-jō", "natureza_mana": "Leve", "atributos_fortes": ["VEL", "SOR"], "fraqueza": "HP/DEF",
+     "regioes": [
+       {"id": "R-FUJ-1", "nome": "Amagumo-jō", "densidade": 3, "perigo": "baixo"},
+       {"id": "R-FUJ-2", "nome": "Picos Tengu", "densidade": 4, "perigo": "alto"},
+       {"id": "R-FUJ-3", "nome": "Estepe Susuki", "densidade": 2, "perigo": "medio"},
+       {"id": "R-FUJ-4", "nome": "Ilhas Ukishima", "densidade": 4, "perigo": "alto"},
+       {"id": "R-FUJ-5", "nome": "Olho da Tempestade Arashi-no-Me", "densidade": 5, "perigo": "muito alto"},
+       {"id": "R-FUJ-6", "nome": "Desfiladeiro Kazenaki", "densidade": 3, "perigo": "medio"},
+       {"id": "R-FUJ-7", "nome": "Templo Raijin", "densidade": 4, "perigo": "alto"}
+     ]},
+    {"id": "Kokū", "nome": "Kokū — Terra Central", "jp": "虚空", "elemento": "Vazio", "posicao": "centro",
+     "rei": null, "governo": "Guilda de Kyōkai (neutro, Tratado dos Quatro)", "natureza_mana": "Nula",
+     "regioes": [
+       {"id": "R-KOK-1", "nome": "Kyōkai", "densidade": 2, "perigo": "medio"},
+       {"id": "R-KOK-2", "nome": "Muralha dos Selos", "densidade": 1, "perigo": "alto"},
+       {"id": "R-KOK-3", "nome": "Floresta Petrificada Ishi-no-Mori", "densidade": 1, "perigo": "muito alto"},
+       {"id": "R-KOK-4", "nome": "Cratera do Vazio", "densidade": 0, "perigo": "extremo"},
+       {"id": "R-KOK-5", "nome": "Torre Sem Fim", "densidade": 0, "perigo": "extremo"},
+       {"id": "R-KOK-6", "nome": "Trono dos Deuses Caídos", "densidade": 0, "perigo": "divino"}
+     ]}
+  ],
+  "conexoes": [
+    ["R-HOM-1", "R-HOM-2"], ["R-HOM-1", "R-HOM-3"], ["R-HOM-1", "R-HOM-4"], ["R-HOM-2", "R-HOM-5"], ["R-HOM-3", "R-HOM-6"], ["R-HOM-5", "R-HOM-7"], ["R-HOM-4", "R-HOM-5"],
+    ["R-WAT-1", "R-WAT-2"], ["R-WAT-2", "R-WAT-3"], ["R-WAT-2", "R-WAT-4"], ["R-WAT-2", "R-WAT-6"], ["R-WAT-4", "R-WAT-5"], ["R-WAT-3", "R-WAT-7"],
+    ["R-DAI-1", "R-DAI-2"], ["R-DAI-1", "R-DAI-3"], ["R-DAI-1", "R-DAI-5"], ["R-DAI-5", "R-DAI-4"], ["R-DAI-1", "R-DAI-6"], ["R-DAI-3", "R-DAI-7"], ["R-DAI-2", "R-DAI-5"],
+    ["R-FUJ-1", "R-FUJ-2"], ["R-FUJ-1", "R-FUJ-4"], ["R-FUJ-1", "R-FUJ-3"], ["R-FUJ-3", "R-FUJ-6"], ["R-FUJ-2", "R-FUJ-7"], ["R-FUJ-4", "R-FUJ-5"],
+    ["R-HOM-6", "R-WAT-3"], ["R-HOM-3", "R-DAI-4"], ["R-WAT-5", "R-FUJ-6"], ["R-DAI-6", "R-FUJ-2"],
+    ["R-HOM-1", "R-KOK-1"], ["R-WAT-2", "R-KOK-1"], ["R-DAI-5", "R-KOK-1"], ["R-FUJ-3", "R-KOK-1"],
+    ["R-KOK-1", "R-KOK-2"], ["R-KOK-2", "R-KOK-3"], ["R-KOK-2", "R-KOK-4"], ["R-KOK-4", "R-KOK-5"], ["R-KOK-5", "R-KOK-6"]
+  ]
+}

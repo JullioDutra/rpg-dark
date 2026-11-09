@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Carta de Vilão</title>
+<!-- Template da carta de vilão. Recebe um objeto de data/viloes.json via window.renderCarta(vilao). -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Noto+Serif+JP:wght@700;900&family=Inter:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --tier: #9e9e9e; --tier2: #e0e0e0; --el: #ff5a2a; --el-escuro: #2a0a05;
+    --fundo: #09070c; --texto: #f4efe6; --suave: #a9a2b3;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #222; display: grid; place-items: center; min-height: 100vh; font-family: Inter, "IPAPGothic", sans-serif; }
+  #carta {
+    width: 800px; height: 1120px; position: relative; overflow: hidden; border-radius: 30px; padding: 14px;
+    background: conic-gradient(from 200deg, var(--tier), var(--tier2), var(--tier), #000, var(--tier));
+    color: var(--texto);
+  }
+  .interior {
+    position: absolute; inset: 14px; border-radius: 20px; overflow: hidden;
+    background: radial-gradient(110% 60% at 50% 10%, var(--el-escuro), var(--fundo) 75%);
+  }
+  .faixa-tier {
+    position: absolute; top: 26px; left: -60px; transform: rotate(-35deg); z-index: 4;
+    width: 300px; text-align: center; padding: 8px 0;
+    font: 900 18px Cinzel, serif; letter-spacing: .12em; color: #0b0b0b;
+    background: linear-gradient(90deg, var(--tier), var(--tier2), var(--tier));
+    box-shadow: 0 6px 18px #000a;
+  }
+  .id { position: absolute; top: 28px; right: 30px; z-index: 4; font: 800 18px Inter; color: var(--suave); letter-spacing: .1em; }
+  .retrato {
+    position: absolute; top: 0; left: 0; right: 0; height: 640px; z-index: 1;
+    -webkit-mask-image: linear-gradient(#000 65%, transparent);
+            mask-image: linear-gradient(#000 65%, transparent);
+  }
+  .retrato img { width: 100%; height: 100%; object-fit: cover; }
+  .placeholder { width: 100%; height: 100%; display: grid; place-items: center; position: relative;
+    background: radial-gradient(circle at 50% 42%, color-mix(in srgb, var(--el) 60%, transparent), transparent 52%); }
+  .placeholder .simbolo { font: 900 320px "Noto Serif JP", "IPAGothic", serif; color: #ffffff12; }
+  .placeholder .olhos { position: absolute; top: 300px; display: flex; gap: 70px; }
+  .placeholder .olhos i { width: 54px; height: 16px; border-radius: 50%; background: var(--el); box-shadow: 0 0 30px 8px var(--el); transform: skewY(-8deg); }
+  .placeholder .olhos i + i { transform: skewY(8deg); }
+
+  .info { position: absolute; left: 0; right: 0; top: 470px; padding: 0 34px; z-index: 3; }
+  .ameaca { font: 900 26px Inter; letter-spacing: .1em; color: var(--tier2); text-shadow: 0 0 12px var(--tier); }
+  .nome { font: 900 60px Cinzel, serif; line-height: 1; margin-top: 6px; text-shadow: 0 4px 22px #000; }
+  .titulo { font: 700 22px Inter; color: var(--suave); margin-top: 6px; font-style: italic; }
+  .tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+  .tag { font: 700 15px Inter; padding: 7px 14px; border-radius: 999px; background: #ffffff12; border: 1px solid #ffffff22; }
+  .tag.el { background: var(--el); color: #0b0b0b; border: 0; }
+
+  .stats { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin-top: 18px; }
+  .stat { background: #ffffff0d; border: 1px solid #ffffff14; border-radius: 12px; padding: 10px 4px; text-align: center; }
+  .stat span { display: block; font: 800 12px Inter; letter-spacing: .1em; color: var(--suave); }
+  .stat b { font: 900 24px Cinzel, serif; }
+  .stat.hp b { color: #ff6b6b; } .stat.mp b { color: #7fd1ff; }
+
+  .bloco { margin-top: 16px; background: #ffffff0a; border-left: 4px solid var(--el); border-radius: 10px; padding: 12px 16px; }
+  .bloco h4 { font: 800 13px Inter; letter-spacing: .14em; color: var(--suave); margin-bottom: 4px; }
+  .bloco p { font: 600 18px/1.35 Inter; }
+  .desc { margin-top: 14px; font: 500 16px/1.45 Inter; color: #d9d2c7; font-style: italic; }
+  .rodape { position: absolute; left: 34px; right: 34px; bottom: 22px; z-index: 3; display: flex; justify-content: space-between;
+    font: 700 13px Inter; color: var(--suave); letter-spacing: .1em; }
+  .rodape b { color: var(--tier2); }
+</style>
+</head>
+<body>
+<div id="carta">
+  <div class="interior">
+    <div class="retrato" id="retrato"></div>
+    <div class="faixa-tier" id="faixa"></div>
+    <div class="id" id="id"></div>
+    <div class="info">
+      <div class="ameaca" id="ameaca"></div>
+      <div class="nome" id="nome"></div>
+      <div class="titulo" id="titulo"></div>
+      <div class="tags" id="tags"></div>
+      <div class="stats" id="stats"></div>
+      <div class="bloco"><h4>HABILIDADE</h4><p id="hab"></p></div>
+      <div class="bloco" style="border-color:#ffffff55"><h4>FRAQUEZA</h4><p id="fraq"></p></div>
+      <div class="desc" id="desc"></div>
+    </div>
+    <div class="rodape"><span>四星 YOTSUHOSHI</span><span id="recomp"></span></div>
+  </div>
+</div>
+<script>
+const TIERS = {
+  comum:     { cor: ["#8d8d8d", "#e8e8e8"], estrelas: 1, rotulo: "COMUM" },
+  medio:     { cor: ["#2e9e5b", "#a8f0c6"], estrelas: 2, rotulo: "MÉDIO ESCALÃO" },
+  alto:      { cor: ["#2463d6", "#9cc3ff"], estrelas: 3, rotulo: "ALTO ESCALÃO" },
+  rei:       { cor: ["#7b2fd6", "#e0b8ff"], estrelas: 4, rotulo: "NÍVEL REI" },
+  divindade: { cor: ["#c9971a", "#fff3b0"], estrelas: 5, rotulo: "DIVINDADE" },
+};
+const ELEMENTOS = {
+  Fogo: ["#ff5a2a", "#2a0a05", "火"], Lava: ["#ff3d00", "#2a0800", "溶"], Explosão: ["#ff7b00", "#2a1200", "爆"], Cinzas: ["#b0a8a0", "#1a1714", "灰"],
+  Água: ["#1e90ff", "#03182e", "水"], Gelo: ["#9be7ff", "#0a2230", "氷"], Espelho: ["#d6f6ff", "#14202a", "鏡"],
+  Terra: ["#c8a24a", "#1d1606", "土"], Metal: ["#b0bec5", "#141a1d", "鉄"], Cristal: ["#e07bff", "#1f0a2a", "晶"], Madeira: ["#6abf4b", "#0c1f08", "木"], Natureza: ["#6abf4b", "#0c1f08", "森"],
+  Vento: ["#4fe3c1", "#05231f", "風"], Raio: ["#ffd60a", "#262000", "雷"], Som: ["#ff8ad8", "#2a0a20", "音"],
+  Trevas: ["#8a5cff", "#120826", "闇"], Luz: ["#ffe08a", "#2a2410", "光"], Veneno: ["#9cff57", "#112a05", "毒"],
+  Alma: ["#7df9ff", "#062026", "魂"], Tempo: ["#f5d0a9", "#231a10", "時"], Espaço: ["#b388ff", "#120c2a", "空"], Vazio: ["#f0f0f0", "#050505", "無"],
+};
+
+window.renderCarta = function (v) {
+  const $ = (id) => document.getElementById(id);
+  const t = TIERS[v.tier]; const [el, escuro, kanji] = ELEMENTOS[v.elemento] ?? ELEMENTOS.Vazio;
+  const r = document.documentElement.style;
+  r.setProperty("--tier", t.cor[0]); r.setProperty("--tier2", t.cor[1]);
+  r.setProperty("--el", el); r.setProperty("--el-escuro", escuro);
+  $("faixa").textContent = t.rotulo;
+  $("id").textContent = `${v.id} · NV ${v.nivel}`;
+  $("ameaca").textContent = "★".repeat(t.estrelas) + "☆".repeat(5 - t.estrelas) + `  PODER ${v.poder}`;
+  $("nome").textContent = v.nome;
+  $("titulo").textContent = v.titulo;
+  $("tags").innerHTML = [`<span class="tag el">${kanji} ${v.elemento}</span>`, `<span class="tag">${v.arquetipo}</span>`, `<span class="tag">📍 ${v.regiao}</span>`].join("");
+  const a = v.atributos;
+  $("stats").innerHTML = [["HP", a.HP, "hp"], ["MP", a.MP, "mp"], ["FOR", a.FOR], ["DEF", a.DEF], ["MAG", a.MAG], ["RES", a.RES], ["VEL", a.VEL]]
+    .map(([k, n, c]) => `<div class="stat ${c ?? ""}"><span>${k}</span><b>${n}</b></div>`).join("");
+  $("hab").textContent = v.habilidade;
+  $("fraq").textContent = v.fraqueza;
+  $("desc").textContent = `“${v.descricao}”`;
+  const rc = v.recompensa;
+  $("recomp").innerHTML = `RECOMPENSA <b>${rc.xp} XP · ${rc.ouro} 両</b>${rc.amuleto_chance ? ` · AMULETO ${Math.round(rc.amuleto_chance * 100)}%` : ""}`;
+  $("retrato").innerHTML = v.retrato_url
+    ? `<img src="${v.retrato_url}" alt="">`
+    : `<div class="placeholder"><div class="simbolo">${kanji}</div><div class="olhos"><i></i><i></i></div></div>`;
+};
+
+// Exemplo ao abrir o arquivo direto
+window.renderCarta({
+  id: "V064", nome: "Yōgan-ryū", titulo: "o Dragão da Ponte", tier: "alto", nivel: 38, regiao: "Rio Yōgan",
+  elemento: "Lava", arquetipo: "besta", poder: 615,
+  atributos: { HP: 2560, MP: 180, FOR: 95, DEF: 73, MAG: 44, RES: 59, VEL: 88 },
+  habilidade: "Sopro de Magma: dano em linha + queimadura", fraqueza: "Água",
+  descricao: "Fingiu ser uma ponte por mil anos. Acordou com fome.",
+  recompensa: { xp: 3420, ouro: 1824, amuleto_chance: 0.03 },
+});
+</script>
+</body>
+</html>
