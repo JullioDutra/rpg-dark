@@ -1,0 +1,8 @@
+# Nada de spoilers ou arquivos pesados no deploy: só o que o servidor usa.
+docs/
+assets/
+templates/exemplos/
+deploy/
+relogio/
+db/
+node_modules/
