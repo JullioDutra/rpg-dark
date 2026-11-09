@@ -1,14 +1,15 @@
-# 30 — Infraestrutura: WhatsApp (Evolution API), Vercel e Banco de Dados
+# 30 — Infraestrutura: WhatsApp (Evolution API), Vercel, Neon e IA
 
-## 30.1 Respostas rápidas
+## 30.1 Decisões
 
-| Pergunta | Resposta |
-|----------|----------|
-| **Pode ser a Evolution API?** | **Sim — é a recomendação.** Ela usa o Baileys por baixo (o que o planejamento já previa), expõe uma API REST e manda os eventos por **webhook**. Suporta grupos, menções, mídia, enquetes e edição de mensagens (confirmar os endpoints na versão instalada, ver 30.3) |
-| **Já tenho um bot em outro número na Evolution. Atrapalha?** | **Não atrapalha.** A Evolution roda **várias instâncias** (uma por número) no mesmo servidor, cada uma com sessão e fila próprias. Basta criar uma **nova instância** para o número do RPG |
-| **Preciso subir outro serviço da Evolution?** | **Não.** Use o mesmo servidor e configure o **webhook só da instância nova** para a URL do jogo. Se o seu servidor usa um **webhook global**, o jogo filtra pelo campo `instance` e ignora os eventos do outro bot |
-| **Dá para rodar na Vercel?** | **O servidor do jogo, sim. A Evolution, não.** A Evolution precisa de uma conexão permanente com o WhatsApp (ela continua onde está hoje). O jogo é feito de "reações a eventos" (webhook → processa → responde), o que combina com funções da Vercel. Os temporizadores ficam no banco (30.4) |
-| **Banco de dados?** | **Supabase (Postgres).** O esquema está pronto e testado (`db/migrations/0001_esquema_inicial.sql`). Falta escolher o projeto (30.6) |
+| Peça | Escolha | Onde roda |
+|------|---------|-----------|
+| WhatsApp | **Evolution API** — nova instância `rpg-yotsuhoshi` no **seu servidor atual** (o bot do outro número continua igual) | Seu VPS |
+| Servidor do jogo | Funções Node da **Vercel** (webhook + tick) | Vercel (região `gru1`, São Paulo) |
+| Banco | **Neon Postgres** pela integração da Vercel (Marketplace) | Neon (região São Paulo) |
+| Relógio de prazos | **`relogio/`** — serviço minúsculo sem dependências | Seu VPS, ao lado da Evolution |
+| Imagens geradas (cartas, mapas) | **Vercel Blob** | Vercel |
+| IA narradora | **Sabiá (Maritaca) ou Claude (Anthropic)** — trocável por variável de ambiente, com um como reserva do outro | APIs externas |
 
 ## 30.2 Arquitetura
 
@@ -16,106 +17,119 @@
              WhatsApp (grupo + privados)
                        ▲   │
                        │   ▼
-   ┌──────────────────────────────────────────┐
-   │  EVOLUTION API (seu servidor atual)       │
-   │   instância "bot-antigo"  → webhook dele  │
-   │   instância "rpg-yotsuhoshi" ─────────────┼──┐  POST /api/webhook/evolution
-   └──────────────────────────────────────────┘  │   (header com segredo)
-                       ▲                         ▼
-                       │ REST: sendText, sendMedia, sendPoll, updateMessage
-   ┌───────────────────┴──────────────────────────────────────────────┐
-   │  VERCEL — servidor do jogo (Node.js, Fluid compute)               │
-   │   /api/webhook/evolution  recebe → responde 200 rápido → processa │
-   │                           (waitUntil)                             │
-   │   /api/tick               chamado a cada minuto pelo banco        │
-   │   src/linguagem  src/regras  src/avatar  src/mapa  narrador (IA)  │
-   └──────┬──────────────────────────────────┬────────────────────────┘
-          │ SQL (pooler, modo transação)      │ HTTPS
-          ▼                                   ▼
-   ┌───────────────────────────────┐   ┌─────────────────────┐
-   │ SUPABASE                       │   │ Claude API (IA)     │
-   │  Postgres (schema "jogo")      │   │  narração, Juiz de  │
-   │  pg_cron → chama /api/tick     │   │  Táticas, diálogo   │
-   │  Storage (cartas e avatares)   │   └─────────────────────┘
-   └───────────────────────────────┘
+   ┌───────────── SEU VPS ──────────────────────────┐
+   │ EVOLUTION API                                   │
+   │   instância do bot antigo  → webhook dele        │
+   │   instância rpg-yotsuhoshi ─────────────────────┼──┐ POST /api/webhook/evolution
+   │ RELÓGIO (relogio/servidor.mjs, Docker)          │  │
+   │   guarda prazos e chama /api/tick na hora certa ─┼──┤ POST /api/tick
+   └──────────────────▲──────────────────────────────┘  │
+                      │ REST: sendText, sendMedia,       ▼
+                      │ sendPoll, updateMessage   ┌──────────────────────────────────┐
+                      └───────────────────────────│ VERCEL — servidor do jogo         │
+                                                  │  webhook → interpreta → regras →  │
+   ┌───────────────────────┐   SQL (driver Neon)  │  IA → responde                    │
+   │ NEON Postgres          │◀────────────────────│  agenda prazos no relógio         │
+   │  schema "jogo"         │                     └───────┬──────────────────────────┘
+   └───────────────────────┘                             │ HTTPS
+                                       ┌─────────────────┴─────────────────┐
+                                       │ Maritaca (Sabiá)  │  Anthropic (Claude) │
+                                       └───────────────────┴─────────────────────┘
 ```
 
-## 30.3 Evolution API — configuração da instância do RPG
+## 30.3 Evolution API
 
-1. Criar a instância (painel da Evolution ou API): nome `rpg-yotsuhoshi`, integração **WHATSAPP-BAILEYS**.
-2. Ler o QR code com o **número dedicado ao RPG** (nunca o mesmo número do outro bot — conectar o mesmo número em
-   duas sessões causa desconexões).
-3. Webhook **da instância** (`POST /webhook/set/rpg-yotsuhoshi`) apontando para
-   `https://<seu-projeto>.vercel.app/api/webhook/evolution`, com os eventos:
-   `MESSAGES_UPSERT` (mensagens novas), `MESSAGES_UPDATE` (votos de enquete, edições), `GROUP_PARTICIPANTS_UPDATE`
-   (entrou/saiu do grupo), `CONNECTION_UPDATE` (bot caiu/voltou).
-4. Recursos usados pelo jogo e o que conferir na sua versão da Evolution v2:
+**Ter outro bot em outro número não atrapalha** e **não é preciso subir outro serviço da Evolution**: ela roda
+várias instâncias (uma por número), cada uma com sua sessão.
 
-| Recurso | Uso no jogo | Conferir |
-|---------|-------------|----------|
-| Enviar texto com menções | Tudo | `sendText` com `mentioned` |
-| Enviar imagem com legenda | Cartas, mapas, avatares | `sendMedia` |
-| **Editar mensagem** | Painel de batalha "vivo" | Endpoint de edição (ex.: `/chat/updateMessage/{instancia}`). Se a sua versão não tiver, o jogo usa o modo **"apagar e reenviar"** ou manda o painel novo a cada rodada (configurável) |
-| **Enquete** | Votos de party, encruzilhadas, júri | `sendPoll` + votos chegando em `MESSAGES_UPDATE` |
-| Reações | ✅ ao receber ação, atalhos 👍 | `sendReaction` |
-| Grupos | Metadados, participantes | Endpoints de grupo |
+1. Criar a instância `rpg-yotsuhoshi` (integração **WHATSAPP-BAILEYS**) e ler o QR com o **número dedicado ao RPG**.
+2. Webhook **da instância** (não o global) → `https://<projeto>.vercel.app/api/webhook/evolution`, eventos:
+   `MESSAGES_UPSERT`, `MESSAGES_UPDATE` (votos de enquete), `GROUP_PARTICIPANTS_UPDATE`, `CONNECTION_UPDATE`.
+   Se o servidor usar webhook global, o jogo filtra pelo campo `instance`.
+3. Recursos que o jogo usa (conferir na versão instalada): `sendText` com menções, `sendMedia`, `sendPoll`,
+   `sendReaction` e edição de mensagem (ex.: `/chat/updateMessage/{instancia}`). Sem edição, o painel de batalha
+   passa a ser reenviado a cada rodada (configurável).
 
-**Risco do Baileys (não oficial):** o número pode ser banido se parecer spam. Mitigações já no projeto: número
-dedicado, limites de envio (doc 22.2), edição em vez de muitas mensagens, horário silencioso.
+## 30.4 Banco: Neon (pela Vercel)
 
-## 30.4 Rodando na Vercel: como resolver o que é "contínuo"
+**Como criar:** no painel da Vercel → *Storage* → *Create Database* → **Neon** → região **São Paulo** → conectar ao
+projeto do jogo. A integração cria a variável `DATABASE_URL` no projeto (ou pela CLI: `vercel integration add neon`).
 
-Funções serverless não ficam ligadas esperando. O jogo foi desenhado para isso:
+**Esquema:** `db/migrations/0001_esquema_inicial.sql` é Postgres padrão (sem nada específico de Supabase) e foi
+testado num Postgres real (`bash db/testar-migracoes.sh`). Basta rodá-lo uma vez no SQL Editor do Neon.
 
-| Necessidade | Solução |
-|-------------|---------|
-| Prazo de rodada (90–120 s) | O prazo fica gravado em `jogo.batalhas.prazo`. A rodada é resolvida **quando todos agem** (na hora) **ou** pelo `/api/tick` (o banco chama a cada minuto via `pg_cron`). Na prática, rodadas sem todos os votos fecham entre 90 s e ~150 s |
-| Crises, regeneração, sussurros, estações | Tarefas em `jogo.agendamentos`, consumidas pelo tick com `FOR UPDATE SKIP LOCKED` |
-| Vigor regenerando | Calculado **sob demanda** (`vigor` + horas desde `vigor_em`), sem timer |
-| Duas mensagens ao mesmo tempo na mesma batalha | `jogo.travar_batalha()` (trava de transação por batalha) |
-| Webhook reenviado | `jogo.mensagens_processadas` (cada mensagem é processada uma vez) |
-| Resposta lenta da IA | O webhook responde 200 na hora e continua o processamento com `waitUntil` (Fluid compute) |
-| Conexões com o banco | Pooler do Supabase em **modo transação** (porta 6543) — funções serverless abrem e fecham conexões o tempo todo |
-| Imagens | Avatares e mapas já são gerados em **JavaScript puro** (sem navegador). As cartas HTML (hoje via Playwright/Chromium) serão portadas para `@vercel/og` (satori), que roda em função da Vercel |
-| Arquivos gerados | Supabase Storage (bucket `cartas`), enviados por URL para a Evolution |
+**Conexão a partir da Vercel:** driver `@neondatabase/serverless` com a URL **pooled** (`-pooler` no host). Transações
+curtas: a trava por batalha (`jogo.travar_batalha`) e a fila (`SKIP LOCKED`) funcionam normalmente.
 
-> Limites de duração de função e de Cron variam por plano da Vercel. O desenho acima **não depende** do Cron da
-> Vercel (quem agenda é o `pg_cron` do Supabase) e cada chamada é curta (segundos).
+### Por que um relógio no VPS (e não um tick a cada minuto)
 
-**Alternativa sem Vercel:** se preferir tudo num lugar só, o mesmo código roda como um serviço Node no **mesmo
-servidor da Evolution** (Docker), com o tick em memória. A escolha não muda nada no resto do projeto.
+No plano gratuito do Neon o banco **dorme após 5 min** sem uso e há uma **cota mensal de horas de computação**
+(~100 CU-horas por projeto; ~400 h numa máquina de 0,25 CU). Um tick a cada minuto manteria o banco acordado o mês todo
+(~730 h) e **estouraria a cota**, suspendendo o banco até o mês seguinte. A solução:
 
-## 30.5 Variáveis de ambiente (Vercel)
+| Necessidade | Como resolve |
+|-------------|--------------|
+| Fim de rodada (90–120 s) | Ao abrir uma rodada, o jogo agenda no relógio: `POST /agendar {id:"rodada:42", quando, url:"/api/tick"}`. Se todos agirem antes, o jogo cancela. **Nenhum prazo = nenhuma chamada = banco dormindo** |
+| Crises, sussurros, estações, eventos semanais | Também agendados no relógio (o mesmo `id` substitui o anterior) |
+| Vigor | Calculado sob demanda (sem timer) |
+| Bot reiniciou / relógio reiniciou | O relógio grava a agenda em arquivo; o jogo também grava prazos em `jogo.batalhas.prazo` e `jogo.agendamentos`, e confere vencidos a cada mensagem recebida |
+
+O relógio (`relogio/servidor.mjs`) não tem dependências e tem teste (`node scripts/testar-relogio.mjs`). Para subir:
+
+```bash
+docker build -t rpg-relogio relogio/
+```
+
+```bash
+docker run -d --name rpg-relogio --restart unless-stopped -p 8787:8787 -v rpg-relogio:/dados -e RELOGIO_SEGREDO=<segredo> -e RELOGIO_URLS=https://<projeto>.vercel.app/ rpg-relogio
+```
+
+## 30.5 IA: Sabiá ou Claude?
+
+**Não precisa ser o Claude.** O jogo só pede à IA uma coisa: um JSON no formato do narrador (`src/ia/esquemas.mjs`),
+e o motor valida tudo antes de aplicar. A camada `src/ia/provedores.mjs` funciona com os dois:
+
+| | **Sabiá (Maritaca)** | **Claude (Anthropic)** |
+|--|----------------------|------------------------|
+| Português do Brasil | Treinado com foco em PT-BR | Muito bom |
+| Formato da resposta | Esquema vai no prompt + validação + **1 correção automática** (não há saída estruturada documentada) | **Saída estruturada garantida** pelo modelo (`output_config.format`) |
+| Contexto grande e repetido (Bíblia do Mundo) | Cobrado a cada chamada | **Prompt caching** reduz custo e latência do trecho repetido |
+| Recusas | — | Tratadas; o jogo usa **fallback do servidor** (`fallbacks: "default"`) para outro modelo quando um recusa |
+| Preço (página da Maritaca) | Sabiá-4: R$ 5 / R$ 20 por 1M tokens · Sabiazinho-4: R$ 1 / R$ 4 | Claude Opus 5.5: US$ 4 / US$ 20 por 1M tokens (modelo padrão do código) |
+| Uso no jogo | Narração e diálogos (volume alto, custo baixo) | Opcional: Juiz de Táticas, finais e cenas grandes, ou reserva |
+
+**Recomendação:** começar com **Sabiá como principal e Claude como reserva** (`comReserva`), ou só Sabiá. Lembrando
+que ~85% das mensagens nem chegam na IA (doc 24) — a conta de IA fica pequena.
+
+Testes da camada de IA (sem gastar crédito): `node scripts/testar-ia.mjs` — 11 testes (JSON com crases, correção
+automática, recusa, provedor reserva, eventos proibidos descartados, IA fora do ar não trava o jogo).
+
+> O nome exato do modelo da Maritaca (ex.: `sabiazinho-4`) vai na variável `MARITACA_MODELO` — confirme o
+> identificador na plataforma da Maritaca ao criar a chave.
+
+## 30.6 Variáveis de ambiente (Vercel)
 
 | Variável | Para quê |
 |----------|----------|
-| `EVOLUTION_URL` | URL do seu servidor da Evolution |
-| `EVOLUTION_API_KEY` | Chave da Evolution (guardada como segredo na Vercel) |
-| `EVOLUTION_INSTANCIA` | `rpg-yotsuhoshi` |
-| `WEBHOOK_SECRET` | Segredo que a Evolution manda no header do webhook |
-| `DATABASE_URL` | Connection string do pooler do Supabase (modo transação) |
-| `TICK_SECRET` | Segredo do `/api/tick` (o mesmo guardado no Vault do Supabase) |
-| `ANTHROPIC_API_KEY` | IA narradora |
-| `TELEFONE_SAL` | Sal para o hash dos números |
-| `ADMINS` | Números que podem usar comandos `/admin` |
+| `DATABASE_URL` | Criada pela integração Neon (usar a URL pooled) |
+| `BLOB_READ_WRITE_TOKEN` | Criada ao conectar um Vercel Blob (cartas e mapas) |
+| `EVOLUTION_URL`, `EVOLUTION_API_KEY`, `EVOLUTION_INSTANCIA` | Envio de mensagens pela Evolution |
+| `WEBHOOK_SECRET` | Confere que o webhook veio da sua Evolution |
+| `RELOGIO_URL`, `RELOGIO_SEGREDO` | Agendar prazos no relógio do VPS (o mesmo segredo do container) |
+| `IA_PROVEDOR` | `maritaca` ou `anthropic` |
+| `MARITACA_API_KEY`, `MARITACA_MODELO` | Sabiá |
+| `ANTHROPIC_API_KEY` | Claude (principal ou reserva) |
+| `TELEFONE_SAL`, `ADMINS` | Hash dos números e números de admin |
 
-## 30.6 Banco de dados — situação da sua conta Supabase
-
-Na sua conta existem 3 projetos, **todos pausados (inativos)**: *JullioDutra's Project* (us-east-1), *cadrius-backups*
-(sa-east-1) e *trama-cp* (sa-east-1). Para o jogo, a recomendação é **um projeto novo e dedicado** chamado
-`rpg-dark`, na região **sa-east-1 (São Paulo)**, mais perto dos jogadores; as funções da Vercel devem ficar na mesma região (`gru1`, São Paulo).
-
-Passos depois de escolher o projeto:
-1. Aplicar `db/migrations/0001_esquema_inicial.sql` (testado localmente com `bash db/testar-migracoes.sh`).
-2. Ativar `pg_cron` e `pg_net`, guardar o `tick_secret` no Vault e rodar `db/supabase/agendar-tick.sql`.
-3. Criar o bucket `cartas` no Storage.
-4. Copiar a connection string do pooler para `DATABASE_URL` na Vercel.
+Chaves e segredos ficam como **variáveis secretas na Vercel**, nunca no código nem no chat.
 
 ## 30.7 Ordem de implantação
 
 ```
-1. Supabase: projeto + migração + pg_cron            (banco pronto)
-2. Vercel: projeto rpg-dark + variáveis + deploy     (webhook e tick no ar)
-3. Evolution: instância rpg-yotsuhoshi + QR + webhook (bot conectado)
-4. Grupo de teste: /ativar-mundo → "entrar no mundo" (primeiro jogador)
+1. Vercel: criar o projeto rpg-dark ligado ao GitHub (região gru1)
+2. Vercel → Storage: criar Neon (São Paulo) e Blob, conectar ao projeto
+3. Neon SQL Editor: rodar db/migrations/0001_esquema_inicial.sql
+4. VPS: subir o relógio (Docker) e criar a instância rpg-yotsuhoshi na Evolution
+5. Vercel: variáveis de ambiente + deploy
+6. Grupo de teste: /ativar-mundo → "entrar no mundo"
 ```

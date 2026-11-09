@@ -1,6 +1,6 @@
--- Yotsuhoshi — esquema inicial do banco (Supabase / Postgres 15+).
--- Tudo fica no schema privado "jogo", que NÃO é exposto pela API pública do Supabase (PostgREST).
--- O servidor do jogo (Vercel) conecta pelo pooler em modo transação com a connection string do banco.
+-- Yotsuhoshi — esquema inicial do banco (Postgres 15+; produção: Neon pela integração da Vercel).
+-- Postgres padrão, sem extensões. Tudo fica no schema "jogo"; só o servidor do jogo (Vercel) acessa,
+-- pela DATABASE_URL pooled. RLS fica ligado em todas as tabelas como defesa extra.
 -- Testado com: bash db/testar-migracoes.sh
 
 create schema if not exists jogo;
@@ -310,7 +310,8 @@ create table jogo.mensagens_processadas (
 );
 create index mensagens_processadas_recebida_em_idx on jogo.mensagens_processadas (recebida_em);
 
--- Fila de tarefas agendadas (fim de rodada, crises, regeneração, sussurros), consumida pelo /api/tick
+-- Fila de tarefas agendadas (fim de rodada, crises, sussurros). O relógio do VPS chama /api/tick na hora; o tick
+-- consome as vencidas daqui (e qualquer mensagem recebida também confere as vencidas).
 create table jogo.agendamentos (
   id            bigint generated always as identity primary key,
   mundo_id      bigint references jogo.mundos (id) on delete cascade,

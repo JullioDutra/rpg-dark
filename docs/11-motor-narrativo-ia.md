@@ -1,5 +1,9 @@
 # 11 — Motor Narrativo de IA
 
+> **Provedor de IA:** Sabiá (Maritaca) ou Claude (Anthropic), trocáveis — implementação em `src/ia/`
+> (`provedores.mjs`, `esquemas.mjs`, `narrador.mjs`) com 11 testes. Escolha e custos no [doc 30.5](30-infraestrutura-whatsapp.md).
+> As "ferramentas" abaixo viram o campo `eventos` do JSON do narrador; o motor valida cada um.
+
 Objetivo: o autor escreve a história (início, fatos possíveis, final). A IA **continua** a história
 reagindo aos jogadores, **sem sair dos trilhos** e garantindo que seja possível **chegar ao final definido** ("zerar").
 

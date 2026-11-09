@@ -1,0 +1,15 @@
+{
+  "name": "rpg-dark",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Yotsuhoshi — RPG de anime no WhatsApp",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "testar": "node scripts/testar-linguagem.mjs && node scripts/testar-regras.mjs && node scripts/testar-ia.mjs && node scripts/testar-relogio.mjs && python3 scripts/validar-historia.py",
+    "gerar": "node scripts/gerar-dados.mjs && node scripts/render-avatares.mjs && node scripts/render-pets.mjs && node scripts/render-mapas.mjs"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "1.7.0"
+  }
+}

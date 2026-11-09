@@ -95,7 +95,7 @@ A mesma frase significa coisas diferentes conforme o **estado** do jogador:
 
 ## 24.7 Quando a IA entra (e o que ela recebe)
 
-A IA (Claude) só é chamada para: **ação livre** (`>`), **diálogo com NPC**, mensagens do privado sem padrão
+A IA (Sabiá ou Claude, doc 30.5) só é chamada para: **ação livre** (`>`), **diálogo com NPC**, mensagens do privado sem padrão
 reconhecido, e **narração**. Ela recebe a intenção já classificada quando houver (`dica`), o contexto da cena e
 responde por **ferramentas** (doc 11). Se a IA identificar uma intenção mecânica dentro de uma frase livre
 ("e depois eu bebo a poção"), ela devolve `{intencao: "item", item: "pocao"}` e o motor executa normalmente.

@@ -52,7 +52,7 @@ Dificuldade: **difícil** — vilões podem vencer, a morte pode ser permanente,
 | 27 | [**Encruzilhadas**](docs/27-encruzilhadas.md) | 12 decisões que mudam a história, efeito borboleta, epílogos |
 | 28 | [**Conflito entre jogadores**](docs/28-conflito-entre-jogadores.md) | Rivalidade, disputa, julgamento, facções, furto, terras sem lei, paz |
 | 29 | [**Travas, técnicas e casos especiais**](docs/29-travas-tecnicas-e-casos-especiais.md) | Anti-buff, ver o card de outros jogadores, luta real com Veredito, interferência do destino, teletransporte, interações de habilidades |
-| 30 | [**Infraestrutura WhatsApp**](docs/30-infraestrutura-whatsapp.md) | Evolution API (multi-instância), Vercel, Supabase, variáveis, ordem de implantação |
+| 30 | [**Infraestrutura WhatsApp**](docs/30-infraestrutura-whatsapp.md) | Evolution API (multi-instância), Vercel, Neon, relógio no VPS, IA Sabiá ou Claude, variáveis, implantação |
 
 ## Dados estruturados (`data/`)
 
@@ -70,7 +70,9 @@ Dificuldade: **difícil** — vilões podem vencer, a morte pode ser permanente,
 | `data/aparencias.json` | Bíblia visual: paletas, formas, escala por tier, fichas completas dos personagens |
 | `data/animais.json` | 36 animais (fauna, montarias, criaturas mágicas) |
 | `data/historia.yaml` | Roteiro executável: atos, marcos, fatos, proibições, finais, encruzilhadas, epílogos |
-| `db/migrations/` | Esquema do banco (Supabase/Postgres), testado |
+| `db/migrations/` | Esquema do banco (Postgres/Neon), testado |
+| `src/ia/` | Camada de IA: Sabiá (Maritaca) ou Claude, narrador com validação |
+| `relogio/` | Serviço de prazos para o VPS (Docker) |
 | `data/contos.yaml` | Contos, flashbacks, Chaves de Conhecimento, desafios, marcas de trajetória |
 
 ## Templates (`templates/`)
@@ -92,6 +94,9 @@ python3 scripts/validar-historia.py # valida roteiro, encruzilhadas, contos e ch
 node scripts/testar-linguagem.mjs   # 91 testes do entendimento de fala natural
 node scripts/testar-regras.mjs      # testes das regras (Olho Avaliador)
 bash db/testar-migracoes.sh         # aplica o esquema do banco num Postgres temporário e verifica
+node scripts/testar-ia.mjs          # camada de IA (Sabiá/Claude) com respostas simuladas
+node scripts/testar-relogio.mjs     # relógio de prazos
+npm run testar                      # todos os testes
 node scripts/render-cartas.mjs      # gera exemplos de cartas em templates/exemplos/
 ```
 

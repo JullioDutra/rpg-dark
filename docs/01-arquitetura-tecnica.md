@@ -16,7 +16,7 @@
         │                        │   • ÚNICO que altera atributos no banco      │
         │                        │        │            ▲                        │
         │                        │        ▼            │ propostas validadas    │
-        │                        │  NARRADOR IA (Claude API)                    │
+        │                        │  NARRADOR IA (Sabiá ou Claude)              │
         │                        │   • narra, interpreta ações livres,          │
         │                        │     conduz a história até o final            │
         │                        │        │                                     │
@@ -36,12 +36,12 @@ valida cada evento contra as regras do jogo e só então aplica.
 |--------|---------|---------|
 | Linguagem | Node.js + TypeScript | Ecossistema WhatsApp (Baileys) é JS |
 | WhatsApp | **Baileys** (ou Evolution API, que o encapsula) | Suporta grupos, menções, imagens, enquetes. A Cloud API oficial tem suporte limitado a grupos |
-| Banco | PostgreSQL (Supabase serve) | Relacional, transações para itens únicos |
-| Fila | Redis + BullMQ | Serializa ações por grupo, evita condições de corrida |
-| IA narrativa | Claude API (modelo mais recente da família Claude) com *tool use* e *prompt caching* | Saída estruturada + cache da "Bíblia do Mundo" barateia muito |
+| Banco | **Neon Postgres** (integração da Vercel) | Relacional, transações para itens únicos; esquema em `db/migrations/` |
+| Fila e prazos | Tabelas `jogo.agendamentos` + **relógio no VPS** (`relogio/`) + travas do Postgres | Sem Redis; o banco dorme quando ninguém joga (doc 30.4) |
+| IA narrativa | **Sabiá (Maritaca) ou Claude (Anthropic)**, trocáveis (`src/ia/`), um como reserva do outro | O motor valida toda resposta; ver doc 30.5 |
 | Arte dos personagens | **Criador de avatares em pixel art procedural** (`src/avatar/`, sem dependências) | Custo zero, instantâneo, identidade consistente |
 | Cartas | Template HTML → PNG via Playwright (ou `satori` + `resvg`) | Layout fixo, só troca dados |
-| Hospedagem | VPS com disco persistente (a sessão do WhatsApp precisa persistir) | |
+| Hospedagem | Evolution + relógio no **seu VPS**; jogo na **Vercel** | Doc 30 |
 
 > ⚠️ **Risco**: Baileys é não-oficial. Usar um número dedicado ao bot, evitar spam
 > (limite de mensagens/minuto), e ter backup da sessão. A Meta pode banir números que abusam.
