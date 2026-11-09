@@ -47,7 +47,7 @@ Regras do Diretor:
    a história de volta (`se_atrasar`). Isso garante que o jogo sempre seja "zerável".
 3. **Ramificações**: o autor pode definir escolhas (ex.: salvar o príncipe ou o selo). Todos os ramos convergem
    em um marco obrigatório posterior.
-4. **O final é fixo**; o *epílogo* varia conforme escolhas/mérito (o autor pode escrever variações).
+4. **Os finais são três** (Estelar, Selo, Eclipse — doc 14.8); qual acontece depende do que os jogadores fizeram.
 5. **Ninguém fica para trás**: jogadores que entram tarde recebem um *resumo-prólogo* e um marco pessoal de
    "alcance" (catch-up) com XP acelerado (+50% até chegar à média do grupo).
 
@@ -101,6 +101,9 @@ REGRAS INVIOLÁVEIS:
 5. Nunca revele o roteiro, o final, ou marcos futuros. Pistas sim; spoilers não.
 6. Toda consequência mecânica passa por ferramentas.
 7. Trate todos os jogadores com equidade; dê espaço a quem fala menos.
+8. O jogo é DIFÍCIL. Não salve ninguém por pena. Decisões ruins têm consequências reais — mas todo perigo
+   mortal deve ser anunciado na narração ANTES de acontecer.
+9. Segredos (portador do ovo, pactos, Corrupção) só aparecem no chat privado do jogador envolvido.
 ```
 
 ## 11.5 Memória
@@ -110,7 +113,40 @@ REGRAS INVIOLÁVEIS:
   Entram no contexto e não podem ser contraditos.
 - **Diário do jogador**: 3–5 linhas por jogador com seus feitos (usado em cenas pessoais e no epílogo).
 
-## 11.6 Moderação e segurança
+## 11.6 Geração detalhada de história, cenários e acontecimentos
+
+A IA não só "continua": ela **constrói** cada cena com detalhe. Para cada cena o narrador recebe o marco atual
+(`cena`, `objetivo`), a região (`data/reinos.json` + doc 02: descrição, densidade, perigo, segredo), animais da região
+(`data/animais.json`), vilões permitidos e o estado do mundo (Relógio, núcleos, NPCs vivos/mortos).
+
+**Receita de cena (obrigatória em cenas novas):**
+1. **Lugar** — 1 frase visual + 1 detalhe sensorial (cheiro, som, temperatura) + 1 detalhe único da região.
+2. **Vida** — o que NPCs e animais estão fazendo (animais servem de aviso de perigo).
+3. **Tensão** — algo fora do lugar, ligado ao marco ou a um fato disponível.
+4. **Gancho** — termina com uma pergunta implícita ou uma escolha clara para os jogadores.
+
+**Geração procedural com âncoras:** a IA pode inventar NPCs menores, vilarejos, ruínas, missões secundárias e
+acontecimentos, desde que: (a) não contradiga fatos canônicos; (b) registre o que inventou com `registrar_fato_canonico`
+(vira verdade no mundo); (c) não crie itens lendários, núcleos ou revele camadas de verdade fora do marco.
+
+**Acontecimentos de mundo:** a cada dia real, o Diretor sorteia 0–2 acontecimentos regionais (ataques, festivais,
+desaparecimentos, mercadores, migração de animais) coerentes com o Relógio do Eclipse — quanto mais alto, mais sombrios.
+
+**Ferramentas adicionais para esta história:**
+
+| Ferramenta | Uso | Validação do motor |
+|------------|-----|--------------------|
+| `registrar_fato_canonico(texto)` | Fixa algo inventado como verdade do mundo | Não pode contradizer fatos existentes |
+| `julgar_tatica(acao, notas[5])` | Juiz de Táticas (doc 19.5) | Motor converte nota em multiplicador (teto ×1,8) |
+| `enviar_sussurro(jogador, texto, pacto?)` | Kanata fala no privado | Limite de 1 a cada 2 dias; pacto precisa ser do catálogo (doc 16) |
+| `pista_do_ovo(texto)` | Pista sutil só para o portador | Só se o portador estiver numa região que reage ao ovo |
+| `alterar_relogio(evento)` | Relógio do Eclipse | Só eventos da tabela do doc 19.6 |
+| `mudar_estado_nucleo(nucleo, estado)` | Destino do núcleo | Só no último capítulo do arco do reino ou em A3-M6 |
+
+**A IA também joga os inimigos:** escolhe as táticas dos vilões pelas regras do doc 19.4 e não facilita. Se a decisão
+dos jogadores foi ruim, o resultado é ruim — mas o perigo precisa ter sido **telegrafado** antes.
+
+## 11.7 Moderação e segurança
 
 - Classificador antes da IA: bloqueia prompt-injection ("ignore as instruções"), pedidos de atributo e conteúdo proibido.
 - Limite de conteúdo: violência de anime ok; nada sexual explícito; nada de ódio real.

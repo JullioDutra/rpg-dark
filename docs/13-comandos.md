@@ -59,6 +59,18 @@ Texto livre começando com `>` (ou mencionando o bot) é uma **ação narrativa*
 | `!amuleto <descrição da habilidade>` | Usa o Amuleto da Perdição (1× no jogo, irreversível após confirmar) |
 | `!despertar` | Só aparece quando o motor libera |
 
+## História, segredos e manipulação (no chat privado com o bot)
+| Comando | Efeito |
+|---------|--------|
+| `!ficha` (no privado) | Ficha completa com Corrupção, pactos ativos e segredos |
+| `!pacto aceitar` / `!pacto recusar` | Responde a uma oferta de Kanata |
+| `!trair` / `!resistir` | Quando o motor perguntar durante uma batalha (só jogadores com pacto de Traição ou Eclipsados) |
+| `!revelar-sussurro` | Mostra ao grupo o último sussurro recebido (Corrupção −5) |
+| `!contrato-yoru <texto>` | Propõe um contrato a Kanata — ele é obrigado a cumprir o texto literal se assinar |
+| `!ler-diario` | Lê um trecho do Diário de Sayo (em cena com Kanata: +1 Dúvida) |
+| `!relogio` | Mostra o Relógio do Eclipse do mundo (também funciona no grupo) |
+| `!nucleos` | Estado dos 4 núcleos (também no grupo) |
+
 ## Admin do grupo
 `/ativar-mundo <nome>` · `/pausar-narrador` · `/retomar` · `/forcar-marco <id>` · `/desfazer-ultimo-evento` ·
-`/resetar-jogador @x` · `/evento <fato_id>` · `/backup`
+`/resetar-jogador @x` · `/migrar-jogador @antigo @novo` · `/evento <fato_id>` · `/backup`

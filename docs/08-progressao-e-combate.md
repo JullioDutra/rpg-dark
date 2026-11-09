@@ -74,9 +74,9 @@ Referência (gerada pelas fórmulas): um Espadachim nível 2 (FOR ~16) causa ~39
 Um grupo de 4 jogadores nível 38 derruba o Yōgan-ryū (V064, 2.560 HP) em ~3–4 rodadas usando habilidades.
 
 ### Derrota
-- HP 0 → **Caído**. Aliados podem reviver com item/magia na mesma batalha.
-- Se o grupo inteiro cair: volta à última capital visitada com 30% HP, perde 10% do ouro e **não perde itens**.
-- **Morte permanente não existe por padrão** (exceto se o autor definir em marco de história e o jogador aceitar).
+O jogo é **difícil**: vilões podem vencer. Estados (Caído, Ferido, Capturado, Marca da Morte, **Morte Verdadeira**),
+consequências por tipo de inimigo, Batalhas Mortais e reencarnação estão no **[doc 19](19-dificuldade-derrota-estrategia.md)**,
+que prevalece sobre qualquer regra deste documento.
 
 ### PvP
 - Só por **duelo aceito** (`!duelo @jogador` + `!aceitar`). Pode apostar itens (não lendários, exceto em "Duelo de Relíquia" com confirmação dupla).

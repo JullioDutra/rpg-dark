@@ -22,7 +22,7 @@ const page = await browser.newPage({ viewport: { width: 900, height: 1200 }, dev
 
 async function render(template, dados, arquivo) {
   await page.goto(pathToFileURL(join(raiz, "templates", template)).href, { waitUntil: "load", timeout: 15000 }).catch(() => {});
-  if (dados) await page.evaluate((d) => window.renderCarta(d), dados);
+  if (dados) await page.evaluate((d) => window.renderCarta({ revelado: true, ...d }), dados);
   await page.evaluate(() => document.fonts.ready);
   await page.locator("#carta").screenshot({ path: join(saida, arquivo) });
   console.log("✔", arquivo);
@@ -33,5 +33,6 @@ for (const id of ids) {
   const v = viloes.find((x) => x.id === id);
   if (!v) { console.warn("vilão não encontrado:", id); continue; }
   await render("carta-vilao.html", v, `vilao-${id}.png`);
+  if (v.mascara) await render("carta-vilao.html", { ...v, revelado: false }, `vilao-${id}-mascara.png`);
 }
 await browser.close();

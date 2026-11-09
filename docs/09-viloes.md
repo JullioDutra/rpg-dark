@@ -16,6 +16,9 @@
 `HP = (60 + nível×20) × mult_HP_tier × peso_HP` · `XP = nível × 15 × mult_xp`.
 Cada vilão tem uma carta gerada a partir de `templates/carta-vilao.html` e um prompt de imagem em `data/viloes.json`.
 
+⚠️ Vilões com **🎭 máscara pública** escondem spoilers: a carta mostrada aos jogadores usa a máscara até o marco
+indicado (`revela_em`) ser concluído no mundo. Este documento é para o autor/admin — **não compartilhe com jogadores**.
+
 Os **4 reis dos reinos** (Ryūen, Kaishin, Gōtetsu, Sorahiko) **não** estão nesta lista: são NPCs cujo papel
 (aliado, rival ou inimigo) será definido pela história do autor.
 
@@ -389,10 +392,12 @@ Os **4 reis dos reinos** (Ryūen, Kaishin, Gōtetsu, Sorahiko) **não** estão n
 **Habilidade:** Julgamento do Raio: dano alto em alvo aleatório · **Fraqueza:** Terra · **Recompensa:** 1200 XP, 640 ouro, 1% Amuleto  
 > Tenta acordar o deus do trovão com sacrifícios.
 
-#### V060 · O Leiloeiro Sem Sombra, o Dono do Mercado Negro
+#### V060 · O Leiloeiro Sem Sombra, o Emissário de Quinhentos Anos
 *Médio Escalão · Nv 30 · Trevas · invocador · Kyōkai*  
 **Habilidade:** Lance Final: força o alvo a escolher entre perder um item ou 30% do HP · **Fraqueza:** Luz · **Recompensa:** 1125 XP, 600 ouro, 1% Amuleto  
-> Comanda o leilão das sombras. Não projeta sombra alguma.
+> O homem de manto com os quatro brasões que convenceu Kaien a roubar o ovo. A seiva da Árvore-Estrela o impede de morrer e lhe tirou a sombra. Hoje é o tesoureiro de Kanata.
+
+🎭 **Máscara pública** (até `A3-M4`): O Leiloeiro Sem Sombra, o Dono do Mercado Negro — *Comanda o leilão das sombras de Kyōkai. Não projeta sombra alguma. Dizem que é mais velho que a própria cidade.*
 
 
 ---
@@ -539,8 +544,8 @@ Os **4 reis dos reinos** (Ryūen, Kaishin, Gōtetsu, Sorahiko) **não** estão n
 | V088 | **Kazenaki-no-Haha** | 70 | Desfiladeiro Kazenaki | Alma | 6570 | 96 | 128 | 224 | 192 | 128 | — |
 | V089 | **O Arquivista** | 78 | Olho da Tempestade Arashi-no-Me | Espaço | 6480 | 89 | 124 | 284 | 231 | 160 | SF-FUJ-08 |
 | V090 | **Sekiō** | 80 | Floresta Petrificada Ishi-no-Mori | Terra | 13280 | 182 | 291 | 109 | 218 | 109 | SF-KOK-03 |
-| V091 | **Yoru** | 82 | Kyōkai | Trevas | 7225 | 242 | 130 | 130 | 130 | 298 | SF-KOK-04 |
-| V092 | **O Quinto que Falhou** | 85 | Torre Sem Fim | Vazio | 8800 | 212 | 193 | 193 | 193 | 193 | SF-KOK-04 |
+| V091 | **Kanata** | 85 | Kyōkai | Trevas | 7480 | 250 | 135 | 135 | 135 | 308 | SF-KOK-04 |
+| V092 | **Tōya** | 85 | Torre Sem Fim | Vazio | 8800 | 212 | 193 | 193 | 193 | 193 | SF-KOK-04 |
 
 #### V081 · Enma-ō, o Juiz do Submundo de Fogo
 *Nível Rei · Nv 70 · Fogo · bruto · Ruínas de Enma*  
@@ -550,7 +555,7 @@ Os **4 reis dos reinos** (Ryūen, Kaishin, Gōtetsu, Sorahiko) **não** estão n
 #### V082 · Kagerō Ryūketsu, o Primeiro Dragão-Sangue
 *Nível Rei · Nv 65 · Fogo · equilibrado · Kagutsuchi-jō*  
 **Habilidade:** Duelo Eterno: força 1×1 com um único jogador por 3 turnos · **Fraqueza:** Água · **Recompensa:** 14625 XP, 7800 ouro, 10% Amuleto  
-> Espírito do duelista que enfrentou o Quinto Portador. Guarda o capítulo Céu Rubro do Shitenchō.
+> Espírito do duelista que enfrentou o rei antigo Ryūga na véspera do selo e perdeu. Guarda o capítulo Céu Rubro do Shitenchō e só o entrega a quem o vencer em duelo justo.
 
 #### V083 · Leviatã de Shinkai, a Serpente do Abismo
 *Nível Rei · Nv 72 · Água · besta · Fossa Shinkai*  
@@ -592,15 +597,19 @@ Os **4 reis dos reinos** (Ryūen, Kaishin, Gōtetsu, Sorahiko) **não** estão n
 **Habilidade:** Olhar Petrificante: petrifica 1 alvo (2 turnos ou até ser curado) · **Fraqueza:** Espelho · **Recompensa:** 18000 XP, 9600 ouro, 10% Amuleto  
 > Petrificou a floresta inteira. Sentado sobre a Égide do Quinto Portador.
 
-#### V091 · Yoru, o Mestre da Guilda de Kyōkai
-*Nível Rei · Nv 82 · Trevas · assassino · Kyōkai*  
-**Habilidade:** Mil Contratos: cada jogador que já aceitou missão da guilda recebe −20% em tudo · **Fraqueza:** Luz · **Recompensa:** 18450 XP, 9840 ouro, 10% Amuleto  
-> Nunca foi visto de dia. Sabe de todos os segredos — porque é ele quem os vende.
+#### V091 · Kanata, o Profeta do Esquife, que o mundo chamava de Yoru
+*Nível Rei · Nv 85 · Trevas · assassino · Kyōkai*  
+**Habilidade:** Eco da Devoração: copia 1 habilidade de um jogador por turno · Mil Contratos: −20% em tudo para quem fez missões da Guilda · **Fraqueza:** O Diário de Sayo (Dúvida) · Luz · **Recompensa:** 19125 XP, 10200 ouro, 10% Amuleto  
+> Descendente de Sayo, irmã de Kaien. Mestre da Guilda de Kyōkai. Quer reunir os 4 núcleos e o Ovo Eterno para abrir o Esquife e libertar Kaien — sem saber que isso destampa o buraco negro.
 
-#### V092 · O Quinto que Falhou, o Eco do Portador
+🎭 **Máscara pública** (até `A2-M3`): Yoru, o Mestre da Guilda de Kyōkai — *Nunca visto de dia. Generoso com quem trabalha para a Guilda. Ninguém sabe o que ele quer.*
+
+#### V092 · Tōya, o Portador que Falhou
 *Nível Rei · Nv 85 · Vazio · equilibrado · Torre Sem Fim*  
-**Habilidade:** Eco do Portador: usa as 4 afinidades elementais · **Fraqueza:** Nenhuma · **Recompensa:** 19125 XP, 10200 ouro, 10% Amuleto  
-> Alguém que tentou ser o Quinto Portador antes. O Vazio o devolveu — vazio.
+**Habilidade:** Mão Queimada: o ataque ignora escudos e queima 10% do MP · **Fraqueza:** O Ovo Eterno (se o portador estiver presente, Tōya pode ser libertado sem luta) · **Recompensa:** 19125 XP, 10200 ouro, 10% Amuleto  
+> Descendente de Sayo que tentou usar o ovo para abrir o Esquife há 200 anos. O ovo o rejeitou e ele desceu atrás dele. O buraco o devolveu vazio.
+
+🎭 **Máscara pública** (até `A4-M5`): O Portador que Falhou, o Eco na Torre — *Um guerreiro vazio com as mãos queimadas, preso nos andares mais fundos da Torre.*
 
 
 ---
@@ -609,52 +618,64 @@ Os **4 reis dos reinos** (Ryūen, Kaishin, Gōtetsu, Sorahiko) **não** estão n
 
 | ID | Nome | Nv | Região | Elemento | HP | FOR | DEF | MAG | RES | VEL | Chefe de |
 |---|---|:---:|---|---|---:|---:|---:|---:|---:|---:|---|
-| V093 | **Kagutsuchi** | 88 | Torre Sem Fim | Fogo | 21840 | 345 | 345 | 345 | 345 | 292 | SF-KOK-04 |
-| V094 | **Watatsumi** | 88 | Torre Sem Fim | Água | 21840 | 345 | 345 | 345 | 345 | 292 | SF-KOK-04 |
-| V095 | **Ōyamatsumi** | 88 | Torre Sem Fim | Terra | 21840 | 345 | 345 | 345 | 345 | 292 | SF-KOK-04 |
-| V096 | **Shinatsuhiko** | 88 | Torre Sem Fim | Vento | 21840 | 345 | 345 | 345 | 345 | 292 | SF-KOK-04 |
+| V093 | **Akatsuki Ryūga** | 88 | Torre Sem Fim | Fogo | 21840 | 345 | 345 | 345 | 345 | 292 | SF-KOK-04 |
+| V094 | **Minazuki Shizuha** | 88 | Torre Sem Fim | Água | 21840 | 345 | 345 | 345 | 345 | 292 | SF-KOK-04 |
+| V095 | **Iwanaga Gōzan** | 88 | Torre Sem Fim | Terra | 21840 | 345 | 345 | 345 | 345 | 292 | SF-KOK-04 |
+| V096 | **Hayate Tsukumo** | 88 | Torre Sem Fim | Vento | 21840 | 345 | 345 | 345 | 345 | 292 | SF-KOK-04 |
 | V097 | **Tsukuyomi Partido** | 93 | Torre Sem Fim | Trevas | 23040 | 364 | 364 | 364 | 364 | 308 | SF-KOK-04 |
-| V098 | **Hiruko** | 95 | Torre Sem Fim | Alma | 23520 | 371 | 371 | 371 | 371 | 314 | SF-KOK-04 |
+| V098 | **Nisteroy** | 98 | Esquife dos Quatro Céus | Fogo | 24240 | 383 | 383 | 383 | 383 | 324 | SF-KOK-04 |
 | V099 | **Muhyō** | 97 | Cratera do Vazio | Vazio | 24000 | 379 | 379 | 379 | 379 | 320 | SF-KOK-04 |
-| V100 | **KOKŪ** | 100 | Trono dos Deuses Caídos | Vazio | 24720 | 390 | 390 | 390 | 390 | 330 | SF-KOK-04 |
+| V100 | **Shokuō** | 100 | Esquife dos Quatro Céus | Vazio | 24720 | 390 | 390 | 390 | 390 | 330 | SF-KOK-04 |
 
-#### V093 · Kagutsuchi, o Deus-Patrono Caído do Fogo
+#### V093 · Akatsuki Ryūga, o Rei Antigo do Fogo, Corrompido
 *Divindade · Nv 88 · Fogo · divino · Torre Sem Fim*  
-**Habilidade:** Nascimento Ardente: o campo de batalha vira lava (dano por turno a todos) · **Fraqueza:** Água · **Recompensa:** 52800 XP, 28160 ouro, 25% Amuleto  
-> O deus que deu nome à capital do fogo. Caiu ao tentar devorar o Vazio sozinho.
+**Habilidade:** Coroa de Brasa: campo de lava (dano por turno a todos); +50% contra quem tem o Núcleo Rubro · **Fraqueza:** Água · **Recompensa:** 52800 XP, 28160 ouro, 25% Amuleto  
+> Rei de Homura há 500 anos. Escolheu o emissário. Deu a vida pelo selo; o buraco corrompeu sua alma presa ao Esquife. Vencido, é libertado e abençoa o portador do Núcleo Rubro.
 
-#### V094 · Watatsumi, o Deus-Patrono Caído do Mar
+🎭 **Máscara pública** (até `A3-M5`): O Rei de Brasa, Guardião Corrompido da Torre — *Uma figura coroada de fogo rachado que guarda a descida.*
+
+#### V094 · Minazuki Shizuha, o Rei Antigo da Água, Corrompido
 *Divindade · Nv 88 · Água · divino · Torre Sem Fim*  
-**Habilidade:** Dilúvio do Fim: afoga — dano crescente a cada turno · **Fraqueza:** Raio · **Recompensa:** 52800 XP, 28160 ouro, 25% Amuleto  
-> Patrono do reino da água. Seu corpo virou o abismo de Shinkai.
+**Habilidade:** Dilúvio do Fim: dano crescente a cada turno (afogamento) · **Fraqueza:** Raio · **Recompensa:** 52800 XP, 28160 ouro, 25% Amuleto  
+> Rei de Watatsumi há 500 anos, o mais sábio dos quatro, o que mais se arrependeu. Libertado, abençoa o portador do Núcleo Abissal.
 
-#### V095 · Ōyamatsumi, o Deus-Patrono Caído da Montanha
+🎭 **Máscara pública** (até `A3-M5`): O Rei de Maré, Guardião Corrompido da Torre — *Uma figura coroada de água negra que guarda a descida.*
+
+#### V095 · Iwanaga Gōzan, o Rei Antigo da Terra, Corrompido
 *Divindade · Nv 88 · Terra · divino · Torre Sem Fim*  
 **Habilidade:** Peso do Mundo: VEL de todos cai pela metade · **Fraqueza:** Vento · **Recompensa:** 52800 XP, 28160 ouro, 25% Amuleto  
-> Patrono da terra. Dorme dentro da montanha — ou dormia.
+> Rei de Daichi há 500 anos. Foi o primeiro a propor o sacrifício. Libertado, abençoa o portador do Núcleo Raiz.
 
-#### V096 · Shinatsuhiko, o Deus-Patrono Caído do Vento
+🎭 **Máscara pública** (até `A3-M5`): O Rei de Pedra-Raiz, Guardião Corrompido da Torre — *Uma figura coroada de pedra e raízes que guarda a descida.*
+
+#### V096 · Hayate Tsukumo, o Rei Antigo do Vento, Corrompido
 *Divindade · Nv 88 · Vento · divino · Torre Sem Fim*  
-**Habilidade:** Sopro que Apaga Nomes: silencia todo o grupo 1 turno · **Fraqueza:** Terra · **Recompensa:** 52800 XP, 28160 ouro, 25% Amuleto  
-> Patrono do vento, que escolhe os reis de Fūjin. Escolheu errado de propósito?
+**Habilidade:** Sopro que Apaga Nomes: silencia todo o grupo por 1 turno · **Fraqueza:** Terra · **Recompensa:** 52800 XP, 28160 ouro, 25% Amuleto  
+> Rei de Fūjin há 500 anos. Fincou a Excalibur na estepe antes do último combate, 'para o quinto que vier'. Libertado, abençoa o portador do Núcleo Celeste.
+
+🎭 **Máscara pública** (até `A3-M5`): O Rei de Tempestade, Guardião Corrompido da Torre — *Uma figura coroada de nuvens rasgadas que guarda a descida.*
 
 #### V097 · Tsukuyomi Partido, o Deus da Lua Quebrada
 *Divindade · Nv 93 · Trevas · divino · Torre Sem Fim*  
 **Habilidade:** Noite Eterna: Demônios inimigos +50%, cura −50% · **Fraqueza:** Luz · **Recompensa:** 55800 XP, 29760 ouro, 25% Amuleto  
 > A lua do mundo foi partida em uma guerra antiga. Ele é o que sobrou.
 
-#### V098 · Hiruko, o Deus Esquecido
-*Divindade · Nv 95 · Alma · divino · Torre Sem Fim*  
-**Habilidade:** Esquecimento: apaga 1 habilidade aleatória do alvo pela batalha · **Fraqueza:** Nenhuma · **Recompensa:** 57000 XP, 30400 ouro, 25% Amuleto  
-> O primeiro deus, descartado pelos outros ao nascer. Nunca perdoou.
+#### V098 · Nisteroy, o Dragão do Crepúsculo
+*Divindade · Nv 98 · Fogo · divino · Esquife dos Quatro Céus*  
+**Habilidade:** Luto Ardente: quanto mais tempo a luta dura, mais forte fica (+10% por turno) — até ver o ovo · **Fraqueza:** O Ovo Eterno desperto (encerra a luta) · **Recompensa:** 58800 XP, 31360 ouro, 25% Amuleto  
+> O último dragão antigo, guardião da Árvore-Estrela, mãe do Ovo Eterno. Destruiu o Vale de Hinata pela dor de perder o filho e se fundiu a Kaien. Só é enfrentado separado no Final Estelar — ou se o ovo for perdido.
+
+🎭 **Máscara pública** (até `A3-M9`): Nisteroy, o Dragão do Crepúsculo — *O dragão que queimou o Vale de Hinata há 500 anos.*
 
 #### V099 · Muhyō, o Arauto do Vazio
 *Divindade · Nv 97 · Vazio · divino · Cratera do Vazio*  
 **Habilidade:** Silêncio Absoluto: nenhuma magia funciona por 2 turnos · **Fraqueza:** Luz · **Recompensa:** 58200 XP, 31040 ouro, 25% Amuleto  
 > A voz do Vazio no mundo. Fala pelas bocas de quem ouviu o Vazio demais.
 
-#### V100 · KOKŪ, o Vazio Primordial
-*Divindade · Nv 100 · Vazio · divino · Trono dos Deuses Caídos*  
-**Habilidade:** Fome Primordial: devora um elemento do campo por turno (provisório — definido pela história) · **Fraqueza:** A definir pela história · **Recompensa:** 60000 XP, 32000 ouro, 25% Amuleto  
-> A fome sem forma que o Quinto Portador selou. Chefe final provisório: o autor define o verdadeiro final.
+#### V100 · Shokuō, o Rei do Eclipse (Kaien & Nisteroy)
+*Divindade · Nv 100 · Vazio · divino · Esquife dos Quatro Céus*  
+**Habilidade:** Devoração: rouba 1 habilidade de cada jogador por turno e a usa no turno seguinte · Fome Primordial: devora um elemento do campo por turno · **Fraqueza:** O Ovo Eterno desperto (separa a fusão) · o Diário de Sayo (fere Kaien) · **Recompensa:** 60000 XP, 32000 ouro, 25% Amuleto  
+> Kaien, o menino que roubou o ovo, fundido ao luto do dragão Nisteroy. Um menino com olhos de dragão e um dragão com voz de menino. Chefe final.
+
+🎭 **Máscara pública** (até `A4-M7`): O Demônio do Selo, o Mal que os Quatro Reis Selaram — *A lenda diz que um demônio surgiu e os quatro reis heroicos o selaram. A lenda está incompleta.*
 

@@ -38,7 +38,7 @@ Túneis de vidro negro onde o capataz Kurogane prende mineiros perdidos. O calor
 - **Chefe:** V005 Capataz Kurogane
 - **Inimigos:** V001 Haikobo
 - **Grimórios:** G01 Caderno de Faíscas do Mineiro
-- **Segredo:** Uma parede de obsidiana reflete a imagem do Quinto Portador quando iluminada com Lanterna de Brasa.
+- **Segredo:** Uma parede de obsidiana reflete a imagem de um menino carregando um ovo quando iluminada com Lanterna de Brasa (pista da Camada 2).
 
 ### SF-HOM-02 · Torneio dos Novatos do Coliseu de Brasas
 *Kagutsuchi-jō · arena · Nível 8–14*
@@ -107,12 +107,12 @@ Descer pelas torres afundadas até o tribunal do submundo de fogo.
 - **Inimigos:** V063 General Bakuen, V006 Marinheiro-Esqueleto
 - **Grimórios:** G07 Códice do Juiz Infernal
 - **Amuleto da Perdição:** 10% por vitória
-- **Segredo:** O livro de registros de Enma tem o nome verdadeiro do Quinto Portador.
+- **Segredo:** O livro de registros de Enma lista todas as almas queimadas no Vale de Hinata — inclusive os pais de Kaien. Falta um nome: Sayo (pista da Camada 4).
 
 ### SF-HOM-08 · [LENDÁRIA] A Câmara do Último Duelo
 *Kagutsuchi-jō · lendaria · Nível 60+*
 
-Sob o Coliseu de Brasas, a arena onde o Quinto Portador lutou seu último duelo. O adversário ainda espera.
+Sob o Coliseu de Brasas, a arena onde o rei antigo Akatsuki Ryūga lutou seu último duelo antes de partir para o selo. O adversário ainda espera.
 
 - **Mecânica:** Duelo Eterno: o chefe escolhe um jogador para 1×1 por 3 turnos; o resto do grupo só pode assistir/curar.
 - **Chefe:** V082 Kagerō Ryūketsu
@@ -204,7 +204,7 @@ Um exército inteiro preso no gelo começa a descongelar.
 - **Inimigos:** V014 Lobo de Hyōga
 - **Grimórios:** G15 Ordens da Legião Congelada
 - **Amuleto da Perdição:** 6% por vitória
-- **Segredo:** Os estandartes do exército são do Quinto Portador — eles lutaram ao lado dele.
+- **Segredo:** Os estandartes são dos exércitos dos quatro reinos que marcharam contra Kaien há 500 anos e foram devastados por ele.
 
 ### SF-WAT-08 · [LENDÁRIA] O Leito do Leviatã
 *Fossa Shinkai · lendaria · Nível 65+*
@@ -279,7 +279,7 @@ Subir mil degraus de ferro sob raios até o eremita. Subfase de treino: dá atri
 - **Chefe:** V052 Mestre Tetsuzan
 - **Inimigos:** V023 Jūbei Garra-de-Ferro
 - **Grimórios:** G21 Sutra dos Mil Degraus
-- **Segredo:** O eremita conheceu o Quinto Portador quando criança.
+- **Segredo:** O eremita conheceu Tōya, o Portador que Falhou, há 200 anos — ele é bem mais velho do que parece e sabe que o ovo 'escolhe'.
 
 ### SF-DAI-06 · O Crânio que Pensa
 *Cânion Ryūkotsu · chefe · Nível 35–45*
@@ -353,7 +353,7 @@ No mosteiro dos tengu, quem vencer o abade em combate ganha o Livro da Espada-Ve
 - **Chefe:** V056 Sōjōbō
 - **Inimigos:** V026 Karasu
 - **Grimórios:** G27 Kenpū — O Livro da Espada-Vento
-- **Segredo:** Os tengu guardam uma pena do Quinto Portador.
+- **Segredo:** Os tengu guardam uma escama de Nisteroy que caiu no pico há 500 anos; ela esquenta perto do Ovo Eterno.
 
 ### SF-FUJ-04 · As Vozes de Kazenaki
 *Desfiladeiro Kazenaki · masmorra · Nível 22–30*
@@ -458,13 +458,13 @@ Tudo é pedra cinza. As estátuas se mexem quando ninguém olha. No centro, o Re
 ### SF-KOK-04 · [ENDGAME] A Torre Sem Fim (Owari-naki Tō)
 *Cratera do Vazio · torre · Nível 75–100*
 
-Uma torre que desce para dentro da cratera. 100 andares. Cada 10 andares, um guardião.
+Uma torre que desce para dentro do buraco negro, construída pelas almas dos quatro reis antigos ao redor do Esquife. 100 andares. Ato IV da história.
 
-- **Mecânica:** Andar 10: V080 · 20: V091 · 30–40: vilões de nível rei aleatórios · 50: capa do Shitenchō · 60–90: os quatro deuses caídos (V093–V096) · 92: V097 · 94: V098 · 96: V092 · 98: V099 · 100: o final da história (V100 provisório).
-- **Chefe:** V080 Zero, V091 Yoru, V092 O Quinto que Falhou, V093 Kagutsuchi, V094 Watatsumi, V095 Ōyamatsumi, V096 Shinatsuhiko, V097 Tsukuyomi Partido, V098 Hiruko, V099 Muhyō, V100 KOKŪ
+- **Mecânica:** Andar 10: Zero (V080, se não virou aliado) · 25: G36 · 30–40: vilões de nível rei aleatórios · 40: G37 · 50: capa do Shitenchō · 60–90: os quatro Reis Antigos corrompidos (V093–V096) · 70: G38 · 85: G39 · 92: Tsukuyomi (V097) · 96: Tōya (V092) · 98: Muhyō (V099) · 99: G40 · 100: Portão do Esquife — Kanata (V091) e, dentro do Esquife, o Rei do Eclipse (V100) e Nisteroy (V098).
+- **Chefe:** V080 Zero, V091 Kanata, V092 Tōya, V093 Akatsuki Ryūga, V094 Minazuki Shizuha, V095 Iwanaga Gōzan, V096 Hayate Tsukumo, V097 Tsukuyomi Partido, V098 Nisteroy, V099 Muhyō, V100 Shokuō
 - **Inimigos:** V033 Rastejante do Vazio, V035 Estátua Andante
 - **Grimórios:** G36 Grimório Estelar, G37 Grimório do Crepúsculo, G38 Manual do Vazio Nº 3 — O Fim da Magia, G39 Grimório do Tempo Partido, G40 Grimório do Quinto Elemento (incompleto)
 - **⭐ Item lendário:** Shitenchō — Capa (andar 50)
 - **Amuleto da Perdição:** 25% por vitória
-- **Segredo:** O final pertence à história do autor.
+- **Segredo:** No fundo está o Esquife dos Quatro Céus (Shitenkan).
 

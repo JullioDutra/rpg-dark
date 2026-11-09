@@ -48,6 +48,11 @@ Recebe diretamente um objeto de `data/viloes.json`.
 Mostra: faixa do tier, ID e nível, poder total, nome e título, elemento/arquétipo/região, HP/MP/FOR/DEF/MAG/RES/VEL,
 habilidade, fraqueza, descrição e recompensa (XP, ouro, chance de Amuleto).
 
+> **Máscara pública (anti-spoiler):** vilões ligados a segredos da história (Kanata, o Leiloeiro, Tōya, os reis
+> antigos, Nisteroy, o Rei do Eclipse) têm um campo `mascara` em `data/viloes.json`. Até o marco `revela_em` ser
+> concluído no mundo, a carta mostra o nome/título/descrição públicos e esconde habilidade e fraqueza
+> (exemplos: `templates/exemplos/vilao-V091-mascara.png` e `vilao-V100-mascara.png`).
+
 > Ao **encontrar** um vilão pela primeira vez, o jogador vê a carta com atributos ocultos (`???`) — só a
 > magia *Ler o Inimigo* (G10), o pet Hakutaku ou derrotá-lo uma vez revelam os números. (Flag `oculto` no render.)
 

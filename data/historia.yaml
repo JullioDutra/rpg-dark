@@ -1,0 +1,399 @@
+# Roteiro estruturado de "O Eclipse do Ovo Eterno" — lido pelo Diretor de História (doc 11).
+# Lore completa em docs/14-historia-principal.md; arcos em docs/15; vilão em docs/16.
+# Validar com: python3 scripts/validar-historia.py
+#
+# Campos de marco:
+#   tipo: obrigatorio | opcional | secreto | crise (crise = tem prazo em tempo real)
+#   escopo: mundo (vale para o grupo todo) | jogador (cada jogador cumpre o seu) | party
+#   requer: marcos que precisam estar concluídos (lista = todos; {qualquer: [...]} = pelo menos um)
+#   cena: orientação para a IA gerar a cena com detalhes (cenário, clima, NPCs, sensações)
+#   verdade: camada de verdade liberada ao concluir (doc 14.7)
+#   falha: o que acontece se a crise vencer o prazo ou o grupo for derrotado
+#   relogio: variação do Relógio do Eclipse ao concluir (negativo) ou falhar (positivo)
+
+historia:
+  titulo: "O Eclipse do Ovo Eterno"
+  objetivo_dos_jogadores: "Tornar-se forte o bastante para derrotar o Eclipse e ser coroado Seiō (星王), o Rei-Estrela"
+  tom: "Shōnen sombrio: épico, trágico, com humor nos momentos de respiro. Perdas reais. Esperança conquistada."
+  dificuldade: dificil
+
+  proibicoes:
+    - "Nunca revelar quem é o portador do Ovo Eterno no grupo; só o motor sabe (segredos_mundo)."
+    - "Nunca revelar uma camada de verdade antes do marco que a libera; pistas indiretas são permitidas."
+    - "Kanata nunca quebra o texto literal de um contrato assinado."
+    - "Kanata não ataca pessoalmente antes de A2-M3 (ele age por servos)."
+    - "Nenhum rei atual morre fora do arco do seu reino ou de A3-M6."
+    - "Nisteroy não fala com ninguém antes de A3-M9."
+    - "O Esquife só pode ser aberto no Ato IV ou pelo Relógio do Eclipse em 100%."
+    - "Kaien nunca aparece fisicamente antes de A4-M7 — apenas em sonhos e ecos."
+    - "A IA nunca decide uma traição por um jogador; traição exige !trair do próprio jogador."
+
+  finais:
+    estelar:
+      condicao: "4 núcleos com jogadores (confiados ou recuperados) + Ovo claro + 3 dos 4 Grandes Itens no grupo final + vitória em A4-M7"
+      epilogo: "O ovo choca. Hoshiryū nasce. Nisteroy reconhece o filho e a fusão se rompe. Kaien, sozinho, encara quem tem o Diário de Sayo — redenção ou fim. O buraco se fecha e uma muda de Árvore-Estrela brota no Vale de Hinata. O Seiō é coroado."
+    selo:
+      condicao: "Vitória em A4-M7 sem o Ovo claro"
+      epilogo: "O Eclipse cai, mas não se separa. Alguém precisa virar o novo selo: um rei vivo ou um jogador voluntário (Morte Verdadeira). O Seiō é coroado sobre um mundo de luto."
+    eclipse:
+      condicao: "Relógio do Eclipse em 100% fora do Ato IV, ou derrota total do grupo em A4-M7"
+      epilogo: "O Esquife se abre. Kanata é o primeiro a ser devorado. O buraco engole o céu. Narração do fim do mundo para cada personagem, citando seus feitos."
+
+  atos:
+    # ═══════════════════════════════════════════════════════════════════════
+    - id: A1
+      titulo: "As Cinzas Despertam"
+      nivel_sugerido: "1–20"
+      resumo: "Cada jogador vive o primeiro sinal do mal na sua aldeia. Todos convergem para o Festival dos Quinhentos Anos, onde o selo racha. Os reis convocam heróis."
+      marcos:
+        - id: A1-M1
+          titulo: "Despertar"
+          tipo: obrigatorio
+          escopo: jogador
+          requer: []
+          gatilho: "Ao concluir a Cerimônia do Sorteio"
+          objetivo: "Apresentar a aldeia, a família/mentor e o gancho de aldeia (doc 15.0)"
+          cena: "Abrir com os sentidos: cheiro, clima, som da aldeia. Mostrar a casta na vida cotidiana. Terminar com o gancho de aldeia como cliffhanger."
+          condicao_conclusao: "Jogador interage com o gancho de aldeia (ação livre ou !explorar)"
+          fatos_disponiveis: [F01, F02]
+          viloes_permitidos: [V001, V002, V009, V010, V013, V017, V018, V025, V026]
+          se_atrasar: "Após 2 dias reais, o gancho vem até o jogador (o problema bate na porta)."
+
+        - id: A1-M2
+          titulo: "O Primeiro Sinal"
+          tipo: obrigatorio
+          escopo: jogador
+          requer: [A1-M1]
+          gatilho: "Jogador chega ao nível 3 ou conclui a primeira subfase"
+          objetivo: "Encontrar a primeira criatura do vazio ou o Culto da Cinza na sua região"
+          cena: "Algo sem cor num lugar familiar. Silêncio antinatural. Os animais fogem antes (telegrafia). Um NPC conhecido é ferido ou desaparece."
+          condicao_conclusao: "Vencer ou escapar do encontro"
+          fatos_disponiveis: [F03, F04]
+          viloes_permitidos: [V033, V006, V037]
+          falha: "Derrota: o NPC querido do jogador é levado (vira refém resgatável no Ato II)."
+
+        - id: A1-M3
+          titulo: "O Selo da Guilda"
+          tipo: obrigatorio
+          escopo: jogador
+          requer: [A1-M2]
+          gatilho: "Qualquer posto da Guilda de Kyōkai (existe um em cada capital)"
+          objetivo: "Registrar-se na Guilda e aceitar a primeira missão paga — OU recusar (o jogador fica sem missões da Guilda, mas imune a Mil Contratos)"
+          cena: "Salão de madeira escura, contratos pregados nas paredes, um atendente sorridente demais. Yoru aparece só como um nome numa assinatura de tinta prateada."
+          condicao_conclusao: "Aceitar missão (registra contrato_guilda=true) ou recusar formalmente"
+          fatos_disponiveis: [F05]
+          viloes_permitidos: [V034]
+          nota_motor: "Cada missão da Guilda gera uma 'funcao_oculta' secreta que conta pontos para o plano de Kanata (doc 16.1)."
+
+        - id: A1-M4
+          titulo: "A Lenda Contada Errado"
+          tipo: opcional
+          escopo: jogador
+          requer: [A1-M2]
+          gatilho: "Conversar com anciões, bibliotecários, bardos ou cultistas"
+          objetivo: "Ouvir o mito oficial e perceber contradições (pistas da Camada 2)"
+          cena: "Cada reino conta a lenda diferente. Um velho bêbado jura que o demônio 'chorava'."
+          condicao_conclusao: "Reunir 2 versões diferentes da lenda"
+          recompensas: {xp: 200, merito: 5}
+
+        - id: A1-M5
+          titulo: "O Festival dos Quinhentos Anos"
+          tipo: crise
+          escopo: mundo
+          requer: {qualquer_n: 2, de: [A1-M3]}
+          gatilho: "Quando metade dos jogadores ativos concluiu A1-M3, o festival é anunciado para dali a 3 dias reais"
+          prazo_horas_reais: 72
+          objetivo: "Todos os jogadores podem viajar para Kyōkai. Na cerimônia, um pilar da Muralha racha e rastejantes atacam a multidão"
+          cena: "Lanternas dos quatro elementos, os quatro reis num palanque, comida de todos os reinos, crianças com máscaras de dragão. No auge, o som some. A lua escurece. Uma voz em todas as cabeças: 'Quinhentos anos. Devolvam o que roubaram.' Pânico. Rastejantes sem cor saem do chão."
+          condicao_conclusao: "Defender a multidão até os reis selarem a rachadura (3 ondas de combate)"
+          fatos_disponiveis: [F06, F07, F08]
+          viloes_permitidos: [V033, V035, V080]
+          falha: "Se nenhum jogador comparecer ou o grupo cair: 200 civis morrem, o rei Sorahiko é ferido (começa o arco de Fūjin em desvantagem)."
+          relogio: {sucesso: -3, falha: 8}
+          recompensas: {xp: 1500, merito: 20}
+
+        - id: A1-M6
+          titulo: "O Nome do Demônio"
+          tipo: obrigatorio
+          escopo: mundo
+          requer: [A1-M5]
+          gatilho: "Logo após o Festival"
+          objetivo: "A guardiã Kanae, ferida, conta aos jogadores o que os guardiões dos selos sabem"
+          cena: "Kanae, meio pedra, meio carne, sangrando areia. Ela fala de um menino chamado Kaien e de um dragão — 'os dois choravam'."
+          verdade: 2
+          condicao_conclusao: "Ouvir Kanae (qualquer jogador presente)"
+          fatos_disponiveis: [F09]
+
+        - id: A1-M7
+          titulo: "Os Reis Convocam"
+          tipo: obrigatorio
+          escopo: mundo
+          requer: [A1-M6]
+          gatilho: "1 dia real após A1-M6"
+          objetivo: "Cada rei pede ajuda; abrem-se os 4 arcos do Ato II"
+          cena: "Quatro mensageiros, quatro selos de cera, quatro pedidos com tons diferentes: Ryūen ordena, Kaishin pede com cortesia gelada, Gōtetsu escreve à mão com erros, Sorahiko manda um desenho engraçado com uma frase séria no verso."
+          condicao_conclusao: "Automático"
+          recompensas: {xp: 500}
+
+        - id: A1-M8
+          titulo: "A Pedra Morna"
+          tipo: secreto
+          escopo: mundo
+          requer: [A1-M7]
+          gatilho: "Imediatamente após A1-M7"
+          objetivo: "O motor escolhe o portador do Ovo Eterno (doc 14.6) e coloca a 'Pedra Ovalada Morna' no inventário dele, sem aviso"
+          cena: "Nenhuma no grupo. Para o portador, no privado, só uma linha casual dentro da próxima narração: 'Entre suas coisas há uma pedra cinza e lisa que você não lembra de ter pegado. Está morna.'"
+          condicao_conclusao: "Automático"
+
+    # ═══════════════════════════════════════════════════════════════════════
+    - id: A2
+      titulo: "A Guerra dos Núcleos"
+      nivel_sugerido: "20–50"
+      resumo: "Quatro arcos de reino em paralelo (doc 15). Kanata começa a sussurrar. Zero caça. Yoru é desmascarado."
+      marcos:
+        - id: A2-M1
+          titulo: "Os Primeiros Sussurros"
+          tipo: obrigatorio
+          escopo: jogador
+          requer: [A1-M7]
+          gatilho: "Jogador conclui o 2º capítulo de qualquer arco de reino"
+          objetivo: "Kanata (como 'uma voz amiga') manda o primeiro sussurro privado, com uma oferta pequena"
+          cena: "Mensagem privada, curta, educada, que demonstra saber algo pessoal do jogador."
+          condicao_conclusao: "Jogador responde, ignora por 24h ou revela ao grupo"
+
+        - id: A2-M2
+          titulo: "O Caçador"
+          tipo: opcional
+          escopo: party
+          requer: [A1-M7]
+          gatilho: "Qualquer jogador chega ao nível 30"
+          objetivo: "Zero embosca o jogador mais forte"
+          cena: "Correntes negras no escuro. Magias simplesmente apagam. Zero não fala, só conta os golpes."
+          viloes_permitidos: [V080]
+          condicao_conclusao: "Sobreviver; vencer sem magia faz Zero hesitar (pré-requisito para virar aliado)"
+          falha: "Derrota → captura (doc 19.3)."
+
+        # ─── Arco de Homura (doc 15.1) ───
+        - {id: A2-HOM-1, titulo: "O Torneio das Brasas", tipo: obrigatorio, escopo: party, requer: [A1-M7], subfases: [SF-HOM-02], viloes_permitidos: [V038, V036, V003, V008], objetivo: "Vencer o torneio e investigar o envenenamento de Ōgama", condicao_conclusao: "Vencer SF-HOM-02", cena: "Coliseu lotado, calor de forja, o rei com o olho de obsidiana brilhando no camarote."}
+        - {id: A2-HOM-2, titulo: "A Audiência", tipo: obrigatorio, escopo: party, requer: [A2-HOM-1], objetivo: "Ouvir Ryūen e a carta de Hyōsuke; escolher em quem confiar", condicao_conclusao: "Escolha registrada (lado: ryuen | hyosuke | neutro)", fatos_disponiveis: [F10]}
+        - {id: A2-HOM-3, titulo: "Sacrifícios nas Dunas", tipo: crise, escopo: party, requer: [A2-HOM-2], prazo_horas_reais: 48, subfases: [SF-HOM-04], viloes_permitidos: [V037, V039, V006], objetivo: "Impedir o ritual de Okibi", condicao_conclusao: "Vencer Okibi antes do prazo", falha: "Ritual concluído: a aldeia de Haibara é destruída (jogadores de Haibara perdem a aldeia natal; NPCs mortos).", relogio: {sucesso: -2, falha: 5}}
+        - {id: A2-HOM-4, titulo: "A Guerra Fabricada", tipo: crise, escopo: mundo, requer: [A2-HOM-2], prazo_horas_reais: 72, viloes_permitidos: [V063, V003], objetivo: "Provar que o ataque à Costa Akashio foi falsa bandeira de Saigō", condicao_conclusao: "Capturar um agente vivo e levá-lo a Ryūen ou Kaishin", falha: "Guerra Fogo×Água por 14 dias reais: rotas Homura↔Watatsumi fechadas, encontros de soldados em ambas as fronteiras.", fatos_disponiveis: [F11]}
+        - {id: A2-HOM-5, titulo: "O Duelo pelo Trono", tipo: obrigatorio, escopo: party, requer: [A2-HOM-3], viloes_permitidos: [V061], objetivo: "Decidir o duelo entre Ryūen e Hyōsuke", condicao_conclusao: "Duelo resolvido", batalha_mortal: true, cena: "Arena em silêncio, o povo dividido, Hyōsuke usa uma técnica que pertence a um dos jogadores."}
+        - {id: A2-HOM-6, titulo: "O Olho do Sol", tipo: obrigatorio, escopo: party, requer: [A2-HOM-5], objetivo: "Destino do Núcleo Rubro", condicao_conclusao: "Núcleo em estado confiado | protegido | arrancado | corrompido", recompensas: {xp: 6000, merito: 40}}
+
+        # ─── Arco de Watatsumi (doc 15.2) ───
+        - {id: A2-WAT-1, titulo: "A Água Preta", tipo: obrigatorio, escopo: party, requer: [A1-M7], viloes_permitidos: [V015, V011, V046], objetivo: "Chegar à corte de Ryūgū-jō e perceber o envenenamento", condicao_conclusao: "Ver os sintomas do rei ou obter amostra da água preta"}
+        - {id: A2-WAT-2, titulo: "A Ala Proibida", tipo: obrigatorio, escopo: party, requer: [A2-WAT-1], subfases: [SF-WAT-02], viloes_permitidos: [V043, V015], objetivo: "Encontrar os registros proibidos", verdade: 3, condicao_conclusao: "Vencer SF-WAT-02 e decidir: revelar_ao_povo | guardar_segredo", fatos_disponiveis: [F12]}
+        - {id: A2-WAT-3, titulo: "O Reflexo do Ontem", tipo: opcional, escopo: party, requer: [A2-WAT-2], subfases: [SF-WAT-03], objetivo: "Ver o jovem Kaishin jurar silêncio; obter a pista do antídoto (água-espelho)", condicao_conclusao: "Vencer SF-WAT-03 ou pescar 3 Peixes-Espelho (AN09)"}
+        - {id: A2-WAT-4, titulo: "O Banquete das Pérolas", tipo: crise, escopo: party, requer: [A2-WAT-2], prazo_horas_reais: 24, viloes_permitidos: [V084, V068], objetivo: "Levar o antídoto ao rei antes do anúncio de Saigō", condicao_conclusao: "Rei recebe o antídoto", falha: "Saigō vira regente: a guarda do palácio fica hostil e o rei piora (A2-WAT-6 só tem a opção trágica).", relogio: {falha: 5}}
+        - {id: A2-WAT-5, titulo: "A Maré do Retorno", tipo: obrigatorio, escopo: party, requer: [A2-WAT-4], viloes_permitidos: [V068, V084], objetivo: "Desmascarar e derrotar Saigō; derrotar Otohime Negra", condicao_conclusao: "Saigō derrotado (morto ou capturado)", batalha_mortal: true}
+        - {id: A2-WAT-6, titulo: "O Coração do Rei", tipo: obrigatorio, escopo: party, requer: [A2-WAT-5], objetivo: "Destino do Núcleo Abissal", condicao_conclusao: "Núcleo em estado definido", recompensas: {xp: 6000, merito: 40}}
+
+        # ─── Arco de Daichi (doc 15.3) ───
+        - {id: A2-DAI-1, titulo: "Os Cristais Negros", tipo: obrigatorio, escopo: party, requer: [A1-M7], subfases: [SF-DAI-04], viloes_permitidos: [V021, V053], objetivo: "Descobrir a origem dos cristais negros", condicao_conclusao: "Chegar às Profundezas ou destruir os cristais da entrada"}
+        - {id: A2-DAI-2, titulo: "Os Escravos do Barão", tipo: obrigatorio, escopo: party, requer: [A2-DAI-1], viloes_permitidos: [V049], objetivo: "Libertar os aldeões de Mugibatake ou infiltrar-se", condicao_conclusao: "Kōsaku derrotado ou contrato da Guilda obtido"}
+        - {id: A2-DAI-3, titulo: "A Porta na Árvore", tipo: obrigatorio, escopo: party, requer: [A1-M7], subfases: [SF-DAI-03], viloes_permitidos: [V051, V048, V020], objetivo: "Encontrar o Diário de Sayo", verdade: 4, condicao_conclusao: "Item 'Diário de Sayo' no inventário de um jogador", fatos_disponiveis: [F13], nota_motor: "O Ovo esquenta (mensagem privada ao portador) se ele estiver na mesma região."}
+        - {id: A2-DAI-4, titulo: "O Golpe dos Clãs", tipo: obrigatorio, escopo: mundo, requer: [A2-DAI-2], viloes_permitidos: [V071], objetivo: "Defender Iwakura ou dividir os clãs pela diplomacia", condicao_conclusao: "Cerco quebrado"}
+        - {id: A2-DAI-5, titulo: "O Gigante dos Lagos", tipo: crise, escopo: mundo, requer: [A2-DAI-4], prazo_horas_reais: 36, viloes_permitidos: [V085], objetivo: "Deter Daidarabotchi antes de Mugibatake", condicao_conclusao: "Gigante derrotado ou desviado", falha: "Mugibatake destruída.", relogio: {sucesso: -3, falha: 5}, batalha_mortal: true}
+        - {id: A2-DAI-6, titulo: "O Coração da Montanha", tipo: obrigatorio, escopo: party, requer: [A2-DAI-4], subfases: [SF-DAI-08], viloes_permitidos: [V071, V086], objetivo: "Destino do Núcleo Raiz", condicao_conclusao: "Núcleo em estado definido", batalha_mortal: true, recompensas: {xp: 6000, merito: 40}}
+
+        # ─── Arco de Fūjin (doc 15.4) ───
+        - {id: A2-FUJ-1, titulo: "As Correntes", tipo: obrigatorio, escopo: party, requer: [A1-M7], subfases: [SF-FUJ-02], viloes_permitidos: [V055, V028], objetivo: "Investigar a sabotagem", condicao_conclusao: "Vencer SF-FUJ-02"}
+        - {id: A2-FUJ-2, titulo: "O Rei que Ri", tipo: obrigatorio, escopo: party, requer: [A2-FUJ-1], objetivo: "Ganhar a confiança de Sorahiko na corrida dos telhados", condicao_conclusao: "Teste de VEL ou ação criativa nota ≥ 6 no Juiz de Táticas"}
+        - {id: A2-FUJ-3, titulo: "As Vozes Roubadas", tipo: obrigatorio, escopo: party, requer: [A2-FUJ-2], subfases: [SF-FUJ-04], viloes_permitidos: [V057, V088, V030], objetivo: "Libertar as vozes de Kazenaki", condicao_conclusao: "Kazenaki-no-Haha derrotada", batalha_mortal: true}
+        - {id: A2-FUJ-4, titulo: "A Queda de Amagumo", tipo: crise, escopo: mundo, requer: [A2-FUJ-2], prazo_horas_reais: 12, viloes_permitidos: [V076, V055, V029], objetivo: "Impedir que a cidade flutuante caia", condicao_conclusao: "Cidade estabilizada (soma de ações de salvamento ≥ 10 pontos)", falha: "Cada hora sem salvamento derruba um distrito; com a cidade caída, Kazamachi e Hagoromo são destruídas.", relogio: {falha: 5}}
+        - {id: A2-FUJ-5, titulo: "O Rei Parado", tipo: obrigatorio, escopo: party, requer: [A2-FUJ-4], subfases: [SF-FUJ-06], viloes_permitidos: [V076, V087, V059], objetivo: "Resgatar Sorahiko da gaiola de chumbo", condicao_conclusao: "Sorahiko livre", batalha_mortal: true}
+        - {id: A2-FUJ-6, titulo: "O Vento Escolhe de Novo", tipo: obrigatorio, escopo: party, requer: [A2-FUJ-5], objetivo: "Destino do Núcleo Celeste (o vento escolhe — doc 15.4)", condicao_conclusao: "Núcleo em estado definido", recompensas: {xp: 6000, merito: 40}}
+
+        - id: A2-M3
+          titulo: "O Rosto de Yoru"
+          tipo: obrigatorio
+          escopo: mundo
+          requer: {qualquer_n: 2, de: [A2-HOM-6, A2-WAT-6, A2-DAI-6, A2-FUJ-6]}
+          gatilho: "2 arcos concluídos — ou antes, se os jogadores juntarem 3 pistas (contrato da Guilda de Kōsaku, confissão de Saigō, mãos queimadas)"
+          objetivo: "Yoru se revela como Kanata, descendente de Sayo, e conta ao mundo inteiro a culpa dos reis antigos (versão distorcida)"
+          cena: "Todas as lanternas da Guilda se apagam ao mesmo tempo em todas as capitais. A voz de Yoru, calma, em todas as praças. Ele tira o capuz pela primeira vez — à luz do dia."
+          verdade: 5
+          condicao_conclusao: "Automático"
+          fatos_disponiveis: [F14, F15]
+          nota_motor: "A partir daqui, Kanata pode lutar pessoalmente. Sussurros passam a ser assinados."
+
+        - id: A2-M4
+          titulo: "Os Pilares Rachados"
+          tipo: obrigatorio
+          escopo: mundo
+          requer: [A2-M3, A2-HOM-6, A2-WAT-6, A2-DAI-6, A2-FUJ-6]
+          subfases: [SF-KOK-02]
+          viloes_permitidos: [V077, V078, V033]
+          objetivo: "Salvar ou deter as guardiãs Kanae e Shizuku antes que dois pilares caiam"
+          condicao_conclusao: "Vencer SF-KOK-02 (restaurar o selo = Final do Ato II heroico)"
+          relogio: {sucesso: -5, falha: 10}
+          recompensas: {xp: 10000, merito: 50}
+
+    # ═══════════════════════════════════════════════════════════════════════
+    - id: A3
+      titulo: "O Ovo e o Portador"
+      nivel_sugerido: "50–75"
+      resumo: "Kanata põe preço no ovo e joga os jogadores uns contra os outros. O passado é visitado no Vale de Hinata. As relíquias são reunidas. A verdade final aparece."
+      marcos:
+        - id: A3-M1
+          titulo: "A Recompensa do Ovo"
+          tipo: obrigatorio
+          escopo: mundo
+          requer: [A2-M4]
+          objetivo: "Kanata anuncia: um dos jogadores carrega o Ovo Eterno. Recompensa: 1 Amuleto da Perdição + 50.000 ryō"
+          cena: "Cartazes em todas as capitais com o desenho de uma pedra cinza. Mercenários olhando para os jogadores nas ruas."
+          condicao_conclusao: "Automático"
+          desbloqueia_regioes: [R-KOK-7, R-KOK-8]
+          fatos_disponiveis: [F16, F17]
+
+        - id: A3-M2
+          titulo: "O Poço Seco"
+          tipo: obrigatorio
+          escopo: jogador
+          requer: [A3-M1]
+          gatilho: "O portador do ovo desce ao Poço Seco nas Ruínas de Hinata (ou carrega a pedra até lá sem saber)"
+          objetivo: "O portador vê a memória de Sayo e descobre o que carrega"
+          cena: "No privado: escuridão úmida, uma menina de sete anos abraçando um ovo, o céu vermelho lá em cima, um menino chamando 'Sayo!' sem ser ouvido."
+          condicao_conclusao: "Portador presente no Poço Seco"
+          nota_motor: "Só o portador recebe a cena. Ele decide se conta ao grupo."
+          se_atrasar: "Após 5 dias reais, borboletas de Hinata (AN36) passam a seguir o portador em todas as regiões."
+
+        - id: A3-M3
+          titulo: "As Relíquias dos Reis Antigos"
+          tipo: opcional
+          escopo: mundo
+          requer: [A3-M1]
+          subfases: [SF-FUJ-07, SF-KOK-03, SF-FUJ-08, SF-HOM-08, SF-WAT-08, SF-DAI-08, SF-FUJ-06]
+          objetivo: "Obter Excalibur, Kokūgai, Tenmon no Tama e os capítulos do Shitenchō"
+          condicao_conclusao: "Pelo menos 3 dos 4 Grandes Itens com jogadores (necessário para o Final Estelar)"
+          fatos_disponiveis: [F18]
+
+        - id: A3-M4
+          titulo: "O Leilão do Segredo"
+          tipo: crise
+          escopo: mundo
+          requer: [A3-M1]
+          prazo_horas_reais: 48
+          subfases: [SF-KOK-01]
+          viloes_permitidos: [V060, V034]
+          objetivo: "O Leiloeiro vai leiloar 'o nome do portador do ovo'. Impedir, comprar ou sabotar o lote"
+          cena: "Salão subterrâneo, velas negras, mascarados de todos os reinos. O Leiloeiro, sem sombra, segura um envelope selado."
+          condicao_conclusao: "Lote destruído, comprado por um jogador, ou Leiloeiro capturado vivo (revela tudo sobre o emissário)"
+          falha: "Kanata compra o lote: descobre quem é o portador e envia Zero e um Arauto atrás dele imediatamente."
+          relogio: {falha: 5}
+
+        - id: A3-M5
+          titulo: "O Sonho dos Quatro Reis"
+          tipo: obrigatorio
+          escopo: mundo
+          requer: {qualquer_n: 1, de: [A3-M2, A3-M3, A3-M4]}
+          objetivo: "Os reis antigos (corrompidos, presos ao Esquife) aparecem em sonho e revelam: abrir o Esquife destampa o buraco — Kanata vai destruir o mundo"
+          cena: "Todos os jogadores sonham a mesma coisa na mesma noite: quatro figuras de luz rachada segurando um caixão sobre um abismo, gritando sem som."
+          verdade: 6
+          condicao_conclusao: "Automático (pode ser mostrado a Kanata depois: +2 Dúvida)"
+
+        - id: A3-M6
+          titulo: "Núcleos em Disputa"
+          tipo: obrigatorio
+          escopo: mundo
+          requer: [A3-M5]
+          viloes_permitidos: [V061, V068, V071, V076, V091]
+          objetivo: "Recuperar núcleos arrancados dos Arautos/Kanata e defender reis com núcleos protegidos de um segundo ataque"
+          condicao_conclusao: "Todos os núcleos em estado confiado (com jogadores) — ou o grupo desiste de algum (Final Estelar fica impossível)"
+          batalha_mortal: true
+
+        - id: A3-M7
+          titulo: "A Noite em Kyōkai"
+          tipo: obrigatorio
+          escopo: mundo
+          requer: [A3-M6]
+          viloes_permitidos: [V091, V080]
+          objetivo: "Kanata vem pessoalmente tomar o ovo. Primeira luta contra Kanata (fase 1 e 2)"
+          cena: "Kyōkai inteira em toque de recolher; a Guilda vira fortaleza; Kanata caminha sozinho pela rua principal sem pressa."
+          condicao_conclusao: "Kanata recua (HP < 33%) ou é convencido (Dúvida ≥ 3)"
+          falha: "Se o grupo cair e Kanata souber quem é o portador: o ovo é tomado. Os jogadores precisam recuperá-lo em A4-M6 (Final Estelar ainda possível, porém mais difícil)."
+          batalha_mortal: true
+
+        - id: A3-M8
+          titulo: "O Ninho Vazio"
+          tipo: obrigatorio
+          escopo: party
+          requer: [A3-M2]
+          gatilho: "O portador leva o ovo ao cume do Monte Ryūsō"
+          viloes_permitidos: []
+          objetivo: "Despertar o ovo no ninho. Lagartos-Ninhais (AN35) testam o portador"
+          condicao_conclusao: "Ovo claro e portador com Corrupção < 25 no ninho (vira 'Ovo Desperto')"
+          falha: "Se o ovo estiver escurecido, os lagartos atacam e o ovo não desperta (Final Estelar bloqueado até redimir o portador)."
+
+        - id: A3-M9
+          titulo: "A Voz de Nisteroy"
+          tipo: obrigatorio
+          escopo: mundo
+          requer: [A3-M8]
+          objetivo: "Pela primeira vez em 500 anos, Nisteroy fala — de dentro do Esquife, pelo ovo desperto: ele quer o filho, não vingança"
+          cena: "A terra treme no mundo inteiro, mas não de raiva: é um soluço. Todos ouvem uma voz enorme e cansada dizer um único nome que ninguém conhece — o nome que Nisteroy daria ao filho."
+          verdade: 7
+          condicao_conclusao: "Automático"
+
+    # ═══════════════════════════════════════════════════════════════════════
+    - id: A4
+      titulo: "O Eclipse"
+      nivel_sugerido: "75–100"
+      resumo: "A descida pela Torre Sem Fim até o Esquife dos Quatro Céus. Libertar os reis antigos, enfrentar Kanata e o Rei do Eclipse. Coroar o Rei-Estrela."
+      marcos:
+        - {id: A4-M1, titulo: "A Descida", tipo: obrigatorio, escopo: mundo, requer: [A3-M7], subfases: [SF-KOK-04], objetivo: "Entrar na Torre Sem Fim (andares 1–49)", condicao_conclusao: "Chegar ao andar 50", cena: "A torre desce; a gravidade vira de lado; a cada andar o som diminui."}
+        - {id: A4-M2, titulo: "A Capa do Shitenchō", tipo: obrigatorio, escopo: party, requer: [A4-M1], objetivo: "Obter a capa do grimório no andar 50", condicao_conclusao: "Capa obtida"}
+        - {id: A4-M3, titulo: "Os Reis Antigos", tipo: obrigatorio, escopo: mundo, requer: [A4-M2], viloes_permitidos: [V093, V094, V095, V096], objetivo: "Vencer e libertar os quatro reis antigos corrompidos (andares 60–90). Cada um libertado abençoa quem carrega o núcleo do seu reino", condicao_conclusao: "4 reis antigos libertos", batalha_mortal: true, recompensas: {xp: 40000, merito: 100}}
+        - {id: A4-M4, titulo: "A Lua e o Arauto", tipo: obrigatorio, escopo: mundo, requer: [A4-M3], viloes_permitidos: [V097, V099], objetivo: "Vencer Tsukuyomi Partido (92) e Muhyō (98)", condicao_conclusao: "Ambos derrotados", batalha_mortal: true}
+        - {id: A4-M5, titulo: "O Portador que Falhou", tipo: opcional, escopo: party, requer: [A4-M3], viloes_permitidos: [V092], objetivo: "Enfrentar Tōya (andar 96). Se o portador do ovo estiver presente, Tōya pode ser libertado sem luta", condicao_conclusao: "Tōya vencido ou libertado", recompensas: {merito: 60}}
+        - id: A4-M6
+          titulo: "O Portão do Esquife"
+          tipo: obrigatorio
+          escopo: mundo
+          requer: [A4-M4]
+          viloes_permitidos: [V091]
+          objetivo: "Confronto final com Kanata diante do Esquife"
+          cena: "Um caixão de luz rachada do tamanho de uma montanha, preso por correntes de quatro cores sobre o nada. Kanata sentado nos degraus, esperando, com o Diário de Sayo — ou sem ele."
+          condicao_conclusao: "Kanata derrotado ou redimido (Dúvida ≥ 5)"
+          batalha_mortal: true
+        - id: A4-M7
+          titulo: "O Rei do Eclipse"
+          tipo: obrigatorio
+          escopo: mundo
+          requer: [A4-M6]
+          viloes_permitidos: [V100, V098]
+          objetivo: "Entrar no Esquife e enfrentar o Shokuō. Com o Ovo Desperto, ele choca e Nisteroy se separa; a luta segue contra Kaien sozinho"
+          cena: "Dentro do Esquife, o Vale de Hinata como era há 500 anos: verde, vivo, congelado no último dia. No centro, um menino com olhos de dragão sentado na soleira de uma casa."
+          condicao_conclusao: "Shokuō derrotado (ou Kaien redimido com o Diário de Sayo)"
+          batalha_mortal: true
+        - id: A4-M8
+          titulo: "A Coroação das Estrelas"
+          tipo: obrigatorio
+          escopo: mundo
+          requer: [A4-M7]
+          objetivo: "Determinar o final (estelar | selo) e coroar o Seiō pela Pontuação Estelar (doc 14.5)"
+          cena: "Epílogo longo: cada jogador recebe um parágrafo próprio citando seus feitos, traições e sacrifícios. O Seiō recebe a coroa de quatro estrelas."
+          condicao_conclusao: "Automático — fim do jogo"
+
+  fatos:
+    - {id: F01, descricao: "Um viajante encapuzado compra comida para crianças órfãs da aldeia e deixa um cartão da Guilda de Kyōkai", uso_unico: false}
+    - {id: F02, descricao: "Um animal da região age de forma estranha e foge na direção oposta ao centro do continente"}
+    - {id: F03, descricao: "Um cristal negro aparece num lugar familiar (poço, altar, forja)"}
+    - {id: F04, descricao: "Um cultista da Cinza prega na praça que 'o Menino que Devorou os Deuses vai voltar'"}
+    - {id: F05, descricao: "Um contrato da Guilda chega pronto, já com o nome do jogador, antes de ele pedir", uso_unico: true}
+    - {id: F06, descricao: "Durante o festival, um ladrão rouba um Amuleto da Perdição do palanque dos reis", uso_unico: true}
+    - {id: F07, descricao: "Uma criança com máscara de dragão se perde na multidão e é vista conversando com um homem de luvas"}
+    - {id: F08, descricao: "O rei Gōtetsu desmaia por um instante quando o pilar racha (ligação com a montanha)", uso_unico: true}
+    - {id: F09, descricao: "Kanae entrega a um jogador uma lasca do pilar que brilha perto de traidores (Corrupção ≥ 50)", uso_unico: true}
+    - {id: F10, descricao: "Hyōsuke envia aos jogadores provas parciais de que Ryūen trapaceou no duelo de 8 anos atrás"}
+    - {id: F11, descricao: "Bakuen executa prisioneiros de Watatsumi publicamente se ninguém intervier", uso_unico: true}
+    - {id: F12, descricao: "Kaishin, lúcido por um momento, pede perdão em voz alta a um nome: 'Kaien'", uso_unico: true}
+    - {id: F13, descricao: "O eco de Sayo, uma menina translúcida, aparece entre as raízes e pergunta se 'o ovo ainda está quente'", uso_unico: true}
+    - {id: F14, descricao: "NPCs passam a hostilizar jogadores que têm missões da Guilda registradas"}
+    - {id: F15, descricao: "Kanata manda a cada jogador, em privado, uma carta diferente, cada uma com uma verdade incômoda sobre outro jogador"}
+    - {id: F16, descricao: "Um mercenário tenta roubar o inventário de um jogador aleatório que não é o portador"}
+    - {id: F17, descricao: "Alguém começa a vender 'pedras mornas' falsas em Kyōkai (os jogadores podem comprar uma para usar como isca)"}
+    - {id: F18, descricao: "Um dos Grandes Itens reage ao Ovo Eterno quando ambos estão na mesma party"}
+    - {id: F19, descricao: "Um NPC aliado importante é morto por um Arauto se os jogadores demorarem a voltar a uma região"}
+    - {id: F20, descricao: "Zero salva um jogador de um Ressurgido — e diz que é só porque 'a presa é dele'"}

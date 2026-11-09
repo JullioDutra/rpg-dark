@@ -1,6 +1,18 @@
 # 06 — Os Grandes Itens, o Amuleto da Perdição e os Grimórios
 
-Os **4 Grandes Itens** são relíquias do Quinto Portador. Regras gerais:
+Os **4 Grandes Itens** são as relíquias que os **quatro reis antigos** deixaram, há 500 anos, para o
+**Quinto Portador** — o nome que a profecia dá a quem um dia carregaria a quinta peça, o Ovo Eterno, até o Esquife
+(doc 14). Juntos, eles são o que torna possível entrar no Esquife e vencer. O **Final Estelar exige pelo menos 3 dos 4**
+nas mãos do grupo final.
+
+| Item | Origem | Papel no final |
+|------|--------|----------------|
+| Shitenchō | O ritual do selo, escrito pelos 4 reis antigos | Completo, refaz o selo sem sacrifício (Final do Selo) e conduz a Coroação |
+| Excalibur | Caiu do céu na noite do selo; o rei Hayate Tsukumo a fincou na estepe | *Luz de Avalon* bloqueia a Devoração do Shokuō por 2 turnos |
+| Kokūgai | Forjada pelo rei Iwanaga Gōzan para quem entrasse no Esquife | Sem ela por perto, todos perdem 5% HP/turno dentro do Esquife |
+| Tenmon no Tama | Guardada pelo rei Minazuki Shizuha | Abre uma porta para dentro do Esquife sem rachá-lo (sem ela: Relógio +10%) |
+
+Regras gerais:
 
 - **Únicos por mundo** (grupo). Tabela `itens_lendarios_posse` com PK `(mundo_id, item_id)` garante isso no banco.
 - Só podem mudar de dono por: **derrota em duelo formal** aceito pelos dois, **morte narrativa** definida
@@ -81,6 +93,8 @@ Magias lendárias dos capítulos: *Sol do Meio-Dia Eterno* (Fogo), *Dilúvio Pri
 
 | | |
 |---|---|
+| **Origem** | São as **pequenas esferas da Árvore-Estrela** que a natureza espalhou ao se destruir. Cada uso consome um pedaço da Árvore para sempre (**Relógio do Eclipse +2%**) |
+| **Estoque** | Fixo por mundo: `3 + 1 por jogador`. Kanata também os caça — cada um que ele obtém traz um Ressurgido de volta (doc 17) |
 | **Raridade** | Incomum dentre os lendários: vários existem no mundo. Drop raro de vilões de alto escalão+ (3–25%) e segredos de subfases |
 | **Limite** | **Cada jogador só pode usar UM amuleto em todo o jogo.** Depois de usar, outros amuletos que encontrar só servem como moeda de troca/presente (não pode usar de novo) |
 | **Efeito** | O jogador **escolhe uma habilidade nova** descrevendo-a com suas palavras |

@@ -55,6 +55,25 @@ valida cada evento contra as regras do jogo e só então aplica.
   pessoais e subfases são individuais ou em party.
 - O grupo é ativado por um administrador com `/ativar-mundo <nome>` (só números admin).
 
+## 1.3.1 Vínculo personagem ↔ número de WhatsApp
+
+O personagem **pertence ao número** que mandou "entrar no mundo". É a identidade do jogador em tudo.
+
+| Regra | Como funciona |
+|-------|---------------|
+| **Chave de identidade** | `(mundo_id, wa_id)`. `wa_id` é o JID do número (`5511999999999@s.whatsapp.net`). Guardamos também o **LID** (`...@lid`): em grupos, o WhatsApp pode enviar mensagens identificadas por LID em vez do número, e o gateway mantém a tabela `identidades(wa_jid, wa_lid)` para resolver os dois para o mesmo jogador |
+| **Privacidade** | O número é guardado como `telefone_hash` (SHA-256 + sal) para buscas; o JID em claro fica só na tabela de identidades, com acesso restrito. O bot **nunca** escreve o número no grupo — só @menção |
+| **1 número = 1 personagem por mundo** | O mesmo número pode jogar em outro grupo (outro mundo), com outro personagem |
+| **Só o dono controla** | Todo comando de ação é validado contra o remetente. Ninguém age por outro personagem (nem citando, nem encaminhando mensagem) |
+| **Canal privado** | O bot usa o **chat privado** com o número para: ficha completa (com Corrupção e segredos), sussurros de Kanata (doc 16), pactos, o segredo do Ovo Eterno, escolhas de traição em batalha (`!trair`/`!resistir`). O jogador precisa ter mandado ao menos 1 mensagem ao bot no privado (o bot pede isso na entrada) |
+| **Saiu do grupo** | O personagem fica **congelado** (não age, não é alvo de eventos). Se voltar em até 30 dias, continua de onde parou. Itens lendários de jogador congelado voltam ao local de origem após 7 dias |
+| **Troca de número** | Só o admin migra (`/migrar-jogador @antigo @novo`), com confirmação nos dois números se possível |
+| **Morte Verdadeira** | O número mantém o direito de reencarnar (doc 19.3), máx. 2 vezes por mundo |
+
+Tabelas extras: `identidades(wa_jid, wa_lid, telefone_hash)`, `segredos_mundo(mundo_id, chave, valor)` (ex.: portador do ovo),
+`corrupcao(jogador_id, valor, maximo)`, `pactos(jogador_id, tipo, aceito_em, expira_em, cumprido)`,
+`relogio_eclipse(mundo_id, valor, historico jsonb)`, `nucleos(mundo_id, nucleo, estado, jogador_id)`.
+
 ## 1.4 Esquema do banco (resumo)
 
 ```sql

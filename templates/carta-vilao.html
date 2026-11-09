@@ -102,21 +102,24 @@ const ELEMENTOS = {
   Alma: ["#7df9ff", "#062026", "魂"], Tempo: ["#f5d0a9", "#231a10", "時"], Espaço: ["#b388ff", "#120c2a", "空"], Vazio: ["#f0f0f0", "#050505", "無"],
 };
 
+// v.revelado = true quando o marco `mascara.revela_em` já foi concluído no mundo.
+// v.oculto = true esconde os números (primeiro encontro, antes de 'Ler o Inimigo').
 window.renderCarta = function (v) {
   const $ = (id) => document.getElementById(id);
+  if (v.mascara && !v.revelado) v = { ...v, nome: v.mascara.nome ?? v.nome, titulo: v.mascara.titulo, descricao: v.mascara.descricao, habilidade: "???", fraqueza: "???" };
   const t = TIERS[v.tier]; const [el, escuro, kanji] = ELEMENTOS[v.elemento] ?? ELEMENTOS.Vazio;
   const r = document.documentElement.style;
   r.setProperty("--tier", t.cor[0]); r.setProperty("--tier2", t.cor[1]);
   r.setProperty("--el", el); r.setProperty("--el-escuro", escuro);
   $("faixa").textContent = t.rotulo;
   $("id").textContent = `${v.id} · NV ${v.nivel}`;
-  $("ameaca").textContent = "★".repeat(t.estrelas) + "☆".repeat(5 - t.estrelas) + `  PODER ${v.poder}`;
+  $("ameaca").textContent = "★".repeat(t.estrelas) + "☆".repeat(5 - t.estrelas) + `  PODER ${v.oculto ? "???" : v.poder}`;
   $("nome").textContent = v.nome;
   $("titulo").textContent = v.titulo;
   $("tags").innerHTML = [`<span class="tag el">${kanji} ${v.elemento}</span>`, `<span class="tag">${v.arquetipo}</span>`, `<span class="tag">📍 ${v.regiao}</span>`].join("");
   const a = v.atributos;
   $("stats").innerHTML = [["HP", a.HP, "hp"], ["MP", a.MP, "mp"], ["FOR", a.FOR], ["DEF", a.DEF], ["MAG", a.MAG], ["RES", a.RES], ["VEL", a.VEL]]
-    .map(([k, n, c]) => `<div class="stat ${c ?? ""}"><span>${k}</span><b>${n}</b></div>`).join("");
+    .map(([k, n, c]) => `<div class="stat ${c ?? ""}"><span>${k}</span><b>${v.oculto ? "???" : n}</b></div>`).join("");
   $("hab").textContent = v.habilidade;
   $("fraq").textContent = v.fraqueza;
   $("desc").textContent = `“${v.descricao}”`;

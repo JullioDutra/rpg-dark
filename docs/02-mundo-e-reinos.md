@@ -1,20 +1,18 @@
 # 02 — O mundo: 四星 Yotsuhoshi, o Continente das Quatro Estrelas
 
-## 2.1 Lore base (moldura — o autor pode sobrescrever)
+## 2.1 Lore (resumo — o cânone completo está no [doc 14](14-historia-principal.md))
 
-Há eras, o mundo era um só fluxo de **Mana Primordial (原初の魔力, Gensho no Maryoku)**.
-Quando algo despertou no centro do mundo — uma fome sem forma chamada apenas de
-**O Vazio (虚空, Kokū)** — um guerreiro sem nome, o **Quinto Portador**, partiu a Mana
-Primordial em **quatro estrelas elementais** e as cravou nos quatro cantos do continente.
-O equilíbrio entre elas mantém o Vazio selado no centro.
+Há 500 anos, toda a mana nascia da **Árvore-Estrela (Hoshigi)**, no Vale de Hinata, centro do continente.
+Um garoto, **Kaien**, roubou o ovo do dragão **Nisteroy** para salvar a mãe. O dragão queimou o vale, e da ferida
+abriu-se o **Buraco Negro (虚空, Kokū)**. Kaien, enlouquecido pela morte dos pais, despertou a **Devoração** — roubar
+mana e habilidades — e se fundiu ao luto do dragão, virando o **Rei do Eclipse**. A natureza explodiu a Árvore em
+esferas espalhadas pelos reinos; os **quatro reis antigos** deram a vida para criar o **Shitenkan (四天棺), o Esquife
+dos Quatro Céus**, que prendeu o Eclipse e tampou o buraco.
 
-As quatro estrelas viraram quatro reinos. O Quinto Portador desapareceu, deixando para trás
-cinco relíquias. Hoje os reinos esqueceram por que existem — e competem entre si.
-O selo enfraquece.
-
-> Essa moldura dá motivo para: os 4 reinos, os 4 Grandes Itens, o Amuleto (fragmento do
-> quinto poder), o anti-magia (pessoas tocadas pelo Vazio) e as divindades vilãs.
-> A história que o autor enviar vai definir o que realmente acontece.
+As esferas da Árvore voltaram a semear mana no mundo — por isso a mana de cada um depende da aldeia onde nasceu.
+As quatro maiores viraram os **Núcleos** dos reis atuais; as pequenas são os **Amuletos da Perdição**.
+Hoje, no Ano 500 do Selo, **Kanata** — descendente da irmã de Kaien — quer reunir os 4 núcleos e o desaparecido
+**Ovo Eterno** para abrir o Esquife. Os jogadores lutam para se tornar o **Seiō (星王), o Rei-Estrela**.
 
 ## 2.2 Mapa geral
 
@@ -96,7 +94,7 @@ arena. É honrado mas impaciente; acredita que só o mais forte deve proteger o 
 
 | Região | Descrição única | Densidade de mana | Perigo | Recurso | Segredo |
 |--------|-----------------|:---:|:---:|---------|---------|
-| **Kagutsuchi-jō** (capital) | Cidade em degraus escavada na encosta; as ruas são aquecidas por veias de lava sob vidro. Coliseu de Brasas no topo | ●●●○○ | Baixo | Guilda dos Duelistas, forja real | Uma câmara sob o coliseu guarda o diário do último duelo do Quinto Portador |
+| **Kagutsuchi-jō** (capital) | Cidade em degraus escavada na encosta; as ruas são aquecidas por veias de lava sob vidro. Coliseu de Brasas no topo | ●●●○○ | Baixo | Guilda dos Duelistas, forja real | Uma câmara sob o coliseu guarda a arena do último duelo do rei antigo Ryūga |
 | **Monte Hinokami** (火神山) | Vulcão sagrado; o cume brilha à noite como um segundo sol | ●●●●● | Alto | Minério de chama, Lágrima de Fênix | O vulcão "respira" a cada 7 dias — nesse momento a cratera abre caminho para uma subfase |
 | **Deserto de Haijin** (灰塵) | Dunas de cinza cinzenta, chuva de brasas ao entardecer, esqueletos de navios (era um mar) | ●●○○○ | Médio | Vidro de cinza, sal negro | Os navios afundados ainda têm tripulações fantasmas que contam onde o mar foi parar |
 | **Floresta Hotaru-bi** (蛍火) | Árvores de casca carbonizada com folhas de brasa; vagalumes de fogo formam constelações | ●●●○○ | Médio | Seiva incandescente, ervas de cura de fogo | Os vagalumes desenham um mapa se observados durante a lua nova |
@@ -152,7 +150,7 @@ domina. Sereno, calculista, fala pouco. Desconfia de Homura-koku desde uma guerr
 
 **O Rei:** Gōtetsu é um gigante de 2,4 m, barba trançada com fios de metal. Parece lento e
 gentil; em batalha nunca deu um passo para trás. É o mais velho dos quatro reis e o único
-que lembra fragmentos da lenda do Quinto Portador.
+que sonha com fragmentos da verdade: um menino chorando num poço.
 **Mana única:** *Raiz do Mundo* — liga-se ao solo; enquanto tocar a terra, não pode ser derrubado.
 
 ### Regiões de Daichi-koku
@@ -216,7 +214,9 @@ Por trás do riso, tem a rede de espiões mais eficiente do continente.
 | **Floresta Petrificada Ishi-no-Mori** | Tudo virou pedra cinza — árvores, animais, pessoas | ●○○○○ | Muito alto | As estátuas se movem quando não se olha |
 | **Cratera do Vazio** | Buraco negro na terra; o som some, as cores desbotam | ○○○○○ | Extremo | — |
 | **Torre Sem Fim (Owari-naki Tō)** | Torre que desce (não sobe) para dentro da cratera; 100 andares | ○○○○○ | Extremo | Masmorra endgame |
-| **Trono dos Deuses Caídos** | Fundo da cratera | ○○○○○ | Divino | Local do final (a definir pela história) |
+| **Trono dos Deuses Caídos** | Fundo da cratera | ○○○○○ | Divino | O Esquife dos Quatro Céus (Shitenkan) está aqui |
+| **Ruínas de Hinata** *(abre no Ato III)* | A aldeia de Kaien, cinzas petrificadas há 500 anos; o Poço Seco onde Sayo se escondeu com o ovo | ○○○○○ | Alto | Memórias de Sayo (só para o portador do ovo) |
+| **Monte Ryūsō** *(abre no Ato III)* | O ninho vazio de Nisteroy e o toco de cristal da Árvore-Estrela | ●○○○○ | Muito alto | Onde o Ovo Eterno desperta |
 
 ---
 

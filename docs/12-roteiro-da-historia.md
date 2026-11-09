@@ -1,86 +1,42 @@
-# 12 — Roteiro da História (formato para o autor enviar)
+# 12 — Roteiro da História (status e como editar)
 
-> Esta é a próxima etapa. Envie a história no formato que for mais natural para você — texto corrido serve.
-> Depois eu estruturo tudo neste formato (atos → capítulos → marcos → fatos → final) e gero o
-> `data/historia.yaml` que o Diretor de História vai usar.
+✅ **A história foi recebida e estruturada.**
 
-## O que eu preciso de você
+| Onde | O quê |
+|------|-------|
+| [doc 14](14-historia-principal.md) | Cânone: prólogo de 500 anos atrás, o Ovo Eterno, Kanata, os núcleos, o Seiō, camadas de verdade, finais |
+| [doc 15](15-arcos-dos-reinos.md) | Arcos complementares de cada reino, ganchos das 24 aldeias, Vale de Hinata |
+| [doc 16](16-vilao-principal-e-manipulacao.md) | Kanata, sussurros, pactos, Corrupção, como ele vira os jogadores uns contra os outros e como manipulá-lo |
+| [doc 17](17-sub-viloes.md) | Arautos do Eclipse, Ressurgidos e servos |
+| [doc 18](18-animais.md) | Bestiário |
+| [doc 19](19-dificuldade-derrota-estrategia.md) | Dificuldade, derrota/morte, Juiz de Táticas, Relógio do Eclipse |
+| `data/historia.yaml` | **O roteiro executável**: 4 atos, 53 marcos, 20 fatos, proibições e finais |
 
-### 1. Premissa (1–3 parágrafos)
-Qual é o conflito central? O que ameaça o mundo? (Pode usar, mudar ou descartar a lore base do Vazio/Quinto Portador.)
+## Como o autor adiciona ou muda coisas
 
-### 2. O final
-- Como a história termina? Quem é o inimigo final (pode ser o V100 ou outro)?
-- O que os jogadores precisam ter feito para "zerar"? (ex.: reunir o Shitenchō, restaurar os 4 selos, vencer X)
-- Há finais alternativos? (ex.: final bom se Mérito médio do grupo ≥ 500)
+- **Novo acontecimento possível** → adicionar em `fatos:` (ex.: `{id: F21, descricao: "..."}`) e citar o ID em
+  `fatos_disponiveis` dos marcos onde ele pode ocorrer.
+- **Novo marco** → adicionar no ato certo com `requer`, `objetivo`, `cena` e `condicao_conclusao`.
+- **Algo que nunca pode acontecer** → `proibicoes:`.
+- **Mudar um final** → `finais:`.
+- Depois de editar: `python3 scripts/validar-historia.py` (aponta marcos, vilões, subfases ou fatos inexistentes).
 
-### 3. Atos e capítulos
-Uma lista do que acontece, em ordem. Exemplo:
-
-```
-ATO 1 — O Selo Racha
-  Cap 1: Os jogadores despertam em suas aldeias; tremor; criaturas do Vazio aparecem.
-  Cap 2: Cada reino culpa o outro. O Torneio dos Novatos revela um traidor.
-  Cap 3: O primeiro pilar cai. Os reis convocam heróis.
-ATO 2 — A Guerra dos Quatro
-  ...
-ATO 3 — O Quinto Portador
-  ...
-```
-
-### 4. Fatos que podem acontecer
-Eventos que a IA **pode** usar quando fizer sentido (não obrigatórios), por exemplo:
-- "O rei Sorahiko é sequestrado"
-- "Hyōsuke propõe aliança aos jogadores"
-- "Uma aldeia de um jogador é atacada"
-
-### 5. Papéis dos 4 reis e NPCs importantes
-Aliados? Traidores? Algum morre? Algum vira vilão?
-
-### 6. Proibições
-O que **nunca** pode acontecer (ex.: "o rei Gōtetsu nunca trai", "ninguém descobre a identidade de Yoru antes do Ato 3").
-
-### 7. Tom
-Mais sombrio? Mais aventura? Romance permitido? Mortes de personagens jogadores permitidas?
-
----
-
-## Formato final que eu vou gerar (exemplo)
+## Formato de marco
 
 ```yaml
-historia:
-  titulo: "..."
-  premissa: "..."
-  final:
-    marco_final: A3-C4-M5
-    condicoes: ["Shitenchō completo em algum jogador", "4 selos restaurados"]
-    epilogos:
-      - condicao: "merito_medio >= 500"
-        texto: "..."
-      - condicao: "padrao"
-        texto: "..."
-  atos:
-    - id: A1
-      titulo: "O Selo Racha"
-      capitulos:
-        - id: A1-C1
-          titulo: "Despertar"
-          nivel_sugerido: "1–8"
-          marcos:
-            - id: A1-C1-M1
-              tipo: obrigatorio
-              gatilho: "todo jogador ao concluir o sorteio"
-              objetivo: "..."
-              condicao_conclusao: "..."
-              fatos_disponiveis: [F01, F02]
-              viloes_permitidos: [V001, V009, V017, V025]
-              se_atrasar: "..."
-  fatos:
-    - id: F01
-      descricao: "..."
-      uso_unico: true
-  proibicoes:
-    - "..."
+- id: A2-HOM-3
+  titulo: "Sacrifícios nas Dunas"
+  tipo: crise                 # obrigatorio | opcional | secreto | crise
+  escopo: party               # mundo | jogador | party
+  requer: [A2-HOM-2]
+  prazo_horas_reais: 48       # só para crise
+  subfases: [SF-HOM-04]
+  viloes_permitidos: [V037, V039, V006]
+  objetivo: "Impedir o ritual de Okibi"
+  cena: "orientação de cenário/clima/NPCs para a IA"
+  condicao_conclusao: "Vencer Okibi antes do prazo"
+  falha: "o que acontece no mundo se falharem"
+  relogio: {sucesso: -2, falha: 5}
+  verdade: 3                  # camada de verdade liberada (opcional)
+  batalha_mortal: true        # opcional
 ```
-
-Com isso o jogo terá um caminho garantido do sorteio inicial até o final, com espaço para a IA improvisar no meio.

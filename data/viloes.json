@@ -2067,8 +2067,8 @@
   {
     "id": "V060",
     "nome": "O Leiloeiro Sem Sombra",
-    "titulo": "o Dono do Mercado Negro",
-    "nome_completo": "O Leiloeiro Sem Sombra, o Dono do Mercado Negro",
+    "titulo": "o Emissário de Quinhentos Anos",
+    "nome_completo": "O Leiloeiro Sem Sombra, o Emissário de Quinhentos Anos",
     "tier": "medio",
     "tier_rotulo": "Médio Escalão",
     "nivel": 30,
@@ -2087,7 +2087,12 @@
     "poder": 331,
     "habilidade": "Lance Final: força o alvo a escolher entre perder um item ou 30% do HP",
     "fraqueza": "Luz",
-    "descricao": "Comanda o leilão das sombras. Não projeta sombra alguma.",
+    "descricao": "O homem de manto com os quatro brasões que convenceu Kaien a roubar o ovo. A seiva da Árvore-Estrela o impede de morrer e lhe tirou a sombra. Hoje é o tesoureiro de Kanata.",
+    "mascara": {
+      "revela_em": "A3-M4",
+      "titulo": "o Dono do Mercado Negro",
+      "descricao": "Comanda o leilão das sombras de Kyōkai. Não projeta sombra alguma. Dizem que é mais velho que a própria cidade."
+    },
     "recompensa": {
       "xp": 1125,
       "ouro": 600,
@@ -2095,7 +2100,7 @@
     },
     "imagem": {
       "arquivo": "assets/viloes/V060.png",
-      "prompt": "anime style dark fantasy villain character portrait, elegant masked auctioneer with no shadow, candlelit auction hall, darkness elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "prompt": "anime style dark fantasy villain character portrait, elegant masked auctioneer with no shadow, faded robe with four royal crests, candlelit auction hall, darkness elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
       "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
     }
   },
@@ -2857,7 +2862,7 @@
     "poder": 1440,
     "habilidade": "Duelo Eterno: força 1×1 com um único jogador por 3 turnos",
     "fraqueza": "Água",
-    "descricao": "Espírito do duelista que enfrentou o Quinto Portador. Guarda o capítulo Céu Rubro do Shitenchō.",
+    "descricao": "Espírito do duelista que enfrentou o rei antigo Ryūga na véspera do selo e perdeu. Guarda o capítulo Céu Rubro do Shitenchō e só o entrega a quem o vencer em duelo justo.",
     "recompensa": {
       "xp": 14625,
       "ouro": 7800,
@@ -3151,44 +3156,50 @@
   },
   {
     "id": "V091",
-    "nome": "Yoru",
-    "titulo": "o Mestre da Guilda de Kyōkai",
-    "nome_completo": "Yoru, o Mestre da Guilda de Kyōkai",
+    "nome": "Kanata",
+    "titulo": "o Profeta do Esquife, que o mundo chamava de Yoru",
+    "nome_completo": "Kanata, o Profeta do Esquife, que o mundo chamava de Yoru",
     "tier": "rei",
     "tier_rotulo": "Nível Rei",
-    "nivel": 82,
+    "nivel": 85,
     "regiao": "Kyōkai",
     "elemento": "Trevas",
     "arquetipo": "assassino",
     "atributos": {
-      "HP": 7225,
-      "MP": 645,
-      "FOR": 242,
-      "DEF": 130,
-      "MAG": 130,
-      "RES": 130,
-      "VEL": 298
+      "HP": 7480,
+      "MP": 668,
+      "FOR": 250,
+      "DEF": 135,
+      "MAG": 135,
+      "RES": 135,
+      "VEL": 308
     },
-    "poder": 1653,
-    "habilidade": "Mil Contratos: cada jogador que já aceitou missão da guilda recebe −20% em tudo",
-    "fraqueza": "Luz",
-    "descricao": "Nunca foi visto de dia. Sabe de todos os segredos — porque é ele quem os vende.",
+    "poder": 1711,
+    "habilidade": "Eco da Devoração: copia 1 habilidade de um jogador por turno · Mil Contratos: −20% em tudo para quem fez missões da Guilda",
+    "fraqueza": "O Diário de Sayo (Dúvida) · Luz",
+    "descricao": "Descendente de Sayo, irmã de Kaien. Mestre da Guilda de Kyōkai. Quer reunir os 4 núcleos e o Ovo Eterno para abrir o Esquife e libertar Kaien — sem saber que isso destampa o buraco negro.",
+    "mascara": {
+      "revela_em": "A2-M3",
+      "nome": "Yoru",
+      "titulo": "o Mestre da Guilda de Kyōkai",
+      "descricao": "Nunca visto de dia. Generoso com quem trabalha para a Guilda. Ninguém sabe o que ele quer."
+    },
     "recompensa": {
-      "xp": 18450,
-      "ouro": 9840,
+      "xp": 19125,
+      "ouro": 10200,
       "amuleto_chance": 0.1
     },
     "imagem": {
       "arquivo": "assets/viloes/V091.png",
-      "prompt": "anime style dark fantasy villain character portrait, guild master in black hood with moon eyes, night city, darkness elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "prompt": "anime style dark fantasy villain character portrait, pale young man with long white hair tied back, moon-reflecting eyes, black guild cloak, burned hands under black gloves, silver contract threads floating around him, darkness elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
       "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
     }
   },
   {
     "id": "V092",
-    "nome": "O Quinto que Falhou",
-    "titulo": "o Eco do Portador",
-    "nome_completo": "O Quinto que Falhou, o Eco do Portador",
+    "nome": "Tōya",
+    "titulo": "o Portador que Falhou",
+    "nome_completo": "Tōya, o Portador que Falhou",
     "tier": "rei",
     "tier_rotulo": "Nível Rei",
     "nivel": 85,
@@ -3205,9 +3216,15 @@
       "VEL": 193
     },
     "poder": 1864,
-    "habilidade": "Eco do Portador: usa as 4 afinidades elementais",
-    "fraqueza": "Nenhuma",
-    "descricao": "Alguém que tentou ser o Quinto Portador antes. O Vazio o devolveu — vazio.",
+    "habilidade": "Mão Queimada: o ataque ignora escudos e queima 10% do MP",
+    "fraqueza": "O Ovo Eterno (se o portador estiver presente, Tōya pode ser libertado sem luta)",
+    "descricao": "Descendente de Sayo que tentou usar o ovo para abrir o Esquife há 200 anos. O ovo o rejeitou e ele desceu atrás dele. O buraco o devolveu vazio.",
+    "mascara": {
+      "revela_em": "A4-M5",
+      "nome": "O Portador que Falhou",
+      "titulo": "o Eco na Torre",
+      "descricao": "Um guerreiro vazio com as mãos queimadas, preso nos andares mais fundos da Torre."
+    },
     "recompensa": {
       "xp": 19125,
       "ouro": 10200,
@@ -3215,15 +3232,15 @@
     },
     "imagem": {
       "arquivo": "assets/viloes/V092.png",
-      "prompt": "anime style dark fantasy villain character portrait, broken hero in cracked armor leaking void light, endless descending tower, void black-white elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "prompt": "anime style dark fantasy villain character portrait, hollow-eyed young man in ancient cracked armor with charred black hands, void light leaking from the cracks, endless tower, void black-white elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
       "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
     }
   },
   {
     "id": "V093",
-    "nome": "Kagutsuchi",
-    "titulo": "o Deus-Patrono Caído do Fogo",
-    "nome_completo": "Kagutsuchi, o Deus-Patrono Caído do Fogo",
+    "nome": "Akatsuki Ryūga",
+    "titulo": "o Rei Antigo do Fogo, Corrompido",
+    "nome_completo": "Akatsuki Ryūga, o Rei Antigo do Fogo, Corrompido",
     "tier": "divindade",
     "tier_rotulo": "Divindade",
     "nivel": 88,
@@ -3240,9 +3257,15 @@
       "VEL": 292
     },
     "poder": 3856,
-    "habilidade": "Nascimento Ardente: o campo de batalha vira lava (dano por turno a todos)",
+    "habilidade": "Coroa de Brasa: campo de lava (dano por turno a todos); +50% contra quem tem o Núcleo Rubro",
     "fraqueza": "Água",
-    "descricao": "O deus que deu nome à capital do fogo. Caiu ao tentar devorar o Vazio sozinho.",
+    "descricao": "Rei de Homura há 500 anos. Escolheu o emissário. Deu a vida pelo selo; o buraco corrompeu sua alma presa ao Esquife. Vencido, é libertado e abençoa o portador do Núcleo Rubro.",
+    "mascara": {
+      "revela_em": "A3-M5",
+      "nome": "O Rei de Brasa",
+      "titulo": "Guardião Corrompido da Torre",
+      "descricao": "Uma figura coroada de fogo rachado que guarda a descida."
+    },
     "recompensa": {
       "xp": 52800,
       "ouro": 28160,
@@ -3250,15 +3273,15 @@
     },
     "imagem": {
       "arquivo": "assets/viloes/V093.png",
-      "prompt": "anime style dark fantasy villain character portrait, fallen fire god of colossal size with burning halo, molten throne, fire elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "prompt": "anime style dark fantasy villain character portrait, ghostly ancient fire king in cracked crimson armor and burning crown, black void veins, molten throne, fire elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
       "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
     }
   },
   {
     "id": "V094",
-    "nome": "Watatsumi",
-    "titulo": "o Deus-Patrono Caído do Mar",
-    "nome_completo": "Watatsumi, o Deus-Patrono Caído do Mar",
+    "nome": "Minazuki Shizuha",
+    "titulo": "o Rei Antigo da Água, Corrompido",
+    "nome_completo": "Minazuki Shizuha, o Rei Antigo da Água, Corrompido",
     "tier": "divindade",
     "tier_rotulo": "Divindade",
     "nivel": 88,
@@ -3275,9 +3298,15 @@
       "VEL": 292
     },
     "poder": 3856,
-    "habilidade": "Dilúvio do Fim: afoga — dano crescente a cada turno",
+    "habilidade": "Dilúvio do Fim: dano crescente a cada turno (afogamento)",
     "fraqueza": "Raio",
-    "descricao": "Patrono do reino da água. Seu corpo virou o abismo de Shinkai.",
+    "descricao": "Rei de Watatsumi há 500 anos, o mais sábio dos quatro, o que mais se arrependeu. Libertado, abençoa o portador do Núcleo Abissal.",
+    "mascara": {
+      "revela_em": "A3-M5",
+      "nome": "O Rei de Maré",
+      "titulo": "Guardião Corrompido da Torre",
+      "descricao": "Uma figura coroada de água negra que guarda a descida."
+    },
     "recompensa": {
       "xp": 52800,
       "ouro": 28160,
@@ -3285,15 +3314,15 @@
     },
     "imagem": {
       "arquivo": "assets/viloes/V094.png",
-      "prompt": "anime style dark fantasy villain character portrait, fallen sea god with dragon features and drowning tides, water elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "prompt": "anime style dark fantasy villain character portrait, ghostly ancient water king with flowing robes of black water and a pearl crown, drowning tides, void cracks, water elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
       "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
     }
   },
   {
     "id": "V095",
-    "nome": "Ōyamatsumi",
-    "titulo": "o Deus-Patrono Caído da Montanha",
-    "nome_completo": "Ōyamatsumi, o Deus-Patrono Caído da Montanha",
+    "nome": "Iwanaga Gōzan",
+    "titulo": "o Rei Antigo da Terra, Corrompido",
+    "nome_completo": "Iwanaga Gōzan, o Rei Antigo da Terra, Corrompido",
     "tier": "divindade",
     "tier_rotulo": "Divindade",
     "nivel": 88,
@@ -3312,7 +3341,13 @@
     "poder": 3856,
     "habilidade": "Peso do Mundo: VEL de todos cai pela metade",
     "fraqueza": "Vento",
-    "descricao": "Patrono da terra. Dorme dentro da montanha — ou dormia.",
+    "descricao": "Rei de Daichi há 500 anos. Foi o primeiro a propor o sacrifício. Libertado, abençoa o portador do Núcleo Raiz.",
+    "mascara": {
+      "revela_em": "A3-M5",
+      "nome": "O Rei de Pedra-Raiz",
+      "titulo": "Guardião Corrompido da Torre",
+      "descricao": "Uma figura coroada de pedra e raízes que guarda a descida."
+    },
     "recompensa": {
       "xp": 52800,
       "ouro": 28160,
@@ -3320,15 +3355,15 @@
     },
     "imagem": {
       "arquivo": "assets/viloes/V095.png",
-      "prompt": "anime style dark fantasy villain character portrait, fallen mountain god made of stone and ancient forest, earth elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "prompt": "anime style dark fantasy villain character portrait, ghostly giant ancient earth king made of stone and roots, cracked with black void, mountain throne, earth elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
       "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
     }
   },
   {
     "id": "V096",
-    "nome": "Shinatsuhiko",
-    "titulo": "o Deus-Patrono Caído do Vento",
-    "nome_completo": "Shinatsuhiko, o Deus-Patrono Caído do Vento",
+    "nome": "Hayate Tsukumo",
+    "titulo": "o Rei Antigo do Vento, Corrompido",
+    "nome_completo": "Hayate Tsukumo, o Rei Antigo do Vento, Corrompido",
     "tier": "divindade",
     "tier_rotulo": "Divindade",
     "nivel": 88,
@@ -3345,9 +3380,15 @@
       "VEL": 292
     },
     "poder": 3856,
-    "habilidade": "Sopro que Apaga Nomes: silencia todo o grupo 1 turno",
+    "habilidade": "Sopro que Apaga Nomes: silencia todo o grupo por 1 turno",
     "fraqueza": "Terra",
-    "descricao": "Patrono do vento, que escolhe os reis de Fūjin. Escolheu errado de propósito?",
+    "descricao": "Rei de Fūjin há 500 anos. Fincou a Excalibur na estepe antes do último combate, 'para o quinto que vier'. Libertado, abençoa o portador do Núcleo Celeste.",
+    "mascara": {
+      "revela_em": "A3-M5",
+      "nome": "O Rei de Tempestade",
+      "titulo": "Guardião Corrompido da Torre",
+      "descricao": "Uma figura coroada de nuvens rasgadas que guarda a descida."
+    },
     "recompensa": {
       "xp": 52800,
       "ouro": 28160,
@@ -3355,7 +3396,7 @@
     },
     "imagem": {
       "arquivo": "assets/viloes/V096.png",
-      "prompt": "anime style dark fantasy villain character portrait, fallen wind god with tattered wings of storm clouds, wind elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "prompt": "anime style dark fantasy villain character portrait, ghostly ancient wind king with tattered storm-cloud wings and a feather crown, void cracks, howling winds, wind elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
       "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
     }
   },
@@ -3396,36 +3437,41 @@
   },
   {
     "id": "V098",
-    "nome": "Hiruko",
-    "titulo": "o Deus Esquecido",
-    "nome_completo": "Hiruko, o Deus Esquecido",
+    "nome": "Nisteroy",
+    "titulo": "o Dragão do Crepúsculo",
+    "nome_completo": "Nisteroy, o Dragão do Crepúsculo",
     "tier": "divindade",
     "tier_rotulo": "Divindade",
-    "nivel": 95,
-    "regiao": "Torre Sem Fim",
-    "elemento": "Alma",
+    "nivel": 98,
+    "regiao": "Esquife dos Quatro Céus",
+    "elemento": "Fogo",
     "arquetipo": "divino",
     "atributos": {
-      "HP": 23520,
-      "MP": 2124,
-      "FOR": 371,
-      "DEF": 371,
-      "MAG": 371,
-      "RES": 371,
-      "VEL": 314
+      "HP": 24240,
+      "MP": 2189,
+      "FOR": 383,
+      "DEF": 383,
+      "MAG": 383,
+      "RES": 383,
+      "VEL": 324
     },
-    "poder": 4150,
-    "habilidade": "Esquecimento: apaga 1 habilidade aleatória do alvo pela batalha",
-    "fraqueza": "Nenhuma",
-    "descricao": "O primeiro deus, descartado pelos outros ao nascer. Nunca perdoou.",
+    "poder": 4280,
+    "habilidade": "Luto Ardente: quanto mais tempo a luta dura, mais forte fica (+10% por turno) — até ver o ovo",
+    "fraqueza": "O Ovo Eterno desperto (encerra a luta)",
+    "descricao": "O último dragão antigo, guardião da Árvore-Estrela, mãe do Ovo Eterno. Destruiu o Vale de Hinata pela dor de perder o filho e se fundiu a Kaien. Só é enfrentado separado no Final Estelar — ou se o ovo for perdido.",
+    "mascara": {
+      "revela_em": "A3-M9",
+      "titulo": "o Dragão do Crepúsculo",
+      "descricao": "O dragão que queimou o Vale de Hinata há 500 anos."
+    },
     "recompensa": {
-      "xp": 57000,
-      "ouro": 30400,
+      "xp": 58800,
+      "ouro": 31360,
       "amuleto_chance": 0.25
     },
     "imagem": {
       "arquivo": "assets/viloes/V098.png",
-      "prompt": "anime style dark fantasy villain character portrait, pale boneless child-like god floating on a reed boat, eerie calm, soul elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "prompt": "anime style dark fantasy villain character portrait, colossal ancient twilight dragon with ember-orange and dusk-purple scales, grief in its eyes, ruined green valley frozen in time, fire elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
       "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
     }
   },
@@ -3466,13 +3512,13 @@
   },
   {
     "id": "V100",
-    "nome": "KOKŪ",
-    "titulo": "o Vazio Primordial",
-    "nome_completo": "KOKŪ, o Vazio Primordial",
+    "nome": "Shokuō",
+    "titulo": "o Rei do Eclipse (Kaien & Nisteroy)",
+    "nome_completo": "Shokuō, o Rei do Eclipse (Kaien & Nisteroy)",
     "tier": "divindade",
     "tier_rotulo": "Divindade",
     "nivel": 100,
-    "regiao": "Trono dos Deuses Caídos",
+    "regiao": "Esquife dos Quatro Céus",
     "elemento": "Vazio",
     "arquetipo": "divino",
     "atributos": {
@@ -3485,9 +3531,15 @@
       "VEL": 330
     },
     "poder": 4362,
-    "habilidade": "Fome Primordial: devora um elemento do campo por turno (provisório — definido pela história)",
-    "fraqueza": "A definir pela história",
-    "descricao": "A fome sem forma que o Quinto Portador selou. Chefe final provisório: o autor define o verdadeiro final.",
+    "habilidade": "Devoração: rouba 1 habilidade de cada jogador por turno e a usa no turno seguinte · Fome Primordial: devora um elemento do campo por turno",
+    "fraqueza": "O Ovo Eterno desperto (separa a fusão) · o Diário de Sayo (fere Kaien)",
+    "descricao": "Kaien, o menino que roubou o ovo, fundido ao luto do dragão Nisteroy. Um menino com olhos de dragão e um dragão com voz de menino. Chefe final.",
+    "mascara": {
+      "revela_em": "A4-M7",
+      "nome": "O Demônio do Selo",
+      "titulo": "o Mal que os Quatro Reis Selaram",
+      "descricao": "A lenda diz que um demônio surgiu e os quatro reis heroicos o selaram. A lenda está incompleta."
+    },
     "recompensa": {
       "xp": 60000,
       "ouro": 32000,
@@ -3495,7 +3547,7 @@
     },
     "imagem": {
       "arquivo": "assets/viloes/V100.png",
-      "prompt": "anime style dark fantasy villain character portrait, formless cosmic void entity, black hole with eyes, crumbling throne of gods, void black-white elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
+      "prompt": "anime style dark fantasy villain character portrait, pale teenage boy with dragon eyes and ash-grey hair sitting on a burnt doorstep, a colossal shadow dragon fused behind him, black eclipse sun, green valley frozen in time, void black-white elemental aura, dramatic rim lighting, cel shading, highly detailed, upper body, centered composition, dark atmospheric background, masterpiece",
       "negative_prompt": "text, watermark, logo, blurry, extra limbs, deformed hands, low quality, photo, realistic"
     }
   }

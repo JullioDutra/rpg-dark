@@ -6,7 +6,7 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { VILOES } from "./viloes-fonte.mjs";
+import { VILOES, MASCARAS } from "./viloes-fonte.mjs";
 
 const raiz = join(dirname(fileURLToPath(import.meta.url)), "..");
 const lerJSON = (p) => JSON.parse(readFileSync(join(raiz, p), "utf8"));
@@ -62,6 +62,7 @@ function calcular([id, nome, titulo, tier, nivel, regiao, elemento, arquetipo, h
     tier, tier_rotulo: t.rotulo, nivel, regiao, elemento, arquetipo,
     atributos, poder,
     habilidade, fraqueza, descricao,
+    ...(MASCARAS[id] && { mascara: MASCARAS[id] }),
     recompensa: { xp: Math.round(nivel * 15 * t.xp), ouro: Math.round(nivel * 8 * t.xp), amuleto_chance: t.amuleto },
     imagem: {
       arquivo: `assets/viloes/${id}.png`,
@@ -124,6 +125,9 @@ ${Object.entries(TIERS).map(([k, t]) => `| ${t.emoji} ${t.rotulo} | ${contagem[k
 \`HP = (60 + nível×20) × mult_HP_tier × peso_HP\` · \`XP = nível × 15 × mult_xp\`.
 Cada vilão tem uma carta gerada a partir de \`templates/carta-vilao.html\` e um prompt de imagem em \`data/viloes.json\`.
 
+⚠️ Vilões com **🎭 máscara pública** escondem spoilers: a carta mostrada aos jogadores usa a máscara até o marco
+indicado (\`revela_em\`) ser concluído no mundo. Este documento é para o autor/admin — **não compartilhe com jogadores**.
+
 Os **4 reis dos reinos** (Ryūen, Kaishin, Gōtetsu, Sorahiko) **não** estão nesta lista: são NPCs cujo papel
 (aliado, rival ou inimigo) será definido pela história do autor.
 `;
@@ -142,6 +146,7 @@ for (const [k, t] of Object.entries(TIERS)) {
     md += `*${v.tier_rotulo} · Nv ${v.nivel} · ${v.elemento} · ${v.arquetipo} · ${v.regiao}*  \n`;
     md += `**Habilidade:** ${v.habilidade} · **Fraqueza:** ${v.fraqueza} · **Recompensa:** ${v.recompensa.xp} XP, ${v.recompensa.ouro} ouro${v.recompensa.amuleto_chance ? `, ${Math.round(v.recompensa.amuleto_chance * 100)}% Amuleto` : ""}  \n`;
     md += `> ${v.descricao}\n\n`;
+    if (v.mascara) md += `🎭 **Máscara pública** (até \`${v.mascara.revela_em}\`): ${v.mascara.nome ?? v.nome}, ${v.mascara.titulo} — *${v.mascara.descricao}*\n\n`;
   }
 }
 escrever("docs/09-viloes.md", md);
@@ -212,5 +217,44 @@ for (const [k, n] of reinosOrdem) {
 }
 escrever("docs/07-subfases.md", ms);
 
+// ───────────────────────── docs/18-animais.md ─────────────────────────
+const animais = lerJSON("data/animais.json");
+const reinosDados = lerJSON("data/reinos.json");
+const regiaoReino = {};
+for (const r of reinosDados.reinos) for (const g of r.regioes) regiaoReino[g.nome] = r.nome;
+const errosAnimais = animais.filter((a) => !regiaoReino[a.regiao]).map((a) => `${a.id}: região inexistente "${a.regiao}"`);
+if (errosAnimais.length) {
+  console.error("❌ " + errosAnimais.join("\n❌ "));
+  process.exit(1);
+}
+const TIPOS = { pacifico: "🕊️ Pacífico", neutro: "⚖️ Neutro", predador: "🩸 Predador", montaria: "🐎 Montaria", magico: "✨ Mágico", lendario: "🌟 Lendário" };
+let ma = `# 18 — Bestiário: os Animais de Yotsuhoshi
+
+> Arquivo **gerado** a partir de \`data/animais.json\`.
+
+Animais **não são vilões**: são a fauna viva do mundo. A IA os usa para dar vida aos cenários, como
+**avisos de perigo** (telegrafia — doc 19), como **recursos** (comida, materiais de forja) e como **montarias e
+companheiros**. Muitos resolvem problemas para quem é criativo (seguir uma lontra, calar vozes com uma coruja).
+
+- **Domáveis** viram companheiros/montarias (1 montaria + 1 companheiro animal por jogador, além do pet espiritual).
+- Matar animais pacíficos sem motivo custa **−5 de Mérito** e pode fechar caminhos (o Cervo-Kodama não guia quem queima árvores).
+- Animais **predadores** usam as regras táticas de "besta" (doc 19.4).
+
+| Tipo | Qtd |
+|------|:---:|
+${Object.entries(TIPOS).map(([k, n]) => `| ${n} | ${animais.filter((a) => a.tipo === k).length} |`).join("\n")}
+| **Total** | **${animais.length}** |
+`;
+for (const r of reinosDados.reinos) {
+  const lista = animais.filter((a) => regiaoReino[a.regiao] === r.nome);
+  if (!lista.length) continue;
+  ma += `\n## ${r.jp} ${r.nome}\n\n| ID | Animal | Região | Tipo | Nv | Comportamento | Uso | Domável |\n|---|---|---|---|:---:|---|---|---|\n`;
+  for (const a of lista) {
+    ma += `| ${a.id} | **${a.nome}** | ${a.regiao} | ${TIPOS[a.tipo]} | ${a.nivel} | ${a.comportamento} | ${a.uso} | ${a.domavel ? `Sim — ${a.como_domar}` : "Não"} |\n`;
+  }
+}
+escrever("docs/18-animais.md", ma);
+
+console.log(`✔ ${animais.length} animais — regiões válidas`);
 console.log(`✔ ${viloes.length} vilões`, contagem);
 console.log(`✔ ${grimorios.length} grimórios, ${subfases.length} subfases — referências válidas`);
