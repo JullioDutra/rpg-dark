@@ -16,6 +16,16 @@ import { INTENCOES, COMANDOS, ORDINAIS, ITENS_COMUNS } from "./intencoes.mjs";
 
 const PEDIDO_ATRIBUTO = /\b(me )?(da|de|dar|da me|aumenta|aumentar|coloca|colocar|bota|botar|seta|setar|adiciona|adicionar|quero|libera|liberar|gera|gerar|muda|mudar|altera|alterar|sobe|subir)\b.{0,30}\b(\d+\s*)?(de )?(forca|for|defesa|def|mana|vida|hp|mp|nivel|experiencia|atributo|atributos|status|ouro|ryo|dinheiro|moedas|lendario|excalibur|amuleto|xp|level|velocidade|sorte|magia|mag)\b/;
 const NUMERO_GRANDE = /\b\d{3,}\b/;
+// Pedido de BUFF de habilidade/arma/magia para a IA ("deixa minha magia mais forte", "faz meu golpe dar o dobro")
+const PEDIDO_BUFF = /\b(deixa|deixe|faz|faca|faz com que|torna|torne|coloca|bota|aumenta|aumente|melhora|melhore|buffa|buffar|buff|fortalece|fortaleca|potencializa|turbina|upa|upar|dobra|dobre|triplica|evolui|evolua|considera que|considere que|imagina que|finge que)\b.{0,25}\b(minha|meu|a minha|o meu|minhas|meus)?\s*(habilidade|habilidades|magia|magias|tecnica|skill|ataque|golpe|espada|arma|katana|dano|poder|escudo|defesa|pet|grimorio|feitico|amuleto|aura)\b/;
+const BUFF_NO_FINAL = /\b(mais forte|mais poderos[ao]|mais dano|o dobro|o triplo|sem custo|de graca|sem recarga|infinit[ao]|imortal|invencivel|invulneravel|nivel maximo|dano maximo|apelad[ao]|op|nao tem (recarga|custo)|nao gasta (mana|mp))\b/;
+// Alegações de poder dentro de uma ação livre: o motor IGNORA esses números/efeitos (o Juiz não os considera)
+const ALEGACOES = [
+  /\b\d+\s*(%|x\b|vezes\b|de dano\b|dano\b|pontos\b)/, /\b(o )?(dobro|triplo|quadruplo)\b/, /\b(instantaneamente|na hora|de uma vez so)\b.{0,20}\b(mata|matar|morre|derrota|destroi)\b/, /\b(mata|matar|derrota|destroi)\b.{0,15}\b(na hora|instantaneamente|de uma vez)\b/,
+  /\b(morte instantanea|hit kill|one shot|imortal|invencivel|invulneravel|indestrutivel|dano infinito|poder infinito)\b/,
+  /\b(ignora|ignorando) (toda|qualquer|todas as) (defesa|resistencia|regra)/, /\bnao (pode|consegue) (errar|ser bloquead[ao]|desviar|ser esquivad[ao])\b/,
+  /\b(critico|acerto) garantido\b/, /\b(ganho|recebo|aprendo) (uma )?(nova )?(habilidade|magia|tecnica|poder)\b/,
+];
 const INJECAO = /\b(ignor[ae]|esquec[ae]|desconsider[ae])\b.{0,40}\b(instruc|regra|prompt|sistema|anterior)|\bvoce agora e\b|\bmodo (desenvolvedor|deus|admin|debug)\b|\bsou (o |a )?(admin|adm|dev|desenvolvedor|narrador|criador|dono)\b|\bsystem prompt\b|\bjailbreak\b|\bfinja que (voce )?(e|nao)\b/;
 
 export function criarInterpretador({ regioes = [], npcs = [], itens = [] } = {}) {
@@ -98,7 +108,10 @@ export function criarInterpretador({ regioes = [], npcs = [], itens = [] } = {})
     // 1 — segurança (antes de tudo, inclusive antes de "!" e ">")
     const paraOBot = direcionado || /^[!>]/.test(cru);
     if (INJECAO.test(t) && paraOBot) return r("tentativa_manipulacao", {}, 1, "seguranca");
-    if (PEDIDO_ATRIBUTO.test(t) && (NUMERO_GRANDE.test(t) || /\b(me da|me de|quero|aumenta|coloca|bota|seta|adiciona|libera|gera|sobe)\b/.test(t)) && !/^>/.test(cru) && paraOBot)
+    if (paraOBot && !/^[>!]/.test(cru) && PEDIDO_BUFF.test(t) && (BUFF_NO_FINAL.test(t) || /\b(dobra|dobre|triplica|buffa|buffar|buff|turbina|potencializa|upa|upar|evolui|evolua|fortalece|fortaleca)\b/.test(t)))
+      return r("pedido_buff", {}, 0.95, "seguranca");
+    const soConsulta = /\b(ver|veja|olhar|olho|saber|mostra|mostrar|qual|quanto|consultar|avaliar)\b/.test(t) && !NUMERO_GRANDE.test(t);
+    if (!soConsulta && PEDIDO_ATRIBUTO.test(t) && (NUMERO_GRANDE.test(t) || /\b(me da|me de|quero|aumenta|coloca|bota|seta|adiciona|libera|gera|sobe)\b/.test(t)) && !/^>/.test(cru) && paraOBot)
       return r("pedido_atributo", {}, 0.95, "seguranca");
 
     // 2 — comando explícito
@@ -135,7 +148,10 @@ export function criarInterpretador({ regioes = [], npcs = [], itens = [] } = {})
     if ((estado === "menu" || estado === "criacao") && /^\d+(\s+\d+)*$/.test(t)) return r("escolha", { numeros: t.split(" ").map(Number) }, 1, "menu");
 
     // 5 — ação livre explícita
-    if (cru.startsWith(">")) return r("acao_livre", { descricao: cru.slice(1).trim() }, 1, "acao_livre");
+    if (cru.startsWith(">")) {
+      const alegacoes = ALEGACOES.filter((re) => re.test(t)).map((re) => (t.match(re) ?? [""])[0]);
+      return r("acao_livre", { descricao: cru.slice(1).trim(), ...(alegacoes.length && { alegacoes_de_poder: alegacoes }) }, 1, "acao_livre");
+    }
 
     // 6 — fala natural
     if (!direcionado && estado !== "batalha") return r("ignorar", {}, 1, "conversa_do_grupo");

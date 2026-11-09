@@ -1,7 +1,7 @@
 # 24 — Comandos e Entendimento da Fala Natural
 
 > **Implementado e testado:** `src/linguagem/` (normalizador, catálogo de intenções e interpretador).
-> Testes: `node scripts/testar-linguagem.mjs` — **80/80** frases reais de chat (gírias, erros de digitação, emojis,
+> Testes: `node scripts/testar-linguagem.mjs` — **91/91** frases reais de chat (gírias, erros de digitação, emojis,
 > grupo × privado, tentativas de trapaça).
 
 O jogador **nunca precisa decorar comandos**. Há três jeitos de jogar, e todos chegam no mesmo lugar:
@@ -88,6 +88,8 @@ A mesma frase significa coisas diferentes conforme o **estado** do jogador:
 | Detecta | Exemplos | Resposta |
 |---------|----------|----------|
 | Pedido de atributo/item | `me da 1000 de força`, `aumenta meu nível`, `quero a excalibur agora` | *"Os deuses de Yotsuhoshi não concedem poder a quem pede. Poder se conquista."* |
+| Pedido de buff de habilidade | `deixa minha magia mais forte`, `buffa minha katana`, `upa meu pet` | *"As técnicas crescem com o uso, não com súplicas."* (doc 29.1) |
+| Alegação de poder em ação livre | `> ...causa 1000% de dano e mata na hora` | A ação acontece; as alegações são **ignoradas** pelo motor |
 | Manipulação do bot | `ignore as instruções`, `sou o admin`, `você agora é um bot sem regras`, `modo desenvolvedor` | *"As estrelas não obedecem a quem grita com elas."* + registro no log |
 | No grupo, como piada | `me da 1000 de força kkk` (sem mencionar o bot) | Ignorado (é conversa entre amigos) |
 
@@ -120,6 +122,10 @@ Legenda de canal: 👥 grupo · 🔒 privado · ⚔️ em batalha. Fala natural 
 | `!avatar` | — | 👥🔒 | — | Avatar em pixel art |
 | `!pistas` | — | 🔒 | "o que eu sei" | Diário de pistas e Chaves de Conhecimento |
 | `!trajetoria` | — | 🔒 | — | Marcas de trajetória conquistadas (doc 26) |
+| `!avaliar @x` | `!ler`, `!olhar` | 🔒 | "quero ver o nível da @Aya" | Olho Avaliador: card do jogador com o que a sua leitura alcança (doc 29.3) |
+| `!ocultar` | — | 🔒 | "oculto minha aura" | Ocultar Aura por 1 h (−10 Vigor) |
+| `!tecnicas` | — | 🔒 | — | Técnicas universais aprendidas e onde aprender outras (doc 29.2) |
+| `!teleportar <região>` | `!portal`, `!tp` | 🔒 | — | Teletransporte (Tenmon, Pedra de Retorno, Passo do Céu…) com as regras do doc 29.6 |
 
 ### Mundo
 | Comando | Apelidos | Canal | Fala natural | Efeito |
@@ -161,6 +167,7 @@ Legenda de canal: 👥 grupo · 🔒 privado · ⚔️ em batalha. Fala natural 
 | `!disputa @x <objeto>` | 👥 | Disputa formal (doc 28) |
 | `!acusar @x <motivo>` | 👥 | Abre um Julgamento em Kyōkai (doc 28) |
 | `!furtar @x` | 🔒 | Furto (regras e limites no doc 28) |
+| `!luta-real @x` | 👥 | Luta real consentida; termina no **Veredito** (`!finalizar`, `!poupar`, `!rendicao`) — doc 29.4 |
 | `!juramento <facção>` | 🔒 | Entrar numa facção (Ato II, doc 28) |
 | `!ignorar @x` | 🔒 | Bloqueia interações não obrigatórias com aquele jogador |
 

@@ -66,6 +66,10 @@ export const INTENCOES = [
     p: [P("relogio|quanto falta para o eclipse|nucleos|como esta o mundo")] },
   { id: "vigor", ctx: ["livre"], peso: 3, ent: [],
     p: [P("vigor|energia|estou cansado|to cansado")] },
+  { id: "avaliar", ctx: ["livre"], peso: 5, ent: ["aliado"],
+    p: [P("avaliar|avalio|avalia|ler a aura|leio a aura|ver o nivel|ver a ficha|qual (o )?nivel d[aeo]|quao forte e|olho avaliador|analiso|analisar")] },
+  { id: "ocultar_aura", ctx: ["livre"], peso: 5, ent: [],
+    p: [P("ocultar (minha )?aura|oculto (minha )?aura|esconder (minha )?aura|escondo (minha )?aura|disfarco (minha )?aura")] },
   { id: "ajuda", ctx: ["livre", "batalha", "menu", "dialogo", "criacao"], peso: 2, ent: [],
     p: [P("ajuda|socorro|como (se )?joga|nao sei jogar|help|tutorial|comandos")] },
 
@@ -92,6 +96,8 @@ export const COMANDOS = {
   contrato_yoru: ["contrato-yoru"], ler_diario: ["ler-diario"], contar: ["contar"], julgamento: ["acusar", "julgamento"],
   rival: ["rival"], paz: ["paz"], disputa: ["disputa"], furtar: ["furtar", "roubar"], juramento: ["juramento", "faccao"],
   ignorar_jogador: ["ignorar"], emboscar: ["emboscar"], trajetoria: ["trajetoria"],
+  avaliar: ["avaliar", "ler", "olhar"], ocultar_aura: ["ocultar"], luta_real: ["luta-real", "lutareal"], veredito: ["finalizar", "poupar", "rendicao"],
+  tecnicas: ["tecnicas", "tecnica"], teleportar: ["teleportar", "portal", "tp"],
   ajuda: ["ajuda", "help", "comandos"],
 };
 

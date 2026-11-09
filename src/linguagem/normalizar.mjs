@@ -33,7 +33,7 @@ export function normalizar(bruto) {
   s = semAcento(s.toLowerCase());
   s = s.replace(RISADAS, " ");
   s = s.replace(/([a-z])\1{2,}/g, "$1"); // "ataaaaca" -> "ataca" (mantém "ss", "rr")
-  s = s.replace(/[^\w@>!?\s.-]/g, " ").replace(/[.]{2,}/g, " ");
+  s = s.replace(/[^\w@>!?%\s.-]/g, " ").replace(/(\d)\s*%/g, "$1 %").replace(/[.]{2,}/g, " ");
   s = s.replace(/\s+/g, " ").trim();
   return s.split(" ").map((p) => ABREV[p] ?? p).join(" ").replace(/\s+/g, " ").trim();
 }

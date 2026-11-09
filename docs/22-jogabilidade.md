@@ -307,6 +307,7 @@ O painel sempre anuncia a reação: é a recompensa visível de jogar em equipe.
 ### Duelos (PvP)
 - `!duelo @x [aposta]` → `!aceitar`. Rodada simultânea de 60 s, sem itens, sem pets, sem Ovo.
 - Termina em 1 HP (ninguém morre em duelo), exceto o **Duelo de Sangue** de história (doc 15.1), que é Mortal.
+- Para luta de verdade entre jogadores, existe a **luta real** (`!luta-real @x`, consentida), que termina no **Veredito**: o vencedor escolhe finalizar, deixar ir ou exigir rendição (doc 29.4).
 - Vitória dá Mérito só se for contra alguém de nível igual ou maior (anti-abuso).
 
 ---

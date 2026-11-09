@@ -40,6 +40,15 @@ await render("carta-personagem.html", {
   equipamento: { arma: "Katana de Obsidiana", grimorio: "G02 Manual do Duelista Rubro", acessorio: "Pena de Fênix" },
   retrato_url: url("assets/avatares/exemplos-jogador/J-Espadachim-Homura.png"),
 }, "personagem-exemplo.png");
+// Exemplo do Olho Avaliador: o mesmo Kaito visto por alguém com leitura nível 3 ("Leitura")
+const { montarCard } = await import("../src/regras/avaliar.mjs");
+const kaito = { nome: "Kaito", titulo: "Aprendiz das Cinzas", rank: "C", reino: "Homura", aldeia: "Haibara", casta: "campones",
+  classe: "⚔️ Espadachim", atributo_magico: "Fogo · Cinzas", nivel: 24, hp: 412, hp_max: 520, mp: 61, mp_max: 98, pet: null,
+  atributos: { FOR: 82, DEF: 31, MAG: 28, RES: 29, VEL: 76, SOR: 30 }, equipamento: { arma: "Katana de Obsidiana" }, merito: 180,
+  fluxo: 6, pureza: 14, controle: 41, retrato_url: url("assets/avatares/exemplos-jogador/J-Espadachim-Homura.png") };
+await render("carta-personagem.html", montarCard(kaito, 3), "personagem-avaliado-leitura.png");
+await render("carta-personagem.html", montarCard(kaito, 1), "personagem-avaliado-silhueta.png");
+
 for (const id of ids) {
   const v0 = viloes.find((x) => x.id === id);
   const v = v0 && { ...v0, retrato_url: url(indice[id]?.arquivo), retrato_mascara_url: url(indice[id]?.mascara) };

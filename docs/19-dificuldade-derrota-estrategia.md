@@ -54,6 +54,9 @@
 - São mortais: chefes de nível rei e divindade, o final de cada arco de reino, o Ato IV inteiro e qualquer luta que a IA
   marque como consequência de uma decisão claramente suicida (sempre com aviso).
 
+Também leva à Morte Verdadeira: ser **finalizado** no Veredito de uma **luta real consentida** entre jogadores
+(doc 29.4). Nas Terras sem Lei, ser finalizado dá +1 Marca da Morte (morte verdadeira só com 3 Marcas).
+
 ### Depois da Morte Verdadeira
 
 1. O bot publica a **Carta Memorial** do personagem no grupo (moldura negra, feitos registrados).

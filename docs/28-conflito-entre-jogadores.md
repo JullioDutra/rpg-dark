@@ -103,10 +103,13 @@ Depois que Yoru se revela, cada jogador pode fazer um **Juramento** (`!juramento
 
 ## 28.8 PvP sem consentimento: só nas Terras sem Lei
 
+> **Atualizado:** o fim de uma luta real (inclusive nas Terras sem Lei) agora termina num **Veredito** em que o
+> vencedor escolhe **finalizar, deixar ir ou exigir rendição** — regras e consequências no [doc 29.4](29-travas-tecnicas-e-casos-especiais.md).
+
 - Em duas regiões (**Floresta Petrificada** e os **arredores da Cratera**), ao entrar, o bot avisa:
   *"⚠️ Terra sem lei: aqui, outros viajantes podem te atacar."* O jogador precisa confirmar.
-- Lá, `!emboscar @x` inicia um combate PvP real (rodada simultânea, termina em 1 HP, sem morte).
-- O vencedor pode tomar **um** material ou até 10% do ryō. Atacar alguém 10+ níveis abaixo custa Mérito.
+- Lá, `!emboscar @x` inicia uma **luta real** (rodada simultânea) que termina no **Veredito** (doc 29.4).
+- Atacar alguém 10+ níveis abaixo custa Mérito; acima de 15 níveis de diferença, a emboscada é bloqueada.
 - Proteção anti-gangue: máximo 2 contra 1, e a vítima recebe +20% de DEF para cada atacante extra.
 
 ## 28.9 Paz e reconciliação (`!paz @x`)

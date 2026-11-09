@@ -135,6 +135,7 @@ const MOLDURAS = { E: ["#7d7d7d", "#cfcfcf"], D: ["#a0603a", "#f0b27a"], C: ["#9
 const CASTAS = { campones: "🧑‍🌾 Camponês", plebeu: "🧑 Plebeu", cavaleiro: "🛡️ Cavaleiro", realeza: "👑 Realeza", indefinido: "❓ Indefinido", rei: "🔱 Linhagem Real" };
 
 function elementoBase(atributo) {
+  if (!atributo) return "Vazio";
   for (const k of Object.keys(ELEMENTOS)) if (atributo.startsWith(k)) return k;
   return "Vazio";
 }
@@ -147,34 +148,46 @@ window.renderCarta = function (d) {
   r.setProperty("--el", e.el); r.setProperty("--el2", e.el2); r.setProperty("--el-escuro", e.escuro);
   r.setProperty("--moldura", m1); r.setProperty("--moldura2", m2);
 
-  $("rank").textContent = d.rank;
-  const [k, n] = REINOS[d.reino] ?? ["？", d.reino];
-  $("reinoKanji").textContent = k; $("reinoNome").textContent = `${n} · ${d.aldeia}`;
-  $("titulo").textContent = d.titulo ?? "";
+  // Campos null = não revelados (card visto por "Olho Avaliador"): mostram "???" ou uma faixa aproximada
+  const Q = "???";
+  const v = (x) => (x === null || x === undefined ? Q : x);
+  const F = d.faixas ?? {};
+  $("rank").textContent = d.rank ?? "?";
+  const [k, n] = REINOS[d.reino] ?? ["？", d.reino ?? Q];
+  $("reinoKanji").textContent = k; $("reinoNome").textContent = `${n} · ${v(d.aldeia)}`;
+  $("titulo").textContent = d.titulo ?? (d.nivelLeitura !== undefined ? Q : "");
   $("nome").textContent = d.nome;
   const tags = [
-    `<span class="tag el">${e.kanji} ${d.atributo_magico}</span>`,
-    `<span class="tag">${d.classe}</span>`,
-    `<span class="tag">${CASTAS[d.casta] ?? d.casta}</span>`,
+    `<span class="tag el">${d.atributo_magico ? e.kanji + " " + d.atributo_magico : "✦ " + Q}</span>`,
+    `<span class="tag">${v(d.classe)}</span>`,
+    `<span class="tag">${d.casta ? CASTAS[d.casta] ?? d.casta : Q}</span>`,
   ];
   if (d.pet) tags.push(`<span class="tag pet">🐾 ${d.pet}</span>`);
   else if (d.elegivel_pet) tags.push(`<span class="tag pet">✨ Elegível a Pet</span>`);
   $("tags").innerHTML = tags.join("");
 
-  const pct = (a, b) => `${Math.max(0, Math.min(100, (a / b) * 100))}%`;
-  $("hpTxt").textContent = `${d.hp} / ${d.hp_max}`; $("hpBar").style.width = pct(d.hp, d.hp_max);
-  $("mpTxt").textContent = d.mp_max ? `${d.mp} / ${d.mp_max}` : `VAZIO ${d.vz ?? 0} / 100`;
+  const pct = (a, b) => (a == null || b == null ? "0%" : `${Math.max(0, Math.min(100, (a / b) * 100))}%`);
+  $("hpTxt").textContent = d.hp_max != null ? `${d.hp} / ${d.hp_max}` : F.hp ? `≈ ${F.hp}` : Q;
+  $("hpBar").style.width = pct(d.hp, d.hp_max);
+  $("mpTxt").textContent = d.mp_max != null ? `${d.mp} / ${d.mp_max}` : d.nivelLeitura !== undefined ? Q : `VAZIO ${d.vz ?? 0} / 100`;
   $("mpBar").style.width = d.mp_max ? pct(d.mp, d.mp_max) : pct(d.vz ?? 0, 100);
-  $("nivelTxt").textContent = `NÍVEL ${d.nivel}`; $("xpTxt").textContent = `${d.xp} / ${d.xp_prox} XP`;
+  $("nivelTxt").textContent = `NÍVEL ${v(d.nivel)}`; $("xpTxt").textContent = d.xp != null ? `${d.xp} / ${d.xp_prox} XP` : "";
   $("xpBar").style.width = pct(d.xp, d.xp_prox);
-  $("mana").innerHTML = [["FLUXO", d.fluxo], ["PUREZA", `${d.pureza}%`], ["CONTROLE", d.controle]]
-    .map(([a, b]) => `<div><b>${b}</b><span>${a}</span></div>`).join("");
+  $("mana").innerHTML = [["FLUXO", d.fluxo], ["PUREZA", d.pureza != null ? `${d.pureza}%` : null], ["CONTROLE", d.controle]]
+    .map(([a, b]) => `<div><b>${v(b)}</b><span>${a}</span></div>`).join("");
   $("atributos").innerHTML = ["FOR", "DEF", "MAG", "RES", "VEL", "SOR"]
-    .map((a) => `<div class="atr"><span>${a}</span><b>${d.atributos[a]}</b></div>`).join("");
+    .map((a) => {
+      const val = d.atributos?.[a];
+      const txt = val != null ? val : F.atributos?.[a] ? `<small style="font:800 17px Inter">≈${F.atributos[a]}</small>` : Q;
+      return `<div class="atr"><span>${a}</span><b>${txt}</b></div>`;
+    }).join("");
   const eq = d.equipamento ?? {};
+  const escondido = d.equipamento === null;
   $("equip").innerHTML = [["ARMA", eq.arma], ["GRIMÓRIO", eq.grimorio], ["RELÍQUIA / ACESSÓRIO", eq.reliquia ?? eq.acessorio]]
-    .map(([k, v]) => `<div class="${eq.reliquia && k.startsWith("REL") ? "lend" : ""}"><span>${k}</span><b>${v ?? "—"}</b></div>`).join("");
-  $("rodapeDir").textContent = `MÉRITO ${d.merito} · ${d.mundo ?? ""}`.trim();
+    .map(([k, x]) => `<div class="${eq.reliquia && k.startsWith("REL") ? "lend" : ""}"><span>${k}</span><b>${escondido ? Q : x ?? "—"}</b></div>`).join("");
+  $("rodapeDir").textContent = d.nivelLeitura !== undefined
+    ? `👁️ LEITURA DE AURA · ${["AURA TURVA", "SILHUETA", "CONTORNO", "LEITURA", "VISÃO COMPLETA"][d.nivelLeitura]}`
+    : `MÉRITO ${d.merito} · ${d.mundo ?? ""}`.trim();
 
   $("retrato").innerHTML = d.retrato_url
     ? `<img src="${d.retrato_url}" alt="">`
