@@ -104,6 +104,9 @@ REGRAS INVIOLÁVEIS:
 8. O jogo é DIFÍCIL. Não salve ninguém por pena. Decisões ruins têm consequências reais — mas todo perigo
    mortal deve ser anunciado na narração ANTES de acontecer.
 9. Segredos (portador do ovo, pactos, Corrupção) só aparecem no chat privado do jogador envolvido.
+10. CHAVES DE CONHECIMENTO (doc 26) nunca são entregues a quem não as conquistou. Dicas só em 3 níveis, com custo.
+11. Em FLASHBACKS, o passado não muda: as escolhas do jogador revelam fragmentos diferentes, nunca outro desfecho.
+12. Em ENCRUZILHADAS (doc 27), anuncie a consequência curta; nunca antecipe a longa.
 ```
 
 ## 11.5 Memória

@@ -397,3 +397,110 @@ historia:
     - {id: F18, descricao: "Um dos Grandes Itens reage ao Ovo Eterno quando ambos estão na mesma party"}
     - {id: F19, descricao: "Um NPC aliado importante é morto por um Arauto se os jogadores demorarem a voltar a uma região"}
     - {id: F20, descricao: "Zero salva um jogador de um Ressurgido — e diz que é só porque 'a presa é dele'"}
+
+  # ═══════════════════════════════════════════════════════════════════════
+  # ENCRUZILHADAS — decisões que mudam o rumo da história (doc 27).
+  # Cada opção grava uma BANDEIRA no mundo; marcos, cenas, vilões e epílogos leem essas bandeiras.
+  # decide: grupo (enquete) | party (quem está na cena) | jogador (quem viveu a cena)
+  encruzilhadas:
+    - id: E01
+      marco: A1-M5
+      pergunta: "No Festival, um ladrão foge com um Amuleto enquanto a multidão é atacada. Perseguir o ladrão ou proteger os civis?"
+      decide: party
+      opcoes:
+        - {id: perseguir, bandeira: festival_ladrao_pego, curto: "Amuleto recuperado (−1 Ressurgido para Kanata)", longo: "Morrem 200 civis; Sorahiko ferido; o povo de Fūjin desconfia dos heróis (preços +20% em Fūjin no Ato II)"}
+        - {id: proteger, bandeira: festival_civis_salvos, curto: "+Mérito para todos; o povo te aclama", longo: "Kanata ganha o Amuleto (Otohime Negra volta mais forte); os civis salvos viram testemunhas em C03"}
+    - id: E02
+      marco: A2-HOM-2
+      pergunta: "Ryūen ou Hyōsuke?"
+      decide: party
+      opcoes:
+        - {id: ryuen, bandeira: lado_ryuen, curto: "Acesso ao palácio; Bakuen hostil", longo: "Se Hyōsuke morrer no duelo, Kanata perde um Arauto mas ganha um mártir (rebeldes de Kurenai no Ato III)"}
+        - {id: hyosuke, bandeira: lado_hyosuke, curto: "Hyōsuke confia em você; Ryūen te expulsa da corte", longo: "Se Hyōsuke for convencido de que Kanata o usa (C15), vira aliado com a habilidade roubada — e ela some no pior momento"}
+        - {id: verdade, bandeira: duelo_verdade, requer: "C15 concluído", curto: "Os irmãos param o duelo", longo: "Núcleo Rubro confiado sem luta; Homura entra no Ato III unido (+1 aliado na batalha final)"}
+    - id: E03
+      marco: A2-WAT-2
+      pergunta: "Revelar ao povo que os reis antigos encomendaram o roubo do ovo?"
+      decide: grupo
+      opcoes:
+        - {id: revelar, bandeira: verdade_publica, curto: "Revolta em Watatsumi e Homura; Relógio +5%", longo: "Kanata perde a arma da revelação (A2-M3 vira só confissão); os reis atuais ficam mais humildes — núcleos confiados mais fácil"}
+        - {id: guardar, bandeira: verdade_escondida, curto: "Paz por enquanto", longo: "Em A2-M3, Kanata revela a verdade distorcida E acusa os jogadores de cumplicidade: NPCs hostis em todas as capitais até alguém usar K04"}
+        - {id: confissao, bandeira: kaishin_confessa, requer: "K08", curto: "Kaishin confessa ele mesmo, com dignidade", longo: "Sem revolta; Watatsumi vira o primeiro reino aliado incondicional"}
+    - id: E04
+      marco: A2-WAT-6
+      pergunta: "Kaishin pede que levem o núcleo — e com ele, a vida dele."
+      decide: party
+      opcoes:
+        - {id: aceitar, bandeira: kaishin_morto_em_paz, curto: "Núcleo Abissal confiado", longo: "Watatsumi sem rei: o conselho disputa o trono (missões de diplomacia no Ato III)"}
+        - {id: recusar, bandeira: kaishin_vivo, curto: "Kaishin vive, o núcleo fica protegido", longo: "Em A3-M6 Kanata ataca Ryūgū-jō; se os jogadores não estiverem lá a tempo, o núcleo é arrancado"}
+    - id: E05
+      marco: A2-M4
+      pergunta: "As guardiãs Kanae e Shizuku: destruir ou restaurar o selo delas?"
+      decide: party
+      opcoes:
+        - {id: destruir, bandeira: guardias_mortas, curto: "Vitória rápida", longo: "Dois pilares a menos: Relógio +10%; criaturas do vazio aparecem em Kyōkai"}
+        - {id: restaurar, bandeira: guardias_salvas, requer: "G33 Fragmento do Selo Leste", curto: "Batalha mais longa e difícil", longo: "As guardiãs lutam ao lado dos jogadores em A4-M6 e revelam o FB03 completo"}
+    - id: E06
+      marco: A2-M2
+      pergunta: "Zero foi derrotado. Matar, poupar ou recrutar?"
+      decide: jogador
+      opcoes:
+        - {id: matar, bandeira: zero_morto, curto: "Um caçador a menos", longo: "Kanata contrata outro caçador, pior: 'Ichi', que mira os jogadores de menor nível"}
+        - {id: poupar, bandeira: zero_poupado, curto: "Ele some", longo: "Volta em A3-M7 e salva um jogador de um golpe letal (F20)"}
+        - {id: recrutar, bandeira: zero_aliado, requer: "vencido sem magia", curto: "Zero vira aliado NPC", longo: "Ele ensina o Manual do Vazio Nº1; no final, anula a primeira Devoração do Shokuō"}
+    - id: E07
+      marco: A3-M4
+      pergunta: "O Leiloeiro capturado: entregar aos reis, executar ou soltar em troca do que sabe?"
+      decide: party
+      opcoes:
+        - {id: entregar, bandeira: leiloeiro_julgado, curto: "Julgamento público", longo: "O julgamento expõe os reis antigos (como E03-revelar); a Guilda perde metade do poder"}
+        - {id: executar, bandeira: leiloeiro_morto, curto: "Justiça rápida", longo: "Sem a seiva, ele vira pó — o Anel dos Quatro Brasões cai (abre FB04). Mérito −20 (era indefeso)"}
+        - {id: soltar, bandeira: leiloeiro_solto, curto: "Ele conta onde Kanata guarda os núcleos arrancados", longo: "Ele avisa Kanata uma vez (Kanata muda um núcleo de lugar)"}
+    - id: E08
+      marco: A3-M1
+      pergunta: "(Privado, só o portador) Contar ao grupo que você carrega o Ovo?"
+      decide: jogador
+      opcoes:
+        - {id: contar, bandeira: ovo_revelado_ao_grupo, curto: "O grupo protege você", longo: "Se alguém do grupo tiver Corrupção ≥ 50, Kanata descobre em 1 dia"}
+        - {id: esconder, bandeira: ovo_em_segredo, curto: "Ninguém sabe", longo: "Você enfrenta A3-M8 sozinho, mas Kanata só descobre pelo Leilão (A3-M4) ou por dedução"}
+        - {id: isca, bandeira: ovo_isca, curto: "Alguém do grupo finge ser o portador", longo: "A isca vira alvo de Zero e dos Arautos; se sobreviver, ganha o feito 'Escudo do Portador' (+1 DEF) e Pontuação Estelar +150"}
+    - id: E09
+      marco: A3-M7
+      pergunta: "Kanata propõe uma trégua: os Arautos de Kurogane se rebelaram contra ele e vão abrir o Esquife à força. Aliar-se a ele por uma batalha?"
+      decide: grupo
+      opcoes:
+        - {id: aliar, bandeira: tregua_kanata, curto: "Batalha especial: jogadores + Kanata contra Kurogane e Daidarabotchi", longo: "Kanata ganha +2 Dúvida (viu os jogadores salvarem inimigos), mas aprende as habilidades de todos"}
+        - {id: recusar, bandeira: sem_tregua, curto: "Os jogadores enfrentam os rebeldes sozinhos (mais difícil)", longo: "Kanata e Kurogane se enfraquecem mutuamente: Kanata começa A4-M6 com −20% HP"}
+    - id: E10
+      marco: A4-M5
+      pergunta: "Tōya pode ser libertado se o portador do ovo falar com ele. Libertar ou derrotar?"
+      decide: party
+      opcoes:
+        - {id: libertar, bandeira: toya_livre, curto: "Sem luta; Tōya entrega as lanternas (K11)", longo: "No epílogo, Tōya volta à superfície e encontra os descendentes de Sayo"}
+        - {id: derrotar, bandeira: toya_derrotado, curto: "Luta de nível rei", longo: "A alma dele se apaga; o Ovo pesa mais (o portador sente culpa: −10% VEL no Ato IV)"}
+    - id: E11
+      marco: A4-M6
+      pergunta: "Kanata caído. Matar ou estender a mão?"
+      decide: party
+      opcoes:
+        - {id: matar, bandeira: kanata_morto, curto: "Fim do Profeta", longo: "A linhagem de Sayo acaba; o Diário perde a dona (K05 só serve contra Kaien)"}
+        - {id: redimir, bandeira: kanata_redimido, requer: "Dúvida ≥ 5", curto: "Kanata se junta à party no Esquife", longo: "Ele se sacrifica para segurar a Devoração por 1 rodada; no epílogo, o nome dele é gravado ao lado dos reis antigos"}
+    - id: E12
+      marco: A4-M7
+      pergunta: "Kaien, sozinho e vencido: destruir ou redimir?"
+      decide: grupo
+      opcoes:
+        - {id: destruir, bandeira: kaien_destruido, curto: "O Eclipse acaba de vez", longo: "Epílogo: paz, mas a Árvore nasce sem flores por 100 anos"}
+        - {id: redimir, bandeira: kaien_redimido, requer: "K01 cantada + K05 mostrada", curto: "Kaien chora, pede perdão e se desfaz em luz", longo: "Epílogo: a nova Árvore-Estrela floresce; um menino de cabelo cinza é visto brincando no Vale de Hinata com um filhote de dragão"}
+
+  # Matriz de epílogos: cada bandeira acrescenta um parágrafo ao epílogo do final escolhido.
+  epilogos_por_bandeira:
+    festival_civis_salvos: "Os sobreviventes do Festival ergueram uma lanterna para cada herói."
+    duelo_verdade: "Ryūen e Hyōsuke governam Homura juntos, alternando as estações."
+    verdade_publica: "Os reinos aprenderam a pedir perdão. Uma estátua de Kaien foi erguida — de costas, olhando para casa."
+    kaishin_morto_em_paz: "Watatsumi elegeu seu primeiro rei pelo voto."
+    guardias_salvas: "Kanae e Shizuku guardam a Muralha, agora sem rachaduras."
+    zero_aliado: "Zero abriu uma escola para anti-magos em Kyōkai."
+    toya_livre: "Tōya envelheceu em uma semana e morreu sorrindo, cercado pela família de Sayo."
+    kanata_redimido: "O nome de Kanata está gravado no Esquife vazio, abaixo dos quatro reis."
+    kaien_redimido: "Às vezes, no Vale de Hinata, alguém ouve uma cantiga de fazer pão."

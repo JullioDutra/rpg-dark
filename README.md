@@ -46,6 +46,11 @@ Dificuldade: **difícil** — vilões podem vencer, a morte pode ser permanente,
 | 22 | [**Jogabilidade completa**](docs/22-jogabilidade.md) | Fluidez no WhatsApp, grupo × privado, combate em rodada simultânea, Postura, reações elementais, subida de atributos, todos os modos e situações |
 | 22b | [Balanceamento](docs/22b-balanceamento.md) | Gerado pelo simulador: jogador × vilão por nível, curva de XP, ritmo da campanha |
 | 23 | [**Pets espirituais**](docs/23-pets-espirituais.md) | 20 pets × 3 estágios em pixel art, vínculo e evolução |
+| 24 | [**Comandos e fala natural**](docs/24-comandos-e-linguagem-natural.md) | Como o bot entende o jogador (implementado em `src/linguagem/`, 80 testes) + referência de comandos |
+| 25 | [**Combate individual**](docs/25-combate-individual.md) | Abordagem, distância, Fluxo, Defesa Perfeita, Momento Decisivo, exemplo com números reais |
+| 26 | [**Contos, flashbacks e trajetória**](docs/26-contos-flashbacks-e-trajetoria.md) | 20 contos, 10 ecos do passado jogáveis, 12 Chaves de Conhecimento, 12 marcas de trajetória |
+| 27 | [**Encruzilhadas**](docs/27-encruzilhadas.md) | 12 decisões que mudam a história, efeito borboleta, epílogos |
+| 28 | [**Conflito entre jogadores**](docs/28-conflito-entre-jogadores.md) | Rivalidade, disputa, julgamento, facções, furto, terras sem lei, paz |
 
 ## Dados estruturados (`data/`)
 
@@ -62,7 +67,8 @@ Dificuldade: **difícil** — vilões podem vencer, a morte pode ser permanente,
 | `data/viloes.json` | 100 vilões com atributos, ficha visual e caminho do avatar |
 | `data/aparencias.json` | Bíblia visual: paletas, formas, escala por tier, fichas completas dos personagens |
 | `data/animais.json` | 36 animais (fauna, montarias, criaturas mágicas) |
-| `data/historia.yaml` | Roteiro executável: atos, marcos, fatos, proibições, finais |
+| `data/historia.yaml` | Roteiro executável: atos, marcos, fatos, proibições, finais, encruzilhadas, epílogos |
+| `data/contos.yaml` | Contos, flashbacks, Chaves de Conhecimento, desafios, marcas de trajetória |
 
 ## Templates (`templates/`)
 
@@ -79,7 +85,8 @@ node scripts/render-avatares.mjs    # avatares em pixel art (vilões, NPCs, exem
 node scripts/render-mapas.mjs       # mapas em pixel art
 node scripts/render-pets.mjs        # 20 pets × 3 estágios
 node scripts/simular-progressao.mjs # tabela de balanceamento (docs/22b)
-python3 scripts/validar-historia.py # valida o roteiro contra vilões/subfases/regiões
+python3 scripts/validar-historia.py # valida roteiro, encruzilhadas, contos e chaves
+node scripts/testar-linguagem.mjs   # 80 testes do entendimento de fala natural
 node scripts/render-cartas.mjs      # gera exemplos de cartas em templates/exemplos/
 ```
 
@@ -98,4 +105,5 @@ node scripts/render-cartas.mjs      # gera exemplos de cartas em templates/exemp
 | Subfases | 36 |
 | Vilões | 100 (35 comuns · 25 médio · 20 alto · 12 rei · 8 divindades), incluindo Kanata e o Rei do Eclipse |
 | Animais | 36 |
-| História | 4 atos · 53 marcos · 20 fatos · 7 camadas de verdade · 3 finais |
+| História | 4 atos · 53 marcos · 20 fatos · 7 camadas de verdade · 12 encruzilhadas · 3 finais |
+| Conteúdo extra | 20 contos · 10 flashbacks jogáveis · 12 Chaves de Conhecimento · 12 marcas de trajetória |

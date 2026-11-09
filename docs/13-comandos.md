@@ -1,5 +1,7 @@
 # 13 — Comandos
 
+> **Referência completa e atualizada (com fala natural, canais e limites): [doc 24](24-comandos-e-linguagem-natural.md).**
+
 > Códigos curtos de batalha (`a`, `m1`, `h1`, `d`, `i`, `p`, `t`, `pet`, `f`, `?`), Vigor, modos e situações especiais: **[doc 22](22-jogabilidade.md)**.
 
 Tudo é digitado no **grupo** do mundo. Comandos com `!` são processados pelo motor (rápidos, sem IA).

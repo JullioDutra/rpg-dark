@@ -50,6 +50,41 @@ for mid, m in marcos.items():
     if "verdade" in m:
         camadas.add(m["verdade"])
 
+# Encruzilhadas
+for e in h.get("encruzilhadas", []):
+    if e["marco"] not in marcos:
+        erros.append(f"{e['id']}: marco inexistente {e['marco']}")
+    if len(e["opcoes"]) < 2:
+        erros.append(f"{e['id']}: precisa de 2+ opções")
+bandeiras = {o["bandeira"] for e in h.get("encruzilhadas", []) for o in e["opcoes"]}
+for b in h.get("epilogos_por_bandeira", {}):
+    if b not in bandeiras:
+        erros.append(f"epílogo para bandeira inexistente: {b}")
+
+# Contos, flashbacks, chaves, trajetória
+c = yaml.safe_load((raiz / "data/contos.yaml").read_text(encoding="utf-8"))
+ids_fb = {f["id"] for f in c["flashbacks"]}
+ids_c = {x["id"] for x in c["contos"]}
+ids_k = {k["id"] for k in c["chaves"]}
+for k in c["chaves"]:
+    for o in k["obtencao"]:
+        if o not in ids_fb | ids_c | set(marcos):
+            erros.append(f"{k['id']}: origem inexistente {o}")
+    if len(k["obtencao"]) < 1:
+        erros.append(f"{k['id']}: sem forma de obter")
+for f in c["flashbacks"]:
+    for k in [f.get("chave")] if not isinstance(f.get("chave"), list) else f["chave"]:
+        if k and k not in ids_k:
+            erros.append(f"{f['id']}: chave inexistente {k}")
+for x in c["contos"]:
+    if x["regiao"] not in regioes:
+        erros.append(f"{x['id']}: região inexistente {x['regiao']}")
+orfas = [k["id"] for k in c["chaves"] if not any(
+    (f.get("chave") == k["id"]) or (isinstance(f.get("chave"), list) and k["id"] in f["chave"]) for f in c["flashbacks"])
+    and not any(o in marcos or o in ids_c for o in k["obtencao"])]
+if orfas:
+    erros.append(f"chaves sem flashback/conto/marco que as conceda: {orfas}")
+
 faltando = set(range(2, 8)) - camadas
 if faltando:
     erros.append(f"camadas de verdade sem marco: {sorted(faltando)}")
@@ -57,4 +92,6 @@ if faltando:
 if erros:
     print("❌ " + "\n❌ ".join(erros))
     sys.exit(1)
-print(f"✔ historia.yaml válido: {len(h['atos'])} atos, {len(marcos)} marcos, {len(fatos)} fatos, camadas {sorted(camadas)}")
+print(f"✔ historia.yaml válido: {len(h['atos'])} atos, {len(marcos)} marcos, {len(fatos)} fatos, camadas {sorted(camadas)}, "
+      f"{len(h.get('encruzilhadas', []))} encruzilhadas")
+print(f"✔ contos.yaml válido: {len(c['contos'])} contos, {len(c['flashbacks'])} flashbacks, {len(c['chaves'])} chaves, {len(c['trajetoria'])} marcas de trajetória")
