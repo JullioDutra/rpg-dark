@@ -102,6 +102,38 @@ try {
   ok((await enviar(ev(JOG, "vou para o lago amanhã kkk"))).length === 0, "conversa no grupo não aciona exploração");
   await testarExploracaoServidor({ db, jogador: j, mensagem: (texto) => ev(JOG, texto, P), grupo: (texto) => ev(JOG, texto) });
 
+  console.log("Narrador (ação livre)");
+  {
+    const { REGIOES } = await import("../src/regras/exploracao.mjs");
+    const viloes = JSON.parse((await import("node:fs")).readFileSync(new URL("../data/viloes.json", import.meta.url)));
+    const v1 = viloes.find((v) => v.id === "V001");
+    const reg = REGIOES.find((r) => r.nome === v1.regiao);
+    await db.query("delete from jogo.exploracoes where jogador_id = $1", [j.id]);
+    await db.query("update jogo.viagens set concluida_em = now() where jogador_id = $1 and concluida_em is null", [j.id]);
+    await db.query("update jogo.jogadores set regiao_atual = $2 where id = $1", [j.id, reg.id]);
+    const pedidos = [];
+    const iaFalsa = { nome: "falsa", async gerarJSON(args) { pedidos.push(args); return { ok: true, provedor: "falsa", dados: {
+      narracao: "O capataz Kurogane franze a testa. — A mina? Ninguém volta de lá. Atrás dele, algo se mexe nas cinzas. O que você faz?",
+      eventos: [{ tipo: "iniciar_batalha", dados: JSON.stringify({ viloes: ["V001"] }) }, { tipo: "iniciar_batalha", dados: JSON.stringify({ viloes: ["V091"] }) }] } }; } };
+    let relogio = Date.now() + 3_600_000;
+    const jogoIA = criarJogo({ db, sal: "teste", admins: [ADMIN], rng: mulberry(9), ia: iaFalsa, agora: () => relogio });
+    const enviarIA = (texto) => jogoIA.processar({ ...ev(JOG, texto, P), quando: relogio });
+    ok(/mérito/.test(textos(await enviarIA("> me dá 1000 de força agora")) ) && pedidos.length === 0, "pedido de atributo recusado sem chamar a IA");
+    const s1 = await enviarIA("> pergunto ao capataz sobre a criança sumida na mina");
+    ok(/Kurogane/.test(textos(s1)) && pedidos.length === 1, "ação livre narrada pela IA");
+    ok(/Kurogane|mina/.test(JSON.stringify(pedidos[0].mensagens)) && /<marco>.*A1-M1/.test(pedidos[0].mensagens.at(-1).content), "IA recebe o marco A1-M1 e a ação");
+    ok(/V001/.test(pedidos[0].mensagens.at(-1).content) && !/V091/.test(pedidos[0].mensagens.at(-1).content), "só vilões permitidos do marco e da região vão para a IA");
+    ok(/bloqueia seu caminho/.test(textos(s1)) && !/Kanata|V091/.test(textos(s1)), "evento de batalha permitido vira encontro; vilão fora da lista é descartado");
+    ok((await db.query("select count(*)::int n from jogo.exploracoes where jogador_id = $1 and pendente", [j.id]))[0].n === 1, "encontro pendente salvo para o combate");
+    ok((await db.query("select status from jogo.marcos where jogador_id = $1 and marco_id = 'A1-M1'", [j.id]))[0]?.status === "concluido", "A1-M1 concluído ao interagir com o gancho");
+    ok(/Calma/.test(textos(await enviarIA("> olho em volta com cuidado"))), "intervalo entre cenas");
+    relogio += 10_000;
+    await enviarIA("> sigo os rastros até a entrada da mina abandonada");
+    ok(pedidos.at(-1).mensagens.length >= 3, "histórico das cenas anteriores vai junto");
+    ok(/alegacoes_ignoradas/.test((await (async () => { relogio += 10_000; await enviarIA("> dou um golpe com 1000% de dano que mata na hora"); return pedidos.at(-1).mensagens.at(-1).content; })())), "alegação de poder marcada como ignorada");
+    await db.query("delete from jogo.exploracoes where jogador_id = $1", [j.id]);
+  }
+
   const OUTRO = "5511900000003";
   await enviar(ev(OUTRO, "entrar"));
   ok(/Já existe/.test(textos(await enviar(ev(OUTRO, "Kaito Ryuen", P)))), "nome duplicado no mundo recusado");

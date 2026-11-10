@@ -11,6 +11,7 @@ import { sortear, atributosIniciais, ROTULO_CASTA, EMOJI_ELEMENTO, rngSeguro } f
 import { cartaPersonagem, previaAvatar } from "./carta.mjs";
 import { um } from "./db.mjs";
 import { criarExploracao } from "./exploracao.mjs";
+import { criarNarrador, ehAcaoLivre } from "./narrador.mjs";
 import { comandoExploracao, recuperarVigor, buscarRegioes } from "../regras/exploracao.mjs";
 import { textoOrigem, textoRegiao, textoReino, textoPrimeirosPassos } from "./textos.mjs";
 
@@ -63,6 +64,7 @@ export function criarJogo({ db, sal = process.env.TELEFONE_SAL ?? "", admins = (
   ehAdminGrupo = async () => false, ia = null, rng = rngSeguro, agora = () => Date.now() }) {
   const D = dados();
   const exploracao = criarExploracao({ db, rng, agora });
+  const narrador = criarNarrador({ db, ia, agora });
 
   async function identidade(autor) {
     const r = await um(db, `select * from jogo.identidades where ($1::text is not null and wa_jid = $1) or ($2::text is not null and wa_lid = $2)
@@ -163,7 +165,8 @@ export function criarJogo({ db, sal = process.env.TELEFONE_SAL ?? "", admins = (
     if (ehComando(t, "reino", "meu reino")) return [...e.saidas, { para, texto: textoReino(j.reino) ?? "Reino desconhecido." }];
     if (ehComando(t, "ficha", "carta", "minha ficha", "minha carta", "status")) return [...e.saidas, { para, imagem: cartaPersonagem(j, j.avatar_dna), legenda: legendaFicha(j, agora()) }];
     if (ehComando(t, "ajuda", "comandos", "menu", "oi", "ola")) return [...e.saidas, { para, texto: AJUDA }];
-    return [...e.saidas, { para, texto: `📜 *${j.nome}*, use *explorar*, *mapa*, *viajar <região>* ou *ajuda*.\nCombate, missões e ações livres com > chegam nas próximas etapas.` }];
+    if (ehAcaoLivre(msg.texto)) return [...e.saidas, ...(await narrador(j, msg.texto, para))];
+    return [...e.saidas, { para, texto: `📜 *${j.nome}*, não entendi. Use *explorar*, *mapa*, *onde estou*, *ajuda*\nou escreva o que seu personagem faz começando com *>*. Ex.: _> converso com o ferreiro_` }];
   }
 
   function perguntaDaEtapa(j) {
@@ -312,5 +315,5 @@ export function legendaFicha(j, tempo = Date.now()) {
     `FOR ${a.FOR} · DEF ${a.DEF} · MAG ${a.MAG} · RES ${a.RES} · VEL ${a.VEL} · SOR ${a.SOR}`;
 }
 
-const AJUDA = `📖 *Comandos de Yotsuhoshi*\n\n*No grupo*\n• *entrar no mundo* — criar seu personagem\n• *ficha* — mostrar sua carta\n\n*No privado*\n• *onde estou* — sobre a sua região\n• *aldeia* / *reino* — sua origem\n• *explorar* — olhar ao redor (10 vigor)\n• *mapa [reino]* — sua posição e vizinhos\n• *rota <região>* — caminho, tempo e custo\n• *viajar <região>* — vizinho (15 vigor, 10 min)\n• *viagem* — consultar chegada\n• *vigor* — energia (+10/h)\n• *descobertas* — locais encontrados\n• *inventario* — achados e ryō\n• *recuar* — encerrar encontro\n• *ficha* — sua carta\n• *ajuda* — esta lista\n\nCombate e entrada em masmorras chegam nas próximas etapas.\n\n` +
+const AJUDA = `📖 *Comandos de Yotsuhoshi*\n\n*No grupo*\n• *entrar no mundo* — criar seu personagem\n• *ficha* — mostrar sua carta\n\n*No privado*\n• *onde estou* — sobre a sua região\n• *aldeia* / *reino* — sua origem\n• *explorar* — olhar ao redor (10 vigor)\n• *mapa [reino]* — sua posição e vizinhos\n• *rota <região>* — caminho, tempo e custo\n• *viajar <região>* — vizinho (15 vigor, 10 min)\n• *viagem* — consultar chegada\n• *vigor* — energia (+10/h)\n• *descobertas* — locais encontrados\n• *inventario* — achados e ryō\n• *recuar* — encerrar encontro\n• *> sua ação* — fazer qualquer coisa com suas palavras (o narrador responde)\n• *ficha* — sua carta\n• *ajuda* — esta lista\n\nCombate e entrada em masmorras chegam nas próximas etapas.\n\n` +
   `_Atributos só mudam por mérito: batalhas, missões e escolhas. Ninguém (nem a IA) pode te dar poder de graça._`;
