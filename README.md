@@ -60,8 +60,8 @@ Veja [comandos, regras implementadas e limites da primeira etapa](docs/32-explor
 | 29 | [**Travas, técnicas e casos especiais**](docs/29-travas-tecnicas-e-casos-especiais.md) | Anti-buff, ver o card de outros jogadores, luta real com Veredito, interferência do destino, teletransporte, interações de habilidades |
 | 30 | [**Infraestrutura WhatsApp**](docs/30-infraestrutura-whatsapp.md) | Evolution API (multi-instância), Vercel, Neon, relógio no VPS, IA Sabiá ou Claude, variáveis, implantação |
 | 31 | [**Passo a passo da implantação**](docs/31-passo-a-passo-implantacao.md) | Checklist: chaves, Vercel, Neon, Evolution sem afetar o outro bot, relógio, deploy, primeiro teste |
-| 33 | [**Narrador e combate**](docs/33-narrador-e-combate-implementados.md) | O que já funciona: textos de origem/região, ação livre com IA, combate solo, XP e níveis |
 | 32 | [**Exploração implementada**](docs/32-exploracao-implementada.md) | Comandos, vigor, viagens persistentes, sorteio, testes e limites da primeira etapa |
+| 33 | [**Narrador e combate**](docs/33-narrador-e-combate-implementados.md) | O que já funciona: textos de origem/região, ação livre com IA, combate solo, XP e níveis |
 
 ## Dados estruturados (`data/`)
 
