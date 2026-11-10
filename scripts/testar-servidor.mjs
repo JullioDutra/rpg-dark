@@ -61,7 +61,8 @@ try {
 
   ok((await enviar(ev(JOG, "oi gente"))).length === 0, "grupo sem mundo: bot quieto");
   ok(/Só um administrador/.test(textos(await enviar(ev(JOG, "/ativar-mundo Hack")))), "não-admin não ativa o mundo");
-  ok(/YOTSUHOSHI — Teste/.test(textos(await enviar(ev(ADMIN, "/ativar-mundo Teste")))), "admin ativa o mundo");
+  ok(/YOTSUHOSHI — Teste/.test(textos(await enviar(ev(ADMIN, "Ativar-mundo Teste")))), "admin ativa o mundo (sem barra: o WhatsApp come a /)");
+  ok(/YOTSUHOSHI — Teste/.test(textos(await enviar(ev(ADMIN, "/ativar-mundo Teste")))), "admin ativa o mundo (com barra)");
   ok((await enviar(ev(JOG, "kkkk alguém viu o jogo ontem?"))).length === 0, "conversa do grupo ignorada");
 
   const e1 = await enviar(ev(JOG, "Entrar no mundo"));
@@ -96,7 +97,7 @@ try {
   const OUTRO = "5511900000003";
   await enviar(ev(OUTRO, "entrar"));
   ok(/Já existe/.test(textos(await enviar(ev(OUTRO, "Kaito Ryuen", P)))), "nome duplicado no mundo recusado");
-  ok(/apagado/.test(textos(await enviar(ev(ADMIN, `/resetar-jogador @${JOG}`, { mencoes: [`${JOG}@s.whatsapp.net`] })))), "admin reseta jogador");
+  ok(/apagado/.test(textos(await enviar(ev(ADMIN, `resetar-jogador @${JOG}`, { mencoes: [`${JOG}@s.whatsapp.net`] })))), "admin reseta jogador");
 
   const lid = lerMensagem({ event: "messages.upsert", data: { key: { id: "L1", remoteJid: GRUPO, participant: "99887766@lid", participantAlt: `${JOG}@s.whatsapp.net` }, message: { conversation: "oi" } } });
   ok(lid.autor.pn === `${JOG}@s.whatsapp.net` && lid.autor.lid === "99887766@lid", "lê LID e número do participante");

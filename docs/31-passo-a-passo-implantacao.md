@@ -114,7 +114,7 @@ docker run -d --name rpg-relogio --restart unless-stopped -p 8787:8787 -v rpg-re
 ## 7. Primeiro teste
 
 - [ ] Criar um grupo de teste com você + o número do RPG (+ 1 amigo, se quiser).
-- [ ] No grupo: `/ativar-mundo Teste`.
+- [ ] No grupo: `ativar-mundo Teste` (o WhatsApp costuma apagar a `/` do começo; com ou sem barra funciona).
 - [ ] Mandar **"oi"** para o número do RPG no privado (libera o chat privado).
 - [ ] No grupo: `entrar no mundo` → seguir a criação no privado → a carta deve aparecer no grupo.
 - [ ] Confirmar mais uma vez que **o outro bot não reagiu** a nada.

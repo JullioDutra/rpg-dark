@@ -78,10 +78,10 @@ export function criarJogo({ db, sal = process.env.TELEFONE_SAL ?? "", admins = (
   // ───────────────────────────── grupo ─────────────────────────────
   async function noGrupo(msg) {
     const t = semAcento(msg.texto.trim().toLowerCase()).replace(/\s+/g, " ");
-    const ativar = t.match(/^[/!]ativar[- ]mundo\s*(.*)$/);
+    const ativar = t.match(/^[/!.]?\s*ativar[- ]?mundo\b\s*(.*)$/);
     if (ativar) {
       if (!(await ehAdmin(msg))) return [{ para: msg.chat, texto: "🔒 Só um administrador do RPG pode ativar o mundo neste grupo." }];
-      const nome = msg.texto.trim().replace(/^[/!]ativar[- ]mundo\s*/i, "").slice(0, 60) || "Yotsuhoshi";
+      const nome = msg.texto.trim().replace(/^[/!.]?\s*ativar[- ]?mundo\s*/i, "").slice(0, 60) || "Yotsuhoshi";
       await db.query(`insert into jogo.mundos (grupo_wa_id, nome) values ($1, $2)
         on conflict (grupo_wa_id) do update set status = 'ativo', nome = excluded.nome`, [msg.chat, nome]);
       return [{ para: msg.chat, texto:
@@ -92,7 +92,7 @@ export function criarJogo({ db, sal = process.env.TELEFONE_SAL ?? "", admins = (
     const mundo = await um(db, "select * from jogo.mundos where grupo_wa_id = $1", [msg.chat]);
     if (!mundo || mundo.status !== "ativo") return [];
 
-    if (/^[/!]resetar[- ]jogador\b/.test(t)) {
+    if (/^[/!.]?\s*resetar[- ]?jogador\b/.test(t)) {
       if (!(await ehAdmin(msg))) return [];
       const alvo = msg.mencoes[0];
       if (!alvo) return [{ para: msg.chat, texto: "Use: /resetar-jogador @pessoa" }];
