@@ -71,7 +71,7 @@ export function criarJogo({ db, sal = process.env.TELEFONE_SAL ?? "", admins = (
   const arroba = (autor) => `@${autor.numero ?? autor.jid.split("@")[0]}`;
 
   async function ehAdmin(msg) {
-    if (admins.length) return Boolean(msg.autor.numero && admins.includes(msg.autor.numero));
+    if (admins.length) return [msg.autor.numero, msg.autor.lid?.split("@")[0]].some((n) => n && admins.includes(n));
     return ehAdminGrupo(msg.chat, msg.autor);
   }
 
