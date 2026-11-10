@@ -3,14 +3,14 @@
 # Uso: bash db/testar-migracoes.sh
 set -euo pipefail
 cd "$(dirname "$0")/.."
-PGBIN=$(ls -d /usr/lib/postgresql/*/bin | tail -1)
+PGBIN=${PGBIN:-$(ls -d /usr/lib/postgresql/*/bin | tail -1)}
 TMP=$(mktemp -d)
 chown -R postgres "$TMP" 2>/dev/null || true
 run() { if [ "$(id -u)" = 0 ]; then su postgres -c "$*"; else bash -c "$*"; fi; }
 run "$PGBIN/initdb -D $TMP/data -A trust -U postgres >/dev/null"
 run "$PGBIN/pg_ctl -D $TMP/data -o '-k $TMP -p 54329 -c listen_addresses=' -l $TMP/log start >/dev/null"
 trap 'run "$PGBIN/pg_ctl -D $TMP/data stop -m immediate >/dev/null"; rm -rf "$TMP"' EXIT
-P="psql -h $TMP -p 54329 -U postgres -v ON_ERROR_STOP=1 -q"
+P="$PGBIN/psql -h $TMP -p 54329 -U postgres -v ON_ERROR_STOP=1 -q"
 for f in db/migrations/*.sql; do echo "▶ $f"; $P -f "$f"; done
 $P <<'SQL'
 -- smoke test: fluxo mínimo

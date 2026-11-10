@@ -10,13 +10,14 @@ import { garantirEsquema } from "../src/servidor/db.mjs";
 import { criarJogo, escolherOpcao, dados, mesmoNumero } from "../src/servidor/jogo.mjs";
 import { lerMensagem, enviarSaidas } from "../src/servidor/evolution.mjs";
 import { sortear } from "../src/servidor/sorteio.mjs";
+import { testarExploracaoServidor } from "./testar-exploracao.mjs";
 
 const { Pool } = createRequire(import.meta.url)("pg");
 let falhas = 0, total = 0;
 const ok = (cond, nome) => { total++; if (cond) console.log(`  ✔ ${nome}`); else { falhas++; console.log(`  ✘ ${nome}`); } };
 
 // ── Postgres temporário ──
-const PGBIN = execSync("ls -d /usr/lib/postgresql/*/bin | tail -1").toString().trim();
+const PGBIN = process.env.PGBIN ?? execSync("ls -d /usr/lib/postgresql/*/bin | tail -1").toString().trim();
 const TMP = mkdtempSync(join(tmpdir(), "rpg-pg-"));
 const root = process.getuid?.() === 0;
 if (root) execSync(`chown -R postgres ${TMP}`);
@@ -93,7 +94,7 @@ try {
   ok((await db.query("select count(*)::int n from jogo.eventos_atributo where jogador_id = $1", [j.id]))[0].n === 6, "atributos iniciais no livro-razão");
   ok(/já vive neste mundo/.test(textos(await enviar(ev(JOG, "entrar no mundo")))), "não cria 2º personagem");
   ok((await enviar(ev(JOG, "ficha")))[0]?.imagem, "ficha no grupo");
-  ok(/próxima atualização/.test(textos(await enviar(ev(JOG, "quero explorar a mina", P)))), "privado depois da criação responde");
+  await testarExploracaoServidor({ db, jogador: j, mensagem: (texto) => ev(JOG, texto, P), grupo: (texto) => ev(JOG, texto) });
 
   const OUTRO = "5511900000003";
   await enviar(ev(OUTRO, "entrar"));

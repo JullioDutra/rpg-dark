@@ -1,6 +1,6 @@
 // Motor do jogo no WhatsApp: recebe uma mensagem já lida (evolution.lerMensagem) e devolve as SAÍDAS
 // ({ para, texto, mencoes } | { para, imagem, legenda, mencoes } | { espera }). Quem envia é o webhook.
-// Nesta etapa: ativar mundo, entrar no mundo, nome, Cerimônia do Sorteio, classe, aparência, carta e abertura.
+// Criação, carta, abertura e exploração individual persistente.
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { semAcento } from "../linguagem/normalizar.mjs";
@@ -10,6 +10,8 @@ import { dnaJogador } from "../avatar/dna.mjs";
 import { sortear, atributosIniciais, ROTULO_CASTA, EMOJI_ELEMENTO, rngSeguro } from "./sorteio.mjs";
 import { cartaPersonagem, previaAvatar } from "./carta.mjs";
 import { um } from "./db.mjs";
+import { criarExploracao } from "./exploracao.mjs";
+import { comandoExploracao, recuperarVigor } from "../regras/exploracao.mjs";
 
 const ler = (f) => JSON.parse(readFileSync(new URL(`../../data/${f}`, import.meta.url), "utf8"));
 let DADOS = null;
@@ -59,6 +61,7 @@ function hashTelefone(sal, chave) {
 export function criarJogo({ db, sal = process.env.TELEFONE_SAL ?? "", admins = (process.env.ADMINS ?? "").split(/[,\s]+/).filter(Boolean),
   ehAdminGrupo = async () => false, ia = null, rng = rngSeguro, agora = () => Date.now() }) {
   const D = dados();
+  const exploracao = criarExploracao({ db, rng, agora });
 
   async function identidade(autor) {
     const r = await um(db, `select * from jogo.identidades where ($1::text is not null and wa_jid = $1) or ($2::text is not null and wa_lid = $2)
@@ -110,6 +113,7 @@ export function criarJogo({ db, sal = process.env.TELEFONE_SAL ?? "", admins = (
     if (/^(!|\/)?(entrar( no mundo)?|quero entrar( no mundo)?|entrar no jogo)$/.test(t)) return entrar(msg, mundo);
     if (ehComando(t, "ficha", "carta", "minha ficha", "minha carta")) return ficha(msg, mundo, msg.chat);
     if (ehComando(t, "ajuda", "comandos")) return [{ para: msg.chat, texto: AJUDA }];
+    if (comandoExploracao(msg.texto) && !/^\d+$/.test(t)) return [{ para: msg.chat, texto: "🧭 Exploração e viagens acontecem *no privado do bot*. Envie seu comando por lá." }];
     return []; // conversa do grupo: o bot fica quieto
   }
 
@@ -133,7 +137,7 @@ export function criarJogo({ db, sal = process.env.TELEFONE_SAL ?? "", admins = (
     const idt = await identidade(msg.autor);
     const j = await um(db, "select * from jogo.jogadores where mundo_id = $1 and identidade_id = $2 and estado <> 'criando'", [mundo.id, idt.id]);
     if (!j) return [{ para: destino, texto: "Você ainda não tem personagem neste mundo. Digite *entrar no mundo* no grupo." }];
-    return [{ para: destino, imagem: cartaPersonagem(j, j.avatar_dna), legenda: legendaFicha(j) }];
+    return [{ para: destino, imagem: cartaPersonagem(j, j.avatar_dna), legenda: legendaFicha(j, agora()) }];
   }
 
   // ───────────────────────────── privado ─────────────────────────────
@@ -142,13 +146,16 @@ export function criarJogo({ db, sal = process.env.TELEFONE_SAL ?? "", admins = (
     if (!idt.privado_ok) await db.query("update jogo.identidades set privado_ok = true where id = $1", [idt.id]);
     const para = msg.chat;
     const t = semAcento(msg.texto.trim().toLowerCase()).replace(/\s+/g, " ");
-    const j = await um(db, `select j.*, m.grupo_wa_id, m.nome as mundo_nome from jogo.jogadores j join jogo.mundos m on m.id = j.mundo_id
+    let j = await um(db, `select j.*, m.grupo_wa_id, m.nome as mundo_nome from jogo.jogadores j join jogo.mundos m on m.id = j.mundo_id
       where j.identidade_id = $1 and m.status = 'ativo' order by (j.estado = 'criando') desc, j.atualizado_em desc limit 1`, [idt.id]);
     if (!j) return [{ para, texto: "🌌 Oi! Eu sou o narrador de *Yotsuhoshi*, um RPG de anime no WhatsApp.\n\nPara jogar, entre num grupo onde o mundo está ativo e digite *entrar no mundo*." }];
     if (j.estado === "criando") return criacao(msg, j, para, t);
-    if (ehComando(t, "ficha", "carta", "minha ficha", "minha carta", "status")) return [{ para, imagem: cartaPersonagem(j, j.avatar_dna), legenda: legendaFicha(j) }];
-    if (ehComando(t, "ajuda", "comandos", "menu", "oi", "ola")) return [{ para, texto: AJUDA }];
-    return [{ para, texto: `📜 *${j.nome}*, sua jornada começa em breve: explorar, batalhas e missões chegam na próxima atualização do mundo.\n\nPor enquanto: *ficha* ou *ajuda*.` }];
+    const e = await exploracao(j.id, msg);
+    j = { ...j, ...e.jogador };
+    if (e.tratado) return e.saidas;
+    if (ehComando(t, "ficha", "carta", "minha ficha", "minha carta", "status")) return [...e.saidas, { para, imagem: cartaPersonagem(j, j.avatar_dna), legenda: legendaFicha(j, agora()) }];
+    if (ehComando(t, "ajuda", "comandos", "menu", "oi", "ola")) return [...e.saidas, { para, texto: AJUDA }];
+    return [...e.saidas, { para, texto: `📜 *${j.nome}*, use *explorar*, *mapa*, *viajar <região>* ou *ajuda*.\nCombate, missões e ações livres com > chegam nas próximas etapas.` }];
   }
 
   function perguntaDaEtapa(j) {
@@ -248,7 +255,7 @@ export function criarJogo({ db, sal = process.env.TELEFONE_SAL ?? "", admins = (
   async function narrarAbertura(j, s) {
     const gancho = D.ganchos[s.aldeia.id] ?? "Um forasteiro chega à aldeia procurando por você — e sabe o seu nome.";
     const reserva = `📜 *Prólogo — ${s.aldeia.nome}*\n\n${s.aldeia.descricao} É aqui que *${j.nome}* cresceu, ${ROTULO_CASTA[j.casta].split(" ").slice(1).join(" ").toLowerCase()} entre os seus.\n\n` +
-      `Mas hoje algo mudou: _${gancho}_\n\n_(O que você faz? A aventura continua na próxima atualização do mundo.)_`;
+      `Mas hoje algo mudou: _${gancho}_\n\nDigite *explorar* para olhar ao redor, *mapa* para se localizar ou *ajuda* para ver os comandos.`;
     if (!ia) return reserva;
     const sistema = "Você é o NARRADOR de Yotsuhoshi, um RPG de anime no WhatsApp, em português do Brasil. Tom épico e sensorial, " +
       "mensagem curta (até 700 caracteres) com formatação do WhatsApp (*negrito*, _itálico_). Nunca conceda poderes, itens ou números. " +
@@ -261,7 +268,7 @@ export function criarJogo({ db, sal = process.env.TELEFONE_SAL ?? "", admins = (
         ia.gerarJSON({ sistema, mensagens: [{ role: "user", content: `Narre a cena de abertura (marco A1-M1 "Despertar"):\n${JSON.stringify(pedido)}` }], esquema, maxTokens: 700 }),
         new Promise((ok) => setTimeout(() => ok({ ok: false, motivo: "tempo" }), 15000)),
       ]);
-      return r.ok && r.dados.narracao?.trim() ? `📜 *Prólogo — ${s.aldeia.nome}*\n\n${r.dados.narracao.trim().slice(0, 1200)}` : reserva;
+      return r.ok && r.dados.narracao?.trim() ? `📜 *Prólogo — ${s.aldeia.nome}*\n\n${r.dados.narracao.trim().slice(0, 1200)}\n\nUse *explorar*, *mapa* ou *ajuda*.` : reserva;
     } catch { return reserva; }
   }
 
@@ -277,13 +284,14 @@ export function criarJogo({ db, sal = process.env.TELEFONE_SAL ?? "", admins = (
   };
 }
 
-export function legendaFicha(j) {
+export function legendaFicha(j, tempo = Date.now()) {
   const a = j.atributos ?? {};
   return `🎴 *${j.nome}* — ${j.classe ?? "?"}\n${ROTULO_CASTA[j.casta] ?? ""} · ${j.aldeia ?? "?"} (${j.reino ?? "?"})\n` +
     `✴️ ${j.atributo_magico ?? "?"}${j.elegivel_pet ? " · 🐾 elegível a pet" : ""}\n` +
     `Nv ${j.nivel} · Rank ${j.rank} · ❤️ ${j.hp}/${j.hp_max} · 🔷 ${j.mp}/${j.mp_max}\n` +
+    `⚡ Vigor ${recuperarVigor(j, tempo).vigor}/100\n` +
     `FOR ${a.FOR} · DEF ${a.DEF} · MAG ${a.MAG} · RES ${a.RES} · VEL ${a.VEL} · SOR ${a.SOR}`;
 }
 
-const AJUDA = `📖 *Comandos de Yotsuhoshi*\n\n*No grupo*\n• *entrar no mundo* — criar seu personagem\n• *ficha* — mostrar sua carta\n\n*No privado*\n• *ficha* — sua carta\n• *ajuda* — esta lista\n\n` +
+const AJUDA = `📖 *Comandos de Yotsuhoshi*\n\n*No grupo*\n• *entrar no mundo* — criar seu personagem\n• *ficha* — mostrar sua carta\n\n*No privado*\n• *explorar* — olhar ao redor (10 vigor)\n• *mapa [reino]* — sua posição e vizinhos\n• *rota <região>* — caminho, tempo e custo\n• *viajar <região>* — vizinho (15 vigor, 10 min)\n• *viagem* — consultar chegada\n• *vigor* — energia (+10/h)\n• *descobertas* — locais encontrados\n• *inventario* — achados e ryō\n• *recuar* — encerrar encontro\n• *ficha* — sua carta\n• *ajuda* — esta lista\n\nCombate e entrada em masmorras chegam nas próximas etapas.\n\n` +
   `_Atributos só mudam por mérito: batalhas, missões e escolhas. Ninguém (nem a IA) pode te dar poder de graça._`;
