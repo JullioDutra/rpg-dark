@@ -32,14 +32,16 @@ Guarde as chaves num gerenciador de senhas. **Não mande chaves pelo chat.**
       mostra quais variáveis já estão configuradas (sem mostrar valores).
 - [x] Variáveis já criadas: `EVOLUTION_INSTANCIA=rpg-yotsuhoshi`, `IA_PROVEDOR=maritaca`.
 
-## 3. Vercel: banco Neon e Blob
+## 3. Vercel: banco Neon e Blob ✅
 
-- [x] **Blob** `rpg-dark-cartas` (São Paulo, público) criado e conectado ao projeto (`BLOB_READ_WRITE_TOKEN`).
-- [ ] **Neon** (é com você — a criação do banco pelo Marketplace pede confirmação no painel):
-      projeto `rpg-dark` → **Storage → Create Database → Neon** → região **São Paulo (gru1)** → plano **Free** →
-      *Auth* pode ficar **desligado** (o jogo não usa) → conectar ao projeto `rpg-dark` (cria a `DATABASE_URL`).
-- [ ] Abrir o **SQL Editor** do Neon e colar/rodar o conteúdo de `db/migrations/0001_esquema_inicial.sql`.
-      Deve terminar sem erro e criar o schema `jogo`.
+- [x] **Blob** `rpg-dark-cartas` (São Paulo) conectado ao projeto.
+- [x] **Neon** criado pela Vercel e conectado (`DATABASE_URL`).
+- [x] **Esquema do banco**: não precisa rodar nada no SQL Editor. O servidor aplica `db/migrations/*.sql` sozinho na
+      primeira chamada (e registra em `jogo.migracoes`). Abrir `https://rpg-dark.vercel.app/api/saude` já faz isso e
+      mostra `banco.ok: true`.
+- [x] Variáveis já criadas: `MARITACA_API_KEY` (sensível), `MARITACA_MODELO=sabia-4`, `IA_PROVEDOR`, `EVOLUTION_INSTANCIA`,
+      `TELEFONE_SAL` (sensível, **nunca troque** depois que houver jogadores), `WEBHOOK_SECRET` e `RELOGIO_SEGREDO`
+      (visíveis no painel: *Settings → Environment Variables* → clique no olho para copiar).
 
 ## 4. Servidor da Evolution: checagens para NÃO afetar o outro bot
 
@@ -74,7 +76,7 @@ docker build -t rpg-relogio relogio/
 ```
 
 ```bash
-docker run -d --name rpg-relogio --restart unless-stopped -p 8787:8787 -v rpg-relogio:/dados -e RELOGIO_SEGREDO=<segredo> -e RELOGIO_URLS=https://rpg-dark.vercel.app/ rpg-relogio
+docker run -d --name rpg-relogio --restart unless-stopped -p 8787:8787 -v rpg-relogio:/dados -e RELOGIO_SEGREDO=<copie o RELOGIO_SEGREDO do painel da Vercel> -e RELOGIO_URLS=https://rpg-dark.vercel.app/ rpg-relogio
 ```
 
 - [ ] Testar: `curl http://localhost:8787/saude` deve responder `{"ok":true,...}`.
@@ -84,7 +86,8 @@ docker run -d --name rpg-relogio --restart unless-stopped -p 8787:8787 -v rpg-re
 
 ## 6. Variáveis e deploy (depois que o servidor do bot estiver pronto)
 
-- [ ] Vercel → *Settings → Environment Variables* (marque como **Sensitive** as chaves e segredos):
+- [ ] Vercel → *Settings → Environment Variables* — **faltam só** `EVOLUTION_URL`, `EVOLUTION_API_KEY`, `RELOGIO_URL` e `ADMINS`
+      (depois de salvar, faça *Redeploy*):
 
 | Variável | Valor |
 |----------|-------|
@@ -100,7 +103,7 @@ docker run -d --name rpg-relogio --restart unless-stopped -p 8787:8787 -v rpg-re
 | `IA_PROVEDOR` | `maritaca` ✅ já criada |
 | `MARITACA_API_KEY`, `MARITACA_MODELO` | chave e modelo da Maritaca |
 | `ANTHROPIC_API_KEY` | (opcional, reserva) |
-| `ADMINS` | seu número com DDI e DDD, ex. `5511999999999` |
+| `ADMINS` | seu número com DDI e DDD, ex. `5511999999999` (vários: separados por vírgula). Sem ele, quem for admin do grupo do WhatsApp pode usar `/ativar-mundo` |
 
 - [ ] Deploy (push na branch principal ou *Redeploy* no painel).
 - [ ] Na Evolution, configurar o webhook **da instância `rpg-yotsuhoshi`** para

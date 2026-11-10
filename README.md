@@ -73,6 +73,7 @@ Dificuldade: **difícil** — vilões podem vencer, a morte pode ser permanente,
 | `data/historia.yaml` | Roteiro executável: atos, marcos, fatos, proibições, finais, encruzilhadas, epílogos |
 | `db/migrations/` | Esquema do banco (Postgres/Neon), testado |
 | `src/ia/` | Camada de IA: Sabiá (Maritaca) ou Claude, narrador com validação |
+| `api/`, `src/servidor/` | Servidor do bot na Vercel: webhook da Evolution, sorteio, criação de personagem, carta em PNG, tick |
 | `relogio/` | Serviço de prazos para o VPS (Docker) |
 | `deploy/` | Docker Compose para rodar no VPS: Postgres + backups + relógio (+ jogo na próxima etapa) |
 | `data/contos.yaml` | Contos, flashbacks, Chaves de Conhecimento, desafios, marcas de trajetória |
@@ -98,6 +99,7 @@ node scripts/testar-regras.mjs      # testes das regras (Olho Avaliador)
 bash db/testar-migracoes.sh         # aplica o esquema do banco num Postgres temporário e verifica
 node scripts/testar-ia.mjs          # camada de IA (Sabiá/Claude) com respostas simuladas
 node scripts/testar-relogio.mjs     # relógio de prazos
+node scripts/testar-servidor.mjs    # bot de ponta a ponta num Postgres temporário (criação de personagem)
 npm run testar                      # todos os testes
 node scripts/render-cartas.mjs      # gera exemplos de cartas em templates/exemplos/
 ```
