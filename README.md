@@ -15,6 +15,12 @@ e o **roteiro executável** da história (`data/historia.yaml`: 4 atos, 53 marco
 jogadores é ficar fortes o bastante para derrotar o Eclipse e ser coroado **Seiō (星王), o Rei-Estrela**.
 Dificuldade: **difícil** — vilões podem vencer, a morte pode ser permanente, e estratégia e criatividade contam.
 
+**Jogável agora:** criação de personagem, carta, prólogo e exploração individual no privado:
+`explorar`, `mapa`, `rota`, `viajar`, `viagem`, `vigor`, `descobertas`, `inventario` e escolhas de evento.
+Viagens e vigor persistem sem cron; a chegada é reconhecida no próximo comando após o prazo.
+Encontros ficam disponíveis para recuo, mas o combate e a entrada nas masmorras ainda são etapas futuras.
+Veja [comandos, regras implementadas e limites da primeira etapa](docs/32-exploracao-implementada.md).
+
 ---
 
 ## Índice do planejamento
@@ -54,6 +60,7 @@ Dificuldade: **difícil** — vilões podem vencer, a morte pode ser permanente,
 | 29 | [**Travas, técnicas e casos especiais**](docs/29-travas-tecnicas-e-casos-especiais.md) | Anti-buff, ver o card de outros jogadores, luta real com Veredito, interferência do destino, teletransporte, interações de habilidades |
 | 30 | [**Infraestrutura WhatsApp**](docs/30-infraestrutura-whatsapp.md) | Evolution API (multi-instância), Vercel, Neon, relógio no VPS, IA Sabiá ou Claude, variáveis, implantação |
 | 31 | [**Passo a passo da implantação**](docs/31-passo-a-passo-implantacao.md) | Checklist: chaves, Vercel, Neon, Evolution sem afetar o outro bot, relógio, deploy, primeiro teste |
+| 32 | [**Exploração implementada**](docs/32-exploracao-implementada.md) | Comandos, vigor, viagens persistentes, sorteio, testes e limites da primeira etapa |
 
 ## Dados estruturados (`data/`)
 
@@ -96,10 +103,11 @@ node scripts/simular-progressao.mjs # tabela de balanceamento (docs/22b)
 python3 scripts/validar-historia.py # valida roteiro, encruzilhadas, contos e chaves
 node scripts/testar-linguagem.mjs   # 91 testes do entendimento de fala natural
 node scripts/testar-regras.mjs      # testes das regras (Olho Avaliador)
+node scripts/testar-exploracao.mjs  # regras de exploração, vigor, rotas e mapas
 bash db/testar-migracoes.sh         # aplica o esquema do banco num Postgres temporário e verifica
 node scripts/testar-ia.mjs          # camada de IA (Sabiá/Claude) com respostas simuladas
 node scripts/testar-relogio.mjs     # relógio de prazos
-node scripts/testar-servidor.mjs    # bot de ponta a ponta num Postgres temporário (criação de personagem)
+node scripts/testar-servidor.mjs    # criação + exploração/viagens num Postgres temporário, incluindo concorrência
 npm run testar                      # todos os testes
 node scripts/render-cartas.mjs      # gera exemplos de cartas em templates/exemplos/
 ```
