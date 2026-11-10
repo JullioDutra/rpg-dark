@@ -46,6 +46,12 @@ export function escolherOpcao(texto, opcoes, rng = rngSeguro) {
   return opcoes.find((o) => semAcento(o.toLowerCase()) === alvo) ?? opcoes.find((o) => semAcento(o.toLowerCase()).startsWith(alvo) && alvo.length >= 3) ?? null;
 }
 
+/** Números do Brasil chegam com ou sem o 9 depois do DDD (5562993259733 = 556293259733). */
+export function mesmoNumero(a, b) {
+  const sem9 = (n) => String(n).replace(/\D/g, "").replace(/^(55\d{2})9(\d{8})$/, "$1$2");
+  return sem9(a) === sem9(b);
+}
+
 function hashTelefone(sal, chave) {
   return createHash("sha256").update(`${sal}:${chave}`).digest("hex");
 }
@@ -71,7 +77,7 @@ export function criarJogo({ db, sal = process.env.TELEFONE_SAL ?? "", admins = (
   const arroba = (autor) => `@${autor.numero ?? autor.jid.split("@")[0]}`;
 
   async function ehAdmin(msg) {
-    if (admins.length) return [msg.autor.numero, msg.autor.lid?.split("@")[0]].some((n) => n && admins.includes(n));
+    if (admins.length) return [msg.autor.numero, msg.autor.lid?.split("@")[0]].some((n) => n && admins.some((a) => mesmoNumero(a, n)));
     return ehAdminGrupo(msg.chat, msg.autor);
   }
 

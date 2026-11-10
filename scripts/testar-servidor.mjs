@@ -7,7 +7,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { createRequire } from "node:module";
 import { garantirEsquema } from "../src/servidor/db.mjs";
-import { criarJogo, escolherOpcao, dados } from "../src/servidor/jogo.mjs";
+import { criarJogo, escolherOpcao, dados, mesmoNumero } from "../src/servidor/jogo.mjs";
 import { lerMensagem, enviarSaidas } from "../src/servidor/evolution.mjs";
 import { sortear } from "../src/servidor/sorteio.mjs";
 
@@ -43,6 +43,7 @@ try {
   ok(semRei.casta !== "rei", "limite de 1 Rei por reino respeitado");
   ok(escolherOpcao("3", ["a", "b", "c"]) === "c" && escolherOpcao("ruivo", ["preto", "ruivo"]) === "ruivo" && escolherOpcao("9", ["a"]) === null, "escolha por número e por nome");
 
+  ok(mesmoNumero("5562993259733", "556293259733") && mesmoNumero("556293259733", "5562993259733") && !mesmoNumero("5562993259733", "5562993259734"), "número BR com e sem o 9");
   console.log("Migrações automáticas");
   const m1 = await garantirEsquema(db);
   ok(m1.aplicadas.includes("0001_esquema_inicial.sql"), "0001 aplicada pelo servidor");
