@@ -59,7 +59,7 @@ e todos checáveis antes:
 
 Depois das checagens:
 
-- [ ] Criar a instância **`rpg-yotsuhoshi`** (integração `WHATSAPP-BAILEYS`) no painel/API da Evolution.
+- [ ] Criar a instância **`rpg-yotsuhoshi`** (painel `/manager` ou `bash deploy/rpg-evolution.sh criar`) (integração `WHATSAPP-BAILEYS`) no painel/API da Evolution.
 - [ ] Conectar lendo o QR code **com o número do RPG**.
 - [ ] **Ainda não** configurar o webhook (a URL do jogo só existe depois do deploy, passo 6).
 - [ ] Teste rápido: mande uma mensagem para o número do RPG e confirme que **o outro bot não respondeu**.
@@ -86,7 +86,7 @@ docker run -d --name rpg-relogio --restart unless-stopped -p 8787:8787 -v rpg-re
 
 ## 6. Variáveis e deploy (depois que o servidor do bot estiver pronto)
 
-- [ ] Vercel → *Settings → Environment Variables* — **faltam só** `EVOLUTION_URL`, `EVOLUTION_API_KEY`, `RELOGIO_URL` e `ADMINS`
+- [x] `EVOLUTION_URL`, `EVOLUTION_API_KEY` e `ADMINS` configuradas. **Falta só** `RELOGIO_URL` (quando o relógio subir)
       (depois de salvar, faça *Redeploy*):
 
 | Variável | Valor |
