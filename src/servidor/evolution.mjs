@@ -22,6 +22,7 @@ export function criarEvolution({ url = process.env.EVOLUTION_URL, apiKey = proce
     }),
     infoGrupo: (grupo) => chamar("GET", `/group/findGroupInfos/${inst}?groupJid=${encodeURIComponent(grupo)}`),
     estado: () => chamar("GET", `/instance/connectionState/${inst}`),
+    webhook: () => chamar("GET", `/webhook/find/${inst}`),
   };
 }
 
