@@ -38,51 +38,339 @@
     }
   },
   "regioes": {
-    "R-HOM-1": { "texto": "A capital do Fogo. Uma cidade em degraus com ruas aquecidas por lava sob o chão de vidro. No topo fica o Coliseu de Brasas.", "tem": "guilda dos duelistas e forja real" },
-    "R-HOM-2": { "texto": "O vulcão sagrado do reino. À noite o topo brilha como um segundo sol.", "tem": "minério de chama e materiais raros" },
-    "R-HOM-3": { "texto": "Um deserto de dunas cinzentas. No fim da tarde chovem brasas, e há esqueletos de navios na areia: aqui já foi mar.", "tem": "vidro de cinza e sal negro" },
-    "R-HOM-4": { "texto": "Uma floresta de árvores queimadas com folhas de brasa. Vagalumes de fogo formam desenhos no céu.", "tem": "seiva quente e ervas de cura" },
-    "R-HOM-5": { "texto": "Um rio de lava atravessado por pontes de obsidiana. Barqueiros de pedra levam os viajantes.", "tem": "obsidiana e escamas de salamandra" },
-    "R-HOM-6": { "texto": "A fronteira com o reino da Água. Onde as águas se encontram o mar ferve e sobe uma névoa vermelha.", "tem": "coral-brasa e sal de vapor" },
-    "R-HOM-7": { "texto": "Uma cidade antiga engolida pelo magma. Só os topos das torres ainda aparecem.", "tem": "relíquias de outra era" },
-    "R-WAT-1": { "texto": "A capital da Água. Um palácio de coral e pérola dentro de uma bolha d'água flutuante. Você sobe por escadas feitas de água.", "tem": "a Biblioteca Submersa e o mercado de pérolas" },
-    "R-WAT-2": { "texto": "Um lago calmo e perfeito como um espelho. Dizem que o reflexo mostra o céu de outro dia.", "tem": "água-espelho para poções" },
-    "R-WAT-3": { "texto": "Centenas de ilhas pequenas com casas sobre palafitas. Tem pescadores, piratas e baleias que voam.", "tem": "pérolas e madeira de mangue" },
-    "R-WAT-4": { "texto": "Um pântano escuro onde olhos brilham debaixo d'água e as árvores choram água salgada.", "tem": "lodo alquímico e lótus negro" },
-    "R-WAT-5": { "texto": "Uma geleira azul no extremo do reino, com criaturas congeladas há séculos.", "tem": "gelo eterno e presas de mamute" },
-    "R-WAT-6": { "texto": "Cachoeiras enormes que parecem falar. Os moradores dizem que a água canta nomes.", "tem": "água sagrada" },
-    "R-WAT-7": { "texto": "Um abismo no fundo do oceano, onde a luz não chega. Criaturas gigantes vivem ali.", "tem": "escamas abissais" },
-    "R-DAI-1": { "texto": "A capital da Terra. Uma cidade vertical dentro da montanha, com elevadores de pedra movidos por golens.", "tem": "forja de mithril e banco de cristais" },
-    "R-DAI-2": { "texto": "Uma floresta de árvores com 300 metros de altura. Pequenos espíritos repetem tudo o que você diz.", "tem": "madeira-espírito e frutos de mana" },
-    "R-DAI-3": { "texto": "Minas de cristal que brilham em várias cores. Alguns mineradores têm olhos de cristal.", "tem": "cristais de mana (servem de dinheiro e de energia)" },
-    "R-DAI-4": { "texto": "Um cânion formado pelos ossos de um dragão gigantesco.", "tem": "ossos de dragão e fósseis" },
-    "R-DAI-5": { "texto": "Campos de trigo dourado sem fim, moinhos de pedra e vilas de camponeses. Um dos lugares mais tranquilos do reino.", "tem": "comida e cavalos de terra" },
-    "R-DAI-6": { "texto": "Montanhas de ferro que atraem raios. Peregrinos sobem as trilhas para treinar.", "tem": "ferro-estelar" },
-    "R-DAI-7": { "texto": "Cavernas que descem fundo, até onde dizem que os mortos andam.", "tem": "pedras-alma" },
-    "R-FUJ-1": { "texto": "A capital do Vento. Uma cidade flutuante de madeira clara e velas, com pontes de corda entre as ilhotas.", "tem": "estaleiro de naves de vento e guilda dos mensageiros" },
-    "R-FUJ-2": { "texto": "Picos finos como agulhas, com mosteiros nas pontas. Ali vivem os tengu, guerreiros com rosto de pássaro.", "tem": "penas de tengu e chá de altitude" },
-    "R-FUJ-3": { "texto": "Um mar de capim prateado que se mexe em ondas com o vento. Cavaleiros nômades cruzam a estepe.", "tem": "cavalos-vento" },
-    "R-FUJ-4": { "texto": "Ilhas que flutuam no céu e mudam de lugar com as correntes de ar.", "tem": "pedra-flutuante" },
-    "R-FUJ-5": { "texto": "Um furacão que nunca para. No centro dele, tudo fica em silêncio.", "tem": "núcleo de tempestade" },
-    "R-FUJ-6": { "texto": "Um desfiladeiro onde o vento passa pelas pedras e parece chorar com vozes humanas.", "tem": "cristal sonoro" },
-    "R-FUJ-7": { "texto": "Um templo em ruínas atingido por raios o tempo todo.", "tem": "pedra-trovão" },
-    "R-KOK-1": { "texto": "A cidade neutra entre os reinos. Tem mercenários, contrabandistas, a Guilda, leilão de grimórios e uma arena.", "tem": "guilda, leilões e missões" },
-    "R-KOK-2": { "texto": "Um anel de pilares gigantes com símbolos dos quatro elementos. Alguns estão rachados.", "tem": "inscrições antigas" },
-    "R-KOK-3": { "texto": "Uma floresta onde tudo virou pedra cinza: árvores, animais e até pessoas.", "tem": "silêncio e estátuas" },
-    "R-KOK-4": { "texto": "Um buraco negro na terra. O som some e as cores desbotam. Pouquíssimos voltam.", "tem": "nada que valha o risco… por enquanto" },
-    "R-KOK-5": { "texto": "Uma torre que desce para dentro da cratera, andar por andar.", "tem": "o desafio mais difícil do mundo" },
-    "R-KOK-6": { "texto": "O fundo da cratera. Ninguém sabe ao certo o que existe lá.", "tem": "?" },
-    "R-KOK-7": { "texto": "Uma aldeia antiga transformada em cinza e pedra há 500 anos.", "tem": "memórias do passado" },
-    "R-KOK-8": { "texto": "Um monte isolado no coração do Vazio, onde a magia quase não existe.", "tem": "?" }
+    "R-HOM-1": {
+      "texto": "A capital do Fogo. Uma cidade em degraus com ruas aquecidas por lava sob o chão de vidro. No topo fica o Coliseu de Brasas.",
+      "tem": "guilda dos duelistas e forja real",
+      "ambiente": [
+        "O calor sobe das ruas de vidro e embaça o ar.",
+        "Ao longe, a multidão do Coliseu de Brasas ruge.",
+        "Ferreiros batem metal em brasa; faíscas dançam pelos degraus."
+      ]
+    },
+    "R-HOM-2": {
+      "texto": "O vulcão sagrado do reino. À noite o topo brilha como um segundo sol.",
+      "tem": "minério de chama e materiais raros",
+      "ambiente": [
+        "O chão treme de leve sob seus pés.",
+        "Cheiro de enxofre arde no nariz.",
+        "Rios finos de lava brilham entre as pedras escuras."
+      ]
+    },
+    "R-HOM-3": {
+      "texto": "Um deserto de dunas cinzentas. No fim da tarde chovem brasas, e há esqueletos de navios na areia: aqui já foi mar.",
+      "tem": "vidro de cinza e sal negro",
+      "ambiente": [
+        "A cinza range sob suas botas a cada passo.",
+        "Uma brasa cai do céu e se apaga na areia ao seu lado.",
+        "O casco de um navio antigo surge meio enterrado na duna."
+      ]
+    },
+    "R-HOM-4": {
+      "texto": "Uma floresta de árvores queimadas com folhas de brasa. Vagalumes de fogo formam desenhos no céu.",
+      "tem": "seiva quente e ervas de cura",
+      "ambiente": [
+        "Vagalumes de fogo piscam entre os galhos queimados.",
+        "As folhas de brasa estalam com o vento.",
+        "O ar tem cheiro de lenha e de algo doce, quase mel."
+      ]
+    },
+    "R-HOM-5": {
+      "texto": "Um rio de lava atravessado por pontes de obsidiana. Barqueiros de pedra levam os viajantes.",
+      "tem": "obsidiana e escamas de salamandra",
+      "ambiente": [
+        "A lava borbulha sob a ponte de obsidiana.",
+        "Um barqueiro de pedra passa em silêncio, remando no fogo.",
+        "O calor deixa sua pele seca e o ar tremendo."
+      ]
+    },
+    "R-HOM-6": {
+      "texto": "A fronteira com o reino da Água. Onde as águas se encontram o mar ferve e sobe uma névoa vermelha.",
+      "tem": "coral-brasa e sal de vapor",
+      "ambiente": [
+        "A névoa vermelha cobre tudo; você mal enxerga a própria mão.",
+        "O mar chia onde as águas quentes e frias se encontram.",
+        "Vozes abafadas negociam em algum lugar dentro da névoa."
+      ]
+    },
+    "R-HOM-7": {
+      "texto": "Uma cidade antiga engolida pelo magma. Só os topos das torres ainda aparecem.",
+      "tem": "relíquias de outra era",
+      "ambiente": [
+        "Só as pontas das torres antigas escapam do magma endurecido.",
+        "Um vento quente traz sussurros que não são de ninguém.",
+        "O silêncio aqui é pesado, como se a cidade ainda prendesse a respiração."
+      ]
+    },
+    "R-WAT-1": {
+      "texto": "A capital da Água. Um palácio de coral e pérola dentro de uma bolha d'água flutuante. Você sobe por escadas feitas de água.",
+      "tem": "a Biblioteca Submersa e o mercado de pérolas",
+      "ambiente": [
+        "A água das escadas brilha e não molha seus pés.",
+        "Peixes coloridos passam do lado de fora da bolha.",
+        "Comerciantes gritam preços de pérolas no mercado."
+      ]
+    },
+    "R-WAT-2": {
+      "texto": "Um lago calmo e perfeito como um espelho. Dizem que o reflexo mostra o céu de outro dia.",
+      "tem": "água-espelho para poções",
+      "ambiente": [
+        "O lago é tão parado que parece de vidro.",
+        "No reflexo, as nuvens andam para o lado errado.",
+        "Uma garça pousa sem fazer nenhuma onda."
+      ]
+    },
+    "R-WAT-3": {
+      "texto": "Centenas de ilhas pequenas com casas sobre palafitas. Tem pescadores, piratas e baleias que voam.",
+      "tem": "pérolas e madeira de mangue",
+      "ambiente": [
+        "As palafitas rangem com o balanço do mar.",
+        "Crianças pulam na água entre as casas.",
+        "Uma sombra enorme passa pelo céu: uma baleia que voa."
+      ]
+    },
+    "R-WAT-4": {
+      "texto": "Um pântano escuro onde olhos brilham debaixo d'água e as árvores choram água salgada.",
+      "tem": "lodo alquímico e lótus negro",
+      "ambiente": [
+        "A lama puxa suas botas a cada passo.",
+        "Olhos amarelos piscam embaixo da água escura.",
+        "As árvores pingam lágrimas salgadas no seu ombro."
+      ]
+    },
+    "R-WAT-5": {
+      "texto": "Uma geleira azul no extremo do reino, com criaturas congeladas há séculos.",
+      "tem": "gelo eterno e presas de mamute",
+      "ambiente": [
+        "O frio corta o rosto como lâmina.",
+        "Dentro do gelo azul, uma criatura antiga parece te olhar.",
+        "O vento uiva entre as fendas da geleira."
+      ]
+    },
+    "R-WAT-6": {
+      "texto": "Cachoeiras enormes que parecem falar. Os moradores dizem que a água canta nomes.",
+      "tem": "água sagrada",
+      "ambiente": [
+        "O barulho das quedas d'água enche seus ouvidos.",
+        "Por um instante, a água parece dizer um nome.",
+        "Uma névoa fresca cobre seu rosto de gotas."
+      ]
+    },
+    "R-WAT-7": {
+      "texto": "Um abismo no fundo do oceano, onde a luz não chega. Criaturas gigantes vivem ali.",
+      "tem": "escamas abissais",
+      "ambiente": [
+        "A escuridão é tão funda que a luz parece cansada.",
+        "Algo enorme se mexe lá embaixo, longe demais para ver.",
+        "A pressão do abismo aperta seu peito."
+      ]
+    },
+    "R-DAI-1": {
+      "texto": "A capital da Terra. Uma cidade vertical dentro da montanha, com elevadores de pedra movidos por golens.",
+      "tem": "forja de mithril e banco de cristais",
+      "ambiente": [
+        "Golens de pedra sobem e descem os elevadores sem parar.",
+        "O martelar das forjas ecoa pela montanha.",
+        "O ar tem cheiro de ferro e de pão quente."
+      ]
+    },
+    "R-DAI-2": {
+      "texto": "Uma floresta de árvores com 300 metros de altura. Pequenos espíritos repetem tudo o que você diz.",
+      "tem": "madeira-espírito e frutos de mana",
+      "ambiente": [
+        "Troncos do tamanho de torres somem nas nuvens.",
+        "Uma vozinha repete sua última palavra, escondida nas folhas.",
+        "A luz chega verde, filtrada por mil folhas."
+      ]
+    },
+    "R-DAI-3": {
+      "texto": "Minas de cristal que brilham em várias cores. Alguns mineradores têm olhos de cristal.",
+      "tem": "cristais de mana (servem de dinheiro e de energia)",
+      "ambiente": [
+        "Os cristais nas paredes brilham em azul, roxo e verde.",
+        "O eco de picaretas vem de muito fundo.",
+        "Um minerador de olhos de cristal acena de longe."
+      ]
+    },
+    "R-DAI-4": {
+      "texto": "Um cânion formado pelos ossos de um dragão gigantesco.",
+      "tem": "ossos de dragão e fósseis",
+      "ambiente": [
+        "Costelas gigantes formam arcos sobre a trilha.",
+        "O vento assobia entre os ossos do dragão antigo.",
+        "Pedrinhas rolam do alto do cânion."
+      ]
+    },
+    "R-DAI-5": {
+      "texto": "Campos de trigo dourado sem fim, moinhos de pedra e vilas de camponeses. Um dos lugares mais tranquilos do reino.",
+      "tem": "comida e cavalos de terra",
+      "ambiente": [
+        "O trigo dourado balança até onde a vista alcança.",
+        "Um moinho de pedra gira devagar.",
+        "Alguém canta enquanto trabalha no campo."
+      ]
+    },
+    "R-DAI-6": {
+      "texto": "Montanhas de ferro que atraem raios. Peregrinos sobem as trilhas para treinar.",
+      "tem": "ferro-estelar",
+      "ambiente": [
+        "Um trovão estala perto demais da trilha.",
+        "O cheiro de chuva e metal enche o ar.",
+        "Peregrinos sobem em fila, sem falar nada."
+      ]
+    },
+    "R-DAI-7": {
+      "texto": "Cavernas que descem fundo, até onde dizem que os mortos andam.",
+      "tem": "pedras-alma",
+      "ambiente": [
+        "A escuridão das cavernas parece respirar.",
+        "Passos ecoam atrás de você… mas não há ninguém.",
+        "O frio da pedra sobe pelas suas pernas."
+      ]
+    },
+    "R-FUJ-1": {
+      "texto": "A capital do Vento. Uma cidade flutuante de madeira clara e velas, com pontes de corda entre as ilhotas.",
+      "tem": "estaleiro de naves de vento e guilda dos mensageiros",
+      "ambiente": [
+        "As pontes de corda balançam sobre o mar de nuvens.",
+        "Velas estalam com o vento forte.",
+        "Mensageiros passam correndo com cartas na mão."
+      ]
+    },
+    "R-FUJ-2": {
+      "texto": "Picos finos como agulhas, com mosteiros nas pontas. Ali vivem os tengu, guerreiros com rosto de pássaro.",
+      "tem": "penas de tengu e chá de altitude",
+      "ambiente": [
+        "O ar é fino; respirar exige esforço.",
+        "Um sino toca no mosteiro lá no alto.",
+        "Uma pena preta cai girando na sua frente."
+      ]
+    },
+    "R-FUJ-3": {
+      "texto": "Um mar de capim prateado que se mexe em ondas com o vento. Cavaleiros nômades cruzam a estepe.",
+      "tem": "cavalos-vento",
+      "ambiente": [
+        "O capim prateado se move em ondas como um mar.",
+        "Cascos de cavalo ecoam ao longe.",
+        "O céu aqui parece maior do que em qualquer outro lugar."
+      ]
+    },
+    "R-FUJ-4": {
+      "texto": "Ilhas que flutuam no céu e mudam de lugar com as correntes de ar.",
+      "tem": "pedra-flutuante",
+      "ambiente": [
+        "A ilha sob seus pés balança de leve.",
+        "Pedras flutuam soltas ao redor, girando devagar.",
+        "Lá embaixo, só nuvens."
+      ]
+    },
+    "R-FUJ-5": {
+      "texto": "Um furacão que nunca para. No centro dele, tudo fica em silêncio.",
+      "tem": "núcleo de tempestade",
+      "ambiente": [
+        "O vento empurra você de todos os lados.",
+        "Relâmpagos iluminam a parede do furacão.",
+        "Detritos passam voando perto da sua cabeça."
+      ]
+    },
+    "R-FUJ-6": {
+      "texto": "Um desfiladeiro onde o vento passa pelas pedras e parece chorar com vozes humanas.",
+      "tem": "cristal sonoro",
+      "ambiente": [
+        "O vento passa pelas rochas e parece chorar.",
+        "Por um momento, você jura ouvir alguém chamar seu nome.",
+        "O eco das vozes some e volta, sem parar."
+      ]
+    },
+    "R-FUJ-7": {
+      "texto": "Um templo em ruínas atingido por raios o tempo todo.",
+      "tem": "pedra-trovão",
+      "ambiente": [
+        "Raios caem sem parar sobre as ruínas.",
+        "Seu cabelo arrepia com a energia no ar.",
+        "As colunas quebradas ainda guardam marcas de queimado."
+      ]
+    },
+    "R-KOK-1": {
+      "texto": "A cidade neutra entre os reinos. Tem mercenários, contrabandistas, a Guilda, leilão de grimórios e uma arena.",
+      "tem": "guilda, leilões e missões",
+      "ambiente": [
+        "Mercenários de todos os reinos disputam espaço nas ruas.",
+        "O leiloeiro grita lances de grimórios na praça.",
+        "Aqui ninguém pergunta de onde você veio."
+      ]
+    },
+    "R-KOK-2": {
+      "texto": "Um anel de pilares gigantes com símbolos dos quatro elementos. Alguns estão rachados.",
+      "tem": "inscrições antigas",
+      "ambiente": [
+        "Os pilares gigantes zumbem baixinho.",
+        "Uma rachadura num pilar solta um brilho fraco.",
+        "Sua mana parece mais pesada perto das inscrições."
+      ]
+    },
+    "R-KOK-3": {
+      "texto": "Uma floresta onde tudo virou pedra cinza: árvores, animais e até pessoas.",
+      "tem": "silêncio e estátuas",
+      "ambiente": [
+        "Estátuas de gente olham para o nada.",
+        "Você tem certeza de que aquela estátua estava em outro lugar.",
+        "Não há canto de pássaro. Não há vento."
+      ]
+    },
+    "R-KOK-4": {
+      "texto": "Um buraco negro na terra. O som some e as cores desbotam. Pouquíssimos voltam.",
+      "tem": "nada que valha o risco… por enquanto",
+      "ambiente": [
+        "O som some. Você não ouve nem os próprios passos.",
+        "As cores desbotam como tinta velha.",
+        "Algo puxa sua mana para o centro, devagar."
+      ]
+    },
+    "R-KOK-5": {
+      "texto": "Uma torre que desce para dentro da cratera, andar por andar.",
+      "tem": "o desafio mais difícil do mundo",
+      "ambiente": [
+        "Os degraus descem para a escuridão.",
+        "Cada andar é mais silencioso que o anterior.",
+        "Uma luz fraca pisca muito, muito lá embaixo."
+      ]
+    },
+    "R-KOK-6": {
+      "texto": "O fundo da cratera. Ninguém sabe ao certo o que existe lá.",
+      "tem": "?",
+      "ambiente": [
+        "Aqui nem o silêncio parece seguro.",
+        "O ar pesa como água.",
+        "Você sente que está sendo observado."
+      ]
+    },
+    "R-KOK-7": {
+      "texto": "Uma aldeia antiga transformada em cinza e pedra há 500 anos.",
+      "tem": "memórias do passado",
+      "ambiente": [
+        "Cinzas de pedra cobrem casas que nunca mais acordaram.",
+        "Um poço seco no meio da aldeia chama sua atenção.",
+        "Há 500 anos, aqui havia risadas."
+      ]
+    },
+    "R-KOK-8": {
+      "texto": "Um monte isolado no coração do Vazio, onde a magia quase não existe.",
+      "tem": "?",
+      "ambiente": [
+        "O vento quase não sopra.",
+        "Lascas de cristal brilham no chão.",
+        "Um ninho enorme e vazio coroa o alto do monte."
+      ]
+    }
   },
   "perigo": {
-    "baixo": "🟢 tranquilo",
-    "medio": "🟡 tome cuidado",
-    "médio": "🟡 tome cuidado",
-    "alto": "🟠 perigoso",
-    "muito alto": "🔴 muito perigoso",
-    "extremo": "☠️ mortal",
-    "divino": "☠️ mortal"
+    "baixo": "tranquilo",
+    "medio": "exige cuidado",
+    "médio": "exige cuidado",
+    "alto": "perigoso",
+    "muito alto": "muito perigoso",
+    "extremo": "mortal",
+    "divino": "mortal"
   },
   "castas": {
     "campones": "Você é de família simples, que vive do trabalho no campo, na mina ou na pesca. Tem pouca magia, mas aprende rápido (+20% de experiência) e aguenta firme.",

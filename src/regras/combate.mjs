@@ -9,17 +9,52 @@ export const CLASSES = ler("classes.json").classes;
 
 // Uma habilidade por classe (h1). Fácil de lembrar, cada uma com um papel diferente.
 export const HABILIDADES = {
-  Mago: { nome: "Rajada Arcana", tipo: "magico", poder: 1.8, mp: 14, recarga: 2, texto: "magia forte" },
-  Cavaleiro: { nome: "Golpe de Escudo", tipo: "fisico", poder: 1.3, mp: 8, recarga: 2, postura: 2, protecao: 0.5, texto: "golpe que quebra a guarda e protege você" },
-  Bruxo: { nome: "Maldição", tipo: "magico", poder: 1.3, mp: 12, recarga: 3, enfraquece: 2, texto: "enfraquece o inimigo por 2 rodadas" },
-  "Anti-magia": { nome: "Corte do Vazio", tipo: "fisico", poder: 1.7, mp: 0, recarga: 2, ignoraDef: 0.3, texto: "corte que atravessa defesas" },
-  Espadachim: { nome: "Iaijutsu", tipo: "fisico", poder: 1.6, mp: 8, recarga: 2, critico: 15, texto: "saque rápido, crítico fácil" },
-  "Meio-humano": { nome: "Fúria da Fera", tipo: "fisico", poder: 1.5, mp: 8, recarga: 2, rouba: 0.25, texto: "golpe que recupera vida" },
-  "Força da Natureza": { nome: "Raízes", tipo: "magico", poder: 1.2, mp: 12, recarga: 3, prende: 1, texto: "prende o inimigo por 1 rodada" },
-  "Demônio": { nome: "Miasma", tipo: "magico", poder: 1.7, mp: 0, custoHp: 0.05, recarga: 2, texto: "magia sombria que custa vida" },
-  Paladino: { nome: "Golpe Sagrado", tipo: "fisico", poder: 1.5, mp: 10, recarga: 2, curaFixa: 0.12, texto: "golpe de luz que também cura" },
+  Mago: { nome: "Rajada Arcana", frase: "Runas acendem no ar e explodem em luz.", tipo: "magico", poder: 1.8, mp: 14, recarga: 2, texto: "magia forte" },
+  Cavaleiro: { nome: "Golpe de Escudo", frase: "O escudo bate com um estrondo e você se fecha atrás dele.", tipo: "fisico", poder: 1.3, mp: 8, recarga: 2, postura: 2, protecao: 0.5, texto: "golpe que quebra a guarda e protege você" },
+  Bruxo: { nome: "Maldição", frase: "Você sussurra um nome antigo.", tipo: "magico", poder: 1.3, mp: 12, recarga: 3, enfraquece: 2, texto: "enfraquece o inimigo por 2 rodadas" },
+  "Anti-magia": { nome: "Corte do Vazio", frase: "Sua lâmina passa como se a defesa não existisse.", tipo: "fisico", poder: 1.7, mp: 0, recarga: 2, ignoraDef: 0.3, texto: "corte que atravessa defesas" },
+  Espadachim: { nome: "Iaijutsu", frase: "A espada sai e volta à bainha num piscar.", tipo: "fisico", poder: 1.6, mp: 8, recarga: 2, critico: 15, texto: "saque rápido, crítico fácil" },
+  "Meio-humano": { nome: "Fúria da Fera", frase: "Você ruge e ataca sem pensar.", tipo: "fisico", poder: 1.5, mp: 8, recarga: 2, rouba: 0.25, texto: "golpe que recupera vida" },
+  "Força da Natureza": { nome: "Raízes", frase: "A terra responde ao seu chamado.", tipo: "magico", poder: 1.2, mp: 12, recarga: 3, prende: 1, texto: "prende o inimigo por 1 rodada" },
+  "Demônio": { nome: "Miasma", frase: "Uma fumaça negra sai das suas mãos.", tipo: "magico", poder: 1.7, mp: 0, custoHp: 0.05, recarga: 2, texto: "magia sombria que custa vida" },
+  Paladino: { nome: "Golpe Sagrado", frase: "Sua arma brilha com luz dourada.", tipo: "fisico", poder: 1.5, mp: 10, recarga: 2, curaFixa: 0.12, texto: "golpe de luz que também cura" },
 };
 export const MAGIA = { nome: "Magia elemental", poder: 1.3, mp: 6 };
+
+// ── Narração: verbos por classe, elemento e tipo de inimigo. Escolha determinística pela rodada (não gasta sorteio).
+const pick = (lista, n) => lista[Math.abs(n) % lista.length];
+const GOLPE_CLASSE = {
+  Espadachim: ["Sua lâmina corta o ar e encontra {a}", "Um corte rápido abre a defesa de {a}", "Você gira o corpo e acerta {a} com a lâmina"],
+  Cavaleiro: ["Você avança com o escudo e acerta {a}", "Sua espada desce pesada sobre {a}", "Você empurra {a} com o peso da armadura"],
+  Mago: ["Você golpeia {a} com o cajado", "A ponta do seu cajado acerta {a}"],
+  Bruxo: ["Sua adaga encontra {a}", "Você acerta {a} com um golpe sujo"],
+  "Anti-magia": ["Seu punho afunda em {a}", "Você chuta {a} com força bruta", "Um golpe seco, sem magia nenhuma, acerta {a}"],
+  "Meio-humano": ["Suas garras rasgam {a}", "Você salta sobre {a} como uma fera", "Um golpe selvagem acerta {a}"],
+  "Força da Natureza": ["Seu bastão de madeira acerta {a}", "Você golpeia {a} com a força da terra"],
+  "Demônio": ["Seus chifres acertam {a}", "Um golpe cruel atinge {a}"],
+  Paladino: ["Sua maça acerta {a} em cheio", "Você bate em {a} com o escudo sagrado"],
+};
+const MAGIA_ELEMENTO = {
+  Fogo: "Chamas envolvem {a}", "Água": "Uma lança d'água atinge {a}", Terra: "Pedras se erguem contra {a}", Vento: "Lâminas de vento cortam {a}",
+  Luz: "Um raio de luz queima {a}", Trevas: "Sombras apertam {a}", Natureza: "Espinhos brotam e ferem {a}", Gravidade: "O peso do mundo esmaga {a}",
+  Sangue: "Seu sangue vira lâmina contra {a}", Veneno: "Uma névoa venenosa envolve {a}", Tempo: "Por um instante, {a} envelhece anos",
+  "Espaço": "O espaço se dobra e acerta {a}", Alma: "Sua alma empurra a de {a}", Sonho: "Uma visão confunde e fere {a}", Estelar: "Luz de estrelas cai sobre {a}",
+};
+const ATAQUE_INIMIGO = {
+  besta: ["{i} crava os dentes em você", "{i} salta e te arranha", "{i} te derruba com o corpo"],
+  bruto: ["{i} te esmaga com um golpe pesado", "{i} te acerta com força brutal"],
+  tanque: ["{i} avança como um muro e te atinge", "{i} te empurra para trás"],
+  assassino: ["{i} surge de lado e te corta", "{i} acerta um ponto que você não protegia"],
+  mago: ["{i} lança um feitiço contra você", "{i} murmura palavras e algo te atinge"],
+  invocador: ["As criaturas de {i} te atacam", "{i} chama algo das sombras contra você"],
+  equilibrado: ["{i} te ataca", "{i} acerta você"],
+  "morto-vivo": ["{i} te agarra com mãos frias", "{i} te golpeia sem sentir dor"],
+  espiritual: ["{i} atravessa você como um vento gelado", "{i} grita e o som te machuca"],
+  divino: ["A luz de {i} te queima", "{i} apenas olha, e você sente a dor"],
+};
+const ESQUIVA = ["{i} desvia no último segundo", "{i} pula para o lado e você erra", "Seu golpe passa raspando por {i}"];
+const VOCE_DESVIA = ["Você se abaixa e o ataque passa por cima", "Você rola para o lado a tempo", "Você desvia por um fio"];
+const n = (txt, o) => txt.replace("{a}", o.a ?? "").replace("{i}", o.i ?? "");
 export const POCAO = { cura: 0.35, maxPorBatalha: 2 };
 const POSTURA = { comum: 0, medio: 4, alto: 6, rei: 8, divindade: 10 };
 
@@ -77,29 +112,29 @@ function golpe(rng, { atk, nivel, def, poder, mult = 1, critExtra = 0, sor = 0, 
   return { dano: Math.max(1, Math.round(base * poder * mult * variacao(rng) * (critico ? 1.75 : 1))), critico };
 }
 
-/** Lista curta das ações disponíveis, para o painel. */
+/** Lista curta das ações disponíveis, para o rodapé do painel. */
 export function opcoes(e) {
   const h = HABILIDADES[e.jogador.classe];
-  const ops = ["*a* atacar"];
-  if (e.jogador.mpMax > 0) ops.push(`*m1* magia (${MAGIA.mp} MP)`);
-  if (h) ops.push(`*h1* ${h.nome}${h.mp ? ` (${h.mp} MP)` : ""}${e.jogador.recarga ? ` ⏳${e.jogador.recarga}` : ""}`);
-  ops.push("*d* defender", "*i pocao* poção", ...(e.inimigo.chefe ? [] : ["*f* fugir"]));
-  return ops.join(" · ");
+  const ops = ["a atacar"];
+  if (e.jogador.mpMax > 0) ops.push("m1 magia");
+  if (h) ops.push(`h1 ${h.nome}${e.jogador.recarga ? ` (espera ${e.jogador.recarga})` : ""}`);
+  ops.push("d defender", "i poção", ...(e.inimigo.chefe ? [] : ["f fugir"]));
+  return `_${ops.join(" · ")}_`;
 }
 
-const barra = (v, max, n = 10) => "▰".repeat(Math.round((Math.max(0, v) / max) * n)) + "▱".repeat(n - Math.round((Math.max(0, v) / max) * n));
+const barra = (v, max, n = 8) => { const c = Math.round((Math.max(0, v) / max) * n); return "▰".repeat(c) + "▱".repeat(n - c); };
 
 export function painel(e) {
   const { jogador: j, inimigo: i } = e;
+  const guarda = i.posturaMax ? `  guarda ${"◆".repeat(Math.max(0, i.postura))}${"◇".repeat(i.posturaMax - Math.max(0, i.postura))}` : "";
   return [
-    `⚔️ *Rodada ${e.rodada}* — ${i.nome} (Nv ${i.nivel})`,
-    `👹 ${i.nome} ${barra(i.hp, i.hpMax)} ${Math.max(0, i.hp)}/${i.hpMax}${i.posturaMax ? `\n🛡️ Guarda ${barra(i.postura, i.posturaMax, i.posturaMax)}` : ""}` +
-      `${i.vulneravel ? " 💥 *GUARDA QUEBRADA* (+50% de dano)" : ""}${i.preso ? " 🌿 preso" : ""}${i.fraco ? " 🩸 enfraquecido" : ""}`,
-    e.preparando ? `⚠️ *${i.nome} está preparando um golpe forte!* Defender (*d*) reduz o dano pela metade.` : null,
-    `🧑 ${j.nome} ${barra(j.hp, j.hpMax)} ${Math.max(0, j.hp)}/${j.hpMax} · 🔷 MP ${j.mp}/${j.mpMax}`,
-    e.log.length ? `━━━━━━━━━━\n${e.log.map((l) => `• ${l}`).join("\n")}` : null,
-    `━━━━━━━━━━\n${opcoes(e)}`,
-  ].filter(Boolean).join("\n");
+    `⚔️ *${i.nome}* · rodada ${e.rodada}`,
+    e.log.length ? e.log.join("\n") : null,
+    e.preparando ? `_${i.nome} recua e junta forças… o próximo golpe vai ser pesado. (d para se defender)_` : null,
+    [`${i.nome} ${barra(i.hp, i.hpMax)} ${Math.max(0, i.hp)}${guarda}${i.vulneravel ? "  *aberto*" : ""}${i.preso ? "  preso" : ""}${i.fraco ? "  fraco" : ""}`,
+      `Você ${barra(j.hp, j.hpMax)} ${Math.max(0, j.hp)}/${j.hpMax}${j.mpMax ? ` · mana ${j.mp}` : ""}`].join("\n"),
+    opcoes(e),
+  ].filter(Boolean).join("\n\n");
 }
 
 /**
@@ -125,10 +160,10 @@ export function resolverRodada(estado, acao, rng) {
 
   let consumir = null, defendendo = false;
   const bonusQuebra = i.vulneravel ? 1.5 : 1;
-  const acertar = (r, nomeAcao) => {
-    if (r.esquivou) { e.log.push(`${i.nome} desviou do seu ${nomeAcao}.`); return 0; }
+  const acertar = (r, frase) => {
+    if (r.esquivou) { e.log.push(`${n(pick(ESQUIVA, e.rodada), { i: i.nome })}.`); return 0; }
     i.hp -= r.dano;
-    e.log.push(`Seu ${nomeAcao} causou *${r.dano}* de dano${r.critico ? " (CRÍTICO!)" : ""}.`);
+    e.log.push(`${r.critico ? "*Golpe perfeito!* " : ""}${frase} _(${r.dano})_`);
     if (i.posturaMax && r.critico) i.postura -= 1;
     return r.dano;
   };
@@ -140,62 +175,63 @@ export function resolverRodada(estado, acao, rng) {
   });
 
   // 1) Ação do jogador
-  if (acao.tipo === "atacar") acertar(vsInimigo("fisico", 1), "ataque");
+  if (acao.tipo === "atacar") acertar(vsInimigo("fisico", 1), n(pick(GOLPE_CLASSE[j.classe] ?? GOLPE_CLASSE.Espadachim, e.rodada), { a: i.nome }) + ".");
   else if (acao.tipo === "magia") {
     j.mp -= MAGIA.mp;
     const fraqueza = multElemento(j.elemento, i.elemento, i.fraqueza) > 1;
-    const d = acertar(vsInimigo("magico", MAGIA.poder), `feitiço de ${j.elemento ?? "mana"}`);
-    if (d && fraqueza) { e.log.push("É super efetivo! 🔥"); if (i.posturaMax) i.postura -= 2; }
+    const d = acertar(vsInimigo("magico", MAGIA.poder), n(MAGIA_ELEMENTO[j.elemento] ?? "Sua mana explode contra {a}", { a: i.nome }) + ".");
+    if (d && fraqueza) { e.log.push(`${i.nome} se contorce: é o ponto fraco dele.`); if (i.posturaMax) i.postura -= 2; }
   } else if (acao.tipo === "habilidade") {
     j.mp -= hab.mp; j.recarga = hab.recarga + 1;
-    if (hab.custoHp) { const c = Math.ceil(j.hpMax * hab.custoHp); j.hp -= c; e.log.push(`${hab.nome} consumiu ${c} de vida.`); }
+    if (hab.custoHp) { const c = Math.ceil(j.hpMax * hab.custoHp); j.hp -= c; e.log.push(`O miasma queima por dentro. _(−${c} de vida)_`); }
     if (hab.tipo === "cura") {
-      const c = Math.min(j.hpMax - j.hp, Math.round(j.hpMax * hab.cura)); j.hp += c; e.log.push(`${hab.nome} curou *${c}* de vida.`);
+      const c = Math.min(j.hpMax - j.hp, Math.round(j.hpMax * hab.cura)); j.hp += c; e.log.push(`Uma luz quente fecha suas feridas. _(+${c})_`);
     } else {
-      const d = acertar(vsInimigo(hab.tipo, hab.poder, hab), hab.nome);
+      const d = acertar(vsInimigo(hab.tipo, hab.poder, hab), `*${hab.nome}!* ${hab.frase ?? ""}`.trim());
       if (d) {
         if (hab.postura && i.posturaMax) i.postura -= hab.postura;
-        if (hab.rouba) { const c = Math.min(j.hpMax - j.hp, Math.round(d * hab.rouba)); j.hp += c; if (c) e.log.push(`Você recuperou ${c} de vida.`); }
-        if (hab.curaFixa) { const c = Math.min(j.hpMax - j.hp, Math.round(j.hpMax * hab.curaFixa)); j.hp += c; if (c) e.log.push(`A luz curou ${c} de vida.`); }
-        if (hab.enfraquece) { i.fraco = hab.enfraquece; e.log.push(`${i.nome} ficou enfraquecido.`); }
-        if (hab.prende) { i.preso = hab.prende; e.log.push(`${i.nome} ficou preso pelas raízes!`); }
+        if (hab.rouba) { const c = Math.min(j.hpMax - j.hp, Math.round(d * hab.rouba)); j.hp += c; if (c) e.log.push(`O gosto da luta te dá forças. _(+${c})_`); }
+        if (hab.curaFixa) { const c = Math.min(j.hpMax - j.hp, Math.round(j.hpMax * hab.curaFixa)); j.hp += c; if (c) e.log.push(`A luz também cuida de você. _(+${c})_`); }
+        if (hab.enfraquece) { i.fraco = hab.enfraquece; e.log.push(`Marcas escuras se espalham pela pele de ${i.nome}. Ele fica mais fraco.`); }
+        if (hab.prende) { i.preso = hab.prende; e.log.push(`Raízes saem do chão e prendem ${i.nome}.`); }
       }
       if (hab.protecao) j.protecao = hab.protecao;
     }
-  } else if (acao.tipo === "defender") { defendendo = true; e.log.push("Você se defende."); }
+  } else if (acao.tipo === "defender") { defendendo = true; e.log.push("Você firma os pés e se protege."); }
   else if (acao.tipo === "item") {
     j.pocoes += 1; consumir = "pocao";
-    const c = Math.min(j.hpMax - j.hp, Math.round(j.hpMax * POCAO.cura)); j.hp += c; e.log.push(`Você bebeu uma poção: +${c} de vida.`);
+    const c = Math.min(j.hpMax - j.hp, Math.round(j.hpMax * POCAO.cura)); j.hp += c; e.log.push(`Você bebe uma poção num gole só. _(+${c})_`);
   } else if (acao.tipo === "fugir") {
-    if (chance(rng, clamp(50 + (j.at.VEL - i.at.VEL), 10, 90))) { e.log.push("Você fugiu da batalha!"); return { estado: e, fim: "fuga", consumir }; }
-    e.log.push("Você tentou fugir, mas não conseguiu!");
+    if (chance(rng, clamp(50 + (j.at.VEL - i.at.VEL), 10, 90))) { e.log.push("Você corre sem olhar para trás."); return { estado: e, fim: "fuga", consumir }; }
+    e.log.push(`Você tenta fugir, mas ${i.nome} corta o caminho.`);
   }
 
   // Guarda quebrada: o bônus de +50% vale só para a ação seguinte do jogador; depois a guarda volta cheia.
   if (bonusQuebra > 1) { i.vulneravel = false; i.postura = i.posturaMax; }
   else if (i.posturaMax && i.postura <= 0) {
     i.postura = 0; i.atordoado = true; i.vulneravel = true;
-    e.log.push(`💥 *A guarda de ${i.nome} quebrou!* Ele perde a ação e seu próximo golpe causa +50% de dano.`);
+    e.log.push(`*A guarda de ${i.nome} se quebra!* Ele cambaleia, aberto. _(perde a vez · seu próximo golpe +50%)_`);
   }
 
-  if (i.hp <= 0) { i.hp = 0; e.log.push(`🏆 *${i.nome} foi derrotado!*`); return { estado: e, fim: "vitoria", consumir }; }
+  if (i.hp <= 0) { i.hp = 0; e.log.push(`*${i.nome} cai e não se levanta mais.*`); return { estado: e, fim: "vitoria", consumir }; }
 
   // 2) Ação do inimigo
-  if (i.atordoado) { i.atordoado = false; e.log.push(`${i.nome} está atordoado e não age.`); }
-  else if (i.preso > 0) { i.preso -= 1; e.log.push(`${i.nome} tenta se soltar das raízes.`); }
+  if (i.atordoado) { i.atordoado = false; e.log.push(`${i.nome} ainda está zonzo.`); }
+  else if (i.preso > 0) { i.preso -= 1; e.log.push(`${i.nome} se debate contra as raízes.`); }
   else {
     const forte = e.preparando;
     const magico = i.at.MAG > i.at.FOR;
     const r = golpe(rng, { atk: magico ? i.at.MAG : i.at.FOR, nivel: i.nivel, def: magico ? j.at.RES : j.at.DEF,
       poder: forte ? 1.7 : 1, mult: (magico ? multElemento(i.elemento, j.elemento) : 1) * (i.fraco ? 0.75 : 1),
       sor: 0, velAtk: i.at.VEL, velDef: j.at.VEL });
-    if (r.esquivou) e.log.push(`Você desviou ${forte ? "do golpe forte" : "do ataque"} de ${i.nome}!`);
+    if (r.esquivou) e.log.push(`${pick(VOCE_DESVIA, e.rodada)}.`);
     else {
       let d = r.dano;
       if (defendendo) d = Math.ceil(d / 2);
       if (j.protecao) { d = Math.ceil(d * (1 - j.protecao)); }
       j.hp -= d;
-      e.log.push(forte ? `${i.nome} usou *${(i.habilidade ?? "golpe forte").split(":")[0]}*: *${d}* de dano em você!` : `${i.nome} atacou: *${d}* de dano em você${r.critico ? " (CRÍTICO!)" : ""}.`);
+      e.log.push(forte ? `*${(i.habilidade ?? "Golpe forte").split(":")[0]}!* ${i.nome} solta tudo de uma vez. _(−${d})_`
+        : `${r.critico ? "*Em cheio!* " : ""}${n(pick(ATAQUE_INIMIGO[i.arquetipo] ?? ATAQUE_INIMIGO.equilibrado, e.rodada), { i: i.nome })}. _(−${d})_`);
     }
     e.preparando = false;
   }
@@ -207,7 +243,7 @@ export function resolverRodada(estado, acao, rng) {
   // Chefes recuperam 1 de guarda por rodada
   if (i.chefe && !i.vulneravel && i.postura < i.posturaMax) i.postura += 1;
 
-  if (j.hp <= 0) { j.hp = 0; e.log.push(`☠️ *Você caiu diante de ${i.nome}.*`); return { estado: e, fim: "derrota", consumir }; }
+  if (j.hp <= 0) { j.hp = 0; e.log.push("Suas pernas cedem. O chão vem ao seu encontro."); return { estado: e, fim: "derrota", consumir }; }
   e.rodada += 1;
   return { estado: e, fim: null, consumir };
 }

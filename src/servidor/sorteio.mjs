@@ -97,5 +97,3 @@ export function atributosIniciais(dados, { classe, casta, reino, mana }, rng = r
   return { atributos: at, hp, mp, tipoAnimal };
 }
 
-export const ROTULO_CASTA = { campones: "🧑‍🌾 CAMPONÊS", plebeu: "🧑 PLEBEU", cavaleiro: "🛡️ CAVALEIRO", realeza: "👑 REALEZA", indefinido: "❓ INDEFINIDO", rei: "🔱 REI" };
-export const EMOJI_ELEMENTO = { Fogo: "🔥", "Água": "💧", Terra: "🪨", Vento: "🌪️", Luz: "✨", Trevas: "🌑", Natureza: "🌿", Gravidade: "🌀", Sangue: "🩸", Veneno: "☠️", Tempo: "⏳", "Espaço": "🌌", Alma: "👻", Sonho: "💤", Vazio: "⚫", Estelar: "🌟" };

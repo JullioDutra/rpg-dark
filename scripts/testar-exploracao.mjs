@@ -118,7 +118,7 @@ export async function testarExploracaoServidor({ db, jogador, mensagem, grupo })
     for (const alvo of ["Atlântida", "R-WAT-7", "R-HOM-3", "floresta", ""]) await enviar(`viajar ${alvo}`);
     assert.equal((await atual()).vigor, 100);
     assert.equal((await db.query("select * from jogo.viagens where jogador_id = $1", [jogador.id])).length, 0);
-    assert.match(texto(await enviar("rota R-HOM-5")), /45 vigor · 30 min/);
+    assert.match(texto(await enviar("rota R-HOM-5")), /45 de vigor · 30 min/);
   });
   await t("viagem cobra uma vez, impede exploração e sobrevive a reinício", async () => {
     await limpar();
@@ -127,15 +127,15 @@ export async function testarExploracaoServidor({ db, jogador, mensagem, grupo })
     assert.equal((await jogo.processar(m)).length, 0);
     assert.equal((await atual()).vigor, 85);
     assert.equal((await atual()).regiao_atual, "R-HOM-3");
-    assert.match(texto(await enviar("explorar")), /A caminho/);
+    assert.match(texto(await enviar("explorar")), /ainda está na estrada/);
     jogo = novoJogo(); clock += 599_999;
-    assert.match(texto(await enviar("viagem")), /A caminho/);
+    assert.match(texto(await enviar("viagem")), /ainda está na estrada/);
     clock++;
     const s = await enviar("viagem");
-    assert.match(texto(s), /Você chegou/); assert(s.some((x) => x.imagem));
+    assert.match(texto(s), /Você chega a/); assert(s.some((x) => x.imagem));
     assert.equal((await atual()).regiao_atual, "R-HOM-1");
     assert.equal((await atual()).vigor, 86);
-    assert.doesNotMatch(texto(await enviar("viagem")), /Você chegou/);
+    assert.doesNotMatch(texto(await enviar("viagem")), /Você chega a/);
   });
   await t("evento de estrada persistido aparece só uma vez, no prazo", async () => {
     await limpar(); numeros = [.1, 0]; await enviar("viajar R-HOM-1");
@@ -147,25 +147,25 @@ export async function testarExploracaoServidor({ db, jogador, mensagem, grupo })
     await limpar(); await db.query("update jogo.jogadores set montaria_id = 'AN18' where id = $1", [jogador.id]);
     assert.match(texto(await enviar("viajar R-HOM-1")), /5 min/);
     assert.equal((await atual()).vigor, 85); clock += 300_000;
-    assert.match(texto(await enviar("viagem")), /Você chegou/);
+    assert.match(texto(await enviar("viagem")), /Você chega a/);
   });
   await t("passagem selada só abre com marco concluído deste mundo/jogador", async () => {
     await limpar("R-KOK-2");
-    assert.match(texto(await enviar("viajar R-KOK-7")), /caminho se fecha/);
+    assert.match(texto(await enviar("viajar R-KOK-7")), /névoa fecha o caminho/);
     assert.equal((await atual()).vigor, 100);
     await db.query("insert into jogo.marcos (mundo_id, jogador_id, marco_id) values ($1, $2, 'A3-M1')", [jogador.mundo_id, jogador.id]);
-    assert.match(texto(await enviar("rota R-KOK-7")), /caminho se fecha/);
+    assert.match(texto(await enviar("rota R-KOK-7")), /névoa fecha o caminho/);
     await db.query("update jogo.marcos set status = 'concluido' where jogador_id = $1 and marco_id = 'A3-M1'", [jogador.id]);
-    assert.match(texto(await enviar("viajar R-KOK-7")), /Você partiu/);
+    assert.match(texto(await enviar("viajar R-KOK-7")), /pega a estrada/);
     await db.query("delete from jogo.marcos where jogador_id = $1 and marco_id = 'A3-M1'", [jogador.id]);
   });
   await t("vigor insuficiente não cria viagem nem evento", async () => {
     await limpar("R-HOM-3", 9);
-    assert.match(texto(await enviar("explorar")), /insuficiente/);
-    assert.match(texto(await enviar("viajar R-HOM-1")), /insuficiente/);
+    assert.match(texto(await enviar("explorar")), /precisa descansar/);
+    assert.match(texto(await enviar("viajar R-HOM-1")), /precisa descansar/);
     assert.equal((await atual()).vigor, 9);
     clock += 360_000; numeros = [.99];
-    assert.match(texto(await enviar("explorar")), /recuperou/);
+    assert.match(texto(await enviar("explorar")), /recupera o fôlego/);
     assert.equal((await atual()).vigor, 5);
   });
   await t("achado em dinheiro tem origem registrada e não duplica por mensagem", async () => {
@@ -188,7 +188,7 @@ export async function testarExploracaoServidor({ db, jogador, mensagem, grupo })
   await t("descoberta guarda localização sem entregar segredos da masmorra", async () => {
     await limpar(); numeros = [.48, 0];
     const s = await enviar("explorar");
-    assert.match(texto(s), /descobriu/); assert.doesNotMatch(texto(s), /menino carregando um ovo/);
+    assert.match(texto(s), /entrada de/); assert.doesNotMatch(texto(s), /menino carregando um ovo/);
     const ds = await db.query("select * from jogo.descobertas where jogador_id = $1 and tipo = 'subfase'", [jogador.id]);
     assert.equal(ds.length, 1); assert.equal(ds[0].referencia, "SF-HOM-01");
     assert.match(texto(await enviar("descobertas")), /Obsidiana/);
@@ -199,21 +199,21 @@ export async function testarExploracaoServidor({ db, jogador, mensagem, grupo })
     await limpar(); numeros = [0, .99];
     assert.match(texto(await enviar("explorar")), /corvo/);
     assert.match(texto(await enviar("viajar R-HOM-1")), /recuar/);
-    assert.match(texto(await enviar("recuar")), /segurança/);
+    assert.match(texto(await enviar("recuar")), /recua devagar/);
     assert.equal((await atual()).vigor, 90);
     assert.equal((await db.query("select * from jogo.exploracoes where jogador_id = $1 and pendente", [jogador.id])).length, 0);
   });
   await t("evento persiste após reinício; ajudar concede uma única recompensa", async () => {
     await limpar(); numeros = [.80]; await enviar("explorar"); jogo = novoJogo();
-    assert.match(texto(await enviar("explorar")), /viajante/);
+    assert.match(texto(await enviar("explorar")), /carroça tombada/);
     assert.equal((await atual()).vigor, 90);
     const ss = await Promise.all([enviar("1"), enviar("ajudar")]);
     assert.equal((await atual()).ryo, "5");
-    assert.equal(ss.filter((s) => /agradece/.test(texto(s))).length, 1);
+    assert.equal(ss.filter((s) => /umas moedas/.test(texto(s))).length, 1);
   });
   await t("seguir encerra evento sem recompensa", async () => {
     await limpar(); numeros = [.80]; await enviar("explorar");
-    assert.match(texto(await enviar("2")), /se despede/);
+    assert.match(texto(await enviar("2")), /segue seu caminho/);
     assert.equal((await atual()).ryo, "0");
   });
   await t("fauna regional observa sem conceder pet nem atributos", async () => {
@@ -226,7 +226,7 @@ export async function testarExploracaoServidor({ db, jogador, mensagem, grupo })
     await limpar(); numeros = [.60, .1, 0, .60, .1, 0];
     const ss = await Promise.all([enviar("explorar"), enviar("explorar")]);
     assert.equal((await atual()).vigor, 90); assert.equal((await atual()).ryo, "5");
-    assert.equal(ss.filter((s) => /Aguarde/.test(texto(s))).length, 1);
+    assert.equal(ss.filter((s) => /Respire um pouco/.test(texto(s))).length, 1);
   });
   await t("duas viagens simultâneas geram um único prazo", async () => {
     await limpar(); await Promise.all([enviar("viajar R-HOM-1"), enviar("viajar R-HOM-6")]);
@@ -254,8 +254,8 @@ export async function testarExploracaoServidor({ db, jogador, mensagem, grupo })
     await limpar();
     const [b] = await db.query("insert into jogo.batalhas (mundo_id, tipo, canal_wa_id, estado) values ($1, 'solo', 'teste', '{}') returning id", [jogador.mundo_id]);
     await db.query("insert into jogo.participantes_batalha (batalha_id, jogador_id) values ($1, $2)", [b.id, jogador.id]);
-    assert.match(texto(await enviar("explorar")), /Termine sua batalha/);
-    assert.match(texto(await enviar("viajar R-HOM-1")), /Termine sua batalha/);
+    assert.match(texto(await enviar("explorar")), /meio de uma luta/);
+    assert.match(texto(await enviar("viajar R-HOM-1")), /meio de uma luta/);
     assert.equal((await atual()).vigor, 100); await db.query("delete from jogo.batalhas where id = $1", [b.id]);
   });
   await limpar();

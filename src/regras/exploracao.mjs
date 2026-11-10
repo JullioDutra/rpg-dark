@@ -24,7 +24,7 @@ export const normal = (s) => semAcento(String(s).toLowerCase()).trim().replace(/
 const interpretar = criarInterpretador({ regioes: REGIOES });
 
 export function comandoExploracao(texto) {
-  const t = normal(texto).replace(/^[/!]/, "");
+  const t = normal(texto).replace(/^[/!]/, "").replace(/^(bolsa|mochila|minha bolsa)$/, "inventario");
   const m = t.match(/^(explorar|viajar|mapa|rota|vigor|viagem|descobertas|inventario|recuar|enfrentar|ajudar|seguir)(?:\s+(.*))?$/);
   if (m) return { tipo: m[1], alvo: m[2] ?? "" };
   if (/^[12]$/.test(t)) return { tipo: "escolha", alvo: t };

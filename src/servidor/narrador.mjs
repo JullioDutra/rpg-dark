@@ -20,9 +20,9 @@ const interpretar = criarInterpretador({ regioes: REGIOES });
 export const LIMITES = { intervaloMs: 6000, porDia: 80, historico: 6 };
 
 const RECUSAS = {
-  pedido_atributo: "🌌 As estrelas não dão poder a quem pede. Atributos só sobem por *mérito*: lutas, treinos, missões e escolhas.",
-  pedido_buff: "🌌 Nenhuma palavra muda o que sua técnica faz. Ela fica mais forte com treino e uso (maestria), não com pedidos.",
-  tentativa_manipulacao: "🌌 O narrador não muda as regras do mundo. Diga o que *seu personagem* faz, começando com *>*.",
+  pedido_atributo: "As estrelas não dão poder a quem pede. Força se conquista: lutando, treinando, escolhendo.",
+  pedido_buff: "Nenhuma palavra muda o que sua técnica faz. Ela cresce com o uso, não com pedidos.",
+  tentativa_manipulacao: "O mundo tem suas regras, e elas não mudam. Diga o que *seu personagem* faz, começando com *>*.",
 };
 
 /** Bíblia curta (sem segredos): tom, proibições, onde o jogador está e de onde veio. */
@@ -36,7 +36,7 @@ function biblia(j) {
     r && `Região atual: ${r.nome} (${reino?.titulo}). ${TEXTOS.regioes[r.id]?.texto ?? ""} Perigo: ${r.perigo}.`,
     reino && `Reino: ${reino.texto} Governante: ${reino.rei}.`,
     aldeia && `Aldeia natal do jogador: ${aldeia.nome} — ${aldeia.descricao}. Gancho de abertura: ${GANCHOS[aldeia.id] ?? "—"}`,
-    "Regras de estilo: frases curtas e claras, fáceis de entender; no máximo 700 caracteres; termine dando ao jogador uma escolha ou pergunta.",
+    "Regras de estilo: 2ª pessoa (você); frases curtas, claras e sensoriais; SEM emojis, sem listas, sem números de jogo; no máximo 700 caracteres; *negrito* só em nomes; termine com uma escolha ou pergunta.",
   ].filter(Boolean).join("\n");
 }
 
@@ -57,13 +57,13 @@ export function criarNarrador({ db, ia, agora = () => Date.now() }) {
     const i = interpretar(`> ${acao}`, { estado: "livre", direcionado: true });
     const seguranca = interpretar(acao, { estado: "livre", direcionado: true });
     if (RECUSAS[seguranca.intencao]) return [{ para, texto: RECUSAS[seguranca.intencao] }];
-    if (!ia) return [{ para, texto: "📜 O narrador está descansando agora. Tente de novo em alguns minutos, ou use *explorar*." }];
+    if (!ia) return [{ para, texto: "O narrador se calou por um momento. Tente de novo em alguns minutos, ou use *explorar*." }];
 
     const tempo = agora();
     const ultimas = await db.query(`select criado_em from jogo.cenas where jogador_id = $1 and papel = 'jogador'
       and criado_em > $2 order by criado_em desc`, [j.id, new Date(tempo - 86_400_000)]);
-    if (ultimas[0] && tempo - +new Date(ultimas[0].criado_em) < LIMITES.intervaloMs) return [{ para, texto: "⏳ Calma: espere alguns segundos entre uma ação e outra." }];
-    if (ultimas.length >= LIMITES.porDia) return [{ para, texto: "🌙 Você já viveu muitas cenas hoje. O narrador volta amanhã; enquanto isso, use *explorar* e *viajar*." }];
+    if (ultimas[0] && tempo - +new Date(ultimas[0].criado_em) < LIMITES.intervaloMs) return [{ para, texto: "Calma. Um passo de cada vez." }];
+    if (ultimas.length >= LIMITES.porDia) return [{ para, texto: "Foi um dia longo. O narrador volta amanhã; até lá, use *explorar* e *viajar*." }];
 
     const pendente = await um(db, "select 1 from jogo.exploracoes where jogador_id = $1 and pendente", [j.id]);
     const viagem = await um(db, "select destino from jogo.viagens where jogador_id = $1 and concluida_em is null", [j.id]);
@@ -101,7 +101,7 @@ export function criarNarrador({ db, ia, agora = () => Date.now() }) {
         const dados = { origem: "narrador", inimigo: { id: v.id, nome: v.nome, nivel }, perigoso: nivel >= j.nivel + 5 };
         await db.query(`insert into jogo.exploracoes (jogador_id, mensagem_id, regiao, tipo, dados, pendente, criada_em)
           values ($1, $2, $3, 'encontro', $4, true, $5) on conflict do nothing`, [j.id, `cena:${j.id}:${tempo}`, j.regiao_atual, JSON.stringify(dados), new Date(tempo)]);
-        saidas.push({ para, texto: `${dados.perigoso ? "⚠️ Esse inimigo é muito mais forte que você.\n" : ""}⚔️ *${v.nome}* (Nv ${nivel}) bloqueia seu caminho!\nResponda *lutar* para enfrentar ou *recuar* para fugir.` });
+        saidas.push({ para, texto: `${dados.perigoso ? "⚠️ Esse inimigo é forte demais para você.\n\n" : ""}*${v.nome_completo}* bloqueia seu caminho.\n\n*lutar* · *recuar*\n_nível ${nivel}_` });
       }
     }
     // A1-M1 ("Despertar") termina quando o jogador interage com o gancho da aldeia.

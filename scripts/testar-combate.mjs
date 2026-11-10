@@ -27,13 +27,13 @@ t("ataque causa dano e o inimigo responde", () => {
   assert.equal(r.fim, null);
   assert(r.estado.inimigo.hp < e.inimigo.hp && r.estado.jogador.hp < e.jogador.hp);
   assert.equal(r.estado.rodada, 2);
-  assert.match(painel(r.estado), /Rodada 2/);
+  assert.match(painel(r.estado), /rodada 2/);
 });
 t("magia na fraqueza é super efetiva e gasta MP", () => {
   const e = novoCombate(jog("Mago"), V("V001"), 2); // Haikobo: fraqueza Água
   const r = resolverRodada(e, { tipo: "magia" }, fixo(0.5));
   assert.equal(r.estado.jogador.mp, e.jogador.mp - 6);
-  assert(r.estado.log.some((l) => /super efetivo/.test(l)));
+  assert(r.estado.log.some((l) => /ponto fraco/.test(l)));
 });
 t("sem MP, sem poção ou em recarga: erro e a rodada não passa", () => {
   const e = novoCombate(jog("Mago", { mp: 2 }), V("V001"), 2);
@@ -55,7 +55,7 @@ t("golpe forte é avisado antes (telegrafia)", () => {
   assert.equal(e.preparando, false);
   e = resolverRodada(e, { tipo: "defender" }, fixo(0.5)).estado;
   assert.equal(e.preparando, true); // avisado no fim da 2ª rodada, golpe forte na 3ª
-  assert.match(painel(e), /preparando um golpe forte/);
+  assert.match(painel(e), /junta forças/);
 });
 t("poção cura e tem limite de 2 por batalha", () => {
   let e = novoCombate(jog("Espadachim", { hp: 20 }), V("V001"), 2);
@@ -69,8 +69,8 @@ t("guarda de elite quebra: inimigo perde a ação e o próximo golpe dá +50%", 
   e.inimigo.postura = 1;
   const r = resolverRodada(e, { tipo: "magia" }, fixo(0.5)); // fraqueza → −2 guarda
   if (V("V038").fraqueza === "Água") {
-    assert(r.estado.log.some((l) => /guarda .* quebrou/i.test(l)));
-    assert(r.estado.log.some((l) => /atordoado/.test(l)));
+    assert(r.estado.log.some((l) => /guarda de .* se quebra/i.test(l)));
+    assert(r.estado.log.some((l) => /zonzo/.test(l)));
     assert.equal(r.estado.inimigo.vulneravel, true);
   }
 });

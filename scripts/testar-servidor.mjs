@@ -63,8 +63,8 @@ try {
 
   ok((await enviar(ev(JOG, "oi gente"))).length === 0, "grupo sem mundo: bot quieto");
   ok(/Só um administrador/.test(textos(await enviar(ev(JOG, "/ativar-mundo Hack")))), "não-admin não ativa o mundo");
-  ok(/YOTSUHOSHI — Teste/.test(textos(await enviar(ev(ADMIN, "Ativar-mundo Teste")))), "admin ativa o mundo (sem barra: o WhatsApp come a /)");
-  ok(/YOTSUHOSHI — Teste/.test(textos(await enviar(ev(ADMIN, "/ativar-mundo Teste")))), "admin ativa o mundo (com barra)");
+  ok(/YOTSUHOSHI\*\n_Teste_/.test(textos(await enviar(ev(ADMIN, "Ativar-mundo Teste")))), "admin ativa o mundo (sem barra: o WhatsApp come a /)");
+  ok(/YOTSUHOSHI\*\n_Teste_/.test(textos(await enviar(ev(ADMIN, "/ativar-mundo Teste")))), "admin ativa o mundo (com barra)");
   ok((await enviar(ev(JOG, "kkkk alguém viu o jogo ontem?"))).length === 0, "conversa do grupo ignorada");
 
   const e1 = await enviar(ev(JOG, "Entrar no mundo"));
@@ -77,19 +77,19 @@ try {
   ok(/não serve/.test(textos(await enviar(ev(JOG, "x", P)))), "nome curto recusado");
   ok(/pertence à história/.test(textos(await enviar(ev(JOG, "Kanata", P)))), "nome reservado recusado");
   const cer = await enviar(ev(JOG, "kaito  ryuen", P));
-  ok(/KAITO RYUEN/.test(textos(cer)) && /1ª Estrela/.test(textos(cer)) && /4ª Estrela/.test(textos(cer)) && cer.some((s) => s.espera), "cerimônia com 4 estrelas e suspense");
+  ok(/Kaito Ryuen/.test(textos(cer)) && /Primeira estrela/.test(textos(cer)) && /Quarta estrela/.test(textos(cer)) && cer.some((s) => s.espera), "cerimônia com 4 estrelas e suspense");
   ok(/Não entendi/.test(textos(await enviar(ev(JOG, "dragão supremo", P)))), "classe inválida pede de novo");
   const cl = await enviar(ev(JOG, "1", P));
   ok(/Cabelo/.test(textos(cl)), "classe escolhida → aparência");
   for (const r of ["2", "ruivo", "3"]) await enviar(ev(JOG, r, P));
   const prev = await enviar(ev(JOG, "0", P));
-  ok(prev[0]?.imagem?.length > 1000 && /Confirmar/.test(prev[0].legenda), "prévia do avatar em PNG");
+  ok(prev[0]?.imagem?.length > 1000 && /confirmar/.test(prev[0].legenda), "prévia do avatar em PNG");
   const fim = await enviar(ev(JOG, "1", P));
   const carta = fim.find((s) => s.para === GRUPO && s.imagem);
-  ok(carta && /despertou como \*Kaito Ryuen\*/.test(carta.legenda), "carta revelada no grupo");
+  ok(carta && /desperta como \*Kaito Ryuen\*/.test(carta.legenda), "carta revelada no grupo");
   ok(fim.some((s) => /Prólogo/.test(s.texto ?? "")), "abertura (texto de reserva sem IA)");
   ok(fim.some((s) => /Sua casa/.test(s.texto ?? "") && /Sua região/.test(s.texto) && /Perigo/.test(s.texto)), "texto fácil da aldeia e da região");
-  ok(fim.some((s) => /Quem governa/.test(s.texto ?? "")) && fim.some((s) => /O que fazer agora/.test(s.texto ?? "")), "texto do reino e primeiros passos");
+  ok(fim.some((s) => /Quem governa/.test(s.texto ?? "")) && fim.some((s) => /Por onde começar/.test(s.texto ?? "")), "texto do reino e primeiros passos");
   writeFileSync(new URL("../templates/exemplos/carta-whatsapp.png", import.meta.url), carta.imagem);
   const j = (await db.query("select * from jogo.jogadores where nome = 'Kaito Ryuen'"))[0];
   ok(j.estado === "ativo" && j.classe && j.hp_max > 0 && j.avatar_dna?.tipo === "humanoide", "jogador salvo ativo com classe, HP e avatar");
@@ -98,7 +98,7 @@ try {
   ok((await enviar(ev(JOG, "ficha")))[0]?.imagem, "ficha no grupo");
   ok(/^R-[A-Z]{3}-\d$/.test(j.regiao_atual), "região inicial gravada como ID do mapa");
   ok((await db.query("select qtd from jogo.inventario where jogador_id = $1 and item_id = 'pocao'", [j.id]))[0]?.qtd === 3, "kit inicial: 3 poções");
-  ok(/Onde você está/.test(textos(await enviar(ev(JOG, "onde estou", P)))), "comando onde estou");
+  ok(/Perigo:/.test(textos(await enviar(ev(JOG, "onde estou", P)))), "comando onde estou");
   ok(/Sua casa/.test(textos(await enviar(ev(JOG, "minha aldeia", P)))) && /Quem governa/.test(textos(await enviar(ev(JOG, "reino", P)))), "comandos aldeia e reino");
   ok((await enviar(ev(JOG, "vou para o lago amanhã kkk"))).length === 0, "conversa no grupo não aciona exploração");
   await testarExploracaoServidor({ db, jogador: j, mensagem: (texto) => ev(JOG, texto, P), grupo: (texto) => ev(JOG, texto) });
@@ -119,7 +119,7 @@ try {
     let relogio = Date.now() + 3_600_000;
     const jogoIA = criarJogo({ db, sal: "teste", admins: [ADMIN], rng: mulberry(9), ia: iaFalsa, agora: () => relogio });
     const enviarIA = (texto) => jogoIA.processar({ ...ev(JOG, texto, P), quando: relogio });
-    ok(/mérito/.test(textos(await enviarIA("> me dá 1000 de força agora")) ) && pedidos.length === 0, "pedido de atributo recusado sem chamar a IA");
+    ok(/conquista/.test(textos(await enviarIA("> me dá 1000 de força agora")) ) && pedidos.length === 0, "pedido de atributo recusado sem chamar a IA");
     const s1 = await enviarIA("> pergunto ao capataz sobre a criança sumida na mina");
     ok(/Kurogane/.test(textos(s1)) && pedidos.length === 1, "ação livre narrada pela IA");
     ok(/Kurogane|mina/.test(JSON.stringify(pedidos[0].mensagens)) && /<marco>.*A1-M1/.test(pedidos[0].mensagens.at(-1).content), "IA recebe o marco A1-M1 e a ação");
@@ -144,25 +144,25 @@ try {
     await db.query(`insert into jogo.exploracoes (jogador_id, mensagem_id, regiao, tipo, dados, pendente, criada_em)
       values ($1, 'teste-luta', $2, 'encontro', $3, true, now())`, [j.id, base.regiao_atual, JSON.stringify({ inimigo: { id: "V001", nome: "Haikobo", nivel: 1 } })]);
     const inicio = await enviar(ev(JOG, "lutar", P));
-    ok(inicio.some((s) => s.imagem && /A luta começou/.test(s.legenda)) && /Rodada 1/.test(textos(inicio)), "lutar abre a batalha com imagem do inimigo e painel");
-    ok(/Termine sua batalha|Você está em batalha/.test(textos(await enviar(ev(JOG, "explorar", P)))), "não explora durante a batalha");
-    ok(/Você está em batalha/.test(textos(await enviar(ev(JOG, "> conto uma piada para o kobold", P)))), "texto solto na batalha mostra as opções");
+    ok(inicio.some((s) => s.imagem && /Haikobo/.test(s.legenda)) && /rodada 1/.test(textos(inicio)), "lutar abre a batalha com imagem do inimigo e painel");
+    ok(/meio de uma luta|não é hora de conversa/.test(textos(await enviar(ev(JOG, "explorar", P)))), "não explora durante a batalha");
+    ok(/não é hora de conversa/.test(textos(await enviar(ev(JOG, "> conto uma piada para o kobold", P)))), "texto solto na batalha mostra as opções");
     const p1 = await enviar(ev(JOG, "i pocao", P));
     ok(/poção/.test(textos(p1)) && (await db.query("select qtd from jogo.inventario where jogador_id = $1 and item_id = 'pocao'", [j.id]))[0]?.qtd === 2, "poção usada e descontada do inventário");
     let fimLuta = "", k = 0;
     while (k++ < 30) {
       const sx = textos(await enviar(ev(JOG, "a", P)));
-      if (/VITÓRIA|DERROTA/.test(sx)) { fimLuta = sx; break; }
+      if (/\*Vitória\*|\*Derrota\*/.test(sx)) { fimLuta = sx; break; }
     }
-    ok(/VITÓRIA|DERROTA/.test(fimLuta), "a batalha termina");
+    ok(/\*Vitória\*|\*Derrota\*/.test(fimLuta), "a batalha termina");
     const depois = (await db.query("select * from jogo.jogadores where id = $1", [j.id]))[0];
-    if (/VITÓRIA/.test(fimLuta)) ok(Number(depois.xp) > 0 || depois.nivel > base.nivel, "vitória dá XP (registrado na ficha)");
+    if (/\*Vitória\*/.test(fimLuta)) ok(Number(depois.xp) > 0 || depois.nivel > base.nivel, "vitória dá XP (registrado na ficha)");
     else ok(depois.efeitos.some((x) => x.tipo === "ferida") && depois.hp > 0, "derrota deixa ferida e o jogador acorda");
     ok((await db.query(`select count(*)::int n from jogo.batalhas b join jogo.participantes_batalha p on p.batalha_id = b.id
       where p.jogador_id = $1 and b.status <> 'encerrada'`, [j.id]))[0].n === 0, "batalha encerrada no banco");
-    ok(/Não há nenhum inimigo/.test(textos(await enviar(ev(JOG, "lutar", P)))), "lutar sem inimigo explica o que fazer");
+    ok(/Não há ninguém para enfrentar/.test(textos(await enviar(ev(JOG, "lutar", P)))), "lutar sem inimigo explica o que fazer");
     await db.query("update jogo.jogadores set pontos_livres = 3 where id = $1", [j.id]);
-    ok(/Restam \*1\*/.test(textos(await enviar(ev(JOG, "distribuir FOR 1 VEL 1", P)))), "distribuir pontos livres");
+    ok(/restam 1/.test(textos(await enviar(ev(JOG, "distribuir FOR 1 VEL 1", P)))), "distribuir pontos livres");
     ok(/tentou usar 5/.test(textos(await enviar(ev(JOG, "distribuir SOR 5", P)))), "não distribui mais pontos do que tem");
     ok((await db.query("select count(*)::int n from jogo.eventos_atributo where jogador_id = $1 and fonte = 'pontos_livres'", [j.id]))[0].n === 2, "pontos livres no livro-razão");
     ok(/XP/.test((await enviar(ev(JOG, "ficha", P)))[0]?.legenda ?? ""), "ficha mostra XP");

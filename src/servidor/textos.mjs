@@ -1,41 +1,52 @@
-// Textos fáceis de entender sobre a origem do jogador, a região e o reino. Sem segredos da história.
+// Textos do jogo e o ESTILO das mensagens (imersão):
+//  1. Narração primeiro, em 2ª pessoa, frases curtas e sensoriais.
+//  2. Números e regras numa linha discreta no fim, em itálico (rodapé).
+//  3. No máximo UM emoji por mensagem, e só os do tema: ⚔️ luta · ⭐ cerimônia · 🗺️ mapa · ⚠️ perigo real.
+//  4. Nada de segredos da história aqui.
 import { readFileSync } from "node:fs";
 import { REGIAO } from "../regras/exploracao.mjs";
 
 const T = JSON.parse(readFileSync(new URL("../../data/textos-mundo.json", import.meta.url), "utf8"));
 
-export const perigoEmPalavras = (p) => T.perigo[p] ?? "🟡 tome cuidado";
+export const perigoEmPalavras = (p) => T.perigo[p] ?? "exige cuidado";
+export const rodape = (...partes) => `_${partes.filter(Boolean).join(" · ")}_`;
+export const NOME_CASTA = { campones: "Camponês", plebeu: "Plebeu", cavaleiro: "Cavaleiro", realeza: "Realeza", indefinido: "Indefinido", rei: "Rei" };
 
-/** "Sua região": onde fica, como é, perigo e o que se encontra. */
-export function textoRegiao(id, { titulo = "📍 *Onde você está*" } = {}) {
+/** Uma linha de ambiente da região (sons, cheiros, clima). `n` escolhe qual, sem gastar o sorteio do jogo. */
+export function ambiente(id, n = 0) {
+  const a = T.regioes[id]?.ambiente ?? [];
+  return a.length ? a[Math.abs(n) % a.length] : "";
+}
+
+/** Apresentação de uma região: como é, perigo e o que se encontra. */
+export function textoRegiao(id, { titulo = null } = {}) {
   const r = REGIAO.get(id);
   if (!r) return null;
   const tr = T.regioes[id] ?? {};
   const reino = T.reinos[r.reino];
-  return `${titulo}\n*${r.nome}* — ${reino?.titulo ?? r.reino}\n\n${tr.texto ?? ""}\n\n` +
-    `⚠️ Perigo: ${perigoEmPalavras(r.perigo)}\n🔎 O que tem aqui: ${tr.tem ?? "?"}`;
+  return `${titulo ? `${titulo}\n` : ""}*${r.nome}*\n_${reino?.titulo ?? r.reino}_\n\n${tr.texto ?? ""}\n\n` +
+    `Perigo: ${perigoEmPalavras(r.perigo)}. Aqui você encontra ${tr.tem ?? "pouca coisa"}.`;
 }
 
-/** "Seu reino": quem manda, como é o povo e o bônus de quem nasce lá. */
+/** O reino: quem manda, como é o povo e o bônus de quem nasce lá. */
 export function textoReino(reinoId) {
   const k = T.reinos[reinoId];
   if (!k) return null;
-  return `👑 *${k.titulo}*\n\n${k.texto}\n\n• Quem governa: ${k.rei}\n• Capital: ${k.capital}\n• ${k.nativos}`;
+  return `*${k.titulo}*\n\n${k.texto}\n\nQuem governa: ${k.rei}.\nCapital: ${k.capital}.\n${k.nativos}`;
 }
 
-/** Mensagem de boas-vindas à terra natal, logo após a criação do personagem. */
+/** A terra natal, logo após a criação do personagem. */
 export function textoOrigem(j, aldeia) {
-  const casta = T.castas[j.casta] ?? "";
-  return `🏡 *Sua casa: ${aldeia.nome}* (${aldeia.jp})\n\n${aldeia.descricao}\n\n${casta}`;
+  return `*Sua casa: ${aldeia.nome}*${aldeia.jp ? ` (${aldeia.jp})` : ""}\n\n${aldeia.descricao}\n\n${T.castas[j.casta] ?? ""}`;
 }
 
 export function textoPrimeirosPassos() {
-  return "🧭 *O que fazer agora?*\n\n" +
-    "• *explorar* — olhar ao redor (pode achar itens, lugares ou inimigos)\n" +
-    "• *mapa* — ver onde você está\n" +
-    "• *viajar <lugar>* — ir para uma região vizinha\n" +
-    "• *onde estou* — rever este texto sobre a sua região\n" +
-    "• *> sua ação* — fazer qualquer coisa com suas palavras. Ex.: _> pergunto ao ferreiro sobre a criança sumida_\n" +
-    "• *ficha* — ver sua carta · *ajuda* — todos os comandos\n\n" +
-    "⚡ Explorar e viajar gastam *vigor*, que volta sozinho com o tempo.";
+  return "*Por onde começar*\n\n" +
+    "*explorar* — olhar ao redor\n" +
+    "*mapa* — ver onde você está\n" +
+    "*viajar <lugar>* — ir para uma região vizinha\n" +
+    "*onde estou* — rever sua região\n" +
+    "*> sua ação* — fazer o que quiser, com suas palavras\n" +
+    "   _ex.: > pergunto ao ferreiro sobre a criança sumida_\n\n" +
+    rodape("explorar e viajar cansam; o vigor volta com o tempo");
 }
