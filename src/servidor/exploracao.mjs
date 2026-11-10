@@ -5,6 +5,7 @@ import {
 } from "../regras/exploracao.mjs";
 import { desenharMapa, finalizar, rotuloReinos, recortar, RECORTES } from "../mapa/mapa.mjs";
 import { Tela } from "../avatar/pixel.mjs";
+import { textoRegiao } from "./textos.mjs";
 
 let baseMapa;
 export function imagemMapa(regiao, reino = null) {
@@ -63,7 +64,10 @@ export function criarExploracao({ db, rng, agora }) {
       await q("update jogo.jogadores set regiao_atual = $2 where id = $1", [j.id, j.regiao_atual]);
       await q("update jogo.viagens set concluida_em = $2 where id = $1", [viagem.id, iso]);
       dizer(`🏁 Você chegou a *${nomeRegiao(j.regiao_atual)}*.${viagem.evento ? `\n${viagem.evento.texto}` : ""}`);
-      if (await descobrir("regiao", j.regiao_atual, { nome: nomeRegiao(j.regiao_atual) })) mapa(REGIAO.get(j.regiao_atual).reino);
+      if (await descobrir("regiao", j.regiao_atual, { nome: nomeRegiao(j.regiao_atual) })) {
+        dizer(textoRegiao(j.regiao_atual, { titulo: "✨ *Lugar novo!*" }));
+        mapa(REGIAO.get(j.regiao_atual).reino);
+      }
       viagem = null;
     }
     if (!cmd) return resultado(false);

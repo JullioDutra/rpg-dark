@@ -1,0 +1,95 @@
+{
+  "_nota": "Textos curtos e fáceis para o jogador. NUNCA colocar aqui os segredos das regiões (doc 02) nem spoilers da história.",
+  "reinos": {
+    "Homura": {
+      "titulo": "焔 Homura — o Reino do Fogo",
+      "texto": "Fica no sul. É uma terra quente, de vulcões, desertos de cinza e rios de lava. O povo é guerreiro e resolve muita coisa em duelo: aqui, respeito se ganha lutando.",
+      "rei": "Rei Akatsuki Ryūen, \"o Sol que Não se Põe\"",
+      "capital": "Kagutsuchi-jō, a cidade em degraus na encosta do vulcão",
+      "nativos": "Quem nasce aqui tem um pouco mais de Força e Magia."
+    },
+    "Watatsumi": {
+      "titulo": "水 Watatsumi — o Reino da Água",
+      "texto": "Fica no oeste. É terra de lagos, ilhas, pântanos e mar aberto. O povo gosta de estudar, negociar e cumprir acordos; uma dívida de honra aqui vale mais que ouro.",
+      "rei": "Rei Minazuki Kaishin, \"o Rei das Marés\"",
+      "capital": "Ryūgū-jō, um palácio dentro de uma bolha d'água sobre o Lago Kagami",
+      "nativos": "Quem nasce aqui tem um pouco mais de Resistência."
+    },
+    "Daichi": {
+      "titulo": "土 Daichi — o Reino da Terra",
+      "texto": "Fica no leste. É terra de montanhas, florestas gigantes, minas de cristal e campos de trigo. O povo vive em clãs, trabalha duro e valoriza a lealdade acima de tudo.",
+      "rei": "Rei Gōtetsu Iwanaga, \"a Montanha que Anda\"",
+      "capital": "Iwakura-jō, uma cidade inteira escavada dentro de uma montanha",
+      "nativos": "Quem nasce aqui tem um pouco mais de Defesa e Vida."
+    },
+    "Fūjin": {
+      "titulo": "風 Fūjin — o Reino do Vento",
+      "texto": "Fica no norte. É terra de picos altos, estepes de capim e ilhas que flutuam no céu. O povo é livre e viajante: mensageiros, mapeadores e espiões.",
+      "rei": "Rei Hayate Sorahiko, \"o Rei que Ninguém Viu Parado\"",
+      "capital": "Amagumo-jō, uma cidade que flutua sobre as nuvens",
+      "nativos": "Quem nasce aqui tem um pouco mais de Velocidade e Sorte."
+    },
+    "Kokū": {
+      "titulo": "虚空 Kokū — a Terra Central",
+      "texto": "Fica no meio do continente, onde a magia vai sumindo. Não tem rei: é terra neutra, cuidada pela Guilda de Kyōkai. Quanto mais perto do centro, mais perigoso fica.",
+      "rei": "Nenhum rei. Quem manda é a Guilda de Kyōkai",
+      "capital": "Kyōkai, a cidade neutra da fronteira",
+      "nativos": "Aqui a magia enfraquece. Quem luta sem magia fica mais forte."
+    }
+  },
+  "regioes": {
+    "R-HOM-1": { "texto": "A capital do Fogo. Uma cidade em degraus com ruas aquecidas por lava sob o chão de vidro. No topo fica o Coliseu de Brasas.", "tem": "guilda dos duelistas e forja real" },
+    "R-HOM-2": { "texto": "O vulcão sagrado do reino. À noite o topo brilha como um segundo sol.", "tem": "minério de chama e materiais raros" },
+    "R-HOM-3": { "texto": "Um deserto de dunas cinzentas. No fim da tarde chovem brasas, e há esqueletos de navios na areia: aqui já foi mar.", "tem": "vidro de cinza e sal negro" },
+    "R-HOM-4": { "texto": "Uma floresta de árvores queimadas com folhas de brasa. Vagalumes de fogo formam desenhos no céu.", "tem": "seiva quente e ervas de cura" },
+    "R-HOM-5": { "texto": "Um rio de lava atravessado por pontes de obsidiana. Barqueiros de pedra levam os viajantes.", "tem": "obsidiana e escamas de salamandra" },
+    "R-HOM-6": { "texto": "A fronteira com o reino da Água. Onde as águas se encontram o mar ferve e sobe uma névoa vermelha.", "tem": "coral-brasa e sal de vapor" },
+    "R-HOM-7": { "texto": "Uma cidade antiga engolida pelo magma. Só os topos das torres ainda aparecem.", "tem": "relíquias de outra era" },
+    "R-WAT-1": { "texto": "A capital da Água. Um palácio de coral e pérola dentro de uma bolha d'água flutuante. Você sobe por escadas feitas de água.", "tem": "a Biblioteca Submersa e o mercado de pérolas" },
+    "R-WAT-2": { "texto": "Um lago calmo e perfeito como um espelho. Dizem que o reflexo mostra o céu de outro dia.", "tem": "água-espelho para poções" },
+    "R-WAT-3": { "texto": "Centenas de ilhas pequenas com casas sobre palafitas. Tem pescadores, piratas e baleias que voam.", "tem": "pérolas e madeira de mangue" },
+    "R-WAT-4": { "texto": "Um pântano escuro onde olhos brilham debaixo d'água e as árvores choram água salgada.", "tem": "lodo alquímico e lótus negro" },
+    "R-WAT-5": { "texto": "Uma geleira azul no extremo do reino, com criaturas congeladas há séculos.", "tem": "gelo eterno e presas de mamute" },
+    "R-WAT-6": { "texto": "Cachoeiras enormes que parecem falar. Os moradores dizem que a água canta nomes.", "tem": "água sagrada" },
+    "R-WAT-7": { "texto": "Um abismo no fundo do oceano, onde a luz não chega. Criaturas gigantes vivem ali.", "tem": "escamas abissais" },
+    "R-DAI-1": { "texto": "A capital da Terra. Uma cidade vertical dentro da montanha, com elevadores de pedra movidos por golens.", "tem": "forja de mithril e banco de cristais" },
+    "R-DAI-2": { "texto": "Uma floresta de árvores com 300 metros de altura. Pequenos espíritos repetem tudo o que você diz.", "tem": "madeira-espírito e frutos de mana" },
+    "R-DAI-3": { "texto": "Minas de cristal que brilham em várias cores. Alguns mineradores têm olhos de cristal.", "tem": "cristais de mana (servem de dinheiro e de energia)" },
+    "R-DAI-4": { "texto": "Um cânion formado pelos ossos de um dragão gigantesco.", "tem": "ossos de dragão e fósseis" },
+    "R-DAI-5": { "texto": "Campos de trigo dourado sem fim, moinhos de pedra e vilas de camponeses. Um dos lugares mais tranquilos do reino.", "tem": "comida e cavalos de terra" },
+    "R-DAI-6": { "texto": "Montanhas de ferro que atraem raios. Peregrinos sobem as trilhas para treinar.", "tem": "ferro-estelar" },
+    "R-DAI-7": { "texto": "Cavernas que descem fundo, até onde dizem que os mortos andam.", "tem": "pedras-alma" },
+    "R-FUJ-1": { "texto": "A capital do Vento. Uma cidade flutuante de madeira clara e velas, com pontes de corda entre as ilhotas.", "tem": "estaleiro de naves de vento e guilda dos mensageiros" },
+    "R-FUJ-2": { "texto": "Picos finos como agulhas, com mosteiros nas pontas. Ali vivem os tengu, guerreiros com rosto de pássaro.", "tem": "penas de tengu e chá de altitude" },
+    "R-FUJ-3": { "texto": "Um mar de capim prateado que se mexe em ondas com o vento. Cavaleiros nômades cruzam a estepe.", "tem": "cavalos-vento" },
+    "R-FUJ-4": { "texto": "Ilhas que flutuam no céu e mudam de lugar com as correntes de ar.", "tem": "pedra-flutuante" },
+    "R-FUJ-5": { "texto": "Um furacão que nunca para. No centro dele, tudo fica em silêncio.", "tem": "núcleo de tempestade" },
+    "R-FUJ-6": { "texto": "Um desfiladeiro onde o vento passa pelas pedras e parece chorar com vozes humanas.", "tem": "cristal sonoro" },
+    "R-FUJ-7": { "texto": "Um templo em ruínas atingido por raios o tempo todo.", "tem": "pedra-trovão" },
+    "R-KOK-1": { "texto": "A cidade neutra entre os reinos. Tem mercenários, contrabandistas, a Guilda, leilão de grimórios e uma arena.", "tem": "guilda, leilões e missões" },
+    "R-KOK-2": { "texto": "Um anel de pilares gigantes com símbolos dos quatro elementos. Alguns estão rachados.", "tem": "inscrições antigas" },
+    "R-KOK-3": { "texto": "Uma floresta onde tudo virou pedra cinza: árvores, animais e até pessoas.", "tem": "silêncio e estátuas" },
+    "R-KOK-4": { "texto": "Um buraco negro na terra. O som some e as cores desbotam. Pouquíssimos voltam.", "tem": "nada que valha o risco… por enquanto" },
+    "R-KOK-5": { "texto": "Uma torre que desce para dentro da cratera, andar por andar.", "tem": "o desafio mais difícil do mundo" },
+    "R-KOK-6": { "texto": "O fundo da cratera. Ninguém sabe ao certo o que existe lá.", "tem": "?" },
+    "R-KOK-7": { "texto": "Uma aldeia antiga transformada em cinza e pedra há 500 anos.", "tem": "memórias do passado" },
+    "R-KOK-8": { "texto": "Um monte isolado no coração do Vazio, onde a magia quase não existe.", "tem": "?" }
+  },
+  "perigo": {
+    "baixo": "🟢 tranquilo",
+    "medio": "🟡 tome cuidado",
+    "médio": "🟡 tome cuidado",
+    "alto": "🟠 perigoso",
+    "muito alto": "🔴 muito perigoso",
+    "extremo": "☠️ mortal",
+    "divino": "☠️ mortal"
+  },
+  "castas": {
+    "campones": "Você é de família simples, que vive do trabalho no campo, na mina ou na pesca. Tem pouca magia, mas aprende rápido (+20% de experiência) e aguenta firme.",
+    "plebeu": "Você é gente da cidade: comércio, ofícios e ruas cheias. Tem magia média e pode seguir quase qualquer caminho.",
+    "cavaleiro": "Você cresceu numa vila militar, treinando desde cedo. Tem corpo forte e um pouco de magia.",
+    "realeza": "Você é de família nobre. Tem muita magia, mas o corpo é menos resistente. Todos esperam muito de você.",
+    "indefinido": "Ninguém sabe direito de onde você veio. Sua magia pode ser enorme… ou quase nenhuma. Você é a surpresa do mundo.",
+    "rei": "Nas suas veias corre o sangue escondido de uma linhagem real. Você tem uma magia única no mundo inteiro, e isso atrai atenção. Nem sempre boa."
+  }
+}

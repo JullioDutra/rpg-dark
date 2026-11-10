@@ -11,7 +11,8 @@ import { sortear, atributosIniciais, ROTULO_CASTA, EMOJI_ELEMENTO, rngSeguro } f
 import { cartaPersonagem, previaAvatar } from "./carta.mjs";
 import { um } from "./db.mjs";
 import { criarExploracao } from "./exploracao.mjs";
-import { comandoExploracao, recuperarVigor } from "../regras/exploracao.mjs";
+import { comandoExploracao, recuperarVigor, buscarRegioes } from "../regras/exploracao.mjs";
+import { textoOrigem, textoRegiao, textoReino, textoPrimeirosPassos } from "./textos.mjs";
 
 const ler = (f) => JSON.parse(readFileSync(new URL(`../../data/${f}`, import.meta.url), "utf8"));
 let DADOS = null;
@@ -113,7 +114,7 @@ export function criarJogo({ db, sal = process.env.TELEFONE_SAL ?? "", admins = (
     if (/^(!|\/)?(entrar( no mundo)?|quero entrar( no mundo)?|entrar no jogo)$/.test(t)) return entrar(msg, mundo);
     if (ehComando(t, "ficha", "carta", "minha ficha", "minha carta")) return ficha(msg, mundo, msg.chat);
     if (ehComando(t, "ajuda", "comandos")) return [{ para: msg.chat, texto: AJUDA }];
-    if (comandoExploracao(msg.texto) && !/^\d+$/.test(t)) return [{ para: msg.chat, texto: "🧭 Exploração e viagens acontecem *no privado do bot*. Envie seu comando por lá." }];
+    if (/^[!/]?(explorar|viajar|mapa|rota|vigor|viagem|descobertas|inventario|onde estou|aldeia|reino)\b/.test(t)) return [{ para: msg.chat, texto: "🧭 Exploração e viagens acontecem *no privado do bot*. Envie seu comando por lá." }];
     return []; // conversa do grupo: o bot fica quieto
   }
 
@@ -150,9 +151,16 @@ export function criarJogo({ db, sal = process.env.TELEFONE_SAL ?? "", admins = (
       where j.identidade_id = $1 and m.status = 'ativo' order by (j.estado = 'criando') desc, j.atualizado_em desc limit 1`, [idt.id]);
     if (!j) return [{ para, texto: "🌌 Oi! Eu sou o narrador de *Yotsuhoshi*, um RPG de anime no WhatsApp.\n\nPara jogar, entre num grupo onde o mundo está ativo e digite *entrar no mundo*." }];
     if (j.estado === "criando") return criacao(msg, j, para, t);
-    const e = await exploracao(j.id, msg);
+    // Comandos de informação têm prioridade; a exploração só confere chegadas pendentes (texto vazio).
+    const info = ehComando(t, "onde estou", "regiao", "minha regiao", "local", "onde to", "onde eu estou", "aldeia", "minha aldeia",
+      "casa", "minha casa", "origem", "reino", "meu reino");
+    const e = await exploracao(j.id, info ? { ...msg, texto: "" } : msg);
     j = { ...j, ...e.jogador };
     if (e.tratado) return e.saidas;
+    if (ehComando(t, "onde estou", "regiao", "minha regiao", "local", "onde to", "onde eu estou"))
+      return [...e.saidas, { para, texto: textoRegiao(j.regiao_atual) ?? "Não consegui achar sua região." }];
+    if (ehComando(t, "aldeia", "minha aldeia", "casa", "minha casa", "origem")) return [...e.saidas, { para, texto: textoOrigem(j, aldeiaDe(j)) }];
+    if (ehComando(t, "reino", "meu reino")) return [...e.saidas, { para, texto: textoReino(j.reino) ?? "Reino desconhecido." }];
     if (ehComando(t, "ficha", "carta", "minha ficha", "minha carta", "status")) return [...e.saidas, { para, imagem: cartaPersonagem(j, j.avatar_dna), legenda: legendaFicha(j, agora()) }];
     if (ehComando(t, "ajuda", "comandos", "menu", "oi", "ola")) return [...e.saidas, { para, texto: AJUDA }];
     return [...e.saidas, { para, texto: `📜 *${j.nome}*, use *explorar*, *mapa*, *viajar <região>* ou *ajuda*.\nCombate, missões e ações livres com > chegam nas próximas etapas.` }];
@@ -231,7 +239,7 @@ export function criarJogo({ db, sal = process.env.TELEFONE_SAL ?? "", admins = (
       if (!/^(1|confirmar|confirmo|sim|ok)$/.test(t)) return [{ para, texto: perguntaDaEtapa(j) }];
       const dna = montarDna(j, est.sorteio, est.escolhas);
       const final = await um(db, `update jogo.jogadores set estado = 'ativo', etapa_criacao = null, avatar_dna = $2, regiao_atual = $3
-        where id = $1 and estado = 'criando' returning *`, [j.id, JSON.stringify(dna), est.sorteio.aldeia.regiao]);
+        where id = $1 and estado = 'criando' returning *`, [j.id, JSON.stringify(dna), buscarRegioes(est.sorteio.aldeia.regiao)[0]?.id ?? est.sorteio.aldeia.regiao]);
       if (!final) return [];
       await db.query(`insert into jogo.eventos_atributo (jogador_id, atributo, delta, fonte, detalhe)
         select $1, k, v::int, 'sorteio_inicial', '{}'::jsonb from jsonb_each_text($2::jsonb) as x(k, v)`, [j.id, JSON.stringify(final.atributos)]).catch(() => {});
@@ -242,9 +250,20 @@ export function criarJogo({ db, sal = process.env.TELEFONE_SAL ?? "", admins = (
         { para: j.grupo_wa_id, imagem: cartaPersonagem(final, dna), legenda: `🌟 ${arroba(msg.autor)} despertou como *${final.nome}*!\n\n${legendaFicha(final)}`, mencoes: mencao },
         { espera: 1500 },
         { para, texto: abertura },
-      ];
+        { espera: 1500 },
+        { para, texto: `${textoOrigem(final, est.sorteio.aldeia)}\n\n${textoRegiao(final.regiao_atual, { titulo: "🗺️ *Sua região*" }) ?? ""}` },
+        { espera: 1500 },
+        { para, texto: textoReino(final.reino) },
+        { espera: 1000 },
+        { para, texto: textoPrimeirosPassos() },
+      ].filter((x) => x.espera || x.texto || x.imagem);
     }
     return [{ para, texto: "Algo se perdeu entre as estrelas. Digite *entrar no mundo* no grupo para continuar." }];
+  }
+
+  function aldeiaDe(j) {
+    return j.avatar_dna?.sorteio?.aldeia ?? D.aldeias.aldeias.find((a) => a.nome === j.aldeia)
+      ?? { nome: j.aldeia ?? "?", jp: "", descricao: "" };
   }
 
   function montarDna(j, s, escolhas) {
@@ -293,5 +312,5 @@ export function legendaFicha(j, tempo = Date.now()) {
     `FOR ${a.FOR} · DEF ${a.DEF} · MAG ${a.MAG} · RES ${a.RES} · VEL ${a.VEL} · SOR ${a.SOR}`;
 }
 
-const AJUDA = `📖 *Comandos de Yotsuhoshi*\n\n*No grupo*\n• *entrar no mundo* — criar seu personagem\n• *ficha* — mostrar sua carta\n\n*No privado*\n• *explorar* — olhar ao redor (10 vigor)\n• *mapa [reino]* — sua posição e vizinhos\n• *rota <região>* — caminho, tempo e custo\n• *viajar <região>* — vizinho (15 vigor, 10 min)\n• *viagem* — consultar chegada\n• *vigor* — energia (+10/h)\n• *descobertas* — locais encontrados\n• *inventario* — achados e ryō\n• *recuar* — encerrar encontro\n• *ficha* — sua carta\n• *ajuda* — esta lista\n\nCombate e entrada em masmorras chegam nas próximas etapas.\n\n` +
+const AJUDA = `📖 *Comandos de Yotsuhoshi*\n\n*No grupo*\n• *entrar no mundo* — criar seu personagem\n• *ficha* — mostrar sua carta\n\n*No privado*\n• *onde estou* — sobre a sua região\n• *aldeia* / *reino* — sua origem\n• *explorar* — olhar ao redor (10 vigor)\n• *mapa [reino]* — sua posição e vizinhos\n• *rota <região>* — caminho, tempo e custo\n• *viajar <região>* — vizinho (15 vigor, 10 min)\n• *viagem* — consultar chegada\n• *vigor* — energia (+10/h)\n• *descobertas* — locais encontrados\n• *inventario* — achados e ryō\n• *recuar* — encerrar encontro\n• *ficha* — sua carta\n• *ajuda* — esta lista\n\nCombate e entrada em masmorras chegam nas próximas etapas.\n\n` +
   `_Atributos só mudam por mérito: batalhas, missões e escolhas. Ninguém (nem a IA) pode te dar poder de graça._`;

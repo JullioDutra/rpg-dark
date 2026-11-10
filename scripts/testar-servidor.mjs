@@ -88,12 +88,18 @@ try {
   const carta = fim.find((s) => s.para === GRUPO && s.imagem);
   ok(carta && /despertou como \*Kaito Ryuen\*/.test(carta.legenda), "carta revelada no grupo");
   ok(fim.some((s) => /Prólogo/.test(s.texto ?? "")), "abertura (texto de reserva sem IA)");
+  ok(fim.some((s) => /Sua casa/.test(s.texto ?? "") && /Sua região/.test(s.texto) && /Perigo/.test(s.texto)), "texto fácil da aldeia e da região");
+  ok(fim.some((s) => /Quem governa/.test(s.texto ?? "")) && fim.some((s) => /O que fazer agora/.test(s.texto ?? "")), "texto do reino e primeiros passos");
   writeFileSync(new URL("../templates/exemplos/carta-whatsapp.png", import.meta.url), carta.imagem);
   const j = (await db.query("select * from jogo.jogadores where nome = 'Kaito Ryuen'"))[0];
   ok(j.estado === "ativo" && j.classe && j.hp_max > 0 && j.avatar_dna?.tipo === "humanoide", "jogador salvo ativo com classe, HP e avatar");
   ok((await db.query("select count(*)::int n from jogo.eventos_atributo where jogador_id = $1", [j.id]))[0].n === 6, "atributos iniciais no livro-razão");
   ok(/já vive neste mundo/.test(textos(await enviar(ev(JOG, "entrar no mundo")))), "não cria 2º personagem");
   ok((await enviar(ev(JOG, "ficha")))[0]?.imagem, "ficha no grupo");
+  ok(/^R-[A-Z]{3}-\d$/.test(j.regiao_atual), "região inicial gravada como ID do mapa");
+  ok(/Onde você está/.test(textos(await enviar(ev(JOG, "onde estou", P)))), "comando onde estou");
+  ok(/Sua casa/.test(textos(await enviar(ev(JOG, "minha aldeia", P)))) && /Quem governa/.test(textos(await enviar(ev(JOG, "reino", P)))), "comandos aldeia e reino");
+  ok((await enviar(ev(JOG, "vou para o lago amanhã kkk"))).length === 0, "conversa no grupo não aciona exploração");
   await testarExploracaoServidor({ db, jogador: j, mensagem: (texto) => ev(JOG, texto, P), grupo: (texto) => ev(JOG, texto) });
 
   const OUTRO = "5511900000003";

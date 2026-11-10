@@ -16,13 +16,18 @@ export async function bancoNeon(url = urlBanco()) {
   if (!url) throw new Error("DATABASE_URL não configurada");
   const { neon, Pool } = await import("@neondatabase/serverless");
   const sql = neon(url);
+  let pool = null;
   neonDb = {
     query: (texto, params = []) => sql.query(texto, params),
-    // Script com vários comandos (migrações): precisa de sessão (WebSocket); abre e fecha na hora.
+    // Sessão (WebSocket) para transações e migrações. O pool é reaproveitado entre mensagens da mesma instância;
+    // conexões ociosas fecham em 10 s para o Neon poder dormir.
     async script(fn) {
-      const pool = new Pool({ connectionString: url });
-      try { const c = await pool.connect(); try { return await fn((t, p) => c.query(t, p).then((r) => r.rows)); } finally { c.release(); } }
-      finally { await pool.end(); }
+      if (!pool) {
+        pool = new Pool({ connectionString: url, max: 3, idleTimeoutMillis: 10_000 });
+        pool.on?.("error", () => { pool = null; }); // conexão ociosa derrubada: recria na próxima mensagem
+      }
+      const c = await pool.connect();
+      try { return await fn((t, p) => c.query(t, p).then((r) => r.rows)); } finally { c.release(); }
     },
   };
   return neonDb;

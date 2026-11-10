@@ -102,7 +102,9 @@ export async function testarExploracaoServidor({ db, jogador, mensagem, grupo })
     assert.equal((await atual()).ryo, "0");
   });
   await t("personagem existente converte região pelo nome e consulta mapa", async () => {
-    assert(!REGIAO.has(jogador.regiao_atual));
+    // A criação já grava o ID; simula um personagem antigo que guardava o NOME da região.
+    assert(REGIAO.has(jogador.regiao_atual));
+    await db.query("update jogo.jogadores set regiao_atual = $2 where id = $1", [jogador.id, REGIAO.get(jogador.regiao_atual).nome]);
     const s = await enviar("mapa"); assert(s.some((x) => x.imagem));
     assert(REGIAO.has((await atual()).regiao_atual));
   });
