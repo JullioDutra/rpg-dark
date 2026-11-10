@@ -16,3 +16,29 @@ export const XP_DIA = (n) => 8 * XP_VILAO(n, "comum") * 1.5 + 0.5 * XP_VILAO(n, 
 export const K = (nivel) => 20 + 5 * nivel;
 export const dano = (atk, nivelAtacante, def) => (atk * 3 * K(nivelAtacante)) / (K(nivelAtacante) + def);
 export const ESCALA_PARTY = (n) => 0.6 + 0.4 * n;
+
+// Multiplicadores por arquétipo: [FOR, DEF, MAG, RES, VEL, HP, MP]
+export const ARQUETIPOS = {
+  bruto:       [1.4,  1.2,  0.5,  0.7,  0.8,  1.3,  0.5],
+  tanque:      [1.0,  1.6,  0.6,  1.2,  0.6,  1.6,  0.6],
+  assassino:   [1.3,  0.7,  0.7,  0.7,  1.6,  0.85, 0.7],
+  mago:        [0.5,  0.7,  1.6,  1.3,  0.9,  0.8,  1.6],
+  invocador:   [0.6,  0.8,  1.4,  1.2,  0.8,  0.9,  1.5],
+  equilibrado: [1.1,  1.0,  1.0,  1.0,  1.0,  1.0,  1.0],
+  besta:       [1.3,  1.0,  0.6,  0.8,  1.2,  1.2,  0.5],
+  "morto-vivo":[1.0,  1.1,  0.9,  0.6,  0.7,  1.1,  0.8],
+  espiritual:  [0.8,  0.9,  1.3,  1.3,  1.1,  1.0,  1.3],
+  divino:      [1.3,  1.3,  1.3,  1.3,  1.1,  1.2,  1.5],
+};
+
+/** Atributos de um vilão num nível qualquer (o gerador usa o nível base; o combate usa o nível escalado). */
+export function atributosVilao(nivel, tier, arquetipo) {
+  const t = TIERS[tier], a = ARQUETIPOS[arquetipo];
+  const base = 5 + nivel * 1.2;
+  const s = (i) => Math.round(base * t.stat * a[i]);
+  return {
+    HP: Math.round(((60 + nivel * 20) * t.hp * a[5]) / 5) * 5,
+    MP: Math.round((20 + nivel * 6) * t.stat * a[6]),
+    FOR: s(0), DEF: s(1), MAG: s(2), RES: s(3), VEL: s(4),
+  };
+}

@@ -89,6 +89,7 @@ export async function testarExploracaoServidor({ db, jogador, mensagem, grupo })
   const atual = async () => (await db.query("select * from jogo.jogadores where id = $1", [jogador.id]))[0];
   const limpar = async (regiao = "R-HOM-3", vigor = 100) => {
     clock += 4000; numeros = [];
+    await db.query("delete from jogo.batalhas where id in (select batalha_id from jogo.participantes_batalha where jogador_id = $1)", [jogador.id]);
     await db.query("delete from jogo.exploracoes where jogador_id = $1", [jogador.id]);
     await db.query("delete from jogo.viagens where jogador_id = $1", [jogador.id]);
     await db.query("delete from jogo.descobertas where jogador_id = $1", [jogador.id]);
@@ -194,11 +195,10 @@ export async function testarExploracaoServidor({ db, jogador, mensagem, grupo })
     clock += 4000; numeros = [.48, 0]; await enviar("explorar");
     assert.equal((await db.query("select * from jogo.descobertas where jogador_id = $1 and referencia = 'SF-HOM-01'", [jogador.id])).length, 1);
   });
-  await t("encontro perigoso avisa e exige recuo, sem combate fictício", async () => {
+  await t("encontro perigoso avisa; recuar encerra; enfrentar abre o combate", async () => {
     await limpar(); numeros = [0, .99];
     assert.match(texto(await enviar("explorar")), /corvo/);
     assert.match(texto(await enviar("viajar R-HOM-1")), /recuar/);
-    assert.match(texto(await enviar("enfrentar")), /ainda não está disponível/);
     assert.match(texto(await enviar("recuar")), /segurança/);
     assert.equal((await atual()).vigor, 90);
     assert.equal((await db.query("select * from jogo.exploracoes where jogador_id = $1 and pendente", [jogador.id])).length, 0);

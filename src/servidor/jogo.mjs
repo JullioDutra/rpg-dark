@@ -12,6 +12,8 @@ import { cartaPersonagem, previaAvatar } from "./carta.mjs";
 import { um } from "./db.mjs";
 import { criarExploracao } from "./exploracao.mjs";
 import { criarNarrador, ehAcaoLivre } from "./narrador.mjs";
+import { criarCombate } from "./combate.mjs";
+import { XP_PROXIMO } from "../../scripts/balanceamento.mjs";
 import { comandoExploracao, recuperarVigor, buscarRegioes } from "../regras/exploracao.mjs";
 import { textoOrigem, textoRegiao, textoReino, textoPrimeirosPassos } from "./textos.mjs";
 
@@ -65,6 +67,7 @@ export function criarJogo({ db, sal = process.env.TELEFONE_SAL ?? "", admins = (
   const D = dados();
   const exploracao = criarExploracao({ db, rng, agora });
   const narrador = criarNarrador({ db, ia, agora });
+  const combate = criarCombate({ db, rng, agora });
 
   async function identidade(autor) {
     const r = await um(db, `select * from jogo.identidades where ($1::text is not null and wa_jid = $1) or ($2::text is not null and wa_lid = $2)
@@ -156,6 +159,9 @@ export function criarJogo({ db, sal = process.env.TELEFONE_SAL ?? "", admins = (
     // Comandos de informação têm prioridade; a exploração só confere chegadas pendentes (texto vazio).
     const info = ehComando(t, "onde estou", "regiao", "minha regiao", "local", "onde to", "onde eu estou", "aldeia", "minha aldeia",
       "casa", "minha casa", "origem", "reino", "meu reino");
+    const c = info ? null : await combate(j.id, msg);
+    if (c?.tratado) return c.saidas;
+    if (c) j = { ...j, ...c.jogador };
     const e = await exploracao(j.id, info ? { ...msg, texto: "" } : msg);
     j = { ...j, ...e.jogador };
     if (e.tratado) return e.saidas;
@@ -244,6 +250,8 @@ export function criarJogo({ db, sal = process.env.TELEFONE_SAL ?? "", admins = (
       const final = await um(db, `update jogo.jogadores set estado = 'ativo', etapa_criacao = null, avatar_dna = $2, regiao_atual = $3
         where id = $1 and estado = 'criando' returning *`, [j.id, JSON.stringify(dna), buscarRegioes(est.sorteio.aldeia.regiao)[0]?.id ?? est.sorteio.aldeia.regiao]);
       if (!final) return [];
+      await db.query(`insert into jogo.inventario (jogador_id, item_id, tipo, qtd, dados) values ($1, 'pocao', 'consumivel', 3, '{"nome":"Poção de cura"}')
+        on conflict (jogador_id, item_id) do nothing`, [j.id]);
       await db.query(`insert into jogo.eventos_atributo (jogador_id, atributo, delta, fonte, detalhe)
         select $1, k, v::int, 'sorteio_inicial', '{}'::jsonb from jsonb_each_text($2::jsonb) as x(k, v)`, [j.id, JSON.stringify(final.atributos)]).catch(() => {});
       const mencao = [msg.autor.jid];
@@ -310,10 +318,10 @@ export function legendaFicha(j, tempo = Date.now()) {
   const a = j.atributos ?? {};
   return `🎴 *${j.nome}* — ${j.classe ?? "?"}\n${ROTULO_CASTA[j.casta] ?? ""} · ${j.aldeia ?? "?"} (${j.reino ?? "?"})\n` +
     `✴️ ${j.atributo_magico ?? "?"}${j.elegivel_pet ? " · 🐾 elegível a pet" : ""}\n` +
-    `Nv ${j.nivel} · Rank ${j.rank} · ❤️ ${j.hp}/${j.hp_max} · 🔷 ${j.mp}/${j.mp_max}\n` +
+    `Nv ${j.nivel} · Rank ${j.rank} · ✨ XP ${j.xp}/${XP_PROXIMO(j.nivel)}\n❤️ ${j.hp}/${j.hp_max} · 🔷 ${j.mp}/${j.mp_max}${j.ryo != null ? ` · 💰 ${j.ryo} ryō` : ""}\n` +
     `⚡ Vigor ${recuperarVigor(j, tempo).vigor}/100\n` +
     `FOR ${a.FOR} · DEF ${a.DEF} · MAG ${a.MAG} · RES ${a.RES} · VEL ${a.VEL} · SOR ${a.SOR}`;
 }
 
-const AJUDA = `📖 *Comandos de Yotsuhoshi*\n\n*No grupo*\n• *entrar no mundo* — criar seu personagem\n• *ficha* — mostrar sua carta\n\n*No privado*\n• *onde estou* — sobre a sua região\n• *aldeia* / *reino* — sua origem\n• *explorar* — olhar ao redor (10 vigor)\n• *mapa [reino]* — sua posição e vizinhos\n• *rota <região>* — caminho, tempo e custo\n• *viajar <região>* — vizinho (15 vigor, 10 min)\n• *viagem* — consultar chegada\n• *vigor* — energia (+10/h)\n• *descobertas* — locais encontrados\n• *inventario* — achados e ryō\n• *recuar* — encerrar encontro\n• *> sua ação* — fazer qualquer coisa com suas palavras (o narrador responde)\n• *ficha* — sua carta\n• *ajuda* — esta lista\n\nCombate e entrada em masmorras chegam nas próximas etapas.\n\n` +
+const AJUDA = `📖 *Comandos de Yotsuhoshi*\n\n*No grupo*\n• *entrar no mundo* — criar seu personagem\n• *ficha* — mostrar sua carta\n\n*No privado*\n• *onde estou* — sobre a sua região\n• *aldeia* / *reino* — sua origem\n• *explorar* — olhar ao redor (10 vigor)\n• *mapa [reino]* — sua posição e vizinhos\n• *rota <região>* — caminho, tempo e custo\n• *viajar <região>* — vizinho (15 vigor, 10 min)\n• *viagem* — consultar chegada\n• *vigor* — energia (+10/h)\n• *descobertas* — locais encontrados\n• *inventario* — achados e ryō\n• *lutar* / *recuar* — enfrentar ou fugir de um inimigo\n• *distribuir* — usar pontos livres\n\n*Na batalha*\n• *a* atacar · *m1* magia · *h1* habilidade da classe\n• *d* defender · *i pocao* poção · *f* fugir · *?* painel\n\n*Mais*\n• *> sua ação* — fazer qualquer coisa com suas palavras (o narrador responde)\n• *ficha* — sua carta\n• *ajuda* — esta lista\n\nMasmorras chegam na próxima etapa.\n\n` +
   `_Atributos só mudam por mérito: batalhas, missões e escolhas. Ninguém (nem a IA) pode te dar poder de graça._`;

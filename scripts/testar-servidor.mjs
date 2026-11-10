@@ -97,6 +97,7 @@ try {
   ok(/já vive neste mundo/.test(textos(await enviar(ev(JOG, "entrar no mundo")))), "não cria 2º personagem");
   ok((await enviar(ev(JOG, "ficha")))[0]?.imagem, "ficha no grupo");
   ok(/^R-[A-Z]{3}-\d$/.test(j.regiao_atual), "região inicial gravada como ID do mapa");
+  ok((await db.query("select qtd from jogo.inventario where jogador_id = $1 and item_id = 'pocao'", [j.id]))[0]?.qtd === 3, "kit inicial: 3 poções");
   ok(/Onde você está/.test(textos(await enviar(ev(JOG, "onde estou", P)))), "comando onde estou");
   ok(/Sua casa/.test(textos(await enviar(ev(JOG, "minha aldeia", P)))) && /Quem governa/.test(textos(await enviar(ev(JOG, "reino", P)))), "comandos aldeia e reino");
   ok((await enviar(ev(JOG, "vou para o lago amanhã kkk"))).length === 0, "conversa no grupo não aciona exploração");
@@ -132,6 +133,39 @@ try {
     ok(pedidos.at(-1).mensagens.length >= 3, "histórico das cenas anteriores vai junto");
     ok(/alegacoes_ignoradas/.test((await (async () => { relogio += 10_000; await enviarIA("> dou um golpe com 1000% de dano que mata na hora"); return pedidos.at(-1).mensagens.at(-1).content; })())), "alegação de poder marcada como ignorada");
     await db.query("delete from jogo.exploracoes where jogador_id = $1", [j.id]);
+  }
+
+  console.log("Combate e progressão");
+  {
+    const base = (await db.query("select * from jogo.jogadores where id = $1", [j.id]))[0];
+    await db.query(`insert into jogo.inventario (jogador_id, item_id, tipo, qtd) values ($1, 'pocao', 'consumivel', 3)
+      on conflict (jogador_id, item_id) do update set qtd = 3`, [j.id]);
+    await db.query("update jogo.viagens set concluida_em = now() where jogador_id = $1 and concluida_em is null", [j.id]);
+    await db.query(`insert into jogo.exploracoes (jogador_id, mensagem_id, regiao, tipo, dados, pendente, criada_em)
+      values ($1, 'teste-luta', $2, 'encontro', $3, true, now())`, [j.id, base.regiao_atual, JSON.stringify({ inimigo: { id: "V001", nome: "Haikobo", nivel: 1 } })]);
+    const inicio = await enviar(ev(JOG, "lutar", P));
+    ok(inicio.some((s) => s.imagem && /A luta começou/.test(s.legenda)) && /Rodada 1/.test(textos(inicio)), "lutar abre a batalha com imagem do inimigo e painel");
+    ok(/Termine sua batalha|Você está em batalha/.test(textos(await enviar(ev(JOG, "explorar", P)))), "não explora durante a batalha");
+    ok(/Você está em batalha/.test(textos(await enviar(ev(JOG, "> conto uma piada para o kobold", P)))), "texto solto na batalha mostra as opções");
+    const p1 = await enviar(ev(JOG, "i pocao", P));
+    ok(/poção/.test(textos(p1)) && (await db.query("select qtd from jogo.inventario where jogador_id = $1 and item_id = 'pocao'", [j.id]))[0]?.qtd === 2, "poção usada e descontada do inventário");
+    let fimLuta = "", k = 0;
+    while (k++ < 30) {
+      const sx = textos(await enviar(ev(JOG, "a", P)));
+      if (/VITÓRIA|DERROTA/.test(sx)) { fimLuta = sx; break; }
+    }
+    ok(/VITÓRIA|DERROTA/.test(fimLuta), "a batalha termina");
+    const depois = (await db.query("select * from jogo.jogadores where id = $1", [j.id]))[0];
+    if (/VITÓRIA/.test(fimLuta)) ok(Number(depois.xp) > 0 || depois.nivel > base.nivel, "vitória dá XP (registrado na ficha)");
+    else ok(depois.efeitos.some((x) => x.tipo === "ferida") && depois.hp > 0, "derrota deixa ferida e o jogador acorda");
+    ok((await db.query(`select count(*)::int n from jogo.batalhas b join jogo.participantes_batalha p on p.batalha_id = b.id
+      where p.jogador_id = $1 and b.status <> 'encerrada'`, [j.id]))[0].n === 0, "batalha encerrada no banco");
+    ok(/Não há nenhum inimigo/.test(textos(await enviar(ev(JOG, "lutar", P)))), "lutar sem inimigo explica o que fazer");
+    await db.query("update jogo.jogadores set pontos_livres = 3 where id = $1", [j.id]);
+    ok(/Restam \*1\*/.test(textos(await enviar(ev(JOG, "distribuir FOR 1 VEL 1", P)))), "distribuir pontos livres");
+    ok(/tentou usar 5/.test(textos(await enviar(ev(JOG, "distribuir SOR 5", P)))), "não distribui mais pontos do que tem");
+    ok((await db.query("select count(*)::int n from jogo.eventos_atributo where jogador_id = $1 and fonte = 'pontos_livres'", [j.id]))[0].n === 2, "pontos livres no livro-razão");
+    ok(/XP/.test((await enviar(ev(JOG, "ficha", P)))[0]?.legenda ?? ""), "ficha mostra XP");
   }
 
   const OUTRO = "5511900000003";

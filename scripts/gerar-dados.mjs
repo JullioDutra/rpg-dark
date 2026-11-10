@@ -8,7 +8,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { VILOES, MASCARAS } from "./viloes-fonte.mjs";
 import { APARENCIA_VILOES } from "./aparencia-viloes.mjs";
-import { TIERS } from "./balanceamento.mjs";
+import { TIERS, ARQUETIPOS, atributosVilao } from "./balanceamento.mjs";
 
 const raiz = join(dirname(fileURLToPath(import.meta.url)), "..");
 const lerJSON = (p) => JSON.parse(readFileSync(join(raiz, p), "utf8"));
@@ -22,18 +22,7 @@ const escrever = (p, s) => writeFileSync(join(raiz, p), s);
 // ───────────────────────── Balanceamento ─────────────────────────
 
 //                FOR   DEF   MAG   RES   VEL   HP    MP
-const ARQUETIPOS = {
-  bruto:       [1.4,  1.2,  0.5,  0.7,  0.8,  1.3,  0.5],
-  tanque:      [1.0,  1.6,  0.6,  1.2,  0.6,  1.6,  0.6],
-  assassino:   [1.3,  0.7,  0.7,  0.7,  1.6,  0.85, 0.7],
-  mago:        [0.5,  0.7,  1.6,  1.3,  0.9,  0.8,  1.6],
-  invocador:   [0.6,  0.8,  1.4,  1.2,  0.8,  0.9,  1.5],
-  equilibrado: [1.1,  1.0,  1.0,  1.0,  1.0,  1.0,  1.0],
-  besta:       [1.3,  1.0,  0.6,  0.8,  1.2,  1.2,  0.5],
-  "morto-vivo":[1.0,  1.1,  0.9,  0.6,  0.7,  1.1,  0.8],
-  espiritual:  [0.8,  0.9,  1.3,  1.3,  1.1,  1.0,  1.3],
-  divino:      [1.3,  1.3,  1.3,  1.3,  1.1,  1.2,  1.5],
-};
+// ARQUETIPOS e a fórmula de atributos ficam em balanceamento.mjs (o combate escala inimigos com a mesma conta).
 
 
 function calcular([id, nome, titulo, tier, nivel, regiao, elemento, arquetipo, habilidade, fraqueza, descricao, visual]) {
@@ -41,13 +30,7 @@ function calcular([id, nome, titulo, tier, nivel, regiao, elemento, arquetipo, h
   const a = ARQUETIPOS[arquetipo];
   if (!t) throw new Error(`${id}: tier inválido ${tier}`);
   if (!a) throw new Error(`${id}: arquétipo inválido ${arquetipo}`);
-  const base = 5 + nivel * 1.2;
-  const s = (i) => Math.round(base * t.stat * a[i]);
-  const atributos = {
-    HP: Math.round(((60 + nivel * 20) * t.hp * a[5]) / 5) * 5,
-    MP: Math.round((20 + nivel * 6) * t.stat * a[6]),
-    FOR: s(0), DEF: s(1), MAG: s(2), RES: s(3), VEL: s(4),
-  };
+  const atributos = atributosVilao(nivel, tier, arquetipo);
   const poder = atributos.FOR + atributos.DEF + atributos.MAG + atributos.RES + atributos.VEL + Math.round(atributos.HP / 10);
     return {
     id, nome, titulo, nome_completo: `${nome}, ${titulo}`,

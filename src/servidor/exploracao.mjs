@@ -167,10 +167,12 @@ export function criarExploracao({ db, rng, agora }) {
       const tipo = sortearCategoria(chances, rng);
       let dados = { chances }, espera = false;
       if (tipo === "encontro") {
-        const inimigo = escolher(inimigosDaRegiao(regiao), rng);
+        // Solo: inimigos comuns na maioria das vezes; elite (médio escalão) só 15% (party recomendada).
+        const todos = inimigosDaRegiao(regiao), comuns = todos.filter((v) => v.tier === "comum"), elites = todos.filter((v) => v.tier !== "comum");
+        const inimigo = escolher(comuns.length && (!elites.length || rng() >= 0.15) ? comuns : elites, rng);
         if (inimigo) {
           const nivel = Math.max(j.nivel, inimigo.nivel);
-          dados = { ...dados, inimigo: { id: inimigo.id, nome: inimigo.nome, nivel }, perigoso: nivel >= j.nivel + 5 };
+          dados = { ...dados, inimigo: { id: inimigo.id, nome: inimigo.nome, nivel }, perigoso: nivel >= j.nivel + 5, elite: inimigo.tier !== "comum" };
           espera = true;
           dizer(textoPendente({ tipo, dados }));
         } else dizer("⚔️ Marcas de uma presença hostil cortam a paisagem. Nenhum adversário comum cruza seu caminho desta vez.");
@@ -235,5 +237,5 @@ async function emBatalha(q, id) {
 }
 function textoPendente(p) {
   if (p.tipo === "evento") return "🎭 Um viajante pede ajuda com a carga caída.\n*1.* Ajudar · *2.* Seguir caminho\nResponda com o número, *ajudar* ou *seguir*.";
-  return `${p.dados.perigoso ? "⚠️ O corvo pousa no seu ombro… esse inimigo está muito acima do seu nível.\n" : "⚔️ "}Você avista *${p.dados.inimigo.nome}* (Nv ${p.dados.inimigo.nivel}).\nO combate ainda não está disponível nesta etapa. Use *recuar* para continuar explorando.`;
+  return `${p.dados.perigoso ? "⚠️ O corvo pousa no seu ombro… esse inimigo está muito acima do seu nível.\n" : p.dados.elite ? "⚠️ Inimigo de *elite*: muito forte para lutar sozinho.\n" : "⚔️ "}Você avista *${p.dados.inimigo.nome}* (Nv ${p.dados.inimigo.nivel}).\nResponda *lutar* para enfrentar ou *recuar* para fugir.`;
 }
