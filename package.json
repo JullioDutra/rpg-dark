@@ -5,7 +5,7 @@
   "type": "module",
   "description": "Yotsuhoshi — RPG de anime no WhatsApp",
   "engines": {
-    "node": ">=22"
+    "node": "22.x"
   },
   "scripts": {
     "testar": "node scripts/testar-linguagem.mjs && node scripts/testar-regras.mjs && node scripts/testar-ia.mjs && node scripts/testar-relogio.mjs && node scripts/testar-servidor.mjs && python3 scripts/validar-historia.py",
