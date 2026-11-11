@@ -7,6 +7,8 @@ import {
 import { desenharMapa, finalizar, rotuloReinos, recortar, RECORTES } from "../mapa/mapa.mjs";
 import { Tela } from "../avatar/pixel.mjs";
 import { textoRegiao, ambiente, rodape } from "./textos.mjs";
+import { COVIL } from "../mundo/mundo.mjs";
+import { imagemVilao, nomeLacaio } from "./combate.mjs";
 
 let baseMapa;
 export function imagemMapa(regiao, reino = null) {
@@ -107,7 +109,7 @@ export function criarExploracao({ db, rng, agora }) {
     }
     if (cmd.tipo === "descobertas") {
       const ds = await q("select * from jogo.descobertas where jogador_id = $1 and tipo <> 'regiao' order by criada_em desc limit 20", [j.id]);
-      dizer(ds.length ? `*Lugares que você encontrou*\n${ds.map((d) => d.dados.nome).join("\n")}\n\n${rodape("as masmorras abrem em breve")}` : "Você ainda não encontrou nenhum lugar escondido. Use *explorar*.");
+      dizer(ds.length ? `*Lugares que você encontrou*\n${ds.map((d) => d.dados.nome).join("\n")}\n\n${rodape("visite com *locais* e *ir <lugar>*")}` : "Você ainda não encontrou nenhum lugar escondido. Use *explorar*.");
       return resultado();
     }
     if (cmd.tipo === "inventario") {
@@ -165,18 +167,22 @@ export function criarExploracao({ db, rng, agora }) {
       if (await emBatalha(q, j.id)) { dizer("Você está no meio de uma luta."); return resultado(); }
       if (!(await gasto(CUSTO_VIGOR.explorar))) return resultado();
       const mundo = (await q("select relogio_eclipse from jogo.mundos where id = $1", [j.mundo_id]))[0];
+      const derrotados = new Set((await q("select vilao_id from jogo.derrotas_vilao where jogador_id = $1", [j.id])).map((x) => x.vilao_id));
       const chances = chancesExploracao({ sorte: j.atributos.SOR, perigo: regiao.perigo, eclipse: mundo.relogio_eclipse });
       const tipo = sortearCategoria(chances, rng);
       let dados = { chances }, espera = false;
       if (tipo === "encontro") {
-        // Solo: inimigos comuns na maioria das vezes; elite (médio escalão) só 15% (party recomendada).
-        const todos = inimigosDaRegiao(regiao), comuns = todos.filter((v) => v.tier === "comum"), elites = todos.filter((v) => v.tier !== "comum");
-        const inimigo = escolher(comuns.length && (!elites.length || rng() >= 0.15) ? comuns : elites, rng);
+        // Explorando só se encontram LACAIOS (crias, capangas, sombras) dos vilões da região, no nível do jogador.
+        // O vilão em si só existe no covil dele (ir <lugar>) e só cai uma vez.
+        const daqui = [...COVIL.entries()].filter(([, c]) => c.regiao === regiao.id).map(([id]) => VILOES_DESC.get(id)).filter((v) => v.arquetipo !== "divino");
+        const vivos = daqui.filter((v) => !derrotados.has(v.id));
+        const fonte = (vivos.length ? vivos : daqui).sort((a, b) => a.nivel - b.nivel).slice(0, 3);
+        const inimigo = fonte.length ? escolher(fonte, rng) : null;
         if (inimigo) {
-          const nivel = Math.max(j.nivel, inimigo.nivel);
-          dados = { ...dados, inimigo: { id: inimigo.id, nome: inimigo.nome, nivel }, perigoso: nivel >= j.nivel + 5, elite: inimigo.tier !== "comum", nivelJogador: j.nivel };
+          const nivel = Math.max(1, j.nivel + (rng() < 0.25 ? 1 : 0));
+          dados = { ...dados, inimigo: { id: inimigo.id, nome: nomeLacaio(inimigo), nivel }, lacaio: true, nivelJogador: j.nivel };
           espera = true;
-          dizer(textoPendente({ tipo, dados }));
+          saidas.push({ para: msg.chat, vilaoImg: inimigo.id, legenda: textoPendente({ tipo, dados }) });
         } else dizer(`${ambiente(regiao.id, tempo)}\nMarcas de garras na pedra. Algo passou por aqui… mas já foi embora.`);
       } else if (tipo === "descoberta") {
         const conhecidas = new Set((await q("select referencia from jogo.descobertas where jogador_id = $1 and tipo = 'subfase'", [j.id])).map((d) => d.referencia));
@@ -185,7 +191,7 @@ export function criarExploracao({ db, rng, agora }) {
         const nome = subfase?.nome ?? `Ponto de observação de ${regiao.nome}`;
         const nova = await descobrir(subfase ? "subfase" : "local", referencia, { nome, regiao: regiao.id });
         dados = { ...dados, referencia, nome, nova };
-        dizer(subfase ? `${ambiente(regiao.id, tempo)}\nEscondida no meio do caminho, você encontra a entrada de *${nome}*. Lá dentro, só escuridão.\n${rodape(nova ? "lugar anotado nas suas descobertas" : "você já conhecia este lugar", "masmorras abrem em breve")}`
+        dizer(subfase ? `${ambiente(regiao.id, tempo)}\nVocê encontra rastros que levam a *${nome}*. ${subfase.descricao ?? ""}\n${rodape(nova ? "anotado nas suas descobertas" : "você já conhecia este lugar", "veja os lugares daqui com *locais*")}`
           : `Você sobe num ponto alto. Dali dá para ver as estradas de ${regiao.nome} se espalhando até o horizonte.`);
       } else if (tipo === "achado") {
         if (rng() < 0.5) {
@@ -231,7 +237,8 @@ export function criarExploracao({ db, rng, agora }) {
       } catch (e) { await q("rollback"); throw e; }
     });
     // A renderização fica fora da transação para não prolongar a trava.
-    r.saidas = r.saidas.map(({ regiaoMapa, reinoMapa, ...s }) => regiaoMapa ? { ...s, imagem: imagemMapa(regiaoMapa, reinoMapa) } : s);
+    r.saidas = r.saidas.map(({ regiaoMapa, reinoMapa, vilaoImg, ...s }) => regiaoMapa ? { ...s, imagem: imagemMapa(regiaoMapa, reinoMapa) }
+      : vilaoImg ? (() => { const img = imagemVilao(VILOES_DESC.get(vilaoImg)); return img ? { ...s, imagem: img } : { para: s.para, texto: s.legenda }; })() : s);
     return r;
   };
 }
@@ -244,8 +251,7 @@ const VILOES_DESC = new Map(JSON.parse(readFileSync(new URL("../../data/viloes.j
 function textoPendente(p) {
   if (p.tipo === "evento") return "Na estrada, um velho tenta erguer sozinho uma carroça tombada. Ele olha para você, mas não pede nada.\n\n*1* ajudar · *2* seguir em frente";
   const v = VILOES_DESC.get(p.dados.inimigo.id);
-  const aviso = p.dados.perigoso ? "⚠️ Um corvo pousa no seu ombro e grasna. Mau sinal: esse inimigo é forte demais para você.\n\n"
-    : p.dados.elite ? "⚠️ Inimigo de elite. Sozinho, a luta vai ser muito difícil.\n\n" : "";
-  const forte = !p.dados.perigoso && p.dados.inimigo.nivel >= (p.dados.nivelJogador ?? 99) + 3 ? "parece mais forte que você" : null;
-  return `${aviso}${v?.descricao ? `${v.descricao}\n` : ""}*${v?.nome_completo ?? p.dados.inimigo.nome}* bloqueia o caminho.\n\n*lutar* · *recuar*\n${rodape(`nível ${p.dados.inimigo.nivel}`, forte)}`;
+  if (p.dados.fixo) return `*${p.dados.eco ? "Eco de " : ""}${v?.nome_completo ?? p.dados.inimigo.nome}* ainda espera por você.\n\n*lutar* · *recuar*\n${rodape(`nível ${p.dados.inimigo.nivel}`)}`;
+  const forte = p.dados.inimigo.nivel > (p.dados.nivelJogador ?? 99) ? "um pouco mais forte que você" : null;
+  return `Algo se mexe à sua frente.\n\n*${p.dados.inimigo.nome}* bloqueia o caminho. ${v ? `Serve a ${v.nome_completo}.` : ""}\n\n*lutar* · *recuar*\n${rodape(`nível ${p.dados.inimigo.nivel}`, forte)}`;
 }

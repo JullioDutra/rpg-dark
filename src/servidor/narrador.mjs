@@ -6,6 +6,8 @@ import { narrar } from "../ia/narrador.mjs";
 import { criarInterpretador } from "../linguagem/interpretar.mjs";
 import { REGIAO, REGIOES, normal } from "../regras/exploracao.mjs";
 import { um } from "./db.mjs";
+import { imagemVilao, nomeLacaio } from "./combate.mjs";
+import { COVIL } from "../mundo/mundo.mjs";
 
 const ler = (f) => JSON.parse(readFileSync(new URL(`../../data/${f}`, import.meta.url), "utf8"));
 const HISTORIA = ler("historia.json");
@@ -51,7 +53,7 @@ export function criarNarrador({ db, ia, agora = () => Date.now() }) {
     return m;
   }
 
-  return async function acaoLivre(j, texto, para) {
+  return async function acaoLivre(j, texto, para, contexto = null) {
     const acao = texto.replace(/^>\s*/, "").trim();
     if (acao.length < 3) return [{ para, texto: "Escreva o que seu personagem faz depois do *>*. Ex.: _> pergunto ao ferreiro sobre a mina_" }];
     const i = interpretar(`> ${acao}`, { estado: "livre", direcionado: true });
@@ -71,7 +73,7 @@ export function criarNarrador({ db, ia, agora = () => Date.now() }) {
     const m = MARCOS.get(marco?.marco_id) ?? null;
     const regiao = REGIAO.get(j.regiao_atual);
     const permitidos = {
-      viloes: (m?.viloes_permitidos ?? []).filter((id) => normal(VILOES.get(id)?.regiao ?? "") === normal(regiao?.nome ?? "")),
+      viloes: [...COVIL.entries()].filter(([id, c]) => c.regiao === j.regiao_atual && VILOES.get(id).arquetipo !== "divino").map(([id]) => id).slice(0, 4),
       fatos: (m?.fatos_disponiveis ?? []).map((id) => FATOS.get(id)).filter(Boolean).map((f) => ({ id: f.id, descricao: f.descricao })),
     };
     const historico = (await db.query(`select papel, texto from jogo.cenas where jogador_id = $1 order by criado_em desc limit $2`, [j.id, LIMITES.historico]))
@@ -81,7 +83,11 @@ export function criarNarrador({ db, ia, agora = () => Date.now() }) {
       encontro_pendente: Boolean(pendente) };
 
     const r = await Promise.race([
-      narrar(ia, { bibliaDoMundo: biblia(j), marco: m && { id: m.id, titulo: m.titulo, objetivo: m.objetivo, cena: m.cena }, ficha, permitidos,
+      narrar(ia, { bibliaDoMundo: biblia(j) + (contexto ? `\nLugar exato: ${contexto.local ?? "—"}\nPessoas que existem aqui (use só estas): ${contexto.npcs.join("; ") || "ninguém conhecido"}` : ""),
+        marco: contexto?.capitulo ? { capitulo: contexto.capitulo.titulo, passo_atual: contexto.capitulo.passo_atual,
+          regra: "A cena FICA neste passo até o jogador cumpri-lo com uma ação do jogo (ir a um lugar, falar com alguém, lutar). Não pule, não resolva nem revele os próximos passos. Se o jogador se afastar, traga a cena de volta com um detalhe que lembre o objetivo." }
+          : { capitulo: null, regra: "Não há capítulo ativo aqui: narre uma cena curta de passagem, sem inventar tramas novas nem vilões.", objetivo_geral: contexto?.objetivo ?? m?.objetivo ?? null },
+        ficha, permitidos,
         chaves: [], historico, acao, alegacoes: i.entidades?.alegacoes_de_poder ?? [] }),
       new Promise((ok) => setTimeout(() => ok({ narracao: "_As estrelas silenciam por um instante… tente de novo em alguns segundos._", eventos: [], falha: "tempo" }), 20000)),
     ]);
@@ -97,11 +103,13 @@ export function criarNarrador({ db, ia, agora = () => Date.now() }) {
       if (ev.tipo === "iniciar_batalha" && !pendente && !viagem) {
         const v = VILOES.get((ev.dados.viloes ?? [])[0]);
         if (!v || !permitidos.viloes.includes(v.id)) continue;
-        const nivel = Math.max(j.nivel, v.nivel);
-        const dados = { origem: "narrador", inimigo: { id: v.id, nome: v.nome, nivel }, perigoso: nivel >= j.nivel + 5 };
+        // A IA só consegue puxar LACAIOS; o vilão em si fica no covil dele.
+        const nivel = Math.max(1, j.nivel);
+        const dados = { origem: "narrador", inimigo: { id: v.id, nome: nomeLacaio(v), nivel }, lacaio: true, nivelJogador: j.nivel };
         await db.query(`insert into jogo.exploracoes (jogador_id, mensagem_id, regiao, tipo, dados, pendente, criada_em)
           values ($1, $2, $3, 'encontro', $4, true, $5) on conflict do nothing`, [j.id, `cena:${j.id}:${tempo}`, j.regiao_atual, JSON.stringify(dados), new Date(tempo)]);
-        saidas.push({ para, texto: `${dados.perigoso ? "⚠️ Esse inimigo é forte demais para você.\n\n" : ""}*${v.nome_completo}* bloqueia seu caminho.\n\n*lutar* · *recuar*\n_nível ${nivel}_` });
+        const img = imagemVilao(v), legenda = `*${dados.inimigo.nome}* bloqueia seu caminho.\n\n*lutar* · *recuar*\n_nível ${nivel}_`;
+        saidas.push(img ? { para, imagem: img, legenda } : { para, texto: legenda });
       }
     }
     // A1-M1 ("Despertar") termina quando o jogador interage com o gancho da aldeia.

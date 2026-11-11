@@ -42,11 +42,11 @@ export function textoOrigem(j, aldeia) {
 
 export function textoPrimeirosPassos() {
   return "*Por onde começar*\n\n" +
-    "*explorar* — olhar ao redor\n" +
-    "*mapa* — ver onde você está\n" +
-    "*viajar <lugar>* — ir para uma região vizinha\n" +
-    "*onde estou* — rever sua região\n" +
-    "*> sua ação* — fazer o que quiser, com suas palavras\n" +
-    "   _ex.: > pergunto ao ferreiro sobre a criança sumida_\n\n" +
-    rodape("explorar e viajar cansam; o vigor volta com o tempo");
+    "*falar <nome>* — conversar com alguém daqui\n" +
+    "*ir <nº>* — visitar um dos lugares da lista\n" +
+    "*missao* — sua história e o próximo passo\n" +
+    "*explorar* — procurar encrenca e achados\n" +
+    "*itens* — o que você carrega · *ficha* — sua carta\n" +
+    "*> sua ação* — fazer o que quiser, com suas palavras\n\n" +
+    rodape("nas lutas você escolhe pelo número, e o dado decide a força", "ajuda mostra tudo");
 }

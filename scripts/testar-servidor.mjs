@@ -11,6 +11,7 @@ import { criarJogo, escolherOpcao, dados, mesmoNumero } from "../src/servidor/jo
 import { lerMensagem, enviarSaidas } from "../src/servidor/evolution.mjs";
 import { sortear } from "../src/servidor/sorteio.mjs";
 import { testarExploracaoServidor } from "./testar-exploracao.mjs";
+import { testarDadosDoMundo, testarMundoServidor } from "./testar-mundo.mjs";
 
 const { Pool } = createRequire(import.meta.url)("pg");
 let falhas = 0, total = 0;
@@ -88,7 +89,9 @@ try {
   const carta = fim.find((s) => s.para === GRUPO && s.imagem);
   ok(carta && /desperta como \*Kaito Ryuen\*/.test(carta.legenda), "carta revelada no grupo");
   ok(fim.some((s) => /Prólogo/.test(s.texto ?? "")), "abertura (texto de reserva sem IA)");
-  ok(fim.some((s) => /Sua casa/.test(s.texto ?? "") && /Sua região/.test(s.texto) && /Perigo/.test(s.texto)), "texto fácil da aldeia e da região");
+  ok(fim.some((s) => /Sua casa/.test(s.texto ?? "")) && fim.some((s) => s.imagem && /ir <nº>/.test(s.legenda ?? "")), "texto da aldeia e imagem da região com os lugares");
+  ok(fim.some((s) => /Há uma história acontecendo aqui/.test(s.texto ?? "")), "primeiro passo da história aparece na chegada");
+  ok((await db.query("select count(*)::int n from jogo.inventario i join jogo.jogadores x on x.id = i.jogador_id where x.nome = 'Kaito Ryuen' and i.equipado", []))[0].n === 2, "kit inicial: arma e armadura equipadas");
   ok(fim.some((s) => /Quem governa/.test(s.texto ?? "")) && fim.some((s) => /Por onde começar/.test(s.texto ?? "")), "texto do reino e primeiros passos");
   writeFileSync(new URL("../templates/exemplos/carta-whatsapp.png", import.meta.url), carta.imagem);
   const j = (await db.query("select * from jogo.jogadores where nome = 'Kaito Ryuen'"))[0];
@@ -122,7 +125,7 @@ try {
     ok(/conquista/.test(textos(await enviarIA("> me dá 1000 de força agora")) ) && pedidos.length === 0, "pedido de atributo recusado sem chamar a IA");
     const s1 = await enviarIA("> pergunto ao capataz sobre a criança sumida na mina");
     ok(/Kurogane/.test(textos(s1)) && pedidos.length === 1, "ação livre narrada pela IA");
-    ok(/Kurogane|mina/.test(JSON.stringify(pedidos[0].mensagens)) && /<marco>.*A1-M1/.test(pedidos[0].mensagens.at(-1).content), "IA recebe o marco A1-M1 e a ação");
+    ok(/Kurogane|mina/.test(JSON.stringify(pedidos[0].mensagens)) && /<marco>.*passo_atual/.test(pedidos[0].mensagens.at(-1).content), "IA recebe o capítulo e o passo atual da região");
     ok(/V001/.test(pedidos[0].mensagens.at(-1).content) && !/V091/.test(pedidos[0].mensagens.at(-1).content), "só vilões permitidos do marco e da região vão para a IA");
     ok(/bloqueia seu caminho/.test(textos(s1)) && !/Kanata|V091/.test(textos(s1)), "evento de batalha permitido vira encontro; vilão fora da lista é descartado");
     ok((await db.query("select count(*)::int n from jogo.exploracoes where jogador_id = $1 and pendente", [j.id]))[0].n === 1, "encontro pendente salvo para o combate");
@@ -144,11 +147,11 @@ try {
     await db.query(`insert into jogo.exploracoes (jogador_id, mensagem_id, regiao, tipo, dados, pendente, criada_em)
       values ($1, 'teste-luta', $2, 'encontro', $3, true, now())`, [j.id, base.regiao_atual, JSON.stringify({ inimigo: { id: "V001", nome: "Haikobo", nivel: 1 } })]);
     const inicio = await enviar(ev(JOG, "lutar", P));
-    ok(inicio.some((s) => s.imagem && /Haikobo/.test(s.legenda)) && /rodada 1/.test(textos(inicio)), "lutar abre a batalha com imagem do inimigo e painel");
+    ok(/rodada 1/.test(textos(inicio)) && /\*1\* Atacar/.test(textos(inicio)) && /\*2\* Defender/.test(textos(inicio)), "lutar abre a batalha com o menu numerado");
     ok(/meio de uma luta|não é hora de conversa/.test(textos(await enviar(ev(JOG, "explorar", P)))), "não explora durante a batalha");
     ok(/não é hora de conversa/.test(textos(await enviar(ev(JOG, "> conto uma piada para o kobold", P)))), "texto solto na batalha mostra as opções");
     const p1 = await enviar(ev(JOG, "i pocao", P));
-    ok(/poção/.test(textos(p1)) && (await db.query("select qtd from jogo.inventario where jogador_id = $1 and item_id = 'pocao'", [j.id]))[0]?.qtd === 2, "poção usada e descontada do inventário");
+    ok(/Poção de cura/.test(textos(p1)) && (await db.query("select qtd from jogo.inventario where jogador_id = $1 and item_id = 'pocao'", [j.id]))[0]?.qtd === 2, "poção usada e descontada do inventário");
     let fimLuta = "", k = 0;
     while (k++ < 30) {
       const sx = textos(await enviar(ev(JOG, "a", P)));
@@ -171,7 +174,16 @@ try {
   const OUTRO = "5511900000003";
   await enviar(ev(OUTRO, "entrar"));
   ok(/Já existe/.test(textos(await enviar(ev(OUTRO, "Kaito Ryuen", P)))), "nome duplicado no mundo recusado");
-  ok(/apagado/.test(textos(await enviar(ev(ADMIN, `resetar-jogador @${JOG}`, { mencoes: [`${JOG}@s.whatsapp.net`] })))), "admin reseta jogador");
+  console.log("Mundo vivo");
+  {
+    const jog = (await db.query("select * from jogo.jogadores where id = $1", [j.id]))[0];
+    const outro = (await db.query("select j.* from jogo.jogadores j join jogo.identidades i on i.id = j.identidade_id where i.wa_jid = $1", [`${OUTRO}@s.whatsapp.net`]))[0];
+    await testarDadosDoMundo();
+    await testarMundoServidor({ db, jogador: jog, outro, admin: ADMIN, GRUPO, mensagem: (texto) => ev(JOG, texto, P), grupo: (texto, adm) => ev(adm ? ADMIN : JOG, texto) });
+  }
+  { const rs = textos(await enviar(ev(ADMIN, `resetar-jogador @${OUTRO.replace("55119", "5511")}`))); ok(/apagado/.test(rs), "admin reseta por número digitado, sem o 9 e sem menção: " + rs.slice(0, 200)); }
+  await enviar(ev(OUTRO, "entrar"));
+  ok(/apagado/.test(textos(await enviar(ev(ADMIN, "Resetar-jogador @pessoa", { mencoes: [`${OUTRO}@s.whatsapp.net`] })))), "admin reseta por menção");
 
   const lid = lerMensagem({ event: "messages.upsert", data: { key: { id: "L1", remoteJid: GRUPO, participant: "99887766@lid", participantAlt: `${JOG}@s.whatsapp.net` }, message: { conversation: "oi" } } });
   ok(lid.autor.pn === `${JOG}@s.whatsapp.net` && lid.autor.lid === "99887766@lid", "lê LID e número do participante");

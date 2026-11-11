@@ -59,7 +59,7 @@ export function lerMensagem(evento) {
   const pn = candidatos.find(ehPn) ?? null;
   const lid = candidatos.find(ehLid) ?? null;
   if (!pn && !lid) return null;
-  const ctx = m.extendedTextMessage?.contextInfo ?? {};
+  const ctx = m.extendedTextMessage?.contextInfo ?? d.contextInfo ?? m.contextInfo ?? {};
   return {
     id: k.id, grupo, chat: k.remoteJid, texto: String(texto).slice(0, 2000),
     autor: { pn, lid, jid: pn ?? lid, numero: pn ? pn.split("@")[0] : null, nome: d.pushName ?? null },

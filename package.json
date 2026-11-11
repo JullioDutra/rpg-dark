@@ -8,7 +8,7 @@
     "node": "22.x"
   },
   "scripts": {
-    "testar": "node scripts/testar-linguagem.mjs && node scripts/testar-regras.mjs && node scripts/testar-combate.mjs && node scripts/testar-exploracao.mjs && node scripts/testar-ia.mjs && node scripts/testar-relogio.mjs && node scripts/testar-servidor.mjs && python3 scripts/validar-historia.py",
+    "testar": "node scripts/testar-linguagem.mjs && node scripts/testar-regras.mjs && node scripts/testar-combate.mjs && node scripts/testar-exploracao.mjs && node scripts/testar-mundo.mjs && node scripts/testar-ia.mjs && node scripts/testar-relogio.mjs && node scripts/testar-servidor.mjs && python3 scripts/validar-historia.py",
     "gerar": "node scripts/gerar-dados.mjs && node scripts/render-avatares.mjs && node scripts/render-pets.mjs && node scripts/render-mapas.mjs && python3 scripts/gerar-historia-json.py"
   },
   "dependencies": {

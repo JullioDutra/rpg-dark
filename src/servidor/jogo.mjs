@@ -13,6 +13,9 @@ import { um } from "./db.mjs";
 import { criarExploracao } from "./exploracao.mjs";
 import { criarNarrador, ehAcaoLivre } from "./narrador.mjs";
 import { criarCombate } from "./combate.mjs";
+import { criarMundo } from "./mundo.mjs";
+import { criarItens } from "./itens.mjs";
+import { kitInicial } from "../regras/itens.mjs";
 import { XP_PROXIMO } from "../../scripts/balanceamento.mjs";
 import { comandoExploracao, recuperarVigor, buscarRegioes } from "../regras/exploracao.mjs";
 import { textoOrigem, textoRegiao, textoReino, textoPrimeirosPassos, rodape, NOME_CASTA, ambiente } from "./textos.mjs";
@@ -71,6 +74,8 @@ export function criarJogo({ db, sal = process.env.TELEFONE_SAL ?? "", admins = (
   const exploracao = criarExploracao({ db, rng, agora });
   const narrador = criarNarrador({ db, ia, agora });
   const combate = criarCombate({ db, rng, agora });
+  const mundo = criarMundo({ db, ia, rng, agora });
+  const itens = criarItens({ db, agora });
 
   async function identidade(autor) {
     const r = await um(db, `select * from jogo.identidades where ($1::text is not null and wa_jid = $1) or ($2::text is not null and wa_lid = $2)
@@ -110,19 +115,30 @@ export function criarJogo({ db, sal = process.env.TELEFONE_SAL ?? "", admins = (
     const mundo = await um(db, "select * from jogo.mundos where grupo_wa_id = $1", [msg.chat]);
     if (!mundo || mundo.status !== "ativo") return [];
 
-    if (/^[/!.]?\s*resetar[- ]?jogador\b/.test(t)) {
-      if (!(await ehAdmin(msg))) return [];
-      const alvo = msg.mencoes[0];
-      if (!alvo) return [{ para: msg.chat, texto: "Use: /resetar-jogador @pessoa" }];
-      const n = await db.query(`delete from jogo.jogadores j using jogo.identidades i where j.identidade_id = i.id and j.mundo_id = $1
-        and (i.wa_jid = $2 or i.wa_lid = $2) returning j.nome`, [mundo.id, alvo]);
-      return [{ para: msg.chat, texto: n.length ? `O nome de *${n[0].nome}* é apagado das estrelas.` : "Essa pessoa não tem personagem neste mundo." }];
+    if (/^[/!.]?\s*resetar[- ]?(jogador|personagem)\b/.test(t)) {
+      if (!(await ehAdmin(msg))) return [{ para: msg.chat, texto: "Só um administrador do RPG pode apagar um personagem." }];
+      const resto = msg.texto.trim().replace(/^[/!.]?\s*resetar[- ]?(jogador|personagem)\s*/i, "").trim();
+      const todos = await db.query(`select j.id, j.nome, j.nome_normalizado, i.wa_jid, i.wa_lid from jogo.jogadores j join jogo.identidades i on i.id = j.identidade_id where j.mundo_id = $1`, [mundo.id]);
+      const digitos = (x) => String(x ?? "").replace(/@[a-z.]+$/i, "").replace(/\D/g, "");
+      // Aceita: @menção (número ou LID), número digitado (com ou sem o 9) ou o nome do personagem
+      const alvos = [...msg.mencoes, ...(resto.match(/@?\d{8,}/g) ?? [])].map(digitos).filter(Boolean);
+      const nome = semAcento(resto.replace(/@\S+/g, "").trim().toLowerCase());
+      const alvo = todos.find((x) => alvos.some((a) => [digitos(x.wa_jid), digitos(x.wa_lid)].some((d) => d && (d === a || mesmoNumero(d, a)))))
+        ?? (nome ? todos.find((x) => x.nome_normalizado === nome) ?? todos.find((x) => x.nome_normalizado.startsWith(nome) && nome.length >= 3) : null);
+      if (!alvo) return [{ para: msg.chat, texto: `Não achei esse personagem. Use *resetar-jogador @pessoa* ou *resetar-jogador NomeDoPersonagem*.\n\nPersonagens deste mundo: ${todos.filter((x) => !x.nome.startsWith("__")).map((x) => x.nome).join(", ") || "nenhum"}.` }];
+      await db.query(`delete from jogo.batalhas where id in (select batalha_id from jogo.participantes_batalha where jogador_id = $1)`, [alvo.id]);
+      await db.query("delete from jogo.jogadores where id = $1", [alvo.id]);
+      return [{ para: msg.chat, texto: `O nome de *${alvo.nome.startsWith("__") ? "um personagem em criação" : alvo.nome}* é apagado das estrelas. Quem quiser, pode nascer de novo com *entrar no mundo*.` }];
     }
 
     if (/^(!|\/)?(entrar( no mundo)?|quero entrar( no mundo)?|entrar no jogo)$/.test(t)) return entrar(msg, mundo);
     if (ehComando(t, "ficha", "carta", "minha ficha", "minha carta")) return ficha(msg, mundo, msg.chat);
     if (ehComando(t, "ajuda", "comandos")) return [{ para: msg.chat, texto: AJUDA }];
-    if (/^[!/]?(explorar|viajar|mapa|rota|vigor|viagem|descobertas|inventario|onde estou|aldeia|reino)\b/.test(t)) return [{ para: msg.chat, texto: "Isso se faz no meu privado. Me chama lá." }];
+    if (ehComando(t, "feitos", "noticias", "mural")) {
+      const fs = await db.query("select texto from jogo.feitos where mundo_id = $1 order by id desc limit 8", [mundo.id]);
+      return [{ para: msg.chat, texto: fs.length ? `*Últimos feitos do mundo*\n\n${fs.map((f) => f.texto.split("\n")[0].replace(/^[^\p{L}*]+/u, "")).join("\n")}` : "Nenhum feito ainda. Seja o primeiro." }];
+    }
+    if (/^[!/]?(explorar|viajar|mapa|rota|vigor|viagem|descobertas|inventario|itens|bolsa|loja|locais|missao|falar|lutar|onde estou|aldeia|reino)\b/.test(t)) return [{ para: msg.chat, texto: "Isso se faz no meu privado. Me chama lá." }];
     return []; // conversa do grupo: o bot fica quieto
   }
 
@@ -159,23 +175,36 @@ export function criarJogo({ db, sal = process.env.TELEFONE_SAL ?? "", admins = (
       where j.identidade_id = $1 and m.status = 'ativo' order by (j.estado = 'criando') desc, j.atualizado_em desc limit 1`, [idt.id]);
     if (!j) return [{ para, texto: "Oi. Eu sou o narrador de *Yotsuhoshi*, um RPG de anime no WhatsApp.\n\nPara jogar, entre num grupo onde o mundo está ativo e digite *entrar no mundo*." }];
     if (j.estado === "criando") return criacao(msg, j, para, t);
-    // Comandos de informação têm prioridade; a exploração só confere chegadas pendentes (texto vazio).
     const info = ehComando(t, "onde estou", "regiao", "minha regiao", "local", "onde to", "onde eu estou", "aldeia", "minha aldeia",
       "casa", "minha casa", "origem", "reino", "meu reino");
+    // 1) Luta em andamento (ou "lutar"): tem prioridade sobre tudo
     const c = info ? null : await combate(j.id, msg);
-    if (c?.tratado) return c.saidas;
     if (c) j = { ...j, ...c.jogador };
-    const e = await exploracao(j.id, info ? { ...msg, texto: "" } : msg);
+    if (c?.tratado) return [...c.saidas, ...(await mundo.aoEventos(j, c.eventos, para))];
+    const tc = t.replace(/^[!/]/, "");
+    // 2) Itens, loja, descanso
+    const it = await itens(j, tc, para);
+    if (it.tratado) return it.mudouRegiao ? [...it.saidas, ...(await mundo.chegada(j, para))] : it.saidas;
+    // 3) Exploração e viagens (também confere chegadas pendentes); ao mudar de região, mostra o lugar
+    const antes = j.regiao_atual;
+    const ehLocal = /^(ir|vou|visitar|entrar)\b/.test(tc) ? await mundo.comando(j, tc, msg.texto, para) : { tratado: false };
+    if (ehLocal.tratado) return ehLocal.saidas;
+    const e = await exploracao(j.id, info ? { ...msg, texto: "" } : /^(ir|vou)\b/.test(tc) ? { ...msg, texto: tc.replace(/^(ir|vou)\s+(para |pra |a |ao |à )?/, "viajar ") } : msg);
     j = { ...j, ...e.jogador };
-    if (e.tratado) return e.saidas;
+    const chegou = j.regiao_atual !== antes ? await mundo.chegada(j, para) : [];
+    if (e.tratado) return [...e.saidas, ...chegou];
+    // 4) Mundo vivo: locais, NPCs, missão, segredos, amigos, feitos, vingar
+    const mv = await mundo.comando(j, tc, msg.texto, para);
+    if (mv.tratado) return [...e.saidas, ...chegou, ...mv.saidas];
     if (ehComando(t, "onde estou", "regiao", "minha regiao", "local", "onde to", "onde eu estou"))
-      return [...e.saidas, { para, texto: textoRegiao(j.regiao_atual) ?? "Não consegui achar sua região." }];
-    if (ehComando(t, "aldeia", "minha aldeia", "casa", "minha casa", "origem")) return [...e.saidas, { para, texto: textoOrigem(j, aldeiaDe(j)) }];
-    if (ehComando(t, "reino", "meu reino")) return [...e.saidas, { para, texto: textoReino(j.reino) ?? "Reino desconhecido." }];
-    if (ehComando(t, "ficha", "carta", "minha ficha", "minha carta", "status")) return [...e.saidas, { para, imagem: cartaPersonagem(j, j.avatar_dna), legenda: legendaFicha(j, agora()) }];
-    if (ehComando(t, "ajuda", "comandos", "menu", "oi", "ola")) return [...e.saidas, { para, texto: AJUDA }];
-    if (ehAcaoLivre(msg.texto)) return [...e.saidas, ...(await narrador(j, msg.texto, para))];
-    return [...e.saidas, { para, texto: `${ambiente(j.regiao_atual, agora() / 60_000 | 0)}\n\nO que você faz? Escreva começando com *>*.\n${rodape("ex.: > converso com o ferreiro", "ou: explorar · mapa · ajuda")}` }];
+      return [...e.saidas, ...chegou, { para, texto: textoRegiao(j.regiao_atual) ?? "Não consegui achar sua região." }];
+    if (ehComando(t, "aldeia", "minha aldeia", "casa", "minha casa", "origem")) return [...e.saidas, ...chegou, { para, texto: textoOrigem(j, aldeiaDe(j)) }];
+    if (ehComando(t, "reino", "meu reino")) return [...e.saidas, ...chegou, { para, texto: textoReino(j.reino) ?? "Reino desconhecido." }];
+    if (ehComando(t, "ficha", "carta", "minha ficha", "minha carta", "status")) return [...e.saidas, ...chegou, { para, imagem: cartaPersonagem(j, j.avatar_dna), legenda: legendaFicha(j, agora()) }];
+    if (ehComando(t, "ajuda", "comandos", "menu", "oi", "ola")) return [...e.saidas, ...chegou, { para, texto: AJUDA }];
+    if (chegou.length) return [...e.saidas, ...chegou];
+    if (ehAcaoLivre(msg.texto)) return [...e.saidas, ...(await narrador(j, msg.texto, para, await mundo.contextoNarrador(j)))];
+    return [...e.saidas, { para, texto: `${ambiente(j.regiao_atual, agora() / 60_000 | 0)}\n\nO que você faz?\n${rodape("locais · missao · explorar · itens · ajuda", "ou escreva sua ação começando com >")}` }];
   }
 
   function perguntaDaEtapa(j) {
@@ -255,6 +284,8 @@ export function criarJogo({ db, sal = process.env.TELEFONE_SAL ?? "", admins = (
       if (!final) return [];
       await db.query(`insert into jogo.inventario (jogador_id, item_id, tipo, qtd, dados) values ($1, 'pocao', 'consumivel', 3, '{"nome":"Poção de cura"}')
         on conflict (jogador_id, item_id) do nothing`, [j.id]);
+      for (const id of kitInicial(final.classe)) await db.query(`insert into jogo.inventario (jogador_id, item_id, tipo, qtd, equipado, dados)
+        values ($1, $2, 'equipamento', 1, true, '{}') on conflict (jogador_id, item_id) do nothing`, [j.id, id]);
       await db.query(`insert into jogo.eventos_atributo (jogador_id, atributo, delta, fonte, detalhe)
         select $1, k, v::int, 'sorteio_inicial', '{}'::jsonb from jsonb_each_text($2::jsonb) as x(k, v)`, [j.id, JSON.stringify(final.atributos)]).catch(() => {});
       const mencao = [msg.autor.jid];
@@ -265,9 +296,11 @@ export function criarJogo({ db, sal = process.env.TELEFONE_SAL ?? "", admins = (
         { espera: 1500 },
         { para, texto: abertura },
         { espera: 1500 },
-        { para, texto: `${textoOrigem(final, est.sorteio.aldeia)}\n\n${textoRegiao(final.regiao_atual, { titulo: "_Sua região_" }) ?? ""}` },
+        { para, texto: textoOrigem(final, est.sorteio.aldeia) },
         { espera: 1500 },
         { para, texto: textoReino(final.reino) },
+        { espera: 1000 },
+        ...(await mundo.chegada(final, para, { nascimento: true })),
         { espera: 1000 },
         { para, texto: textoPrimeirosPassos() },
       ].filter((x) => x.espera || x.texto || x.imagem);
@@ -331,17 +364,23 @@ const AJUDA = `*Como jogar*
 
 *No grupo*
 entrar no mundo — criar seu personagem
-ficha — mostrar sua carta
+ficha — sua carta · feitos — o que aconteceu no mundo
 
 *Pelo mundo* (no privado)
+locais — o que existe onde você está
+ir <lugar> — visitar um lugar
+falar <nome> — conversar com alguém
+missao — sua história e o próximo passo
+explorar — procurar encrenca e achados
+viajar <região> · rota · mapa
 > sua ação — fazer o que quiser, com suas palavras
-explorar — olhar ao redor
-viajar <lugar> · rota <lugar> · mapa
-onde estou · aldeia · reino
-bolsa · descobertas · vigor · ficha
+
+*Suas coisas*
+itens — bolsa, o que cada coisa faz e quantos usos tem
+equipar <nº> · usar <nº> · loja · descansar
+habilidades · ficha · segredos · amigos
 
 *Numa luta*
-a atacar · m1 magia · h1 habilidade
-d defender · i poção · f fugir
+responda com o número da ação. O dado decide a força.
 
 ` + rodape("atributos só sobem por mérito", "ninguém, nem a IA, dá poder de graça");

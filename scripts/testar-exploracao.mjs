@@ -183,12 +183,12 @@ export async function testarExploracaoServidor({ db, jogador, mensagem, grupo })
     for (let i = 0; i < 2; i++) { clock += 4000; numeros = [.60, .99]; await enviar("explorar"); }
     const itens = await db.query("select * from jogo.inventario where jogador_id = $1", [jogador.id]);
     assert.equal(itens.length, 1); assert.equal(itens[0].qtd, 2);
-    assert.match(texto(await enviar("inventario")), /obsidiana ×2/);
+    assert.match(texto(await enviar("inventario")), /obsidiana — ×2/);
   });
   await t("descoberta guarda localização sem entregar segredos da masmorra", async () => {
     await limpar(); numeros = [.48, 0];
     const s = await enviar("explorar");
-    assert.match(texto(s), /entrada de/); assert.doesNotMatch(texto(s), /menino carregando um ovo/);
+    assert.match(texto(s), /rastros que levam a/); assert.doesNotMatch(texto(s), /menino carregando um ovo/);
     const ds = await db.query("select * from jogo.descobertas where jogador_id = $1 and tipo = 'subfase'", [jogador.id]);
     assert.equal(ds.length, 1); assert.equal(ds[0].referencia, "SF-HOM-01");
     assert.match(texto(await enviar("descobertas")), /Obsidiana/);
@@ -197,7 +197,7 @@ export async function testarExploracaoServidor({ db, jogador, mensagem, grupo })
   });
   await t("encontro perigoso avisa; recuar encerra; enfrentar abre o combate", async () => {
     await limpar(); numeros = [0, .99];
-    assert.match(texto(await enviar("explorar")), /corvo/);
+    assert.match(texto(await enviar("explorar")), /bloqueia o caminho/);
     assert.match(texto(await enviar("viajar R-HOM-1")), /recuar/);
     assert.match(texto(await enviar("recuar")), /recua devagar/);
     assert.equal((await atual()).vigor, 90);
