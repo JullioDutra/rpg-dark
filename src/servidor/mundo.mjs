@@ -37,7 +37,7 @@ export function objetivoCampanha(B) {
   return "No *Trono dos Deuses Caídos*, enfrente o Rei do Eclipse.";
 }
 
-export function criarMundo({ db, ia = null, rng, agora }) {
+export function criarMundo({ db, ia = null, rng, agora, ganchos = {} }) {
   // ── estado do jogador ──
   async function estado(j) {
     const linhas = await db.query("select chave, valor from jogo.progresso where jogador_id = $1", [j.id]);
@@ -137,6 +137,7 @@ export function criarMundo({ db, ia = null, rng, agora }) {
       ? `⭐ *${j.nome}* concluiu *${cap.titulo}* em ${nomeRegiao(rid)}${primeiro ? " — o primeiro do mundo" : ""}.\n_Um segredo do mundo foi descoberto. Quem quiser saber, que pergunte a ${j.nome}… ou vá ver com os próprios olhos._`
       : `⭐ *${j.nome}* concluiu *${cap.titulo}* em ${nomeRegiao(rid)}.`, { grupo: mundo.grupo_wa_id })));
     if (depois.rank !== jog.rank) saidas.push(...(await feito(j, "rank", `*${j.nome}* alcançou o *rank ${depois.rank}* (nível ${depois.nivel}).`, { grupo: mundo.grupo_wa_id })));
+    if (ganchos.aoConcluir) saidas.push(...(await ganchos.aoConcluir(j, cap, para)));
     // Próximo capítulo da mesma região, se já estiver liberado
     const prox = capituloAtivo(rid, { ...st, P: new Map([...st.P, [`c:${cap.id}`, true]]) });
     if (prox && !prox.bloqueado) saidas.push({ para, texto: `_Ainda há o que fazer aqui._\n\n${textoPasso(prox.cap, prox.passo)}` });
@@ -360,6 +361,10 @@ export function criarMundo({ db, ia = null, rng, agora }) {
         const st = await estado(j);
         const l = localDe(c.regiao, c.local), prox = await proximoVilao(j, c.regiao, l, st);
         if (prox && !prox.bloqueado && j.regiao_atual === c.regiao) saidas.push({ para, texto: `_Mais adiante em ${l.nome}, outra presença espera: ${VILOES.get(prox.v).nome}. Quando estiver pronto: *ir ${l.nome.toLowerCase()}*._` });
+      } else if (ev.tipo === "vitoria" && ganchos.aoVencer) {
+        saidas.push(...(await ganchos.aoVencer(j, para)));
+      } else if (ev.tipo === "caiu" && ganchos.aoDerrota) {
+        saidas.push(...(await ganchos.aoDerrota(j, para)));
       } else if (ev.tipo === "rank") {
         saidas.push(...(await feito(j, "rank", `*${j.nome}* alcançou o *rank ${ev.rank}* (nível ${ev.nivel}).`, { grupo: mundo.grupo_wa_id })));
       } else if (ev.tipo === "derrota") {

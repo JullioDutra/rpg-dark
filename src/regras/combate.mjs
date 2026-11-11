@@ -140,7 +140,7 @@ export const AJUSTE_SOLO = { medio: { hp: 0.7, ataque: 0.85 }, alto: { hp: 0.55,
  * opts: equip (bônus), itens ({id: qtd} consumíveis de luta), solo, eco (sombra de um vilão já derrotado no mundo),
  * bonusDano (ex.: 1.1 de um juramento de vingança), aliados (nº de jogadores, escala a vida do inimigo).
  */
-export function novoCombate(j, vilao, nivel, { agora = Date.now(), solo = true, equip = {}, itens = {}, eco = false, bonusDano = 1, aliados = 1 } = {}) {
+export function novoCombate(j, vilao, nivel, { agora = Date.now(), solo = true, equip = {}, itens = {}, eco = false, bonusDano = 1, aliados = 1, pet = null } = {}) {
   const at = atributosVilao(nivel, vilao.tier, vilao.arquetipo);
   const aj = solo && AJUSTE_SOLO[vilao.tier];
   if (aj) { at.HP = Math.round(at.HP * aj.hp); at.FOR = Math.round(at.FOR * aj.ataque); at.MAG = Math.round(at.MAG * aj.ataque); }
@@ -157,6 +157,7 @@ export function novoCombate(j, vilao, nivel, { agora = Date.now(), solo = true, 
       postura: POSTURA[vilao.tier] ?? 0, posturaMax: POSTURA[vilao.tier] ?? 0, atordoado: false, vulneravel: false, preso: 0, fraco: 0, queima: 0, queimaDano: 0,
       chefe: ["alto", "rei", "divindade"].includes(vilao.tier), eco },
     preparando: false, log: [],
+    pet: pet ? { nome: pet.nome, poder: 0.2 + 0.1 * pet.estagio } : null,
   };
 }
 
@@ -332,6 +333,11 @@ export function resolverRodada(estado, acao, rng) {
     e.log.push(`🎲 *${d.nat}* — ${i.nome} corta o caminho. Não deu para fugir.`);
   }
 
+  // Companheiro espiritual: um ataque extra por rodada
+  if (e.pet && i.hp > 0 && acao.tipo !== "fugir") {
+    const dp = danoBase({ atk: Math.max(j.at.FOR, j.at.MAG) * e.pet.poder, nivel: j.nivel, def: Math.min(i.at.DEF, i.at.RES), poder: 1 });
+    i.hp -= dp; e.log.push(`${e.pet.nome} ataca junto com você. _(${dp})_`);
+  }
   // Guarda quebrada: o bônus de +50% vale só para a ação seguinte do jogador; depois a guarda volta cheia.
   if (vulneravel) { i.vulneravel = false; i.postura = i.posturaMax; }
   else if (i.posturaMax && i.postura <= 0) {

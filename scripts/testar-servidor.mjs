@@ -179,7 +179,7 @@ try {
     const jog = (await db.query("select * from jogo.jogadores where id = $1", [j.id]))[0];
     const outro = (await db.query("select j.* from jogo.jogadores j join jogo.identidades i on i.id = j.identidade_id where i.wa_jid = $1", [`${OUTRO}@s.whatsapp.net`]))[0];
     await testarDadosDoMundo();
-    await testarMundoServidor({ db, jogador: jog, outro, admin: ADMIN, GRUPO, mensagem: (texto) => ev(JOG, texto, P), grupo: (texto, adm) => ev(adm ? ADMIN : JOG, texto) });
+    await testarMundoServidor({ db, jogador: jog, outro, admin: ADMIN, GRUPO, mensagem: (texto) => ev(JOG, texto, P), grupo: (texto, adm) => ev(adm ? ADMIN : JOG, texto), outroGrupo: (texto) => ev(OUTRO, texto) });
   }
   { const rs = textos(await enviar(ev(ADMIN, `resetar-jogador @${OUTRO.replace("55119", "5511")}`))); ok(/apagado/.test(rs), "admin reseta por número digitado, sem o 9 e sem menção: " + rs.slice(0, 200)); }
   await enviar(ev(OUTRO, "entrar"));

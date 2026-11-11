@@ -62,6 +62,7 @@ Veja [comandos, regras implementadas e limites da primeira etapa](docs/32-explor
 | 31 | [**Passo a passo da implantação**](docs/31-passo-a-passo-implantacao.md) | Checklist: chaves, Vercel, Neon, Evolution sem afetar o outro bot, relógio, deploy, primeiro teste |
 | 32 | [**Exploração implementada**](docs/32-exploracao-implementada.md) | Comandos, vigor, viagens persistentes, sorteio, testes e limites da primeira etapa |
 | 33 | [**Narrador e combate**](docs/33-narrador-e-combate-implementados.md) | O que já funciona: textos de origem/região, ação livre com IA, combate solo, XP e níveis |
+| 34 | [**Mundo vivo, combate com dado e auditoria**](docs/34-mundo-vivo-combate-e-auditoria.md) | Locais com imagens, NPCs, capítulos, vilões em covis (derrota única), itens, feitos no grupo, pets, duelo, pactos, o que falta |
 
 ## Dados estruturados (`data/`)
 
@@ -104,6 +105,8 @@ node scripts/simular-progressao.mjs # tabela de balanceamento (docs/22b)
 python3 scripts/validar-historia.py # valida roteiro, encruzilhadas, contos e chaves
 node scripts/testar-linguagem.mjs   # 91 testes do entendimento de fala natural
 node scripts/testar-regras.mjs      # testes das regras (Olho Avaliador)
+node scripts/testar-combate.mjs     # combate (menu, dado, habilidades) e itens
+node scripts/testar-mundo.mjs       # consistência do mundo vivo (regiões, covis, capítulos, campanha)
 node scripts/testar-exploracao.mjs  # regras de exploração, vigor, rotas e mapas
 bash db/testar-migracoes.sh         # aplica o esquema do banco num Postgres temporário e verifica
 node scripts/testar-ia.mjs          # camada de IA (Sabiá/Claude) com respostas simuladas

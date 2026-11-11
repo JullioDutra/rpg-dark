@@ -43,7 +43,7 @@ export async function testarDadosDoMundo() {
   });
 }
 
-export async function testarMundoServidor({ db, jogador, outro, mensagem, grupo, admin, GRUPO }) {
+export async function testarMundoServidor({ db, jogador, outro, mensagem, grupo, outroGrupo, admin, GRUPO }) {
   let clock = Date.now() + 7 * 86_400_000, dados = [];
   const rng = () => (dados.length ? dados.shift() : 0.5);
   const novoJogo = (ia = null) => criarJogo({ db, sal: "teste", admins: [admin], rng, agora: () => clock, ia });
@@ -172,11 +172,53 @@ export async function testarMundoServidor({ db, jogador, outro, mensagem, grupo,
     assert.match(texto(f), /Cuidado com o lago/); assert.match(pedidos.at(-1).sistema, /Você interpreta Capitão Gorō/);
     jogo = novoJogo();
   });
+  await t("pet: elegível conclui o capítulo de um santuário e um espírito o escolhe; luta junto e ganha carinho", async () => {
+    await db.query("update jogo.jogadores set regiao_atual = 'R-WAT-6', local_atual = null, elegivel_pet = true where id = $1", [jogador.id]);
+    await forte(", nivel = 30");
+    await enviar("falar irmã mizu"); await matar("lagoa");
+    await forte(", nivel = 30"); dados = [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.9, 0.2];
+    const { f } = await matar("santuario");
+    assert.match(texto(f), /Capítulo concluído — Quem a Água Chama/);
+    assert(f.some((x) => x.imagem && /decide ficar/.test(x.legenda ?? "")), "pet com imagem no privado");
+    assert(doGrupo(f).some((x) => x.imagem && /Um espírito escolheu/.test(x.legenda ?? "")), "pet anunciado no grupo");
+    const pet = (await db.query("select * from jogo.pets where jogador_id = $1", [jogador.id]))[0];
+    assert(pet && pet.estagio === 1);
+    assert.match(texto(await enviar("pet carinho")), /\+3 de vínculo/);
+    await db.query("update jogo.jogadores set regiao_atual = 'R-WAT-3' where id = $1", [jogador.id]);
+    await forte(); dados = [0.1, 0.1, 0.9];
+    await enviar("explorar"); const l = await enviar("lutar"); const v = await enviar("1");
+    assert.match(texto(v), /Vitória/); assert(l.length);
+    assert.equal((await db.query("select vitorias from jogo.pets where jogador_id = $1", [jogador.id]))[0].vitorias, 1);
+  });
+  await t("boatos contam os contos da região; pacto de Kanata aparece na derrota e cobra corrupção", async () => {
+    assert.match(texto(await enviar("boatos")), /Dizem que/);
+    await db.query("update jogo.jogadores set regiao_atual = 'R-WAT-3', local_atual = null, hp = 30, hp_max = 30, mp = 0, nivel = 1, atributos = '{\"FOR\":1,\"DEF\":1,\"MAG\":1,\"RES\":1,\"VEL\":1,\"SOR\":1}' where id = $1", [jogador.id]);
+    await db.query("delete from jogo.inventario where jogador_id = $1 and item_id in ('pocao','pocao-mana','elixir','bomba-fumaca')", [jogador.id]);
+    await enviar("ir ilha"); await enviar("lutar");
+    let fim = ""; for (let k = 0; k < 12 && !/Derrota/.test(fim); k++) fim = texto(await enviar("1"));
+    assert.match(fim, /Derrota/); assert.match(fim, /Mestre Yoru/); assert.match(fim, /aceitar pacto/);
+    const p = texto(await enviar("aceitar pacto"));
+    assert.match(p, /\+15% de dano/); assert.equal((await atual()).corrupcao, 25);
+    assert.match(texto(await enviar("aceitar pacto")), /Ninguém te ofereceu/);
+  });
+  await t("grupo: apoiar manda forças (1 por dia) e duelo amistoso é resolvido com dados", async () => {
+    await db.query(`update jogo.jogadores set estado = 'ativo', etapa_criacao = null, nome = 'Rin', nome_normalizado = 'rin', classe = 'Mago', nivel = 3,
+      atributos = '{"FOR":4,"DEF":5,"MAG":14,"RES":10,"VEL":7,"SOR":6}', hp = 90, hp_max = 90, mp = 50, mp_max = 50, regiao_atual = 'R-WAT-1' where id = $1`, [outro.id]);
+    const ap = await noGrupo(outroGrupo("apoiar Kaito"));
+    assert.match(texto(ap), /manda forças para \*Kaito Ryuen\*/);
+    assert.match(texto(await noGrupo(outroGrupo("apoiar Kaito"))), /já mandou seu apoio hoje/);
+    assert.equal(Number((await db.query("select valor from jogo.progresso where jogador_id = $1 and chave = 'apoio'", [jogador.id]))[0].valor), 1);
+    const d = await noGrupo(outroGrupo("duelo Kaito"));
+    assert.match(texto(d), /desafia \*Kaito Ryuen\*/);
+    const r = await noGrupo(grupo("aceitar", false));
+    assert.match(texto(r), /Duelo — Rin × Kaito Ryuen/); assert.match(texto(r), /🎲/); assert.match(texto(r), /vence/);
+  });
   await t("final: derrotar o Rei do Eclipse coroa o Seiō e anuncia no grupo", async () => {
     await db.query(`insert into jogo.progresso (jogador_id, chave) select $1, 'b:' || x from unnest($2::text[]) x on conflict do nothing`,
       [jogador.id, ["reis-antigos", "descida", "kanata", "ninho", "poco", "muralha", "rosto", "arco-homura", "arco-watatsumi", "arco-daichi", "arco-fujin"]]);
     for (const id of ["excalibur", "kokugai", "tenmon"]) await db.query("insert into jogo.inventario (jogador_id, item_id, tipo, qtd) values ($1, $2, 'equipamento', 1) on conflict do nothing", [jogador.id, id]);
-    await db.query("update jogo.jogadores set regiao_atual = 'R-KOK-6', local_atual = null where id = $1", [jogador.id]);
+    await db.query("update jogo.jogadores set regiao_atual = 'R-KOK-6', local_atual = null, corrupcao = 0 where id = $1", [jogador.id]);
+    await db.query("delete from jogo.exploracoes where jogador_id = $1", [jogador.id]);
     await forte(", nivel = 100");
     const a = await matar("esquife");
     assert(doGrupo(a.f).some((x) => /UM DEUS CAIU/.test(x.legenda ?? x.texto)), "queda de divindade com imagem e impacto: " + texto(a.a).slice(0, 300) + " // " + texto(a.f).slice(0, 400));

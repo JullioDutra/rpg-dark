@@ -42,7 +42,7 @@ export function recuperar(j, agora) {
 /** Bênçãos da campanha: cada arco de reino concluído fortalece o jogador (+5% de dano), os reis antigos +15%. */
 export function bonusCampanha(chaves) {
   let b = 1;
-  for (const k of chaves) { if (/^b:arco-/.test(k)) b += 0.05; if (k === "b:reis-antigos") b += 0.15; if (k === "b:ninho") b += 0.1; }
+  for (const k of chaves) { if (/^b:arco-/.test(k)) b += 0.05; if (/^b:pacto-/.test(k)) b += 0.15; if (k === "b:reis-antigos") b += 0.15; if (k === "b:ninho") b += 0.1; }
   return b;
 }
 
@@ -77,18 +77,23 @@ export function criarCombate({ db, rng, agora }) {
       if (j.hp <= Math.max(1, j.hp_max * 0.05)) { dizer("Você mal consegue ficar em pé. Descanse ou use uma poção antes de lutar."); return fim(true); }
 
       const inv = await q("select item_id, qtd, equipado from jogo.inventario where jogador_id = $1", [j.id]);
-      const chaves = (await q("select chave from jogo.progresso where jogador_id = $1 and (chave like 'b:%' or chave = $2)", [j.id, `juramento:${v.id}`])).map((x) => x.chave);
+      const prog = await q("select chave, valor from jogo.progresso where jogador_id = $1 and (chave like 'b:%' or chave = $2 or chave = 'apoio')", [j.id, `juramento:${v.id}`]);
+      const chaves = prog.map((x) => x.chave);
       const juramento = chaves.includes(`juramento:${v.id}`);
+      // Apoio dos companheiros (mandado pelo grupo): vale para a próxima luta contra um vilão de covil
+      const apoio = pend.dados.fixo ? Number(prog.find((x) => x.chave === "apoio")?.valor ?? 0) : 0;
+      if (apoio) await q("delete from jogo.progresso where jogador_id = $1 and chave = 'apoio'", [j.id]);
+      const pet = (await q("select nome, estagio from jogo.pets where jogador_id = $1", [j.id]))[0] ?? null;
       const vd = pend.dados.lacaio ? { ...v, nome: nomeLacaio(v), tier: "comum" } : v;
       const estado = novoCombate(j, vd, pend.dados.inimigo.nivel, { agora: tempo, equip: bonusEquip(inv), eco: Boolean(pend.dados.eco),
-        itens: Object.fromEntries(inv.map((i) => [i.item_id, i.qtd])), bonusDano: bonusCampanha(chaves) * (juramento ? 1.15 : 1) });
+        itens: Object.fromEntries(inv.map((i) => [i.item_id, i.qtd])), bonusDano: bonusCampanha(chaves) * (juramento ? 1.15 : 1) * (1 + 0.1 * apoio), pet });
       estado.contexto = { lacaio: Boolean(pend.dados.lacaio), fixo: Boolean(pend.dados.fixo), eco: Boolean(pend.dados.eco), vilao: v.id, juramento };
       const nb = (await q(`insert into jogo.batalhas (mundo_id, tipo, canal_wa_id, rodada, status, estado)
         values ($1, 'solo', $2, 1, 'aguardando', $3) returning id`, [j.mundo_id, para, JSON.stringify(estado)]))[0];
       await q("insert into jogo.participantes_batalha (batalha_id, jogador_id) values ($1, $2)", [nb.id, j.id]);
       await q("update jogo.exploracoes set pendente = false, resolvida_em = $2, dados = dados || $3 where id = $1",
         [pend.id, iso, JSON.stringify({ escolha: "lutar", batalha_id: nb.id })]);
-      dizer(`${juramento ? "Você lembra do seu juramento. As mãos param de tremer.\n\n" : ""}${painel(estado)}\n\n${rodape("responda com o número da ação", "o dado decide a força do golpe")}`);
+      dizer(`${juramento ? "Você lembra do seu juramento. As mãos param de tremer.\n\n" : ""}${apoio ? `Você sente a força de ${apoio === 1 ? "um companheiro" : `${apoio} companheiros`} com você.\n\n` : ""}${painel(estado)}\n\n${rodape("responda com o número da ação", "o dado decide a força do golpe")}`);
       return fim(true);
     }
 
@@ -109,7 +114,7 @@ export function criarCombate({ db, rng, agora }) {
       if (!apagou.length) await q("update jogo.inventario set qtd = qtd - 1 where jogador_id = $1 and item_id = $2", [j.id, r.consumir]);
     }
     const e = r.estado;
-    e.contexto = b.estado.contexto;
+    e.contexto = b.estado.contexto; e.pet = b.estado.pet;
     if (!r.fim) {
       await q("update jogo.batalhas set estado = $2, rodada = $3 where id = $1", [b.id, JSON.stringify(e), e.rodada]);
       await q("update jogo.jogadores set hp = $2, mp = $3 where id = $1", [j.id, e.jogador.hp, e.jogador.mp]);
@@ -180,6 +185,7 @@ export function criarCombate({ db, rng, agora }) {
       } else texto += `\n${rodape(`XP ${depois.xp}/${XP_PROXIMO(depois.nivel)}`)}`;
       dizer(texto);
       Object.assign(j, { nivel: depois.nivel, rank: depois.rank, hp: depois.hp, mp: depois.mp, hp_max: depois.hp_max, mp_max: depois.mp_max, xp: depois.xp, atributos: depois.atributos });
+      eventos.push({ tipo: "vitoria" });
       if (ctx.fixo) eventos.push({ tipo: "vilao", vilao: v.id, primeiro, nivelJogador: depois.nivel, juramento: ctx.juramento });
     } else if (resultado === "derrota") {
       const hp = Math.max(1, Math.round(j.hp_max * 0.1));
@@ -196,6 +202,7 @@ export function criarCombate({ db, rng, agora }) {
         `Cada respiração dói.\n${rodape(`vida ${hp}`, roubavel && perda ? `−${perda} ryō` : null, `ferida: ${atributo} −10% por 24 h`)}\n\n` +
         `_Da próxima vez: defenda quando ele juntar forças, e mire no ponto fraco (${v?.fraqueza ?? "?"}). A vida volta com o tempo; uma bandagem cura a ferida._`);
       Object.assign(j, { hp });
+      eventos.push({ tipo: "caiu" });
       if (ctx.fixo) eventos.push({ tipo: "derrota", vilao: v.id });
     } else {
       await q("update jogo.jogadores set hp = $2, mp = $3, recuperacao_em = $4 where id = $1", [j.id, e.jogador.hp, e.jogador.mp, iso]);

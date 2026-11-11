@@ -157,7 +157,8 @@ export function criarExploracao({ db, rng, agora }) {
       const dados = { ...pendente.dados, escolha, recompensa: escolha === "ajudar" ? { ryo: 5 } : {} };
       if (escolha === "ajudar") { await q("update jogo.jogadores set ryo = ryo + 5 where id = $1", [j.id]); j.ryo = (BigInt(j.ryo) + 5n).toString(); }
       await q("update jogo.exploracoes set pendente = false, resolvida_em = $2, dados = $3 where id = $1", [pendente.id, iso, JSON.stringify(dados)]);
-      dizer(escolha === "recuar" ? "Você recua devagar, sem dar as costas, até sair de vista." : escolha === "ajudar" ? `Juntos, vocês erguem a carroça. O viajante sorri e coloca umas moedas na sua mão.\n${rodape("+5 ryō")}` : "Você acena e segue seu caminho.");
+      const evx = EVENTOS.find((x) => x.id === pendente.dados.evento) ?? EVENTOS.at(-1);
+      dizer(escolha === "recuar" ? "Você recua devagar, sem dar as costas, até sair de vista." : escolha === "ajudar" ? `${evx.ajudar}\n${rodape("+5 ryō")}` : evx.seguir);
       return resultado();
     }
     if (cmd.tipo === "explorar") {
@@ -205,7 +206,7 @@ export function criarExploracao({ db, rng, agora }) {
           dizer(`${ambiente(regiao.id, tempo)}\nAlgo brilha entre as pedras: *${m.nome}*. Você guarda na bolsa.\n${rodape("+1 material")}`);
         }
       } else if (tipo === "evento") {
-        dados.evento = "viajante-carga"; espera = true;
+        dados.evento = EVENTOS[Math.min(EVENTOS.length - 1, Math.floor(rng() * EVENTOS.length))].id; espera = true;
         dizer(textoPendente({ tipo, dados }));
       } else if (tipo === "fauna") {
         const animal = escolher(faunaDaRegiao(regiao), rng);
@@ -247,9 +248,22 @@ async function emBatalha(q, id) {
   return (await q(`select 1 from jogo.participantes_batalha p join jogo.batalhas b on b.id = p.batalha_id
     where p.jogador_id = $1 and b.status <> 'encerrada' limit 1`, [id])).length > 0;
 }
+// Encontros de estrada com uma escolha simples. Ajudar sempre vale um pouco; seguir nunca é punido.
+const EVENTOS = [
+  { id: "crianca-perdida", cena: "Uma criança pequena está sentada na beira do caminho, sem chorar, segurando um sapato só. Ela não sabe dizer onde mora.",
+    ajudar: "Você a carrega nos ombros até ouvir alguém gritar um nome. A mãe chega correndo e enfia umas moedas no seu bolso antes que você recuse.", seguir: "Você aponta a direção da vila mais próxima e segue. Ela fica olhando você ir." },
+  { id: "mercador-roda", cena: "Um mercador xinga uma roda quebrada em três idiomas diferentes. A carroça dele está cheia até a boca.",
+    ajudar: "Vocês trocam a roda juntos. Ele paga pouco, mas conta todas as fofocas da estrada enquanto aperta os pregos.", seguir: "Você contorna a carroça. Os xingamentos continuam atrás de você por um bom tempo." },
+  { id: "peregrino-ferido", cena: "Um peregrino descansa encostado numa pedra, com o tornozelo inchado. Ele sorri como quem pede desculpa por atrapalhar.",
+    ajudar: "Você improvisa uma tala e o apoia até o abrigo mais próximo. Ele insiste em pagar com as moedas da oferenda.", seguir: "Você deseja boa sorte e segue. Ele acena, sem mágoa." },
+  { id: "animal-preso", cena: "Um filhote de alguma coisa está preso numa armadilha de caçador, puxando a pata sem fazer barulho.",
+    ajudar: "Você abre a armadilha com cuidado. O filhote some no mato — e o caçador, sem graça, paga pelo conserto do que você quebrou.", seguir: "Você desvia o olhar e segue. O mato fica quieto demais atrás de você." },
+  { id: "viajante-carga", cena: "Na estrada, um velho tenta erguer sozinho uma carroça tombada. Ele olha para você, mas não pede nada.",
+    ajudar: "Juntos, vocês erguem a carroça. O viajante sorri e coloca umas moedas na sua mão.", seguir: "Você acena e segue seu caminho." },
+];
 const VILOES_DESC = new Map(JSON.parse(readFileSync(new URL("../../data/viloes.json", import.meta.url), "utf8")).map((v) => [v.id, v]));
 function textoPendente(p) {
-  if (p.tipo === "evento") return "Na estrada, um velho tenta erguer sozinho uma carroça tombada. Ele olha para você, mas não pede nada.\n\n*1* ajudar · *2* seguir em frente";
+  if (p.tipo === "evento") return `${(EVENTOS.find((x) => x.id === p.dados.evento) ?? EVENTOS.at(-1)).cena}\n\n*1* ajudar · *2* seguir em frente`;
   const v = VILOES_DESC.get(p.dados.inimigo.id);
   if (p.dados.fixo) return `*${p.dados.eco ? "Eco de " : ""}${v?.nome_completo ?? p.dados.inimigo.nome}* ainda espera por você.\n\n*lutar* · *recuar*\n${rodape(`nível ${p.dados.inimigo.nivel}`)}`;
   const forte = p.dados.inimigo.nivel > (p.dados.nivelJogador ?? 99) ? "um pouco mais forte que você" : null;

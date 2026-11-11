@@ -15,6 +15,7 @@ import { criarNarrador, ehAcaoLivre } from "./narrador.mjs";
 import { criarCombate } from "./combate.mjs";
 import { criarMundo } from "./mundo.mjs";
 import { criarItens } from "./itens.mjs";
+import { criarExtras } from "./extras.mjs";
 import { kitInicial } from "../regras/itens.mjs";
 import { XP_PROXIMO } from "../../scripts/balanceamento.mjs";
 import { comandoExploracao, recuperarVigor, buscarRegioes } from "../regras/exploracao.mjs";
@@ -74,7 +75,8 @@ export function criarJogo({ db, sal = process.env.TELEFONE_SAL ?? "", admins = (
   const exploracao = criarExploracao({ db, rng, agora });
   const narrador = criarNarrador({ db, ia, agora });
   const combate = criarCombate({ db, rng, agora });
-  const mundo = criarMundo({ db, ia, rng, agora });
+  const extras = criarExtras({ db, rng, agora });
+  const mundo = criarMundo({ db, ia, rng, agora, ganchos: extras });
   const itens = criarItens({ db, agora });
 
   async function identidade(autor) {
@@ -134,6 +136,21 @@ export function criarJogo({ db, sal = process.env.TELEFONE_SAL ?? "", admins = (
     if (/^(!|\/)?(entrar( no mundo)?|quero entrar( no mundo)?|entrar no jogo)$/.test(t)) return entrar(msg, mundo);
     if (ehComando(t, "ficha", "carta", "minha ficha", "minha carta")) return ficha(msg, mundo, msg.chat);
     if (ehComando(t, "ajuda", "comandos")) return [{ para: msg.chat, texto: AJUDA }];
+    // Duelo e apoio entre jogadores
+    if (/^[!/]?(duelo|desafio|x1|apoiar|apoio|aceitar|aceito|recusar|recuso)\b/.test(t)) {
+      const idt = await identidade(msg.autor);
+      const eu = await um(db, "select * from jogo.jogadores where mundo_id = $1 and identidade_id = $2 and estado = 'ativo'", [mundo.id, idt.id]);
+      const achar = async (m) => {
+        const todos = await db.query(`select j.*, i.wa_jid, i.wa_lid from jogo.jogadores j join jogo.identidades i on i.id = j.identidade_id where j.mundo_id = $1 and j.estado = 'ativo'`, [mundo.id]);
+        const dig = (x) => String(x ?? "").replace(/@[a-z.]+$/i, "").replace(/\D/g, "");
+        const alvos = [...m.mencoes, ...(m.texto.match(/@?\d{8,}/g) ?? [])].map(dig).filter(Boolean);
+        const nome = semAcento(m.texto.trim().replace(/^\S+\s*/, "").replace(/@\S+/g, "").trim().toLowerCase());
+        return todos.find((x) => alvos.some((a) => [dig(x.wa_jid), dig(x.wa_lid)].some((d) => d && (d === a || mesmoNumero(d, a)))))
+          ?? (nome.length >= 3 ? todos.find((x) => x.nome_normalizado === nome || x.nome_normalizado.startsWith(nome)) : null) ?? null;
+      };
+      const r = await extras.noGrupo(msg, mundo, t, eu, achar);
+      if (r) return r;
+    }
     if (ehComando(t, "feitos", "noticias", "mural")) {
       const fs = await db.query("select texto from jogo.feitos where mundo_id = $1 order by id desc limit 8", [mundo.id]);
       return [{ para: msg.chat, texto: fs.length ? `*Últimos feitos do mundo*\n\n${fs.map((f) => f.texto.split("\n")[0].replace(/^[^\p{L}*]+/u, "")).join("\n")}` : "Nenhum feito ainda. Seja o primeiro." }];
@@ -189,11 +206,15 @@ export function criarJogo({ db, sal = process.env.TELEFONE_SAL ?? "", admins = (
     const antes = j.regiao_atual;
     const ehLocal = /^(ir|vou|visitar|entrar)\b/.test(tc) ? await mundo.comando(j, tc, msg.texto, para) : { tratado: false };
     if (ehLocal.tratado) return ehLocal.saidas;
-    const e = await exploracao(j.id, info ? { ...msg, texto: "" } : /^(ir|vou)\b/.test(tc) ? { ...msg, texto: tc.replace(/^(ir|vou)\s+(para |pra |a |ao |à )?/, "viajar ") } : msg);
+    // Comandos do mundo vivo têm verbo próprio: a exploração só confere chegadas (para "falar sobre o mapa" não abrir o mapa)
+    const direto = /^(falar|conversar|perguntar|locais|lugares|olhar|missao|missoes|historia|capitulo|objetivo|diario|caminho|segredos|pistas|amigos|amizades|feitos|noticias|vingar|vinganca|pet|boatos|boato|rumores|contos|ouvir|lembrar|ecos|eco|aceitar pacto|recusar pacto|pacto|resistir|purificar)\b/.test(tc);
+    const e = await exploracao(j.id, info || direto ? { ...msg, texto: "" } : /^(ir|vou)\b/.test(tc) ? { ...msg, texto: tc.replace(/^(ir|vou)\s+(para |pra |a |ao |à )?/, "viajar ") } : msg);
     j = { ...j, ...e.jogador };
     const chegou = j.regiao_atual !== antes ? await mundo.chegada(j, para) : [];
     if (e.tratado) return [...e.saidas, ...chegou];
-    // 4) Mundo vivo: locais, NPCs, missão, segredos, amigos, feitos, vingar
+    // 4) Mundo vivo: locais, NPCs, missão, segredos, amigos, feitos, vingar; pet, pactos, boatos, ecos
+    const ex = await extras.comando(j, tc, para);
+    if (ex.tratado) return [...e.saidas, ...chegou, ...ex.saidas];
     const mv = await mundo.comando(j, tc, msg.texto, para);
     if (mv.tratado) return [...e.saidas, ...chegou, ...mv.saidas];
     if (ehComando(t, "onde estou", "regiao", "minha regiao", "local", "onde to", "onde eu estou"))
@@ -357,7 +378,8 @@ export function legendaFicha(j, tempo = Date.now()) {
     `${NOME_CASTA[j.casta] ?? ""} de ${j.aldeia ?? "?"} · ${j.atributo_magico ?? "?"}${j.elegivel_pet ? " · elegível a pet" : ""}\n\n` +
     `Vida ${j.hp}/${j.hp_max} · Mana ${j.mp}/${j.mp_max} · Vigor ${recuperarVigor(j, tempo).vigor}\n` +
     `FOR ${a.FOR} · DEF ${a.DEF} · MAG ${a.MAG} · RES ${a.RES} · VEL ${a.VEL} · SOR ${a.SOR}\n` +
-    rodape(`XP ${j.xp}/${XP_PROXIMO(j.nivel)}`, j.ryo != null ? `${j.ryo} ryō` : null, j.pontos_livres ? `${j.pontos_livres} pontos livres` : null);
+    rodape(`XP ${j.xp}/${XP_PROXIMO(j.nivel)}`, j.ryo != null ? `${j.ryo} ryō` : null, j.pontos_livres ? `${j.pontos_livres} pontos livres` : null,
+      Number(j.corrupcao) ? `corrupção ${j.corrupcao}/100` : null, j.titulo ? j.titulo : null);
 }
 
 const AJUDA = `*Como jogar*
@@ -365,6 +387,7 @@ const AJUDA = `*Como jogar*
 *No grupo*
 entrar no mundo — criar seu personagem
 ficha — sua carta · feitos — o que aconteceu no mundo
+duelo @pessoa — duelo amistoso · apoiar @pessoa — mandar forças
 
 *Pelo mundo* (no privado)
 locais — o que existe onde você está
@@ -378,7 +401,8 @@ viajar <região> · rota · mapa
 *Suas coisas*
 itens — bolsa, o que cada coisa faz e quantos usos tem
 equipar <nº> · usar <nº> · loja · descansar
-habilidades · ficha · segredos · amigos
+habilidades · ficha · segredos · amigos · pet
+boatos — histórias que o povo conta · lembrar — ecos do passado
 
 *Numa luta*
 responda com o número da ação. O dado decide a força.

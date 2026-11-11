@@ -1,0 +1,476 @@
+{
+ "contos": [
+  {
+   "id": "C01",
+   "titulo": "A Criança da Mina",
+   "regiao": "R-HOM-3",
+   "nivel": "1–8",
+   "gatilho": "Gancho da aldeia Haibara",
+   "resumo": "Uma criança some na mina de obsidiana. Ela está viva, escondida com um filhote de salamandra que os mineiros querem matar.",
+   "etapas": [
+    "Investigar a mina",
+    "Encontrar a criança",
+    "Decidir o destino do filhote"
+   ],
+   "desafio": "Dilema: entregar o filhote (paz com os mineiros) ou protegê-lo (inimizade + aliado animal)",
+   "recompensa": "Filhote de salamandra vira companheiro OU 300 ryō e respeito da vila",
+   "liga_a": "Pista: a salamandra reage a cristais negros"
+  },
+  {
+   "id": "C02",
+   "titulo": "O Pilar que Escureceu",
+   "regiao": "R-HOM-1",
+   "nivel": "5–12",
+   "gatilho": "Gancho de Hibashira",
+   "resumo": "O pilar de fogo da praça apagou por um minuto. Um mercador vende 'pedaços da Árvore-Estrela' falsos — e um verdadeiro, sem saber.",
+   "etapas": [
+    "Interrogar o mercador",
+    "Testar os fragmentos",
+    "Rastrear o fragmento verdadeiro"
+   ],
+   "desafio": "Investigação: 3 fragmentos, só 1 verdadeiro; o teste certo é molhar em água-espelho",
+   "recompensa": "Um Amuleto da Perdição (do estoque do mundo)",
+   "liga_a": "O fragmento verdadeiro veio de Kyōkai (rastro da Guilda)"
+  },
+  {
+   "id": "C03",
+   "titulo": "O Barco de Refugiados",
+   "regiao": "R-WAT-3",
+   "nivel": "10–18",
+   "gatilho": "Gancho de Kaigarajō",
+   "resumo": "A guarda recebe ordem de afundar um barco de refugiados de Homura.",
+   "etapas": [
+    "Receber a ordem",
+    "Decidir",
+    "Enfrentar as consequências"
+   ],
+   "desafio": "Dilema: obedecer (acesso ao palácio) ou desobedecer (vira fugitivo por 7 dias, ganha aliados entre os refugiados)",
+   "recompensa": "Os refugiados viram testemunhas na guerra fabricada (A2-HOM-4)",
+   "liga_a": "A ordem foi assinada por Saigō"
+  },
+  {
+   "id": "C04",
+   "titulo": "O Coral Negro",
+   "regiao": "R-WAT-1",
+   "nivel": "14–22",
+   "gatilho": "Explorar Ryūgū-jō",
+   "resumo": "Soldados viram coral negro por dentro. A cura existe, mas exige entrar na mente de um deles.",
+   "etapas": [
+    "Achar o curandeiro exilado",
+    "Entrar no sonho do soldado",
+    "Arrancar o coral"
+   ],
+   "desafio": "Combate em sonho: as regras mudam (o jogador luta com as memórias do soldado)",
+   "recompensa": "Grimório G10 antecipado OU +RES permanente (+1)",
+   "liga_a": "O coral é cultivado com água preta (veneno de Kaishin)"
+  },
+  {
+   "id": "C05",
+   "titulo": "Os Círculos no Trigo",
+   "regiao": "R-DAI-5",
+   "nivel": "1–10",
+   "gatilho": "Gancho de Mugibatake",
+   "resumo": "Círculos aparecem nas plantações antes de cada invasão. Alguém está escrevendo avisos em língua antiga.",
+   "etapas": [
+    "Mapear os círculos",
+    "Decifrar",
+    "Achar quem escreve"
+   ],
+   "desafio": "Enigma real: os círculos formam a palavra 'POÇO' no alfabeto antigo dado na ficha do conto",
+   "recompensa": "O escritor é um kodama que conheceu Sayo; ele dá uma folha que esquenta perto do Ovo",
+   "liga_a": "Primeira pista física do Ovo"
+  },
+  {
+   "id": "C06",
+   "titulo": "O Golem que Pediu Nome",
+   "regiao": "R-DAI-1",
+   "nivel": "8–15",
+   "gatilho": "Após a Rebelião dos Golens",
+   "resumo": "Um golem pequeno segue o jogador e pede um nome.",
+   "etapas": [
+    "Dar um nome",
+    "Protegê-lo dos caçadores de golens",
+    "Ensinar algo a ele"
+   ],
+   "desafio": "Escolhas pequenas acumuladas (o golem aprende com o jogador); no fim ele imita o comportamento predominante",
+   "recompensa": "Companheiro golem (ajuda em subfases de Daichi)",
+   "liga_a": "O golem consegue ouvir o coração da montanha"
+  },
+  {
+   "id": "C07",
+   "titulo": "A Corrida do Vento",
+   "regiao": "R-FUJ-3",
+   "nivel": "10–20",
+   "gatilho": "Estepe Susuki",
+   "resumo": "Os nômades apostam cavalos numa corrida contra o vento.",
+   "etapas": [
+    "Ganhar um cavalo",
+    "Treinar",
+    "Correr"
+   ],
+   "desafio": "Corrida em 5 trechos: em cada um, escolher entre arriscar, poupar ou atalho (o vento muda conforme a estação real)",
+   "recompensa": "Cavalo-vento de elite e um mapa da Estepe com o Círculo sem Vento",
+   "liga_a": "Caminho para a Excalibur"
+  },
+  {
+   "id": "C08",
+   "titulo": "As Cartas sem Remetente",
+   "regiao": "R-FUJ-1",
+   "nivel": "12–20",
+   "gatilho": "Gancho de Kazamachi",
+   "resumo": "Cartas anônimas avisam desastres com um dia de antecedência.",
+   "etapas": [
+    "Interceptar a próxima carta",
+    "Seguir o mensageiro",
+    "Descobrir o autor"
+   ],
+   "desafio": "Perseguição pelos telhados (testes de VEL ou ações livres)",
+   "recompensa": "O autor é um espião arrependido de Kurokaze — vira informante (pistas sobre Kuroha)",
+   "liga_a": "Encurta o arco de Fūjin"
+  },
+  {
+   "id": "C09",
+   "titulo": "O Velho que Lutou com um Deus",
+   "regiao": "R-DAI-6",
+   "nivel": "20–30",
+   "gatilho": "Completar o Teste dos Mil Degraus",
+   "resumo": "O eremita conta que, jovem, enfrentou um eco do Rei do Eclipse — e perdeu cada técnica que usou.",
+   "etapas": [
+    "Ouvir a história",
+    "Lutar contra o eremita sem usar habilidades",
+    "Entender a lição"
+   ],
+   "desafio": "Luta com regra: usar qualquer habilidade = derrota imediata",
+   "recompensa": "Chave K09 (A Lição de Ryūga) por outro caminho",
+   "liga_a": "Prepara a batalha final"
+  },
+  {
+   "id": "C10",
+   "titulo": "O Leilão da Pena",
+   "regiao": "R-KOK-1",
+   "nivel": "20+",
+   "gatilho": "Primeiro Leilão das Sombras",
+   "resumo": "Uma pena de Nisteroy vai a leilão. Três jogadores podem querer — e a Guilda também.",
+   "etapas": [
+    "Juntar dinheiro",
+    "Dar lances",
+    "Lidar com o resultado"
+   ],
+   "desafio": "Leilão real entre jogadores (lances públicos por 24 h)",
+   "recompensa": "A pena aumenta a chance do Ovo escolher o dono dela (+2 de peso)",
+   "liga_a": "Conflito entre jogadores (doc 28)"
+  },
+  {
+   "id": "C11",
+   "titulo": "O Exército que Esperou",
+   "regiao": "R-WAT-5",
+   "nivel": "35–45",
+   "gatilho": "Após a Legião Congelada",
+   "resumo": "Um soldado congelado acorda e pergunta se a guerra contra o 'menino' acabou.",
+   "etapas": [
+    "Ouvir o soldado",
+    "Levá-lo ao túmulo do seu capitão",
+    "Contar a verdade (ou mentir)"
+   ],
+   "desafio": "Dilema: a verdade o destrói; a mentira o mantém vivo como aliado",
+   "recompensa": "Testemunha de 500 anos (conta detalhes da batalha contra Kaien)",
+   "liga_a": "Reforça K09"
+  },
+  {
+   "id": "C12",
+   "titulo": "A Dívida da Bruxa",
+   "regiao": "R-WAT-4",
+   "nivel": "25–35",
+   "gatilho": "Bruxo com Dívida > 80 ou visitar Yamanba",
+   "resumo": "Yamanba cobra uma dívida antiga de alguém da família do jogador.",
+   "etapas": [
+    "Descobrir a dívida",
+    "Escolher pagar, enganar ou lutar"
+   ],
+   "desafio": "Negociação com contrato (as regras do Juramento do Contratante valem para ela também)",
+   "recompensa": "Ela revela quem fez o pacto que rachou o primeiro selo: um ancestral de Kurogane",
+   "liga_a": "Arco de Daichi"
+  },
+  {
+   "id": "C13",
+   "titulo": "O Nome na Cachoeira",
+   "regiao": "R-WAT-6",
+   "nivel": "18–28",
+   "gatilho": "A água canta o nome de um jogador",
+   "resumo": "As Cachoeiras cantam o nome de um jogador — elas cantam nomes de quem vai morrer.",
+   "etapas": [
+    "Descobrir quando e como",
+    "Tentar mudar o destino"
+   ],
+   "desafio": "O jogador tem 7 dias reais e uma Batalha Mortal marcada; se a party inteira o proteger na luta, o destino muda",
+   "recompensa": "Feito 'Desafiou o Destino' (+1 SOR) e o Mérito de todos que ajudaram",
+   "liga_a": "Mostra que o destino pode mudar (tema do final)"
+  },
+  {
+   "id": "C14",
+   "titulo": "As Luvas de Yoru",
+   "regiao": "R-KOK-1",
+   "nivel": "30+",
+   "gatilho": "Trabalhar 5 missões para a Guilda",
+   "resumo": "Yoru convida o jogador para um chá. Ele nunca tira as luvas.",
+   "etapas": [
+    "Tomar o chá",
+    "Observar",
+    "Arriscar tocar as mãos dele"
+   ],
+   "desafio": "Furtividade social: perceber detalhes (teste de VEL) sem que ele perceba (Juiz de Táticas)",
+   "recompensa": "Chave K12 por outro caminho; se for descoberto, Kanata passa a vigiar o jogador (Corrupção visível para ele)",
+   "liga_a": "Pista da identidade de Yoru"
+  },
+  {
+   "id": "C15",
+   "titulo": "O Duelo que Ninguém Viu",
+   "regiao": "R-HOM-1",
+   "nivel": "35–45",
+   "gatilho": "Lado escolhido em A2-HOM-2",
+   "resumo": "Uma testemunha do duelo de 8 anos atrás entre Ryūen e Hyōsuke aparece.",
+   "etapas": [
+    "Proteger a testemunha",
+    "Ouvir a verdade",
+    "Decidir a quem contar"
+   ],
+   "desafio": "Escolta em território hostil (3 emboscadas)",
+   "recompensa": "A verdade: o núcleo escolheu Ryūen — ninguém trapaceou. Pode virar Hyōsuke sem luta",
+   "liga_a": "Encruzilhada E02"
+  },
+  {
+   "id": "C16",
+   "titulo": "A Ilha que Lembra",
+   "regiao": "R-FUJ-4",
+   "nivel": "35–45",
+   "gatilho": "Ilhas Ukishima",
+   "resumo": "Uma ilha flutuante guarda o quarto de infância de um dos reis antigos.",
+   "etapas": [
+    "Achar a ilha",
+    "Ler os brinquedos e cartas",
+    "Levar um objeto ao rei atual do reino"
+   ],
+   "desafio": "Navegação aérea (rotas mudam com o vento real)",
+   "recompensa": "O rei atual ganha confiança (núcleo mais fácil de ser confiado)",
+   "liga_a": "Humaniza os reis antigos antes da Torre"
+  },
+  {
+   "id": "C17",
+   "titulo": "A Padeira de Kyōkai",
+   "regiao": "R-KOK-1",
+   "nivel": "20+",
+   "gatilho": "Comprar pão em Kyōkai 3 vezes",
+   "resumo": "Uma velha padeira canta uma canção antiga enquanto amassa o pão. Ela não sabe de onde aprendeu.",
+   "etapas": [
+    "Ouvir a canção inteira (ela só canta ao amanhecer, 6h–8h reais)",
+    "Descobrir de onde vem a família dela"
+   ],
+   "desafio": "Tempo real: só funciona no horário certo",
+   "recompensa": "Chave K01 por outro caminho (a família dela descende de sobreviventes do Vale de Hinata)",
+   "liga_a": "Batalha final"
+  },
+  {
+   "id": "C18",
+   "titulo": "O Último Kodama",
+   "regiao": "R-DAI-2",
+   "nivel": "40–50",
+   "gatilho": "Após A Porta na Árvore",
+   "resumo": "O kodama mais velho está morrendo e quer ver a Árvore-Estrela uma última vez.",
+   "etapas": [
+    "Carregá-lo até o Monte Ryūsō (Ato III)",
+    "Protegê-lo na viagem"
+   ],
+   "desafio": "Escolta longa: ele não pode tomar dano (todo dano no jogador conta para ele também)",
+   "recompensa": "Ele planta uma semente no toco da Árvore — no Final Estelar, a nova Árvore cresce mais rápido (epílogo melhor)",
+   "liga_a": "Epílogo"
+  },
+  {
+   "id": "C19",
+   "titulo": "Os Três Mentirosos",
+   "regiao": "R-KOK-1",
+   "nivel": "25+",
+   "gatilho": "Taverna de Kyōkai",
+   "resumo": "Três informantes vendem a localização de um núcleo arrancado. Só um diz a verdade.",
+   "etapas": [
+    "Ouvir os três",
+    "Deduzir quem fala a verdade"
+   ],
+   "desafio": "Enigma lógico clássico (cada um faz 2 afirmações; o enigma tem solução única)",
+   "recompensa": "Localização do núcleo arrancado (encurta A3-M6)",
+   "liga_a": "A3-M6"
+  },
+  {
+   "id": "C20",
+   "titulo": "O Diário de Tōya",
+   "regiao": "R-KOK-4",
+   "nivel": "60+",
+   "gatilho": "Borda da Cratera",
+   "resumo": "Um diário queimado está preso numa raiz na borda do buraco.",
+   "etapas": [
+    "Recuperar o diário (descida com corda)",
+    "Ler as páginas legíveis"
+   ],
+   "desafio": "Escalada: 5 testes seguidos de VEL/FOR; falhar 2 = cair e lutar contra criaturas do vazio",
+   "recompensa": "Abre o flashback FB06",
+   "liga_a": "K07, K11, K12"
+  }
+ ],
+ "flashbacks": [
+  {
+   "id": "FB01",
+   "titulo": "Pão de Cinza",
+   "personagem": "Kaien, 15 anos, um dia antes do roubo",
+   "gatilho": "Tocar a soleira queimada da casa de Kaien nas Ruínas de Hinata (R-KOK-7)",
+   "jogadores": "1",
+   "cena": "Manhã no Vale de Hinata, verde e vivo. A mãe tosse ao fazer pão. A irmã Sayo pede uma história. Um homem de manto com quatro brasões espera na estrada.",
+   "objetivo": "Viver o dia de Kaien: ajudar o pai, cuidar da mãe, ouvir o emissário",
+   "desafio": "Diálogo: o jogador pode tentar convencer Kaien a recusar a oferta. Ele SEMPRE aceita (o passado não muda), mas a forma como o jogador conversa revela fragmentos diferentes",
+   "revela": [
+    "A mãe cantava uma canção ao fazer pão (K01)",
+    "O emissário usava um anel com os quatro brasões",
+    "Kaien escondeu dinheiro para o remédio debaixo do poço"
+   ],
+   "chave": "K01",
+   "falha": "Se o jogador forçar Kaien a agir contra a própria natureza 3 vezes, a memória se desfaz; nova tentativa em 24 h"
+  },
+  {
+   "id": "FB02",
+   "titulo": "O Poço",
+   "personagem": "Sayo, 7 anos, na noite do fogo",
+   "gatilho": "Portador do Ovo no Poço Seco (A3-M2) — ou qualquer jogador com o Diário de Sayo, na lua nova",
+   "jogadores": "1",
+   "cena": "Escuro, fumaça, gritos. Um ovo morno ao lado. O irmão chamando o nome dela lá em cima — e ela não responde, com medo.",
+   "objetivo": "Sobreviver à noite como Sayo e decidir sair do poço",
+   "desafio": "Furtividade sem combate: Sayo tem 1 HP. Cada escolha errada (sair cedo, gritar) faz a memória recomeçar",
+   "revela": [
+    "Sayo ouviu Kaien e não respondeu — por isso ele achou que ela tinha morrido",
+    "Sayo decidiu devolver o ovo um dia (início do K05)"
+   ],
+   "chave": "K05"
+  },
+  {
+   "id": "FB03",
+   "titulo": "Quatro Coroas",
+   "personagem": "Os quatro reis antigos, na véspera do selo (até 4 jogadores, um por rei)",
+   "gatilho": "Grupo com os 4 capítulos do Shitenchō reunidos na Muralha dos Selos — ou A4-M3 (cada rei libertado mostra a sua parte)",
+   "jogadores": "1–4 (cada um vive um rei; com menos jogadores, a IA conduz os reis restantes e eles revelam menos)",
+   "cena": "Uma barraca de campanha diante do vale devastado. Quatro reis feridos discutindo se merecem ser perdoados.",
+   "objetivo": "Chegar a um acordo entre os quatro reis antes do amanhecer (debate entre os jogadores, cada um com os segredos do seu rei)",
+   "desafio": "Cada jogador recebe no privado o segredo e o medo do seu rei. O acordo só acontece se os jogadores compartilharem o que sabem. O debate é julgado pela IA",
+   "revela": [
+    "As quatro frases do selo (K03), uma por rei",
+    "Ryūga explica como a Devoração rouba técnicas (K09)",
+    "Os reis sabiam que a culpa era deles"
+   ],
+   "chave": [
+    "K03",
+    "K09"
+   ]
+  },
+  {
+   "id": "FB04",
+   "titulo": "O Homem do Manto",
+   "personagem": "O Emissário (hoje o Leiloeiro Sem Sombra), 500 anos atrás",
+   "gatilho": "Capturar o Leiloeiro vivo (A3-M4) e tocar seu manto — ou comprar no Leilão o 'Anel dos Quatro Brasões'",
+   "jogadores": "1",
+   "cena": "Uma tenda de luxo. Quatro cartas de quatro reis. Um saco de ouro. Um menino magro na entrada.",
+   "objetivo": "Viver o emissário enquanto ele negocia — e foge",
+   "desafio": "Dilema moral jogável: o jogador pode tentar fazer o emissário pagar Kaien. Não consegue, mas cada tentativa revela mais da covardia dele",
+   "revela": [
+    "Os quatro reis assinaram (K04)",
+    "O emissário bebeu a seiva da Árvore como pagamento pelo silêncio"
+   ],
+   "chave": "K04"
+  },
+  {
+   "id": "FB05",
+   "titulo": "A Forja de Gōzan",
+   "personagem": "Iwanaga Gōzan, rei antigo da Terra, forjando o Esquife",
+   "gatilho": "Vencer o Coração da Montanha (SF-DAI-08) com o núcleo da Terra confiado a alguém da party",
+   "jogadores": "1–2",
+   "cena": "Uma forja dentro da montanha, a luz de quatro elementos derretendo juntos.",
+   "objetivo": "Forjar o Esquife como Gōzan",
+   "desafio": "Minijogo de ritmo em texto: responder as batidas do martelo na ordem certa (a sequência está escondida no Sutra dos Mil Degraus, G21)",
+   "revela": [
+    "Gōzan deixou uma emenda proposital (K06)"
+   ],
+   "chave": "K06"
+  },
+  {
+   "id": "FB06",
+   "titulo": "As Lanternas de Tōya",
+   "personagem": "Tōya, descendente de Sayo, há 200 anos",
+   "gatilho": "Encontrar a primeira lanterna morta no andar 30 da Torre — ou ler o diário de Tōya (C20)",
+   "jogadores": "1",
+   "cena": "Tōya desce a Torre com o ovo, convencido de que vai salvar Kaien. O ovo pesa mais a cada andar.",
+   "objetivo": "Descer como Tōya, marcando o caminho",
+   "desafio": "O jogador sabe que Tōya está errado; pode tentar fazê-lo desistir. Se conseguir (Juiz de Táticas ≥ 8), revela o motivo da recusa do ovo",
+   "revela": [
+    "O ovo rejeita quem quer usá-lo (K07)",
+    "A rota marcada (K11)",
+    "As queimaduras nas mãos de Tōya são iguais às de Kanata (K12)"
+   ],
+   "chave": [
+    "K07",
+    "K11",
+    "K12"
+   ]
+  },
+  {
+   "id": "FB07",
+   "titulo": "O Ninho",
+   "personagem": "Nisteroy, na noite do roubo",
+   "gatilho": "Portador do Ovo Desperto (A3-M8) dormir no Ninho Vazio",
+   "jogadores": "1 (o portador)",
+   "cena": "Voar sobre o vale como um dragão. O ninho está quente. O ovo está vivo. Nisteroy sussurra um nome.",
+   "objetivo": "Viver a noite de Nisteroy até o momento em que ela descobre o ninho vazio",
+   "desafio": "Nenhuma luta. O jogador precisa prestar atenção: o nome é dito UMA vez, no meio da narração, e não é repetido",
+   "revela": [
+    "O Nome Não Dado (K02)"
+   ],
+   "chave": "K02"
+  },
+  {
+   "id": "FB08",
+   "titulo": "O Juramento",
+   "personagem": "Kaishin, 200 anos atrás, ao receber o núcleo",
+   "gatilho": "Reflexo do Ontem (SF-WAT-03) vencido na lua cheia",
+   "jogadores": "1",
+   "cena": "O jovem Kaishin diante do rei anterior moribundo, que lhe entrega o núcleo e um segredo.",
+   "objetivo": "Fazer o juramento",
+   "desafio": "O jogador pode recusar o juramento: a memória mostra o que Kaishin quase fez (contar tudo) e por que desistiu (uma guerra)",
+   "revela": [
+    "As palavras do juramento (K08)"
+   ],
+   "chave": "K08"
+  },
+  {
+   "id": "FB09",
+   "titulo": "Para o Quinto que Vier",
+   "personagem": "Hayate Tsukumo, rei antigo do Vento",
+   "gatilho": "Tocar a pedra da Excalibur (FUJ-07) sem tentar puxar a espada",
+   "jogadores": "1",
+   "cena": "Uma estrela cai na estepe. Tsukumo carrega a espada até o círculo onde o vento nunca sopra.",
+   "objetivo": "Fincar a espada e escolher as palavras gravadas na pedra",
+   "desafio": "O jogador escreve o que Tsukumo grava. Se a frase for egoísta, a memória se desfaz. Se for altruísta, a pedra passa a mostrar a frase DO JOGADOR para todos os outros jogadores do mundo",
+   "revela": [
+    "O critério da espada (K10)"
+   ],
+   "chave": "K10"
+  },
+  {
+   "id": "FB10",
+   "titulo": "Dois Lutos",
+   "personagem": "Kaien e Nisteroy, no momento da fusão (só no Ato IV)",
+   "gatilho": "A4-M6 concluído com Kanata redimido OU com K01 e K02 conhecidos por alguém da party",
+   "jogadores": "toda a party",
+   "cena": "O vale em chamas. Um menino e um dragão chorando um diante do outro.",
+   "objetivo": "Entender a fusão antes de entrar no Esquife",
+   "desafio": "Cada jogador vive um dos dois e precisa dizer, na voz do personagem, o que mais dói. A IA avalia a sinceridade (sem resposta certa, mas respostas vazias desfazem a memória)",
+   "revela": [
+    "Na batalha final, o Shokuō perde 1 fase inteira (começa na fase 2)"
+   ],
+   "chave": null
+  }
+ ]
+}
