@@ -50,3 +50,15 @@ De vez em quando ela aparece na cena com uma frase, para parecer só uma companh
 É um número de 0 a 100 guardado por mundo. Hoje ele: sobe 1 quando um jogador perde para um chefe (alto escalão, rei ou divindade), sobe 5 quando uma Calamidade vai embora viva,
 desce 3 quando um rei ou divindade cai, desce 5 quando uma Calamidade é vencida, e aumenta a chance de encontros perigosos ao explorar.
 Ainda **não** é mostrado aos jogadores nem muda o mundo em 25/50/75% (item C do doc 37).
+
+## 40.6 Duelo amistoso por turnos (no grupo)
+
+`duelo @pessoa` → o desafiado responde `aceitar` ou `recusar`. A partir daí o duelo acontece no próprio grupo, um turno de cada vez:
+
+- Quem tem mais Velocidade começa. Na sua vez, o jogador responde com o **número da ação**, como numa batalha: Atacar, Defender, Magia e as habilidades da classe (com mana e recarga).
+- Cada ação rola o **mesmo d20** das batalhas, mostrado às claras (número, modificador, total e multiplicador).
+- Os dois entram com vida e mana cheias numa cópia: **a ficha de verdade não muda**. Os golpes valem metade, para o duelo durar.
+- Termina por nocaute, por `desistir`, por pontos depois de 12 turnos de cada um, ou por `wo` se o outro sumir por 5 minutos. `painel` reenvia a situação.
+- **Recompensa:** só um pouco de experiência (2% do nível para quem vence, 1% para quem perde), e só nos 3 primeiros duelos do dia. Sem ryō, sem mérito, sem itens.
+
+Regras em `src/regras/duelo.mjs`; servidor em `src/servidor/extras.mjs` (`acaoDuelo`).

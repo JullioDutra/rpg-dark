@@ -211,7 +211,17 @@ export async function testarMundoServidor({ db, jogador, outro, mensagem, grupo,
     const d = await noGrupo(outroGrupo("duelo Kaito"));
     assert.match(texto(d), /desafia \*Kaito Ryuen\*/);
     const r = await noGrupo(grupo("aceitar", false));
-    assert.match(texto(r), /Duelo — Rin × Kaito Ryuen/); assert.match(texto(r), /🎲/); assert.match(texto(r), /vence/);
+    assert.match(texto(r), /Duelo — Rin × Kaito Ryuen[\s\S]*Vez de (Rin|Kaito Ryuen)[\s\S]*\*1\* Atacar/, "o duelo abre com o painel e o menu de quem começa");
+    const xpAntes = Object.fromEntries((await db.query("select id, xp, nivel from jogo.jogadores where id = any($1)", [[jogador.id, outro.id]])).map((x) => [x.id, x]));
+    const vez = (s) => /Vez de Rin/.test(texto(s)) ? "rin" : "kaito";
+    let s = r, fora = await noGrupo(vez(r) === "rin" ? grupo("1", false) : outroGrupo("1"));
+    assert.match(texto(fora), /Ainda é a vez de/, "quem não está na vez não joga");
+    for (let k = 0; k < 60 && !/vence/.test(texto(s)); k++) s = await noGrupo(vez(s) === "rin" ? outroGrupo(k % 5 === 4 ? "2" : "1") : grupo(k % 5 === 4 ? "2" : "1", false));
+    assert.match(texto(s), /🎲 \*\d+\*[\s\S]*vence/, "cada turno rola o dado às claras e o duelo termina");
+    assert.match(texto(s), /XP/);
+    const ganhos = [...texto(s).matchAll(/\+(\d+) XP/g)].map((m) => Number(m[1]));
+    assert(ganhos.length === 2 && ganhos.every((g) => g <= 300), "duelo dá só um pouco de experiência");
+    assert.equal((await db.query("select count(*)::int n from jogo.progresso where chave in ('duelo-ativo', 'duelo-estado')"))[0].n, 0, "o duelo não deixa resto");
   });
   await t("minha história: salva por partes, recusa poderes e lore, segredo fica privado, grupo lê o resto", async () => {
     assert.match(texto(await enviar("minha história")), /Origem.*em branco/);

@@ -157,6 +157,12 @@ export function criarJogo({ relogio = null, db, sal = process.env.TELEFONE_SAL ?
     if (ehComando(t, "ajuda", "comandos")) return [{ para: msg.chat, texto: AJUDA }];
     if (ehComando(t, "dado", "dados", "d20", "como funciona o dado", "guia do dado")) return guiaDado(msg.chat);
     // Duelo e apoio entre jogadores
+    if (/^[!/]?(\d{1,2}|atacar|a|defender|d|magia|m|desistir|render|rendo|wo|w\.o\.|painel)$/.test(t)) {
+      const idt = await identidade(msg.autor);
+      const eu = await um(db, "select * from jogo.jogadores where mundo_id = $1 and identidade_id = $2 and estado = 'ativo'", [mundo.id, idt.id]);
+      const dz = await extras.acaoDuelo(msg, eu, t);
+      if (dz) return dz;
+    }
     if (ehComando(t, "ranking", "rank", "placar")) return social.ranking(mundo.id, msg.chat);
     if (/^[!/]?mestre\b/.test(t)) return []; // a mão do mestre nunca aparece no grupo
     if (/^[!/]?resgatar\b/.test(t)) {

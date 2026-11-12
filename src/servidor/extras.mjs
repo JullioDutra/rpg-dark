@@ -5,7 +5,8 @@ import { MUNDO, VILOES } from "../mundo/mundo.mjs";
 import { REGIAO } from "../regras/exploracao.mjs";
 import { atributosEfetivos, rolar, bonusDado, aplicarXP } from "../regras/combate.mjs";
 import { bonusEquip } from "../regras/itens.mjs";
-import { K } from "../../scripts/balanceamento.mjs";
+import { K, XP_PROXIMO } from "../../scripts/balanceamento.mjs";
+import { DUELO, novoDuelo, painelDuelo, escolherDuelo, agirDuelo } from "../regras/duelo.mjs";
 import { renderizar } from "../avatar/index.mjs";
 import { dnaPet, NOMES_ESTAGIO } from "../avatar/dna.mjs";
 import { rodape } from "./textos.mjs";
@@ -299,7 +300,7 @@ export function criarExtras({ db, rng, agora }) {
         return [{ para: msg.chat, texto: `*${autorJog.nome}* manda forças para *${alvo.nome}*. Onde quer que esteja, ${alvo.nome} sente que não luta só.\n${rodape(`+10% de dano na próxima luta contra um vilão`, `apoios guardados: ${atual + 1}/3`)}` }];
       }
       await gravar(autorJog, "duelo", { alvo: alvo.id });
-      return [{ para: msg.chat, texto: `⚔️ *${autorJog.nome}* (nível ${autorJog.nivel}) desafia *${alvo.nome}* (nível ${alvo.nivel}) para um duelo amistoso.\n\n${alvo.nome}, responda *aceitar* ou *recusar* aqui no grupo.\n${rodape("ninguém se fere de verdade", "vale 10 minutos")}` }];
+      return [{ para: msg.chat, texto: `⚔️ *${autorJog.nome}* (nível ${autorJog.nivel}) desafia *${alvo.nome}* (nível ${alvo.nivel}) para um duelo amistoso.\n\n${alvo.nome}, responda *aceitar* ou *recusar* aqui no grupo. O duelo é por turnos: cada um escolhe a ação pelo número, como numa batalha.\n${rodape("ninguém se fere de verdade", "vale 10 minutos")}` }];
     }
     if (/^[!/]?(aceitar|aceito|recusar|recuso)$/.test(t) && autorJog) {
       const d = await um(db, `select p.jogador_id, p.criado_em from jogo.progresso p join jogo.jogadores x on x.id = p.jogador_id
@@ -309,18 +310,76 @@ export function criarExtras({ db, rng, agora }) {
       if (agora() - +new Date(d.criado_em) > 600_000) return [{ para: msg.chat, texto: "O desafio já esfriou." }];
       const a = await um(db, "select * from jogo.jogadores where id = $1", [d.jogador_id]);
       if (/^[!/]?recus/.test(t)) return [{ para: msg.chat, texto: `*${autorJog.nome}* recusa o duelo. ${a.nome} guarda a arma.` }];
-      for (const x of [a, autorJog]) x.equip = bonusEquip(await db.query("select item_id, equipado from jogo.inventario where jogador_id = $1", [x.id]));
-      const r = simularDuelo(a, autorJog, rng);
-      await db.query("update jogo.jogadores set merito = merito + 5 where id = $1", [r.vencedor.id]);
-      const xp = await darXP(r.vencedor, 10 + r.perdedor.nivel * 8);
-      const txt = `⚔️ *${r.vencedor.nome}* venceu *${r.perdedor.nome}* num duelo amistoso.`;
-      await feito(r.vencedor, "duelo", txt);
-      return [{ para: msg.chat, texto: `⚔️ *Duelo — ${a.nome} × ${autorJog.nome}*\n\n${r.linhas.join("\n")}\n…\n\n*${r.vencedor.nome}* vence, ainda com ${r.resto}% de fôlego. ${r.perdedor.nome} aceita a mão estendida e levanta rindo.\n${rodape(`${r.vencedor.nome}: ${xp}`, "+5 de mérito")}` }];
+      for (const x of [a, autorJog]) {
+        x.equip = bonusEquip(await db.query("select item_id, equipado from jogo.inventario where jogador_id = $1", [x.id]));
+        if (await dueloDe(x)) return [{ para: msg.chat, texto: `*${x.nome}* já está num duelo. Um de cada vez.` }];
+      }
+      const e = novoDuelo(a, autorJog, agora());
+      await gravar(a, "duelo-estado", e);
+      for (const x of [a, autorJog]) await gravar(x, "duelo-ativo", { dono: Number(a.id), grupo: msg.chat });
+      return [{ para: msg.chat, texto: `${painelDuelo(e)}\n\n${rodape("cada um joga na sua vez, aqui no grupo", "ninguém se machuca de verdade", "vale só um pouco de experiência")}` }];
     }
     return null;
   }
 
-  return { comando, aoConcluir, aoVencer, aoDerrota, aoFalar, historiaPara, lerPergaminho, noGrupo };
+  // ── duelo amistoso por turnos (no grupo) ──
+  /** Duelo em andamento deste jogador: { dono, estado } ou null (limpa os vencidos pelo tempo). */
+  async function dueloDe(j) {
+    const ref = (await um(db, "select valor from jogo.progresso where jogador_id = $1 and chave = 'duelo-ativo'", [j.id]))?.valor;
+    if (!ref) return null;
+    const estado = (await um(db, "select valor from jogo.progresso where jogador_id = $1 and chave = 'duelo-estado'", [ref.dono]))?.valor;
+    if (!estado || agora() - Number(estado.ultimo) > DUELO.validadeMs) { await encerrarDuelo(estado, ref.dono, j.id); return null; }
+    return { dono: ref.dono, estado };
+  }
+  async function encerrarDuelo(estado, dono, ...outros) {
+    const ids = [...new Set([dono, ...outros, ...(estado?.lados ?? []).map((x) => x.id)].map(Number))];
+    await db.query("delete from jogo.progresso where jogador_id = any($1) and chave = 'duelo-ativo'", [ids]);
+    await db.query("delete from jogo.progresso where jogador_id = $1 and chave = 'duelo-estado'", [dono]);
+  }
+  /** Um pouco de experiência, só nos primeiros duelos do dia (para não virar atalho de nível). */
+  async function xpDeDuelo(lado, fracao) {
+    const hoje = new Date(agora()).toISOString().slice(0, 10);
+    const uso = (await um(db, "select valor from jogo.progresso where jogador_id = $1 and chave = 'duelos-dia'", [lado.id]))?.valor;
+    const n = uso?.dia === hoje ? Number(uso.n ?? 0) : 0;
+    await gravar({ id: lado.id }, "duelos-dia", { dia: hoje, n: n + 1 });
+    if (n >= DUELO.porDia) return "sem XP (já duelou bastante hoje)";
+    return darXP({ id: lado.id }, Math.max(1, Math.round(XP_PROXIMO(lado.nivel) * fracao)));
+  }
+  async function fimDoDuelo(d, fim, chat, extra = "") {
+    await encerrarDuelo(d.estado, d.dono);
+    const xv = await xpDeDuelo(fim.vencedor, DUELO.xpVencedor), xp = await xpDeDuelo(fim.perdedor, DUELO.xpPerdedor);
+    const jv = await um(db, "select * from jogo.jogadores where id = $1", [fim.vencedor.id]);
+    await feito(jv, "duelo", `⚔️ *${fim.vencedor.nome}* venceu *${fim.perdedor.nome}* num duelo amistoso.`);
+    const resto = Math.max(0, Math.round((fim.vencedor.hp / fim.vencedor.hpMax) * 100));
+    return [{ para: chat, texto: `${extra}*${fim.vencedor.nome}* vence${fim.motivo === "tempo" ? " por pontos" : fim.motivo === "desistencia" ? " por desistência" : fim.motivo === "wo" ? " por abandono" : ""}, ainda com ${resto}% de fôlego. ${fim.perdedor.nome} aceita a mão estendida e levanta rindo.\n${rodape(`${fim.vencedor.nome}: ${xv}`, `${fim.perdedor.nome}: ${xp}`, "a vida de verdade não mudou")}` }];
+  }
+  /** Mensagem no grupo de alguém que está num duelo: número ou nome da ação, desistir, wo. Devolve null se não for do duelo. */
+  async function acaoDuelo(msg, j, t) {
+    if (!j || !/^[!/]?(\d{1,2}|atacar|a|defender|d|magia|m|desistir|render|rendo|wo|w\.o\.|painel)$/.test(t)) return null;
+    const d = await dueloDe(j);
+    if (!d) return null;
+    const e = d.estado, eu = e.lados.findIndex((x) => x.id === Number(j.id)), outro = e.lados[1 - eu];
+    const cmd = t.replace(/^[!/]/, "");
+    if (/^(desistir|render|rendo)$/.test(cmd)) return fimDoDuelo(d, { vencedor: outro, perdedor: e.lados[eu], motivo: "desistencia" }, msg.chat, `*${j.nome}* baixa a arma.\n\n`);
+    if (cmd === "painel") return [{ para: msg.chat, texto: painelDuelo({ ...e, log: [] }) }];
+    if (/^(wo|w\.o\.)$/.test(cmd)) {
+      if (e.vez === eu) return [{ para: msg.chat, texto: "É a sua vez: escolha uma ação." }];
+      const falta = DUELO.esperaMs - (agora() - Number(e.ultimo));
+      if (falta > 0) return [{ para: msg.chat, texto: `${outro.nome} ainda tem ${Math.ceil(falta / 60_000)} min para responder.` }];
+      return fimDoDuelo(d, { vencedor: e.lados[eu], perdedor: outro, motivo: "wo" }, msg.chat, `${outro.nome} não voltou para a arena.\n\n`);
+    }
+    if (e.vez !== eu) return [{ para: msg.chat, texto: `Ainda é a vez de *${outro.nome}*.` }];
+    const esc = escolherDuelo(e, cmd);
+    if (!esc) return null;
+    if (esc.erro) return [{ para: msg.chat, texto: esc.erro }];
+    const r = agirDuelo(e, esc.acao, rng, agora());
+    if (r.erro) return [{ para: msg.chat, texto: r.erro }];
+    if (r.fim) return fimDoDuelo({ dono: d.dono, estado: r.estado }, r.fim, msg.chat, `${painelDuelo(r.estado, { menu: false })}\n\n`);
+    await gravar({ id: d.dono }, "duelo-estado", r.estado);
+    return [{ para: msg.chat, texto: painelDuelo(r.estado) }];
+  }
+
+  return { comando, aoConcluir, aoVencer, aoDerrota, aoFalar, historiaPara, lerPergaminho, noGrupo, acaoDuelo };
 }
 
 export { PETS };
