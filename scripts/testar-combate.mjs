@@ -58,7 +58,8 @@ t("o dado decide a força: 15 bate mais que 8, e 1 erra", () => {
   const normal = resolverRodada(e, { tipo: "atacar" }, d(8, 10)).estado, forte = resolverRodada(e, { tipo: "atacar" }, d(15, 10)).estado, falha = resolverRodada(e, { tipo: "atacar" }, d(1, 10)).estado;
   assert(e.inimigo.hp - forte.inimigo.hp > e.inimigo.hp - normal.inimigo.hp);
   assert.equal(falha.inimigo.hp, e.inimigo.hp);
-  assert.match(painel(normal), /🎲 \*8\* — acerto firme/);
+  assert.match(painel(normal), /🎲 \*8\* · acerto firme[\s\S]*de dano/);
+  assert.match(painel(e), /Como funciona: cada ação rola 1 dado de 20 lados[\s\S]*Seu golpe comum contra ele vale \d+ de dano/, "a luta começa explicando a conta do dado");
   assert.match(painel(normal), /\*1\* Atacar/);
 });
 t("magia na fraqueza gasta mana e avisa o ponto fraco", () => {

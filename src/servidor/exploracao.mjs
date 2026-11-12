@@ -77,7 +77,7 @@ export function criarExploracao({ db, rng, agora }) {
     if (!cmd) return resultado(false);
     const regiao = REGIAO.get(j.regiao_atual);
     const marcos = new Set((await q(`select marco_id from jogo.marcos where mundo_id = $1
-      and (jogador_id = $2 or jogador_id is null) and status = 'concluido'`, [j.mundo_id, j.id])).map((r) => r.marco_id));
+      and (jogador_id = $2 or jogador_id is null or marco_id = 'A3-M1') and status = 'concluido'`, [j.mundo_id, j.id])).map((r) => r.marco_id)); // A3-M1 (a Muralha) abre o caminho para o mundo inteiro
     const pendente = (await q("select * from jogo.exploracoes where jogador_id = $1 and pendente", [j.id]))[0];
     const emViagem = () => `Você ainda está na estrada para *${nomeRegiao(viagem.destino)}*.\n${rodape(`faltam cerca de ${minutos(+new Date(viagem.chegada_em) - tempo)} min`)}`;
     const gasto = async (custo) => {

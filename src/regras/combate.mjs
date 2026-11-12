@@ -146,8 +146,8 @@ export function atributosEfetivos(j, agora = Date.now(), equip = {}) {
 // Metas inspiradas nas faixas de ameaça de RPGs de mesa (trivial → extrema): cada degrau deve custar mais e vencer menos.
 // AJUSTE_SOLO adapta vilões pensados para grupo ao combate de um jogador só.
 export const AJUSTE_SOLO = {
-  lacaio: { hp: 1.15, ataque: 1.1 }, comum: { hp: 1.3, ataque: 1.2 }, medio: { hp: 1.25, ataque: 1.2 },
-  alto: { hp: 0.95, ataque: 1.16 }, rei: { hp: 0.52, ataque: 0.79 }, divindade: { hp: 0.41, ataque: 0.56 },
+  lacaio: { hp: 1.25, ataque: 1.18 }, comum: { hp: 1.38, ataque: 1.26 }, medio: { hp: 1.3, ataque: 1.25 },
+  alto: { hp: 0.97, ataque: 1.18 }, rei: { hp: 0.535, ataque: 0.805 }, divindade: { hp: 0.42, ataque: 0.57 },
 };
 // Ajuste fino de vilões que a história pede mais duros que o degrau deles (Kanata é o penúltimo portão da campanha).
 export const AJUSTE_VILAO = { V091: { hp: 1.38, ataque: 1.15 } };
@@ -214,6 +214,15 @@ export const FAIXAS = {
   critico: { mult: 1.8, defesa: 1, texto: "golpe perfeito" },
 };
 /**
+ * Alcance (doc 41): a história não pode travar por falta de nível.
+ * - Um vilão de covil luta no nível dele, mas no máximo ALCANCE.acima níveis acima de quem o enfrenta.
+ * - Quem vence conteúdo acima do próprio nível aprende mais (XP × até ALCANCE.max), e volta a ficar perto do nível da história.
+ */
+export const ALCANCE = { acima: 2, porNivel: 0.1, max: 3 };
+export const nivelDeLuta = (nivelVilao, nivelJogador) => Math.min(nivelVilao, nivelJogador + ALCANCE.acima);
+export const multAlcance = (nivelJogador, nivelConteudo) => Math.max(1, Math.min(ALCANCE.max, 1 + ALCANCE.porNivel * (nivelConteudo - nivelJogador)));
+
+/**
  * Pressão do inimigo sobre o SEU dado: quanto mais alto o degrau, maior a faixa de erro e menor o número que conta.
  * (Como em jogos em que chefes contam como "níveis acima": mais golpes de raspão e mais erros, sem tirar o 20 de ninguém.)
  */
@@ -278,6 +287,18 @@ export function textoMenu(e) {
   return menu(e).map((x) => `*${x.n}* ${x.rotulo}${x.bloqueio ? ` _(${x.bloqueio})_` : x.detalhe ? ` — _${x.detalhe}_` : ""}`).join("\n");
 }
 
+/** Como a conta da luta é feita, em três linhas: mostrado no começo de toda luta e quando o jogador pede (?). */
+export function explicacaoDado(e) {
+  const { jogador: j, inimigo: i } = e;
+  const sorte = bonusDado(j.at), p = i.pressao?.dado ?? 0, fa = i.pressao?.falhaAte ?? 1, mod = sorte + p;
+  const mods = [sorte ? `+${sorte} da sua Sorte` : null, p ? `−${-p} da pressão de ${i.pressao.nome}` : null].filter(Boolean).join(", ");
+  const magico = j.at.MAG > j.at.FOR;
+  const base = danoBase({ atk: magico ? j.at.MAG : j.at.FOR, nivel: j.nivel, def: magico ? i.at.RES : i.at.DEF, poder: 1, mult: (j.bonusDano ?? 1) });
+  return `_Como funciona: cada ação rola 1 dado de 20 lados (d20)${mod ? ` ${mod > 0 ? "+" : "−"} ${Math.abs(mod)} (${mods})` : ""}._\n` +
+    `_${fa > 1 ? `1 a ${fa}` : "1"} erra · até 6 de raspão ×0,7 · 7 a 14 firme ×1 · 15 ou mais forte ×1,3 · 20 perfeito ×1,8_\n` +
+    `_Seu golpe comum contra ele vale ${base} de dano (${magico ? "Magia" : "Força"} e arma contra a defesa dele); o dado multiplica isso. Habilidades batem mais forte._`;
+}
+
 /** Menu em poucas linhas, para depois que o jogador já conhece as opções (da 3ª rodada em diante). */
 export function textoMenuCurto(e) {
   return `${menu(e).map((x) => (x.bloqueio ? `~${x.n} ${x.rotulo}~` : `*${x.n}* ${x.rotulo}`)).join(" · ")}\n_? mostra os detalhes_`;
@@ -290,7 +311,7 @@ export function painel(e, { completo = false } = {}) {
   return [
     `⚔️ *${i.nome}* · rodada ${e.rodada}`,
     e.log.length ? e.log.join("\n") : null,
-    i.pressao && (completo || e.rodada <= 1) ? `_Pressão de ${i.pressao.nome}: ${textoPressao(i.pressao)}._` : null,
+    completo || e.rodada <= 1 ? explicacaoDado(e) : null,
     e.preparando ? `_${i.nome} recua e junta forças… o próximo golpe vai ser pesado. Defender é uma boa ideia._` : null,
     [`${i.nome} ${barra(i.hp, i.hpMax)} ${Math.max(0, i.hp)}${guarda}${estados ? `  ${estados}` : ""}`,
       `Você ${barra(j.hp, j.hpMax)} ${Math.max(0, j.hp)}/${j.hpMax}${j.mpMax ? ` · mana ${j.mp}` : ""}${j.protecaoRodadas ? " · protegido" : ""}${j.foco ? " · concentrado" : ""}`].join("\n"),
@@ -327,7 +348,8 @@ export function resolverRodada(estado, acao, rng) {
 
   let consumir = null, defesa = 0;
   const vulneravel = i.vulneravel;
-  const dadoTxt = (d) => `🎲 *${d.nat}*${d.total !== d.nat ? `+${d.total - d.nat}` : ""} — ${d.texto}`;
+  // Dado às claras: o número que saiu, o modificador, o total e quanto isso vale (ex.: 🎲 *7* −1 = 6 · de raspão ×0,7)
+  const dadoTxt = (d) => `🎲 *${d.nat}*${d.total !== d.nat && d.nat !== 1 && d.nat !== 20 ? ` ${d.total > d.nat ? "+" : "−"}${Math.abs(d.total - d.nat)} = ${d.total}` : ""} · ${d.texto}${d.mult && d.mult !== 1 ? ` ×${String(d.mult).replace(".", ",")}` : ""}`;
   // Golpe do jogador contra o inimigo, já com o dado rolado
   const ferir = (tipo, poder, d, frase, x = {}) => {
     if (d.faixa === "falha") { e.log.push(`${dadoTxt(d)}. ${n(pick(ESQUIVA, e.rodada), { i: i.nome })}.`); return 0; }
@@ -337,7 +359,7 @@ export function resolverRodada(estado, acao, rng) {
     for (let g = 0; g < (x.golpes ?? 1); g++) dano += danoBase({ atk: tipo === "magico" ? j.at.MAG : j.at.FOR, nivel: j.nivel,
       def: (tipo === "magico" ? i.at.RES : i.at.DEF) * (1 - (x.ignoraDef ?? 0)), poder, mult });
     i.hp -= dano; j.foco = false;
-    e.log.push(`${dadoTxt(d)}. ${frase} _(${dano})_`);
+    e.log.push(`${dadoTxt(d)}. ${frase} _(${dano} de dano)_`);
     if (i.posturaMax && d.faixa === "critico") i.postura -= 1;
     if (elemento > 1) { e.log.push(`${i.nome} se contorce: é o ponto fraco dele.`); if (i.posturaMax) i.postura -= 2; }
     return dano;
@@ -425,7 +447,8 @@ export function resolverRodada(estado, acao, rng) {
     const forte = e.preparando;
     const magico = i.at.MAG > i.at.FOR;
     const d = rolar(rng, clamp(Math.round((i.at.VEL - j.at.VEL) / 8), -3, 3) + (passiva.dadoInimigo ?? 0));
-    if (d.faixa === "falha") e.log.push(`🎲 ${d.nat} — ${pick(VOCE_DESVIA, e.rodada)}.`);
+    const dadoI = `🎲 ${d.nat}${d.total !== d.nat && d.nat !== 1 && d.nat !== 20 ? ` ${d.total > d.nat ? "+" : "−"}${Math.abs(d.total - d.nat)} = ${d.total}` : ""} · ${{ falha: "ele erra", fraco: "de raspão ×0,7", normal: "acerto firme", forte: "acerto forte ×1,25", critico: "em cheio ×1,6" }[d.faixa]}`;
+    if (d.faixa === "falha") e.log.push(`${dadoI}. ${pick(VOCE_DESVIA, e.rodada)[0].toUpperCase()}${pick(VOCE_DESVIA, e.rodada).slice(1)}.`);
     else {
       const multDado = { fraco: 0.7, normal: 1, forte: 1.25, critico: 1.6 }[d.faixa];
       const furia = i.chefe && e.rodada > FURIA.apartir ? Math.min(1 + FURIA.max, 1 + (e.rodada - FURIA.apartir) * FURIA.porRodada) : 1;
@@ -439,7 +462,7 @@ export function resolverRodada(estado, acao, rng) {
       j.hp -= dano;
       const frase = forte ? `*${(i.habilidade ?? "Golpe forte").split(":")[0]}!* ${i.nome} solta tudo de uma vez`
         : `${d.faixa === "critico" ? "*Em cheio!* " : ""}${n(pick(ATAQUE_INIMIGO[i.arquetipo] ?? ATAQUE_INIMIGO.equilibrado, e.rodada), { i: i.nome })}`;
-      e.log.push(dano > 0 ? `🎲 ${d.nat} — ${frase}. _(−${dano})_` : `🎲 ${d.nat} — ${frase}, mas você segura tudo.`);
+      e.log.push(dano > 0 ? `${dadoI}. ${frase}. _(−${dano} de vida)_` : `${dadoI}. ${frase}, mas você segura tudo.`);
     }
     e.preparando = false;
   }

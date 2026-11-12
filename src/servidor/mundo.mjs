@@ -4,7 +4,7 @@
 import { MUNDO, VILOES, COVIL, CAPITULO, local as localDe, npcDe, dnaNpc } from "../mundo/mundo.mjs";
 import { renderizar } from "../avatar/index.mjs";
 import { REGIAO, normal } from "../regras/exploracao.mjs";
-import { aplicarXP } from "../regras/combate.mjs";
+import { multAlcance, aplicarXP } from "../regras/combate.mjs";
 import { item as itemDe } from "../regras/itens.mjs";
 import { renderCena } from "../cena/cena.mjs";
 import { imagemVilao } from "./combate.mjs";
@@ -32,7 +32,7 @@ export const LIMITE_CONVERSAS_IA = 150;
 /** Uma conversa tem começo e fim: depois de 4 falas seguidas com a mesma pessoa, ela se despede e aponta o caminho. */
 export const CONVERSA = { falas: 4, janelaMs: 20 * 60_000 };
 /** Quem só ouve uma história já vivida por outro jogador aprende com ela, mas menos do que quem a viveu. */
-export const XP_HERDADO = 0.25;
+export const XP_HERDADO = 0.5;
 const nomeRegiao = (rid) => REGIAO.get(rid)?.nome ?? rid;
 const xpCapitulo = (nivel) => Math.round(60 * nivel ** 1.2);
 
@@ -157,7 +157,7 @@ export function criarMundo({ db, ia = null, rng, agora, ganchos = {} }) {
       await gravar(j, "b:despertar");
       if (cap.da?.bandeira) await gravar(j, `b:${cap.da.bandeira}`);
       await db.query("delete from jogo.progresso where jogador_id = $1 and chave = $2", [j.id, `p:${cap.id}`]);
-      xp += Math.round(xpCapitulo(cap.nivel) * XP_HERDADO);
+      xp += Math.round(xpCapitulo(cap.nivel) * XP_HERDADO * multAlcance(j.nivel, cap.nivel));
     }
     const d = await darXPSimples(j, xp, "herdado");
     Object.assign(j, { nivel: d.nivel, rank: d.rank });
@@ -178,7 +178,7 @@ export function criarMundo({ db, ia = null, rng, agora, ganchos = {} }) {
     await gravar(m, "b:despertar");
     if (cap.da?.bandeira) await gravar(m, `b:${cap.da.bandeira}`);
     await db.query("delete from jogo.progresso where jogador_id = $1 and chave = 'acomp'", [m.id]);
-    const xp = xpCapitulo(cap.nivel), ryo = cap.nivel * 20;
+    const xp = Math.round(xpCapitulo(cap.nivel) * multAlcance(m.nivel, cap.nivel)), ryo = cap.nivel * 20;
     const d = await darXPSimples(m, xp, cap.id);
     await db.query("update jogo.jogadores set ryo = ryo + $2, merito = merito + 15 where id = $1", [m.id, ryo]);
     if (cap.final) { await gravar(m, "b:final-companheiro"); await db.query("update jogo.jogadores set titulo = 'Guardião das Estrelas' where id = $1", [m.id]); }
@@ -230,8 +230,8 @@ export function criarMundo({ db, ia = null, rng, agora, ganchos = {} }) {
       on conflict do nothing`, [j.mundo_id, j.id, new Date(agora())]);
 
     // Recompensas
-    const xp = xpCapitulo(cap.nivel), ryo = cap.nivel * 20;
     const jog = await um(db, "select * from jogo.jogadores where id = $1", [j.id]);
+    const xp = Math.round(xpCapitulo(cap.nivel) * multAlcance(jog.nivel, cap.nivel)), ryo = cap.nivel * 20;
     const depois = aplicarXP(jog, xp);
     await db.query(`update jogo.jogadores set nivel = $2, xp = $3, atributos = $4, hp = $5, hp_max = $6, mp = $7, mp_max = $8, pontos_livres = $9, rank = $10,
       ryo = ryo + $11, merito = merito + 15 where id = $1`, [j.id, depois.nivel, depois.xp, JSON.stringify(depois.atributos), depois.hp, depois.hp_max, depois.mp, depois.mp_max, depois.pontos_livres, depois.rank, ryo]);

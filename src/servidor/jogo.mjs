@@ -495,6 +495,7 @@ export function guiaDado(para) {
   try { GUIA_DADO ??= readFileSync(new URL("../../data/guia/dado.png", import.meta.url)); } catch { GUIA_DADO = null; }
   const legenda = "*Como funciona o dado*\n\nToda ação de luta rola um dado de 20 lados:\n" +
     "*1* falha · *2 a 6* de raspão (70% do dano) · *7 a 14* acerto firme · *15 a 19* acerto forte (130%) · *20* golpe perfeito (180%)\n\n" +
+    "*A conta:* dano = força do golpe (seu atributo e sua arma contra a defesa do inimigo) × o que o dado deu. Não há segundo dado de dano: um d20 só decide tudo, e cada luta mostra quanto vale o seu golpe comum.\n\n" +
     "*O que ajuda:* Sorte (+1 no dado a cada 12 pontos, até +3) e algumas habilidades.\n" +
     `*O que atrapalha:* a pressão do inimigo. ${Object.values(PRESSAO).map((p) => `Contra ${p.nome}, ${textoPressao(p)}`).join(". ")}.\n\n` +
     "O 20 é sempre perfeito e o inimigo rola o dado dele à sua vista. Defender no golpe forte salva vidas.\n" +

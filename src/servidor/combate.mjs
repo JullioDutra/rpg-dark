@@ -3,7 +3,7 @@
 // Devolve também `eventos` (vilão derrotado, derrota, nível…) para o mundo vivo anunciar no grupo e avançar a história.
 import { readFileSync } from "node:fs";
 import { semAcento } from "../linguagem/normalizar.mjs";
-import { novoCombate, resolverRodada, painel, textoMenu, escolher, recompensa, aplicarXP, atributoPrincipal, HABILIDADES, CLASSES, KITS, proximaHabilidade, SISMICO, PASSIVAS } from "../regras/combate.mjs";
+import { novoCombate, resolverRodada, painel, textoMenu, escolher, recompensa, aplicarXP, atributoPrincipal, HABILIDADES, CLASSES, KITS, proximaHabilidade, SISMICO, PASSIVAS, nivelDeLuta, multAlcance } from "../regras/combate.mjs";
 import { REGIAO, MATERIAIS } from "../regras/exploracao.mjs";
 import { bonusEquip, item as itemDe, todosItens, EQUIP_CLASSE } from "../regras/itens.mjs";
 import { XP_PROXIMO } from "../../scripts/balanceamento.mjs";
@@ -94,9 +94,11 @@ export function criarCombate({ db, rng, agora }) {
       if (apoio) await q("delete from jogo.progresso where jogador_id = $1 and chave = 'apoio'", [j.id]);
       const pet = (await q("select nome, estagio from jogo.pets where jogador_id = $1", [j.id]))[0] ?? null;
       const vd = pend.dados.lacaio ? { ...v, nome: nomeLacaio(v), tier: "comum" } : v;
-      const estado = novoCombate(j, vd, pend.dados.inimigo.nivel, { agora: tempo, equip: bonusEquip(inv), eco: Boolean(pend.dados.eco),
+      // Vilão de covil nunca luta mais que alguns níveis acima do jogador (a história não trava por falta de nível)
+      const nivelLuta = pend.dados.fixo ? nivelDeLuta(pend.dados.inimigo.nivel, j.nivel) : pend.dados.inimigo.nivel;
+      const estado = novoCombate(j, vd, nivelLuta, { agora: tempo, equip: bonusEquip(inv), eco: Boolean(pend.dados.eco),
         itens: Object.fromEntries(inv.map((i) => [i.item_id, i.qtd])), bonusDano: bonusCampanha(chaves) * (juramento ? 1.15 : 1) * (1 + 0.1 * apoio), pet, sismico: chaves.includes("b:olhos-da-terra"), lacaio: Boolean(pend.dados.lacaio) });
-      estado.contexto = { lacaio: Boolean(pend.dados.lacaio), fixo: Boolean(pend.dados.fixo), eco: Boolean(pend.dados.eco), vilao: v.id, juramento };
+      estado.contexto = { lacaio: Boolean(pend.dados.lacaio), fixo: Boolean(pend.dados.fixo), eco: Boolean(pend.dados.eco), vilao: v.id, juramento, nivelReal: pend.dados.inimigo.nivel };
       const nb = (await q(`insert into jogo.batalhas (mundo_id, tipo, canal_wa_id, rodada, status, estado)
         values ($1, 'solo', $2, 1, 'aguardando', $3) returning id`, [j.mundo_id, para, JSON.stringify(estado)]))[0];
       await q("insert into jogo.participantes_batalha (batalha_id, jogador_id) values ($1, $2)", [nb.id, j.id]);
@@ -150,7 +152,10 @@ export function criarCombate({ db, rng, agora }) {
           on conflict do nothing`, [j.mundo_id, v.id, j.id, primeiro, iso]);
       }
       const multXP = ctx.lacaio ? 0.7 : ctx.fixo ? (primeiro ? 1.5 : 1) : 1;
-      rec.xp = Math.round(rec.xp * multXP); rec.ryo = Math.round(rec.ryo * multXP);
+      // XP pelo nível verdadeiro do vilão, e mais ainda para quem venceu algo acima do próprio nível
+      const real = ctx.fixo ? Number(ctx.nivelReal ?? e.inimigo.nivel) : e.inimigo.nivel;
+      const alcance = ctx.fixo ? (real / Math.max(1, e.inimigo.nivel)) * multAlcance(j.nivel, real) : 1;
+      rec.xp = Math.round(rec.xp * multXP * alcance); rec.ryo = Math.round(rec.ryo * multXP);
       const depois = aplicarXP({ ...j, hp: e.jogador.hp, mp: e.jogador.mp }, rec.xp);
       const livro = [...depois.eventos];
       if (rec.superior && !ctx.lacaio) {

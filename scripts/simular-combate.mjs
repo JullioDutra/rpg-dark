@@ -10,17 +10,17 @@ const V = JSON.parse(readFileSync(new URL("../data/viloes.json", import.meta.url
 const N = 400;
 // "preparo" de cada caso reflete o que a campanha entrega até ali: bênçãos (bonusDano), pet, itens lendários, apoio.
 export const CASOS = [
-  { id: "lacaio", rotulo: "Lacaio (explorando)", vilao: "V001", nivelJ: 5, nivelV: 5, lacaio: true, meta: [95, 100] },
-  { id: "comum", rotulo: "Vilão comum, no covil", vilao: "V005", nivelJ: 8, nivelV: 8, meta: [80, 95] },
-  { id: "comum+3", rotulo: "Vilão comum 3 níveis acima", vilao: "V005", nivelJ: 5, nivelV: 8, meta: [25, 55] },
-  { id: "elite", rotulo: "Elite (médio escalão)", vilao: "V036", nivelJ: 20, nivelV: 20, meta: [60, 80] },
-  { id: "chefe", rotulo: "Chefe (alto escalão)", vilao: "V063", nivelJ: 45, nivelV: 45, pet: 1, meta: [45, 65] },
-  { id: "rei", rotulo: "Rei das sombras (2 bênçãos, pet)", vilao: "V081", nivelJ: 70, nivelV: 70, bonus: 1.1, pet: 2, meta: [30, 50] },
-  { id: "kanata", rotulo: "Kanata (4 bênçãos + ninho, pet)", vilao: "V091", nivelJ: 85, nivelV: 85, bonus: 1.3, pet: 2, meta: [35, 55] },
-  { id: "divindade", rotulo: "Divindade (bênçãos da campanha, pet)", vilao: "V093", nivelJ: 90, nivelV: 88, bonus: 1.3, pet: 2, meta: [2, 20] },
-  { id: "divindade-pronto", rotulo: "Divindade, preparado (2 Grandes Itens, 2 apoios)", vilao: "V093", nivelJ: 90, nivelV: 88, bonus: 1.3 * 1.2, pet: 3, lendarios: ["excalibur", "kokugai"], elixir: 2, meta: [50, 70] },
-  { id: "final", rotulo: "Rei do Eclipse (bênçãos, sem itens lendários)", vilao: "V100", nivelJ: 100, nivelV: 100, bonus: 1.45, pet: 3, meta: [2, 20] },
-  { id: "final-pronto", rotulo: "Rei do Eclipse, preparado (3 Grandes Itens, 3 apoios)", vilao: "V100", nivelJ: 100, nivelV: 100, bonus: 1.5, pet: 3, lendarios: ["excalibur", "kokugai", "tenmon"], elixir: 2, meta: [45, 65] },
+  { id: "lacaio", rotulo: "Lacaio (explorando)", vilao: "V001", nivelJ: 5, nivelV: 5, lacaio: true, meta: [90, 100] },
+  { id: "comum", rotulo: "Vilão comum, no covil", vilao: "V005", nivelJ: 8, nivelV: 8, meta: [75, 92] },
+  { id: "comum+3", rotulo: "Vilão comum 3 níveis acima", vilao: "V005", nivelJ: 5, nivelV: 8, meta: [20, 50] },
+  { id: "elite", rotulo: "Elite (médio escalão)", vilao: "V036", nivelJ: 20, nivelV: 20, meta: [55, 75] },
+  { id: "chefe", rotulo: "Chefe (alto escalão)", vilao: "V063", nivelJ: 45, nivelV: 45, pet: 1, meta: [40, 60] },
+  { id: "rei", rotulo: "Rei das sombras (2 bênçãos, pet)", vilao: "V081", nivelJ: 70, nivelV: 70, bonus: 1.1, pet: 2, meta: [28, 48] },
+  { id: "kanata", rotulo: "Kanata (4 bênçãos + ninho, pet)", vilao: "V091", nivelJ: 85, nivelV: 85, bonus: 1.3, pet: 2, meta: [32, 52] },
+  { id: "divindade", rotulo: "Divindade (bênçãos da campanha, pet)", vilao: "V093", nivelJ: 90, nivelV: 88, bonus: 1.3, pet: 2, meta: [2, 18] },
+  { id: "divindade-pronto", rotulo: "Divindade, preparado (2 Grandes Itens, 2 apoios)", vilao: "V093", nivelJ: 90, nivelV: 88, bonus: 1.3 * 1.2, pet: 3, lendarios: ["excalibur", "kokugai"], elixir: 2, meta: [45, 65] },
+  { id: "final", rotulo: "Rei do Eclipse (bênçãos, sem itens lendários)", vilao: "V100", nivelJ: 100, nivelV: 100, bonus: 1.45, pet: 3, meta: [2, 18] },
+  { id: "final-pronto", rotulo: "Rei do Eclipse, preparado (3 Grandes Itens, 3 apoios)", vilao: "V100", nivelJ: 100, nivelV: 100, bonus: 1.5, pet: 3, lendarios: ["excalibur", "kokugai", "tenmon"], elixir: 2, meta: [40, 60] },
 ];
 
 function jogador(classe, nivel) {

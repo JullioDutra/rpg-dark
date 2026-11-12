@@ -18,6 +18,7 @@ export const CONTRATOS = {
   capitulo: { nome: "Serviço à história", texto: () => "conclua um capítulo da sua história", alvo: [1, 1], peso: 2 },
 };
 export const CHANCE_SONHO = 0.4;
+const GRANDES = ["excalibur", "kokugai", "tenmon", "shitencho"];
 export const MAX_PRESENTES_DIA = 5;
 
 const SONHOS = [
@@ -163,9 +164,10 @@ export function criarSocial({ db, rng, agora }) {
     } else {
       const inv = await db.query("select item_id, qtd, equipado from jogo.inventario where jogador_id = $1", [autor.id]);
       const chave = corpo.replace(/\s*\d*$/, "").trim();
-      const cand = inv.map((l) => ({ l, it: item(l.item_id) })).filter(({ it }) => it && ["consumivel", "material"].includes(it.tipo));
+      // Grandes Itens também passam de mão (o grupo arma quem vai enfrentar o fim), desde que não estejam em uso
+      const cand = inv.map((l) => ({ l, it: item(l.item_id) })).filter(({ l, it }) => it && (["consumivel", "material"].includes(it.tipo) || (GRANDES.includes(it.id) && !l.equipado)));
       const achado = cand.find(({ it }) => semAcento(it.nome.toLowerCase()) === chave) ?? cand.find(({ it }) => semAcento(it.nome.toLowerCase()).includes(chave));
-      if (!achado) return dizer(`*${autor.nome}* não tem isso para dar. _(só poções, utilidades e materiais podem ser dados; equipamento e itens de história ficam com o dono)_`);
+      if (!achado) return dizer(`*${autor.nome}* não tem isso para dar. _(podem ser dados: poções, utilidades, materiais e Grandes Itens que não estejam equipados)_`);
       const { it } = achado;
       const r = await db.script(async (tx) => {
         await tx("begin");
@@ -181,7 +183,7 @@ export function criarSocial({ db, rng, agora }) {
         } catch (e) { await tx("rollback"); throw e; }
       });
       if (!r) return dizer(`*${autor.nome}* não tem mais isso.`);
-      texto = `*${autor.nome}* entrega *${it.nome}* a *${alvo.nome}*.`;
+      texto = GRANDES.includes(it.id) ? `⭐ *${autor.nome}* confia *${it.nome}* a *${alvo.nome}*.\n_Um Grande Item mudou de mãos. Quem o carrega agora leva também a esperança de quem o entregou._` : `*${autor.nome}* entrega *${it.nome}* a *${alvo.nome}*.`;
     }
     await gravar(autor, "presentes", { dia: hoje, n: n + 1 });
     return dizer(texto);
