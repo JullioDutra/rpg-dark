@@ -2,7 +2,7 @@
 // Usa os números reais de data/equilibrio.json (rode antes: node scripts/simular-combate.mjs).
 import { readFileSync, writeFileSync, copyFileSync, mkdirSync } from "node:fs";
 import { createRequire } from "node:module";
-import { FAIXAS } from "../src/regras/combate.mjs";
+import { FAIXAS, PRESSAO, PASSIVAS } from "../src/regras/combate.mjs";
 
 const E = JSON.parse(readFileSync(new URL("../data/equilibrio.json", import.meta.url)));
 const COR = { falha: "#c0392b", fraco: "#d98a2b", normal: "#5b7fa6", forte: "#3f9a5a", critico: "#e6b422" };
@@ -39,8 +39,15 @@ ${linhas.map(([k, faces, nome, atk, def]) => `<tr><td style="background:${COR[k]
 <h2>O que muda o seu dado</h2><div class="cx">
 <div class="c"><b>Sorte (SOR)</b><br>A cada 12 pontos de Sorte, +1 no dado (até +3). Com +3, "de raspão" cai de 25% para 10% das vezes.</div>
 <div class="c"><b>Habilidades</b><br>Algumas somam no dado (Iaijutsu: +3). Curas e proteções nunca falham de todo.</div>
-<div class="c"><b>1 e 20 são sagrados</b><br>O 1 sempre falha e o 20 sempre é perfeito, com qualquer bônus.</div>
+<div class="c"><b>1 e 20 são sagrados</b><br>O 1 sempre falha e o 20 sempre é perfeito, com qualquer bônus ou pressão.</div>
 <div class="c"><b>O inimigo também rola</b><br>Você vê o dado dele. Com 1 ele erra; com 20 acerta em cheio (160%). Defender no golpe forte salva vidas.</div></div>
+<h2>Pressão: quanto mais forte o inimigo, mais difícil o dado</h2>
+<table><tr><th>inimigo</th><th>o seu dado falha em</th><th>e perde</th><th>na prática</th></tr>
+<tr><td style="background:${COR.normal}">Lacaio e comum</td><td>1</td><td>nada</td><td>5% de erro</td></tr>
+${Object.values(PRESSAO).map((p, k) => `<tr><td style="background:${[COR.forte, COR.critico, COR.fraco, COR.falha][k]}">${p.nome[0].toUpperCase()}${p.nome.slice(1)}</td><td>${p.falhaAte > 1 ? `1 a ${p.falhaAte}` : "1"}</td><td>${-p.dado} no número</td><td>${p.falhaAte * 5}% de erro, mais golpes de raspão</td></tr>`).join("")}
+</table>
+<div class="cx" style="margin-top:8px"><div class="c"><b>Chefes não cansam</b><br>Depois da 8ª rodada batem 8% mais forte por rodada. Reis e divindades mudam de fase na metade da vida.</div>
+<div class="c"><b>Sua classe ajuda</b><br>Cada classe tem uma passiva sempre ativa (${Object.keys(PASSIVAS).length} ao todo). Veja a sua em <b>habilidades</b>.</div></div>
 <h2>O jogo está equilibrado? <span style="font-size:18px;color:#8f86a6">(${E.lutasPorCaso} lutas simuladas por classe)</span></h2>
 ${resumo.map((r) => `<div class="bar"><div>${r.rotulo}</div><div class="tr"><div class="f" style="left:${r.min}%;width:${Math.max(1.5, r.max - r.min)}%;background:${r.media >= 85 ? COR.forte : r.media >= 55 ? COR.critico : r.media >= 30 ? COR.fraco : COR.falha}"></div><div class="m" style="left:calc(${r.media}% - 2px)"></div></div><div class="n">${r.min === r.max ? `${r.max}%` : `${r.min}–${r.max}%`}</div></div>`).join("")}
 <div class="rod">Barra: da classe que menos vence à que mais vence · traço branco: média · no nível indicado, com o equipamento do nível e 3 poções.<br>Dano médio do dado: ${Math.round(d0.media * 100)}% (sem bônus) → ${Math.round(E.dado[3].media * 100)}% (com +3). O dado dá emoção sem mudar a força média.</div>

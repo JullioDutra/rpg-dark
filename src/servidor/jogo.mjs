@@ -16,7 +16,9 @@ import { criarCombate } from "./combate.mjs";
 import { criarMundo } from "./mundo.mjs";
 import { criarItens } from "./itens.mjs";
 import { criarExtras } from "./extras.mjs";
+import { PRESSAO, textoPressao } from "../regras/combate.mjs";
 import { criarSocial } from "./social.mjs";
+import { criarMestre } from "./mestre.mjs";
 import { kitInicial } from "../regras/itens.mjs";
 import { XP_PROXIMO } from "../../scripts/balanceamento.mjs";
 import { comandoExploracao, recuperarVigor, buscarRegioes } from "../regras/exploracao.mjs";
@@ -80,6 +82,7 @@ export function criarJogo({ db, sal = process.env.TELEFONE_SAL ?? "", admins = (
   const combate = criarCombate({ db, rng, agora });
   const extras = criarExtras({ db, rng, agora });
   const social = criarSocial({ db, rng, agora });
+  const mestre = criarMestre({ db, agora });
   // Ganchos do mundo vivo: os modos complementares e, por cima, os contratos da Guilda (que só observam)
   const ganchos = { ...extras,
     aoFalar: async (j, npc, amizade, para) => [...(await extras.aoFalar(j, npc, amizade, para)), ...(await social.aoFalar(j, npc, para))],
@@ -147,6 +150,12 @@ export function criarJogo({ db, sal = process.env.TELEFONE_SAL ?? "", admins = (
     if (ehComando(t, "dado", "dados", "d20", "como funciona o dado", "guia do dado")) return guiaDado(msg.chat);
     // Duelo e apoio entre jogadores
     if (ehComando(t, "ranking", "rank", "placar")) return social.ranking(mundo.id, msg.chat);
+    if (/^[!/]?mestre\b/.test(t)) return []; // a mão do mestre nunca aparece no grupo
+    if (/^[!/]?resgatar\b/.test(t)) {
+      const idt = await identidade(msg.autor);
+      const eu = await um(db, "select * from jogo.jogadores where mundo_id = $1 and identidade_id = $2 and estado = 'ativo'", [mundo.id, idt.id]);
+      return mestre.resgatar(eu, t.replace(/^[!/]?resgatar\s*/, "").replace(/@\S+/g, "").trim(), msg.chat);
+    }
     if (/^[!/]?(duelo|desafio|x1|apoiar|apoio|aceitar|aceito|recusar|recuso|historia|conceder|dar)\b/.test(t)) {
       const idt = await identidade(msg.autor);
       const eu = await um(db, "select * from jogo.jogadores where mundo_id = $1 and identidade_id = $2 and estado = 'ativo'", [mundo.id, idt.id]);
@@ -196,6 +205,24 @@ export function criarJogo({ db, sal = process.env.TELEFONE_SAL ?? "", admins = (
   // ───────────────────────────── privado ─────────────────────────────
   async function noPrivado(msg) {
     const idt = await identidade(msg.autor);
+    const ativo = await um(db, `select j.* from jogo.jogadores j join jogo.mundos m on m.id = j.mundo_id
+      where j.identidade_id = $1 and m.status = 'ativo' and j.estado = 'ativo' order by j.atualizado_em desc limit 1`, [idt.id]);
+    // A história é do mundo: o que outro jogador já concluiu chega como notícia antes de qualquer coisa
+    const tn = semAcento(msg.texto.trim().toLowerCase()).replace(/\s+/g, " ");
+    // Mão do mestre: só no privado e só para quem está em ADMINS. Para qualquer outra pessoa, "mestre" é uma palavra comum.
+    if (/^[!/]?mestre\b/.test(tn) && admins.length && (await ehAdmin(msg))) return mestre.comando(msg, tn);
+    const novidades = ativo ? await mundo.herdar(ativo, msg.chat) : [];
+    if (ativo) {
+      const m = tn.match(/^[!/]?resgatar\s*(.*)$/);
+      if (m) return [...novidades, ...(await mestre.resgatar(ativo, m[1], msg.chat))];
+      const preso = await mestre.bloqueio(ativo, tn.replace(/^[!/]/, ""), msg.chat);
+      if (preso && !preso.segue) return [...novidades, ...preso.saidas];
+      if (preso?.segue) novidades.push(...preso.saidas);
+    }
+    return [...novidades, ...(await privadoBase(msg))];
+  }
+  async function privadoBase(msg) {
+    const idt = await identidade(msg.autor);
     if (!idt.privado_ok) await db.query("update jogo.identidades set privado_ok = true where id = $1", [idt.id]);
     const para = msg.chat;
     const t = semAcento(msg.texto.trim().toLowerCase()).replace(/\s+/g, " ");
@@ -219,7 +246,7 @@ export function criarJogo({ db, sal = process.env.TELEFONE_SAL ?? "", admins = (
     const ehLocal = /^(ir|vou|visitar|entrar)\b/.test(tc) ? await mundo.comando(j, tc, msg.texto, para) : { tratado: false };
     if (ehLocal.tratado) return ehLocal.saidas;
     // Comandos do mundo vivo têm verbo próprio: a exploração só confere chegadas (para "falar sobre o mapa" não abrir o mapa)
-    const direto = /^(falar|conversar|perguntar|locais|lugares|olhar|missao|missoes|historia|capitulo|objetivo|diario|caminho|segredos|pistas|amigos|amizades|feitos|noticias|vingar|vinganca|pet|boatos|boato|rumores|contos|ouvir|lembrar|ecos|eco|aceitar pacto|recusar pacto|pacto|resistir|purificar|contratos|contrato|guilda|quadro|ranking|rank|placar|minha historia|aceitar a terra|aceito a terra|fechar o pergaminho|fechar pergaminho)\b/.test(tc);
+    const direto = /^(falar|conversar|perguntar|locais|lugares|olhar|missao|missoes|historia|capitulo|objetivo|diario|caminho|segredos|pistas|amigos|amizades|feitos|noticias|vingar|vinganca|pet|boatos|boato|rumores|contos|ouvir|lembrar|ecos|eco|aceitar pacto|recusar pacto|pacto|resistir|purificar|contratos|contrato|guilda|quadro|ranking|rank|placar|acompanhar|seguir com|ir com|juntar|seguir sozinho|seguir sozinha|separar|deixar grupo|minha historia|aceitar a terra|aceito a terra|fechar o pergaminho|fechar pergaminho)\b/.test(tc);
     const e = await exploracao(j.id, info || direto ? { ...msg, texto: "" } : /^(ir|vou)\b/.test(tc) ? { ...msg, texto: tc.replace(/^(ir|vou)\s+(para |pra |a |ao |à )?/, "viajar ") } : msg);
     j = { ...j, ...e.jogador };
     const chegou = j.regiao_atual !== antes ? await mundo.chegada(j, para) : [];
@@ -401,8 +428,12 @@ let GUIA_DADO = null;
 /** Infográfico do dado (gerado por scripts/render-guia-dado.mjs). */
 export function guiaDado(para) {
   try { GUIA_DADO ??= readFileSync(new URL("../../data/guia/dado.png", import.meta.url)); } catch { GUIA_DADO = null; }
-  const legenda = "*Como funciona o dado*\n\nToda ação de luta rola um dado de 20 lados: 1 falha, 2 a 6 acerta de raspão, 7 a 14 acerta firme, 15 a 19 acerta forte e 20 é o golpe perfeito. " +
-    "Sorte soma no dado (+1 a cada 12 pontos, até +3). O inimigo rola o dele à sua vista.";
+  const legenda = "*Como funciona o dado*\n\nToda ação de luta rola um dado de 20 lados:\n" +
+    "*1* falha · *2 a 6* de raspão (70% do dano) · *7 a 14* acerto firme · *15 a 19* acerto forte (130%) · *20* golpe perfeito (180%)\n\n" +
+    "*O que ajuda:* Sorte (+1 no dado a cada 12 pontos, até +3) e algumas habilidades.\n" +
+    `*O que atrapalha:* a pressão do inimigo. ${Object.values(PRESSAO).map((p) => `Contra ${p.nome}, ${textoPressao(p)}`).join(". ")}.\n\n` +
+    "O 20 é sempre perfeito e o inimigo rola o dado dele à sua vista. Defender no golpe forte salva vidas.\n" +
+    "_habilidades mostra a passiva da sua classe · ? numa luta mostra o menu completo_";
   return GUIA_DADO ? [{ para, imagem: GUIA_DADO, legenda }] : [{ para, texto: legenda }];
 }
 
@@ -420,6 +451,7 @@ locais — o que existe onde você está
 ir <lugar> — visitar um lugar
 falar <nome> — conversar com alguém
 missao — sua história e o próximo passo
+acompanhar <nome> — viver a história junto com outro jogador
 explorar — procurar encrenca e achados
 contratos — trabalhos do dia da Guilda (vilas e cidades)
 viajar <região> · rota · mapa
@@ -434,6 +466,6 @@ boatos — histórias que o povo conta · lembrar — ecos do passado
 
 *Numa luta*
 responda com o número da ação. O dado decide a força.
-dado — imagem explicando o dado e o equilíbrio
+dado — como o dado funciona (imagem e explicação)
 
 ` + rodape("atributos só sobem por mérito", "ninguém, nem a IA, dá poder de graça");

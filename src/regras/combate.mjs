@@ -147,10 +147,10 @@ export function atributosEfetivos(j, agora = Date.now(), equip = {}) {
 // AJUSTE_SOLO adapta vilões pensados para grupo ao combate de um jogador só.
 export const AJUSTE_SOLO = {
   lacaio: { hp: 1.15, ataque: 1.1 }, comum: { hp: 1.3, ataque: 1.2 }, medio: { hp: 1.25, ataque: 1.2 },
-  alto: { hp: 0.95, ataque: 1.16 }, rei: { hp: 0.56, ataque: 0.82 }, divindade: { hp: 0.44, ataque: 0.585 },
+  alto: { hp: 0.95, ataque: 1.16 }, rei: { hp: 0.52, ataque: 0.79 }, divindade: { hp: 0.41, ataque: 0.56 },
 };
 // Ajuste fino de vilões que a história pede mais duros que o degrau deles (Kanata é o penúltimo portão da campanha).
-export const AJUSTE_VILAO = { V091: { hp: 1.3, ataque: 1.15 } };
+export const AJUSTE_VILAO = { V091: { hp: 1.38, ataque: 1.15 } };
 // Passiva de cada classe: dá identidade e segura as classes frágeis sem mexer nas fortes.
 export const PASSIVAS = {
   Mago: { nome: "Manto Arcano", texto: "recebe 40% menos dano enquanto tiver mana", reducaoComMana: 0.4 },
@@ -199,7 +199,7 @@ export function novoCombate(j, vilao, nivel, { agora = Date.now(), solo = true, 
     inimigo: { id: vilao.id, nome: eco ? `Eco de ${vilao.nome}` : vilao.nome, nivel, tier: vilao.tier, arquetipo: vilao.arquetipo, elemento: vilao.elemento,
       fraqueza: vilao.fraqueza, habilidade: vilao.habilidade, hp: at.HP, hpMax: at.HP, at,
       postura: POSTURA[vilao.tier] ?? 0, posturaMax: POSTURA[vilao.tier] ?? 0, atordoado: false, vulneravel: false, preso: 0, fraco: 0, queima: 0, queimaDano: 0,
-      chefe: ["alto", "rei", "divindade"].includes(vilao.tier), eco, fase: 1 },
+      chefe: ["alto", "rei", "divindade"].includes(vilao.tier), eco, fase: 1, pressao: lacaio ? null : PRESSAO[vilao.tier] ?? null },
     preparando: false, log: [],
     pet: pet ? { nome: pet.nome, poder: 0.15 + 0.07 * pet.estagio } : null,
   };
@@ -213,11 +213,20 @@ export const FAIXAS = {
   normal: { mult: 1, defesa: 0.5, texto: "acerto firme" }, forte: { mult: 1.3, defesa: 0.7, texto: "acerto forte" },
   critico: { mult: 1.8, defesa: 1, texto: "golpe perfeito" },
 };
-/** Rola 1d20 + bônus. 1 natural sempre falha; 20 natural é sempre perfeito. */
-export function rolar(rng, bonus = 0) {
+/**
+ * Pressão do inimigo sobre o SEU dado: quanto mais alto o degrau, maior a faixa de erro e menor o número que conta.
+ * (Como em jogos em que chefes contam como "níveis acima": mais golpes de raspão e mais erros, sem tirar o 20 de ninguém.)
+ */
+export const PRESSAO = {
+  medio: { falhaAte: 1, dado: -1, nome: "elite" }, alto: { falhaAte: 2, dado: -1, nome: "chefe" },
+  rei: { falhaAte: 2, dado: -2, nome: "rei das sombras" }, divindade: { falhaAte: 3, dado: -2, nome: "divindade" },
+};
+export const textoPressao = (p) => (p ? `${p.falhaAte > 1 ? `o seu dado falha de 1 a ${p.falhaAte}` : "o seu dado falha no 1"} e perde ${-p.dado}` : null);
+/** Rola 1d20 + bônus. 1 natural sempre falha (sob pressão, a faixa de falha cresce); 20 natural é sempre perfeito. */
+export function rolar(rng, bonus = 0, falhaAte = 1) {
   const nat = 1 + Math.floor(rng() * 20);
   const total = nat + bonus;
-  const faixa = nat === 1 ? "falha" : nat === 20 ? "critico" : total <= 6 ? "fraco" : total <= 14 ? "normal" : "forte";
+  const faixa = nat <= falhaAte ? "falha" : nat === 20 ? "critico" : total <= 6 ? "fraco" : total <= 14 ? "normal" : "forte";
   return { nat, total, faixa, ...FAIXAS[faixa] };
 }
 export const bonusDado = (at) => Math.min(3, Math.floor((at.SOR ?? 0) / 12));
@@ -281,6 +290,7 @@ export function painel(e, { completo = false } = {}) {
   return [
     `⚔️ *${i.nome}* · rodada ${e.rodada}`,
     e.log.length ? e.log.join("\n") : null,
+    i.pressao && (completo || e.rodada <= 1) ? `_Pressão de ${i.pressao.nome}: ${textoPressao(i.pressao)}._` : null,
     e.preparando ? `_${i.nome} recua e junta forças… o próximo golpe vai ser pesado. Defender é uma boa ideia._` : null,
     [`${i.nome} ${barra(i.hp, i.hpMax)} ${Math.max(0, i.hp)}${guarda}${estados ? `  ${estados}` : ""}`,
       `Você ${barra(j.hp, j.hpMax)} ${Math.max(0, j.hp)}/${j.hpMax}${j.mpMax ? ` · mana ${j.mp}` : ""}${j.protecaoRodadas ? " · protegido" : ""}${j.foco ? " · concentrado" : ""}`].join("\n"),
@@ -334,19 +344,20 @@ export function resolverRodada(estado, acao, rng) {
   };
   const cegoNoAr = j.sismico && NAO_TOCA_O_CHAO.includes(i.arquetipo);
   const passiva = PASSIVAS[j.classe] ?? {};
-  const bd = bonusDado(j.at) - (cegoNoAr ? 2 : 0) + (passiva.furia && j.hp < j.hpMax / 2 ? passiva.furia : 0);
+  const pressao = i.pressao ?? null, fa = pressao?.falhaAte ?? 1;
+  const bd = bonusDado(j.at) - (cegoNoAr ? 2 : 0) + (passiva.furia && j.hp < j.hpMax / 2 ? passiva.furia : 0) + (pressao?.dado ?? 0);
 
   // 1) Ação do jogador
-  if (acao.tipo === "atacar") ferir("fisico", 1, rolar(rng, bd), n(pick(GOLPE_CLASSE[j.classe] ?? GOLPE_CLASSE.Espadachim, e.rodada), { a: i.nome }) + ".");
+  if (acao.tipo === "atacar") ferir("fisico", 1, rolar(rng, bd, fa), n(pick(GOLPE_CLASSE[j.classe] ?? GOLPE_CLASSE.Espadachim, e.rodada), { a: i.nome }) + ".");
   else if (acao.tipo === "magia") {
     j.mp -= MAGIA.mp;
-    ferir("magico", MAGIA.poder, rolar(rng, bd), n(MAGIA_ELEMENTO[j.elemento] ?? "Sua mana explode contra {a}", { a: i.nome }) + ".");
+    ferir("magico", MAGIA.poder, rolar(rng, bd, fa), n(MAGIA_ELEMENTO[j.elemento] ?? "Sua mana explode contra {a}", { a: i.nome }) + ".");
   } else if (acao.tipo === "habilidade") {
     j.mp -= hab.mp; j.recargas[hab.id] = hab.recarga + 1;
     if (hab.custoHp) { const c = Math.ceil(j.hpMax * hab.custoHp); j.hp -= c; e.log.push(`O poder cobra seu preço. _(−${c} de vida)_`); }
     const titulo = `*${hab.nome}!* ${hab.frase}`;
     if (hab.tipo === "cura" || hab.tipo === "guarda") {
-      const d = rolar(rng, bd);
+      const d = rolar(rng, bd, fa);
       const forca = (d.faixa === "falha" ? 0.5 : d.faixa === "critico" ? 1.3 : 1) * (1 + (passiva.curaExtra ?? 0)); // curas e guardas nunca falham de todo
       const partes = [];
       if (hab.cura) { const c = Math.min(j.hpMax - j.hp, Math.round(j.hpMax * hab.cura * forca)); j.hp += c; partes.push(`+${c} de vida`); }
@@ -355,7 +366,7 @@ export function resolverRodada(estado, acao, rng) {
       if (hab.foco) { j.foco = true; partes.push("próximo golpe +50%"); }
       e.log.push(`${dadoTxt(d)}. ${titulo} _(${partes.join(" · ")})_`);
     } else {
-      const dano = ferir(hab.tipo, hab.poder, rolar(rng, bd + (hab.dado ?? 0)), titulo, hab);
+      const dano = ferir(hab.tipo, hab.poder, rolar(rng, bd + (hab.dado ?? 0), fa), titulo, hab);
       if (dano) {
         if (hab.postura && i.posturaMax) i.postura -= hab.postura;
         if (hab.rouba) { const c = Math.min(j.hpMax - j.hp, Math.round(dano * hab.rouba)); j.hp += c; if (c) e.log.push(`A força dele vira sua. _(+${c} de vida)_`); }
@@ -367,7 +378,7 @@ export function resolverRodada(estado, acao, rng) {
       if (hab.protecao) { j.protecao = hab.protecao; j.protecaoRodadas = hab.duracao ?? 1; }
     }
   } else if (acao.tipo === "defender") {
-    const d = rolar(rng, bd + (j.sismico && !cegoNoAr ? 2 : 0));
+    const d = rolar(rng, bd + (j.sismico && !cegoNoAr ? 2 : 0), fa);
     defesa = Math.min(1, d.defesa + (passiva.defesaExtra ?? 0));
     const mana = j.mpMax ? Math.min(j.mpMax - j.mp, Math.ceil(j.mpMax * 0.06)) : 0; j.mp += mana;
     e.log.push(`${dadoTxt(d).replace(d.texto, d.faixa === "critico" ? "defesa perfeita" : d.faixa === "falha" ? "guarda aberta" : `bloqueia ${Math.round(defesa * 100)}%`)}. Você firma os pés e se protege.${mana ? ` _(+${mana} de mana)_` : ""}`);

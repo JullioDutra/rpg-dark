@@ -28,7 +28,11 @@ export function comCache(chave, gerar) {
 export const imagemLocal = (rid, l) => comCache(`l:${rid}:${l.id}`, () => renderCena(l.cena, REGIAO.get(rid)?.reino ?? "Kokū", `${rid}:${l.id}`));
 export const imagemNpc = (rid, id) => comCache(`n:${rid}:${id}`, () => renderizar(dnaNpc(rid, id, MUNDO[rid].npcs[id], REGIAO.get(rid)?.reino ?? "Kokū"), 6));
 /** Conversas com NPC narradas pela IA, por jogador e por dia. Passando disso, o NPC responde com o texto pronto. */
-export const LIMITE_CONVERSAS_IA = 40;
+export const LIMITE_CONVERSAS_IA = 150;
+/** Uma conversa tem começo e fim: depois de 4 falas seguidas com a mesma pessoa, ela se despede e aponta o caminho. */
+export const CONVERSA = { falas: 4, janelaMs: 20 * 60_000 };
+/** Quem só ouve uma história já vivida por outro jogador aprende com ela, mas menos do que quem a viveu. */
+export const XP_HERDADO = 0.25;
 const nomeRegiao = (rid) => REGIAO.get(rid)?.nome ?? rid;
 const xpCapitulo = (nivel) => Math.round(60 * nivel ** 1.2);
 
@@ -95,15 +99,128 @@ export function criarMundo({ db, ia = null, rng, agora, ganchos = {} }) {
     if (!andou) return [];
     if (passo < cap.passos.length) {
       await gravar(j, `p:${cap.id}`, passo);
-      return [{ para, texto: `_A história avança._\n\n${textoPasso(cap, passo)}` }];
+      const saidas = [{ para, texto: `_A história avança._\n\n${textoPasso(cap, passo)}` }];
+      for (const m of await companheiros(j, rid, st)) {
+        await gravar(m, `p:${cap.id}`, passo);
+        if (privado(m)) saidas.push({ para: privado(m), texto: `_${j.nome} fez a história andar._\n\n${textoPasso(cap, passo)}` });
+      }
+      return saidas;
     }
     return concluir(j, rid, cap, para, st);
+  }
+
+  // ── a história é do mundo: cada capítulo só acontece uma vez; quem quiser viver junto, acompanha ──
+  const privado = (x) => x.wa_jid ?? x.wa_lid ?? null;
+  /** Os outros jogadores do mesmo grupo de viagem nesta região (o líder e quem o acompanha). */
+  async function companheiros(j, rid, st) {
+    const meu = st.P.get("acomp");
+    const lider = meu?.rid === rid ? Number(meu.lider) : j.id;
+    return db.query(`select x.*, i.wa_jid, i.wa_lid from jogo.jogadores x join jogo.identidades i on i.id = x.identidade_id
+      where x.mundo_id = $1 and x.estado = 'ativo' and x.id <> $2 and (x.id = $3 or exists (select 1 from jogo.progresso p
+        where p.jogador_id = x.id and p.chave = 'acomp' and (p.valor->>'lider')::bigint = $3 and p.valor->>'rid' = $4))`, [j.mundo_id, j.id, lider, rid]);
+  }
+  /** Quem mais está no meio do capítulo ativo desta região (para oferecer "acompanhar"). */
+  async function quemEstaNaHistoria(j, cap) {
+    return db.query(`select x.id, x.nome from jogo.jogadores x join jogo.progresso p on p.jogador_id = x.id and p.chave = $3
+      where x.mundo_id = $1 and x.id <> $2 and x.estado = 'ativo' and x.regiao_atual = $4
+        and not exists (select 1 from jogo.progresso c where c.jogador_id = x.id and c.chave = $5) order by x.id limit 3`,
+    [j.mundo_id, j.id, `p:${cap.id}`, cap.regiao ?? CAPITULO.get(cap.id)?.regiao, `c:${cap.id}`]);
+  }
+  const conviteAcompanhar = async (j, cap) => {
+    const q = await quemEstaNaHistoria(j, cap);
+    return q.length ? `\n_${q.map((x) => x.nome).join(" e ")} já ${q.length > 1 ? "estão" : "está"} no meio desta história. Para viver junto: *acompanhar ${q[0].nome.split(" ")[0]}*._` : "";
+  };
+
+  async function darXPSimples(j, xp, capId) {
+    const jog = await um(db, "select * from jogo.jogadores where id = $1", [j.id]);
+    const d = aplicarXP(jog, xp);
+    await db.query(`update jogo.jogadores set nivel = $2, xp = $3, atributos = $4, hp = $5, hp_max = $6, mp = $7, mp_max = $8, pontos_livres = $9, rank = $10 where id = $1`,
+      [j.id, d.nivel, d.xp, JSON.stringify(d.atributos), d.hp, d.hp_max, d.mp, d.mp_max, d.pontos_livres, d.rank]);
+    for (const ev of d.eventos) await db.query(`insert into jogo.eventos_atributo (jogador_id, atributo, delta, fonte, detalhe) values ($1, $2, $3, 'marco_historia', $4)`,
+      [j.id, ev.atributo, ev.delta, JSON.stringify({ capitulo: capId })]);
+    return d;
+  }
+
+  /**
+   * Capítulos já concluídos por outro jogador deste mundo não se repetem: quem chega depois recebe a notícia,
+   * o segredo e a bandeira da campanha (para o rumo da história não travar), e uma parte do XP.
+   */
+  async function herdar(j, para) {
+    const linhas = await db.query(`select p.chave, min(x.nome) as nome from jogo.progresso p join jogo.jogadores x on x.id = p.jogador_id
+      where x.mundo_id = $1 and x.id <> $2 and p.chave like 'c:%' and coalesce(p.valor->>'herdado', '') = ''
+        and not exists (select 1 from jogo.progresso m where m.jogador_id = $2 and m.chave = p.chave) group by p.chave`, [j.mundo_id, j.id]);
+    const caps = linhas.map((l) => ({ cap: CAPITULO.get(l.chave.slice(2)), por: l.nome })).filter((x) => x.cap).sort((a, b) => a.cap.nivel - b.cap.nivel);
+    if (!caps.length) return [];
+    let xp = 0;
+    for (const { cap, por } of caps) {
+      await gravar(j, `c:${cap.id}`, { herdado: true, de: por });
+      await gravar(j, "b:despertar");
+      if (cap.da?.bandeira) await gravar(j, `b:${cap.da.bandeira}`);
+      await db.query("delete from jogo.progresso where jogador_id = $1 and chave = $2", [j.id, `p:${cap.id}`]);
+      xp += Math.round(xpCapitulo(cap.nivel) * XP_HERDADO);
+    }
+    const d = await darXPSimples(j, xp, "herdado");
+    Object.assign(j, { nivel: d.nivel, rank: d.rank });
+    const st = await estado(j);
+    const fim = caps.find((x) => x.cap.final);
+    const mostra = caps.slice(-4).reverse();
+    const lista = mostra.map(({ cap, por }) => `*${cap.titulo}* (${nomeRegiao(cap.regiao)}) — por ${por}${cap.pista ? `\n_O que se sabe: ${cap.pista}_` : ""}`).join("\n\n");
+    const texto = `_A notícia corre mais rápido que você._\n\n${caps.length === 1 ? "Uma história deste mundo já foi vivida" : `${caps.length} histórias deste mundo já foram vividas`}, e o que foi feito não se repete:\n\n${lista}` +
+      `${caps.length > mostra.length ? `\n\n_…e mais ${caps.length - mostra.length}. Tudo fica guardado em *segredos*._` : ""}` +
+      `${fim ? `\n\n*O Eclipse acabou.* ${fim.por} atravessou a última noite por todos. O mundo continua, e ainda há muito dele que ninguém viu.` : ""}` +
+      `\n\n*Seu caminho:* ${objetivoCampanha(st.B)}\n${rodape(`+${xp} XP por aprender com quem viveu`, d.niveis.length ? `nível ${d.nivel}` : null)}`;
+    return [{ para, texto }];
+  }
+
+  /** Quem acompanhou recebe o capítulo inteiro: viveu a história junto. Itens únicos e núcleos ficam com quem deu o último passo. */
+  async function concluirCompanheiro(m, cap, lider, mundo) {
+    await gravar(m, `c:${cap.id}`, { com: lider.nome });
+    await gravar(m, "b:despertar");
+    if (cap.da?.bandeira) await gravar(m, `b:${cap.da.bandeira}`);
+    await db.query("delete from jogo.progresso where jogador_id = $1 and chave = 'acomp'", [m.id]);
+    const xp = xpCapitulo(cap.nivel), ryo = cap.nivel * 20;
+    const d = await darXPSimples(m, xp, cap.id);
+    await db.query("update jogo.jogadores set ryo = ryo + $2, merito = merito + 15 where id = $1", [m.id, ryo]);
+    if (cap.final) { await gravar(m, "b:final-companheiro"); await db.query("update jogo.jogadores set titulo = 'Guardião das Estrelas' where id = $1", [m.id]); }
+    const B = new Set((await db.query("select chave from jogo.progresso where jogador_id = $1 and chave like 'b:%'", [m.id])).map((x) => x.chave.slice(2)));
+    const saidas = privado(m) ? [{ para: privado(m), texto: `⭐ *Capítulo concluído — ${cap.titulo}*\n_ao lado de ${lider.nome}_\n\n${cap.fim}\n\n*O que vocês descobriram:* ${cap.pista}\n\n${rodape(`+${xp} XP`, `+${ryo} ryō`, d.niveis.length ? `nível ${d.nivel}` : null)}` +
+      `${cap.final ? `\n\n*${m.nome}, Guardião das Estrelas.* A história guarda o seu nome ao lado do de ${lider.nome}.` : `\n\n*Seu caminho:* ${objetivoCampanha(B)}`}` }] : [];
+    if (d.rank !== m.rank) saidas.push(...(await feito(m, "rank", `*${m.nome}* alcançou o *rank ${d.rank}* (nível ${d.nivel}).`, { grupo: mundo.grupo_wa_id })));
+    if (ganchos.aoConcluir) saidas.push(...(await ganchos.aoConcluir(m, cap, privado(m) ?? "")).filter((s) => s.para));
+    return saidas;
+  }
+
+  async function acompanhar(j, alvo, para) {
+    const rid = j.regiao_atual, st = await estado(j);
+    const nome = normal(alvo);
+    if (!nome) return [{ para, texto: "Acompanhar quem? Use *acompanhar <nome>*. Vocês precisam estar na mesma região." }];
+    const outros = await db.query(`select x.*, i.wa_jid, i.wa_lid from jogo.jogadores x join jogo.identidades i on i.id = x.identidade_id
+      where x.mundo_id = $1 and x.estado = 'ativo' and x.id <> $2`, [j.mundo_id, j.id]);
+    const lider = outros.find((x) => x.nome_normalizado === nome) ?? outros.find((x) => x.nome_normalizado.startsWith(nome));
+    if (!lider) return [{ para, texto: "Não conheço ninguém com esse nome neste mundo." }];
+    if (lider.regiao_atual !== rid) return [{ para, texto: `*${lider.nome}* está em ${nomeRegiao(lider.regiao_atual)}. Para acompanhar, vocês precisam estar na mesma região.` }];
+    const at = capituloAtivo(rid, st);
+    if (!at || at.bloqueado) return [{ para, texto: "Não há nenhuma história em aberto para você aqui." }];
+    const stL = await estado(lider), atL = capituloAtivo(rid, stL);
+    if (!atL || atL.bloqueado || atL.cap.id !== at.cap.id) return [{ para, texto: `*${lider.nome}* não está nesta história agora.` }];
+    const meuLider = stL.P.get("acomp")?.rid === rid ? Number(stL.P.get("acomp").lider) : lider.id; // quem acompanha alguém leva ao líder de verdade
+    if (meuLider === j.id) return [{ para, texto: `*${lider.nome}* já está acompanhando você.` }];
+    await gravar(j, "acomp", { lider: meuLider, rid });
+    const passo = Math.max(at.passo, atL.passo);
+    await gravar(j, `p:${at.cap.id}`, passo);
+    if (passo !== atL.passo) await gravar(lider, `p:${at.cap.id}`, passo);
+    return [{ para, texto: `Você alcança *${lider.nome}* e os dois seguem lado a lado.\n\n${textoPasso(at.cap, passo)}\n${rodape("o que um fizer, vale para os dois", "o capítulo termina para os dois ao mesmo tempo", "para se separar: seguir sozinho")}` },
+      ...(privado(lider) ? [{ para: privado(lider), texto: `*${j.nome}* te alcançou e vai acompanhar você em _${at.cap.titulo}_.\n${rodape("o que um fizer, vale para os dois")}` }] : [])];
   }
 
   async function concluir(j, rid, cap, para, st) {
     const saidas = [];
     const mundo = await mundoDe(j);
     const primeiro = !(await db.query(`select 1 from jogo.progresso p join jogo.jogadores x on x.id = p.jogador_id where x.mundo_id = $1 and p.chave = $2 limit 1`, [j.mundo_id, `c:${cap.id}`])).length;
+    if (!primeiro) return herdar(j, para); // alguém fechou esta história antes: ela não se repete
+    const grupoViagem = await companheiros(j, rid, st);
+    const juntos = grupoViagem.length ? ` ao lado de ${grupoViagem.map((m) => `*${m.nome}*`).join(" e ")}` : "";
+    await db.query("delete from jogo.progresso where jogador_id = $1 and chave = 'acomp'", [j.id]);
     await gravar(j, `c:${cap.id}`);
     await gravar(j, "b:despertar");
     const da = cap.da ?? {};
@@ -131,7 +248,11 @@ export function criarMundo({ db, ia = null, rng, agora, ganchos = {} }) {
       ganhos.push(itemDe(id).nome);
     }
 
-    if (cap.final) return [...saidas, ...(await finalDaHistoria(j, cap, para, st, mundo))];
+    if (cap.final) {
+      saidas.push(...(await finalDaHistoria(j, cap, para, st, mundo)));
+      for (const m of grupoViagem) saidas.push(...(await concluirCompanheiro(m, cap, j, mundo)));
+      return saidas;
+    }
 
     let texto = `⭐ *Capítulo concluído — ${cap.titulo}*\n\n${cap.fim}\n\n*O que você descobriu:* ${cap.pista}\n\n${rodape(...ganhos)}`;
     if (depois.niveis.length) texto += `\n\n*Nível ${depois.nivel}.* Vida e mana voltam ao máximo.`;
@@ -147,8 +268,9 @@ export function criarMundo({ db, ia = null, rng, agora, ganchos = {} }) {
     texto += `\n\n*Seu caminho:* ${novo}`;
     saidas.unshift({ para, texto });
     saidas.push(...(await feito(j, "capitulo", cap.principal
-      ? `⭐ *${j.nome}* concluiu *${cap.titulo}* em ${nomeRegiao(rid)}${primeiro ? " — o primeiro do mundo" : ""}.\n_Um segredo do mundo foi descoberto. Quem quiser saber, que pergunte a ${j.nome}… ou vá ver com os próprios olhos._`
-      : `⭐ *${j.nome}* concluiu *${cap.titulo}* em ${nomeRegiao(rid)}.`, { grupo: mundo.grupo_wa_id })));
+      ? `⭐ *${j.nome}* concluiu *${cap.titulo}* em ${nomeRegiao(rid)}${juntos}.\n_Um segredo do mundo foi descoberto, e essa história não se repete. Quem quiser saber, que pergunte a ${j.nome}._`
+      : `⭐ *${j.nome}* concluiu *${cap.titulo}* em ${nomeRegiao(rid)}${juntos}.`, { grupo: mundo.grupo_wa_id })));
+    for (const m of grupoViagem) saidas.push(...(await concluirCompanheiro(m, cap, j, mundo)));
     if (depois.rank !== jog.rank) saidas.push(...(await feito(j, "rank", `*${j.nome}* alcançou o *rank ${depois.rank}* (nível ${depois.nivel}).`, { grupo: mundo.grupo_wa_id })));
     if (ganchos.aoConcluir) saidas.push(...(await ganchos.aoConcluir(j, cap, para)));
     // Próximo capítulo da mesma região, se já estiver liberado
@@ -224,7 +346,7 @@ export function criarMundo({ db, ia = null, rng, agora, ganchos = {} }) {
     j.local_atual = principal.id;
     const at = capituloAtivo(rid, st);
     saidas.push({ para, imagem: imagemLocal(rid, principal), legenda: `🗺️ *${nomeRegiao(rid)}*\n\n${r.chegada}\n\n${listaLocais(rid, st)}\n\n${rodape("ir <nº> para visitar um lugar", "falar <nome> para conversar")}` });
-    if (at && !at.bloqueado) saidas.push({ para, texto: `_Há uma história acontecendo aqui._\n\n${textoPasso(at.cap, at.passo)}\n${rodape("só de passagem? siga viagem: a história espera")}` });
+    if (at && !at.bloqueado) saidas.push({ para, texto: `_Há uma história acontecendo aqui._\n\n${textoPasso(at.cap, at.passo)}\n${rodape("só de passagem? siga viagem: a história espera")}${await conviteAcompanhar(j, at.cap)}` });
     // Primeiro do mundo a pisar aqui
     const primeiro = await db.query(`insert into jogo.progresso (jogador_id, chave, valor, criado_em)
       select $1, $2, 'true', $3 where not exists (select 1 from jogo.progresso p join jogo.jogadores x on x.id = p.jogador_id where x.mundo_id = $4 and p.chave = $2)
@@ -289,12 +411,18 @@ export function criarMundo({ db, ia = null, rng, agora, ganchos = {} }) {
     const hoje = new Date(tempo).toISOString().slice(0, 10);
     const uso = (await um(db, "select valor from jogo.progresso where jogador_id = $1 and chave = 'ia-npc'", [j.id]))?.valor;
     const usadas = uso?.dia === hoje ? Number(uso.n ?? 0) : 0;
-    if (ia && usadas < LIMITE_CONVERSAS_IA) {
+    // Toda conversa tem fim: depois de algumas falas seguidas, a pessoa se despede e aponta o caminho
+    const conv = st.P.get(`conv:${chave}`);
+    const turno = conv && tempo - Number(conv.desde) < CONVERSA.janelaMs ? Number(conv.n) + 1 : 1;
+    await gravar(j, `conv:${chave}`, { desde: turno === 1 ? tempo : Number(conv.desde), n: turno });
+    const rumo = (passo?.txt ?? objetivoCampanha(st.B)).replace(/\*/g, "");
+    if (turno > CONVERSA.falas) resposta = `${p.nome} sorri e volta ao que estava fazendo.\n— Já te disse o que eu sabia. Agora é com você. Vai, antes que a coragem esfrie.\n\n_${rumo}_`;
+    if (!resposta && ia && usadas < LIMITE_CONVERSAS_IA) {
       await gravar(j, "ia-npc", { dia: hoje, n: usadas + 1 });
       const sistema = `Você interpreta ${p.nome}, ${p.papel}, num RPG de anime (Yotsuhoshi) jogado no WhatsApp, em português do Brasil. Jeito de falar: ${p.jeito}. ` +
         `Você SABE disto e deve contar com suas palavras${daHistoria || !rel ? " nesta conversa" : " se fizer sentido"}: ${p.sabe}. ` +
         `Regras: responda só como o personagem, em até 450 caracteres, sem emojis, sem listas; falas entre aspas ou com travessão; não invente fatos grandes do mundo além do que você sabe; ` +
-        `nunca dê itens, poderes ou números; não resolva a missão pelo jogador. ${ganchos.historiaPara ? await ganchos.historiaPara(j) : ""} Relação com o jogador: ${amizade >= AMIZADE.proximo ? "amigo próximo, fala com carinho" : amizade >= AMIZADE.amigo ? "amigo" : rel ? "conhecido" : "primeiro encontro"}.`;
+        `nunca dê itens, poderes ou números; não resolva a missão pelo jogador. O que o aventureiro precisa fazer agora: ${rumo} ${turno >= CONVERSA.falas ? "Esta é a última fala desta conversa: despeça-se com naturalidade e mande o aventureiro seguir o caminho dele." : turno >= 2 ? "Termine a fala puxando o aventureiro de volta para o que ele precisa fazer." : ""} ${ganchos.historiaPara ? await ganchos.historiaPara(j) : ""} Relação com o jogador: ${amizade >= AMIZADE.proximo ? "amigo próximo, fala com carinho" : amizade >= AMIZADE.amigo ? "amigo" : rel ? "conhecido" : "primeiro encontro"}.`;
       const esquema = { type: "object", additionalProperties: false, required: ["fala"], properties: { fala: { type: "string" } } };
       try {
         const res = await Promise.race([
@@ -414,6 +542,11 @@ export function criarMundo({ db, ia = null, rng, agora, ganchos = {} }) {
     }
     if ((m = bruto.trim().match(/^[!/]?(?:falar|conversar|perguntar)(?:\s+(?:com|para|pra|a|ao|à))?\s*(\S+)?\s*(.*)$/i)) && /^[!/]?(falar|conversar|perguntar)\b/i.test(bruto.trim()))
       return { tratado: true, saidas: await falar(j, m[1] ?? "", m[2] ?? "", para) };
+    if ((m = t.match(/^(?:acompanhar|seguir com|ir com|juntar a|juntar-se a)\s*(.*)$/))) return { tratado: true, saidas: await acompanhar(j, m[1], para) };
+    if (/^(seguir sozinho|seguir sozinha|separar|deixar grupo)$/.test(t)) {
+      const tinha = await db.query("delete from jogo.progresso where jogador_id = $1 and chave = 'acomp' returning 1", [j.id]);
+      return { tratado: true, saidas: [{ para, texto: tinha.length ? "Você se despede e segue o seu próprio passo. O que já foi feito juntos continua valendo." : "Você já anda por conta própria." }] };
+    }
     if (/^(missao|missoes|historia|capitulo|objetivo|diario|caminho)$/.test(t)) {
       const st = await estado(j);
       const at = capituloAtivo(rid, st);
@@ -457,7 +590,7 @@ export function criarMundo({ db, ia = null, rng, agora, ganchos = {} }) {
     };
   }
 
-  return { comando, chegada, aoEventos, contextoNarrador, estado, capituloAtivo };
+  return { comando, chegada, aoEventos, contextoNarrador, estado, capituloAtivo, herdar };
 }
 
 export { ambiente };

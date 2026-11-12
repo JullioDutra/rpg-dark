@@ -43,7 +43,7 @@ export async function testarDadosDoMundo() {
   });
 }
 
-export async function testarMundoServidor({ db, jogador, outro, mensagem, grupo, outroGrupo, admin, GRUPO }) {
+export async function testarMundoServidor({ db, jogador, outro, mensagem, grupo, outroGrupo, outroPrivado, adminPrivado, admin, GRUPO }) {
   let clock = Date.now() + 7 * 86_400_000, dados = [];
   const rng = () => (dados.length ? dados.shift() : 0.5);
   const novoJogo = (ia = null) => criarJogo({ db, sal: "teste", admins: [admin], rng, agora: () => clock, ia });
@@ -267,6 +267,63 @@ export async function testarMundoServidor({ db, jogador, outro, mensagem, grupo,
     assert.match(texto(await noGrupo(grupo("dar 999999 ryo Rin"))), /Quantidade inválida|não tem/);
     assert.match(texto(await noGrupo(grupo("dar espada Rin"))), /não tem isso para dar/);
   });
+  await t("a história é do mundo: capítulo concluído não se repete, quem chega depois herda a notícia e a bandeira; acompanhar faz os dois concluírem juntos", async () => {
+    const { MUNDO, CAPITULO } = await import("../src/mundo/mundo.mjs");
+    const prog = async (id, chave) => (await db.query("select valor from jogo.progresso where jogador_id = $1 and chave = $2", [id, chave]))[0]?.valor;
+    // 1) herança: Kaito viveu um capítulo que Rin não viveu
+    let feito = (await db.query("select chave from jogo.progresso where jogador_id = $1 and chave like 'c:%' and coalesce(valor->>'herdado','') = '' limit 1", [jogador.id]))[0]?.chave;
+    if (!feito) { feito = `c:${[...CAPITULO.values()][0].id}`; await db.query("insert into jogo.progresso (jogador_id, chave, valor) values ($1, $2, 'true')", [jogador.id, feito]); }
+    await db.query("delete from jogo.progresso where jogador_id = $1 and chave like 'c:%'", [outro.id]);
+    const nivelAntes = (await db.query("select xp, nivel from jogo.jogadores where id = $1", [outro.id]))[0];
+    const h = await noGrupo(outroPrivado("missao"));
+    assert.match(texto(h), /já fo(i|ram) vivida[\s\S]*não se repete[\s\S]*Seu caminho/);
+    assert.equal((await prog(outro.id, feito)).herdado, true);
+    const depois = (await db.query("select xp, nivel from jogo.jogadores where id = $1", [outro.id]))[0];
+    assert(depois.nivel > nivelAntes.nivel || Number(depois.xp) > Number(nivelAntes.xp), "herdeiro ganha parte do XP");
+    assert.doesNotMatch(texto(await noGrupo(outroPrivado("missao"))), /não se repete/, "a notícia chega uma vez só");
+    // 2) acompanhar: um capítulo aberto para os dois, com passos de ir/falar
+    const abertos = new Set((await db.query("select chave from jogo.progresso where jogador_id = any($1) and chave like 'c:%'", [[jogador.id, outro.id]])).map((x) => x.chave.slice(2)));
+    const cap = [...CAPITULO.values()].find((c) => !abertos.has(c.id) && !c.final && c.passos.length >= 2 && c.passos.every((p) => p.t !== "derrotar")
+      && MUNDO[c.regiao].capitulos.every((o) => o.id === c.id || abertos.has(o.id) || MUNDO[c.regiao].capitulos.indexOf(o) > MUNDO[c.regiao].capitulos.indexOf(c)));
+    assert(cap, "existe um capítulo só de ir/falar para o teste");
+    for (const id of [jogador.id, outro.id]) {
+      await db.query("update jogo.jogadores set regiao_atual = $2, local_atual = null, hp = hp_max where id = $1", [id, cap.regiao]);
+      await db.query("delete from jogo.exploracoes where jogador_id = $1 and pendente", [id]);
+      for (const r of cap.requer ?? []) await db.query("insert into jogo.progresso (jogador_id, chave, valor) values ($1, $2, 'true') on conflict do nothing", [id, `b:${r}`]);
+    }
+    assert.match(texto(await noGrupo(outroPrivado("acompanhar Kaito"))), /lado a lado/);
+    const passo = async (p) => { clock += 7 * 3_600_000; return enviar(p.t === "ir" ? `ir ${MUNDO[cap.regiao].locais.find((l) => l.id === p.a).nome}` : `falar ${MUNDO[cap.regiao].npcs[p.a].nome.split(" ").at(-1)}`); };
+    let r = [];
+    for (const p of cap.passos) {
+      if (p.t === "falar") { const l = MUNDO[cap.regiao].locais.find((x) => (x.npcs ?? []).includes(p.a)); if (l) await enviar(`ir ${l.nome}`); }
+      r = await passo(p);
+    }
+    assert((await prog(jogador.id, `c:${cap.id}`)) === true, "quem deu o último passo concluiu");
+    assert.equal((await prog(outro.id, `c:${cap.id}`)).com, "Kaito Ryuen", "quem acompanhou concluiu junto");
+    assert(r.some((x) => /ao lado de Kaito Ryuen/.test(x.texto ?? "")), "o companheiro recebe o capítulo no privado");
+    assert(doGrupo(r).some((x) => /ao lado de \*Rin/.test(x.texto)), "o grupo sabe que foram os dois");
+    assert.equal(await prog(outro.id, "acomp"), undefined, "o grupo de viagem se desfaz ao fim do capítulo");
+  });
+  await t("mão do mestre: maldição secreta pelo privado do admin, resgate pelos companheiros, sussurro e presente; ninguém mais usa", async () => {
+    await db.query("update jogo.jogadores set hp = hp_max where id = any($1)", [[jogador.id, outro.id]]);
+    assert.doesNotMatch(texto(await noGrupo(outroPrivado("mestre maldição Kaito"))), /Mão do mestre|Feito/);
+    assert.deepEqual(await noGrupo(grupo("mestre maldição Rin", true)), [], "no grupo o comando é ignorado");
+    assert.match(texto(await noGrupo(adminPrivado("mestre"))), /Mão do mestre/);
+    const m = await noGrupo(adminPrivado("mestre maldição Rin"));
+    assert(doGrupo(m).some((x) => /sono de cinzas caiu sobre Rin/.test(x.texto) && !/admin|mestre/i.test(x.texto)), "o grupo vê a história, não o admin");
+    assert.match(texto(await noGrupo(outroPrivado("explorar"))), /corpo não responde[\s\S]*resgatar Rin/);
+    assert.doesNotMatch(texto(await noGrupo(outroPrivado("itens"))), /corpo não responde/);
+    assert.match(texto(await noGrupo(outroGrupo("resgatar Rin"))), /não consegue puxar a si mesmo/);
+    const res = await noGrupo(grupo("resgatar Rin"));
+    assert.match(texto(res), /sono de cinzas se quebrou/);
+    assert.doesNotMatch(texto(await noGrupo(outroPrivado("explorar"))), /corpo não responde/);
+    assert.match(texto(await noGrupo(adminPrivado("mestre sussurro Rin Não confie no homem do sino."))), /Uma voz que não é sua[\s\S]*homem do sino[\s\S]*Feito/);
+    const antes = (await db.query("select coalesce(sum(qtd), 0)::int n from jogo.inventario where jogador_id = $1 and item_id = 'elixir'", [outro.id]))[0].n;
+    assert.match(texto(await noGrupo(adminPrivado("mestre presente Rin elixir"))), /embrulho[\s\S]*Elixir estelar/);
+    assert.equal((await db.query("select sum(qtd)::int n from jogo.inventario where jogador_id = $1 and item_id = 'elixir'", [outro.id]))[0].n, antes + 1);
+    assert.match(texto(await noGrupo(adminPrivado("mestre presente Rin excalibur"))), /Só poções/);
+    assert(doGrupo(await noGrupo(adminPrivado("mestre presságio As estrelas piscaram duas vezes."))).some((x) => /estrelas piscaram/.test(x.texto)));
+  });
   await t("Olhos da Terra: a mestra entrega o pergaminho a quem é da terra; ler cega e dá as habilidades; admin também concede", async () => {
     await db.query("update jogo.jogadores set regiao_atual = 'R-DAI-6', local_atual = null, atributo_magico = 'Fogo (Chama)', reino = 'Homura' where id = $1", [jogador.id]);
     await enviar("falar tsuchi"); clock += 7 * 3_600_000;
@@ -291,7 +348,7 @@ export async function testarMundoServidor({ db, jogador, outro, mensagem, grupo,
     assert.match(texto(await noGrupo(grupo("conceder terra Rin", true))), /já tem os Olhos da Terra/);
   });
   await t("comando dado envia o infográfico no privado e no grupo", async () => {
-    const pv = await enviar("dado"); assert(pv[0].imagem?.length > 20000 && /1 falha/.test(pv[0].legenda));
+    const pv = await enviar("dado"); assert(pv[0].imagem?.length > 20000 && /falha[\s\S]*pressão/.test(pv[0].legenda));
     assert((await noGrupo(outroGrupo("dado")))[0].imagem?.length > 20000);
   });
   await t("final: derrotar o Rei do Eclipse coroa o Seiō e anuncia no grupo", async () => {
