@@ -1,6 +1,10 @@
 // Mão invisível do mestre: o administrador age pelo PRIVADO do bot e o mundo reage como se fosse a própria história.
 // Nada aqui cita o administrador: o grupo só vê o narrador. Nenhuma ação dá atributo, nível ou item de equipamento.
 import { MUNDO, VILOES } from "../mundo/mundo.mjs";
+import { MONSTROS } from "../mundo/monstros.mjs";
+import { REGIAO } from "../regras/exploracao.mjs";
+const nomeR = (rid) => REGIAO.get(rid)?.nome ?? rid;
+import { AMEACA } from "./ameacas.mjs";
 import { item } from "../regras/itens.mjs";
 import { nomeLacaio } from "./combate.mjs";
 import { rodape } from "./textos.mjs";
@@ -19,11 +23,22 @@ mestre sussurro <nome> <texto> — uma voz misteriosa fala só com ele
 mestre presságio <texto> — o narrador anuncia um sinal no grupo
 mestre presente <nome> <item> — ele encontra um embrulho sem remetente (só poções, utilidades e materiais)
 mestre emboscada <nome> — um lacaio da região o cerca agora
+mestre monstros — lista os 20 monstros (M01 a M20)
+mestre monstro <nº ou nome> <cidade> — solta um monstro numa região; quem estiver lá luta junto (golpear). Loja e descanso fecham até ele cair ou ir embora (24 h)
+mestre calamidade [nº ou nome] — desperta uma Calamidade para o mundo inteiro (só com a história já desenvolvida; 48 h)
+mestre espiã <nome> — uma viajante passa a acompanhar o jogador e anota o que ele faz
+mestre relatório <nome> — o que a espiã viu
+mestre recolher <nome> — a espiã se despede
 mestre quem — lista os personagens e onde estão
 
 _Nenhuma dessas ações dá atributo ou nível. Não use no grupo: lá o comando é ignorado para não te revelar._`;
 
-export function criarMestre({ db, agora }) {
+const ESPIA = { nome: "Shiori", papel: "uma cartógrafa de estrada", maxLog: 25,
+  falas: ["anota alguma coisa num caderninho de capa azul e sorri quando você olha.", "comenta, distraída: — Você sempre decide rápido assim?",
+    "fica um passo atrás, desenhando o caminho de vocês num mapa.", "pergunta de onde você é, e escuta a resposta com atenção demais para quem só puxa conversa.",
+    "ajeita a alça da bolsa e diz que nunca viu ninguém viajar do seu jeito."] };
+
+export function criarMestre({ db, agora, ameacas = null }) {
   const gravar = (j, chave, valor) => db.query(`insert into jogo.progresso (jogador_id, chave, valor, criado_em) values ($1, $2, $3, $4)
     on conflict (jogador_id, chave) do update set valor = excluded.valor`, [j.id, chave, JSON.stringify(valor), new Date(agora())]);
   const jogadores = () => db.query(`select j.*, i.wa_jid, i.wa_lid, m.grupo_wa_id from jogo.jogadores j join jogo.identidades i on i.id = j.identidade_id
@@ -88,8 +103,34 @@ export function criarMestre({ db, agora }) {
     const acao = m[1] ?? "", resto = msg.texto.trim().replace(/^[!/]?\s*mestre\s+\S+\s*/i, "");
     const todos = await jogadores();
     if (!acao || /^(ajuda|comandos)$/.test(acao)) return dizer(AJUDA_MESTRE);
-    if (acao === "quem") return dizer(todos.length ? todos.map((x) => `*${x.nome}* — ${x.classe}, nível ${x.nivel}, em ${MUNDO[x.regiao_atual]?.nome ?? x.regiao_atual}`).join("\n") : "Nenhum personagem ativo.");
+    if (acao === "quem") return dizer(todos.length ? todos.map((x) => `*${x.nome}* — ${x.classe}, nível ${x.nivel}, em ${nomeR(x.regiao_atual)}`).join("\n") : "Nenhum personagem ativo.");
 
+    if (/^monstros$/.test(acao)) return dizer(`*Monstros* (grau 1 a 3 para cidades; grau 4 são Calamidades)\n\n${MONSTROS.map((x) => `*${x.id.slice(1)}* ${x.nome}, ${x.titulo} — grau ${x.grau}, ${x.elemento}`).join("\n")}`);
+    const acharMonstro = (txt) => { const n = semAcento(txt.toLowerCase()).trim(); return MONSTROS.find((x) => x.id.toLowerCase() === n || x.id.slice(1) === n.padStart(2, "0")) ?? (n.length >= 3 ? MONSTROS.find((x) => semAcento(x.nome.toLowerCase()).startsWith(n)) : null) ?? null; };
+    // o mundo do mestre: o que tem mais jogadores ativos
+    const porMundo = new Map(); for (const x of todos) porMundo.set(String(x.mundo_id), (porMundo.get(String(x.mundo_id)) ?? 0) + 1);
+    const mundoId = [...porMundo.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? null;
+    if (/^monstro$/.test(acao) && ameacas) {
+      const p = resto.trim().split(/\s+/), mon = acharMonstro(p[0] ?? "");
+      const lugar = semAcento(p.slice(1).join(" ").toLowerCase());
+      const rid = lugar ? Object.keys(MUNDO).find((k) => semAcento(nomeR(k).toLowerCase()) === lugar) ?? Object.keys(MUNDO).find((k) => semAcento(nomeR(k).toLowerCase()).includes(lugar)) : null;
+      if (!mon || !rid) return dizer("Use: mestre monstro <nº ou nome> <cidade>. Ex.: mestre monstro 6 Kyōkai. Veja a lista com *mestre monstros*.");
+      if (mon.grau === 4) return dizer(`${mon.nome} é grande demais para uma cidade só. Use: mestre calamidade ${mon.id.slice(1)}`);
+      if (!mundoId) return dizer("Não há mundo ativo com jogadores.");
+      if ((await db.query("select 1 from jogo.ameacas where mundo_id = $1 and estado = 'ativa' and regiao = $2 and termina_em > $3", [mundoId, rid, new Date(agora())])).length) return dizer(`Já há um monstro em ${nomeR(rid)}.`);
+      const r = await ameacas.invocar(mundoId, mon.id, "monstro", rid);
+      return r.erro ? dizer(r.erro) : [...r.saidas, ...dizer(`Feito. ${mon.nome} está em ${nomeR(rid)} (vida ${r.ameaca.hp_max}, nível ${r.ameaca.nivel}).`)];
+    }
+    if (/^calamidade$/.test(acao) && ameacas) {
+      if (!mundoId) return dizer("Não há mundo ativo com jogadores.");
+      const n = await ameacas.capitulosDoMundo(mundoId);
+      if (n < AMEACA.capitulosParaCalamidade) return dizer(`A história ainda está no começo: ${n} de ${AMEACA.capitulosParaCalamidade} capítulos vividos no mundo. Uma Calamidade agora atropelaria a campanha. Para algo menor, use *mestre monstro*.`);
+      if ((await db.query("select 1 from jogo.ameacas where mundo_id = $1 and estado = 'ativa' and tipo = 'calamidade' and termina_em > $2", [mundoId, new Date(agora())])).length) return dizer("Já há uma Calamidade ativa.");
+      const grandes = MONSTROS.filter((x) => x.grau === 4), mon = resto.trim() ? acharMonstro(resto) : grandes[Math.floor(agora() / 86_400_000) % grandes.length];
+      if (!mon || mon.grau !== 4) return dizer(`Calamidades: ${grandes.map((x) => `${x.id.slice(1)} ${x.nome}`).join(", ")}.`);
+      const r = await ameacas.invocar(mundoId, mon.id, "calamidade", null, { mestre: true });
+      return r.erro ? dizer(r.erro) : [...r.saidas, ...dizer(`Feito. ${mon.nome} despertou (vida ${r.ameaca.hp_max}).`)];
+    }
     if (/^pressagio$/.test(acao)) {
       const grupos = [...new Set(todos.map((x) => x.grupo_wa_id).filter(Boolean))];
       if (!resto) return dizer("Use: mestre presságio <texto>");
@@ -108,9 +149,26 @@ export function criarMestre({ db, agora }) {
       await gravar(alvo, "maldicao", { desde: agora(), ate: agora() + MALDICAO.duracaoMs, precisa, resgates: [] });
       return [
         ...(pv ? [{ para: pv, texto: `O ar esfria de repente. Uma cinza fina, que não vem de fogo nenhum, começa a cair só em cima de você.\n\nQuando você tenta limpar o ombro, o braço não obedece. Depois as pernas. Depois a voz.\n\n*Você caiu no sono de cinzas.* Você ouve o mundo, mas não consegue tocá-lo.\n${rodape(`${precisa === 1 ? "um companheiro precisa" : `${precisa} companheiros precisam`} te resgatar`, `no grupo: resgatar ${primeiro}`)}` }] : []),
-        ...(alvo.grupo_wa_id ? [{ para: alvo.grupo_wa_id, texto: `⚠️ *Um sono de cinzas caiu sobre ${alvo.nome}.*\n\nNinguém viu de onde veio. Em ${MUNDO[alvo.regiao_atual]?.nome ?? "algum lugar do mundo"}, *${alvo.nome}* está de pé, de olhos abertos, coberto por uma cinza fria — e não responde.\n\nDizem que esse sono só se quebra quando alguém que se importa chama a pessoa de volta.\n${rodape(`${precisa === 1 ? "basta 1 jogador" : `são precisos ${precisa} jogadores`}: resgatar ${primeiro}`)}` }] : []),
+        ...(alvo.grupo_wa_id ? [{ para: alvo.grupo_wa_id, texto: `⚠️ *Um sono de cinzas caiu sobre ${alvo.nome}.*\n\nNinguém viu de onde veio. Em ${nomeR(alvo.regiao_atual)}, *${alvo.nome}* está de pé, de olhos abertos, coberto por uma cinza fria — e não responde.\n\nDizem que esse sono só se quebra quando alguém que se importa chama a pessoa de volta.\n${rodape(`${precisa === 1 ? "basta 1 jogador" : `são precisos ${precisa} jogadores`}: resgatar ${primeiro}`)}` }] : []),
         ...dizer(`Feito. ${alvo.nome} está sob o sono de cinzas (${precisa} resgate${precisa > 1 ? "s" : ""}, ou 48 h).`),
       ];
+    }
+    if (/^(espia|espiar|espiao)$/.test(acao)) {
+      await gravar(alvo, "espia", { nome: ESPIA.nome, desde: agora(), log: [] });
+      return [...(pv ? [{ para: pv, texto: `Na saída da estrada, uma moça de capa de viagem e dedos manchados de tinta te alcança.\n\n— Desculpa o incômodo. Sou ${ESPIA.nome}, ${ESPIA.papel}. Estou mapeando essas bandas e você parece saber aonde vai. Posso andar com você um tempo? Não atrapalho.\n\nEla já está andando ao seu lado antes de você responder.` }] : []), ...dizer(`Feito. ${ESPIA.nome} acompanha ${alvo.nome}. Veja o que ela anotou com: mestre relatório ${primeiro}`)];
+    }
+    if (/^(relatorio|relato)$/.test(acao)) {
+      const e = (await um(db, "select valor from jogo.progresso where jogador_id = $1 and chave = 'espia'", [alvo.id]))?.valor;
+      if (!e) return dizer(`Ninguém está acompanhando ${alvo.nome}. Use: mestre espiã ${primeiro}`);
+      const inv = await db.query("select item_id, qtd, equipado from jogo.inventario where jogador_id = $1 order by equipado desc, qtd desc limit 8", [alvo.id]);
+      const hora = (ms) => new Date(ms - 3 * 3_600_000).toISOString().slice(5, 16).replace("T", " ");
+      return dizer(`*Relatório de ${e.nome}* — ${alvo.nome}\n\n${alvo.classe}, nível ${alvo.nivel} · vida ${alvo.hp}/${alvo.hp_max} · ${alvo.ryo} ryō · corrupção ${Number(alvo.corrupcao ?? 0)}\nEstá em ${nomeR(alvo.regiao_atual)}.\nLeva: ${inv.map((l) => `${item(l.item_id)?.nome ?? l.item_id}${l.qtd > 1 ? ` ×${l.qtd}` : ""}${l.equipado ? " (em uso)" : ""}`).join(", ") || "nada"}.\n\n` +
+        `*O que ele fez* (horário de Brasília)\n${(e.log ?? []).map((l) => `${hora(l.q)} · ${nomeR(l.r)} · ${l.t}`).join("\n") || "Nada ainda."}`);
+    }
+    if (/^(recolher|dispensar)$/.test(acao)) {
+      const tinha = await db.query("delete from jogo.progresso where jogador_id = $1 and chave = 'espia' returning 1", [alvo.id]);
+      if (!tinha.length) return dizer(`Ninguém está acompanhando ${alvo.nome}.`);
+      return [...(pv ? [{ para: pv, texto: `${ESPIA.nome} fecha o caderninho azul.\n— Meu mapa acaba aqui. Obrigada pela companhia. Você foi… instrutivo.\n\nEla toma a estrada de volta sem olhar para trás.` }] : []), ...dizer(`Feito. ${ESPIA.nome} deixou ${alvo.nome}.`)];
     }
     if (/^(libertar|liberar|soltar)$/.test(acao)) {
       const tinha = await db.query("delete from jogo.progresso where jogador_id = $1 and chave = 'maldicao' returning 1", [alvo.id]);
@@ -147,5 +205,15 @@ export function criarMestre({ db, agora }) {
     return dizer(AJUDA_MESTRE);
   }
 
-  return { comando, bloqueio, resgatar };
+  /** Se há uma espiã com o jogador, anota o que ele fez. De vez em quando ela aparece na cena (para parecer só uma companheira). */
+  async function observar(j, texto, para) {
+    const e = (await um(db, "select valor from jogo.progresso where jogador_id = $1 and chave = 'espia'", [j.id]))?.valor;
+    if (!e || !texto.trim()) return [];
+    const log = [...(e.log ?? []), { q: agora(), r: j.regiao_atual, t: texto.trim().slice(0, 70) }].slice(-ESPIA.maxLog);
+    const n = Number(e.n ?? 0) + 1;
+    await gravar(j, "espia", { ...e, log, n });
+    return n % 6 === 0 ? [{ para, texto: `_${e.nome} ${ESPIA.falas[(n / 6) % ESPIA.falas.length | 0]}_` }] : [];
+  }
+
+  return { comando, bloqueio, resgatar, observar };
 }

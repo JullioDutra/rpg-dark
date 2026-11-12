@@ -337,6 +337,55 @@ export async function testarMundoServidor({ db, jogador, outro, mensagem, grupo,
     const cr = await jogo.aoTick({ tipo: "resumo" });
     assert(doGrupo(cr).some((x) => /Crônica do dia/.test(x.texto)), "crônica no grupo");
   });
+  await t("ameaças: monstro numa cidade (luta em grupo, loja fechada, recompensa), Calamidade só com história desenvolvida, espiã do mestre", async () => {
+    const { MUNDO } = await import("../src/mundo/mundo.mjs");
+    const { AMEACA } = await import("../src/servidor/ameacas.mjs");
+    const rid = Object.keys(MUNDO).find((k) => MUNDO[k].tipo === "capital" && MUNDO[k].locais.some((l) => l.servicos?.includes("loja")));
+    const longe = Object.keys(MUNDO).find((k) => k !== rid);
+    await db.query("delete from jogo.viagens where concluida_em is null");
+    await db.query("update jogo.jogadores set hp = hp_max, regiao_atual = $2, local_atual = null where id = $1", [jogador.id, rid]);
+    await db.query("update jogo.jogadores set hp = hp_max, regiao_atual = $2, local_atual = null where id = $1", [outro.id, longe]);
+    assert.match(texto(await noGrupo(adminPrivado("mestre monstros"))), /\*01\* Gakidama[\s\S]*\*20\* Amanozako/);
+    assert.match(texto(await noGrupo(adminPrivado("mestre monstro 17 x"))), /Use: mestre monstro|grande demais/);
+    const inv = await noGrupo(adminPrivado(`mestre monstro 6 ${(await import("../src/regras/exploracao.mjs")).REGIAO.get(rid).nome}`));
+    assert(doGrupo(inv).some((x) => x.imagem?.length > 1000 && /Tsuchigumo[\s\S]*apareceu em/.test(x.legenda) && !/mestre|admin/i.test(x.legenda)), "anúncio com imagem, sem citar o mestre");
+    assert.match(texto(await enviar("loja")), /Portas trancadas/);
+    assert.match(texto(await noGrupo(outroPrivado("golpear"))), /chegue lá/);
+    const g1 = texto(await enviar("golpear"));
+    assert.match(g1, /🎲[\s\S]*Tsuchigumo/);
+    assert.match(texto(await enviar("golpear")), /recuperando o fôlego/);
+    await db.query("update jogo.jogadores set regiao_atual = $2, hp = hp_max where id = $1", [outro.id, rid]);
+    assert.match(texto(await noGrupo(outroPrivado("golpear"))), /lutando junto: \+25%|passa no vazio/);
+    const am = (await db.query("select * from jogo.ameacas where estado = 'ativa' and tipo = 'monstro'"))[0];
+    await db.query("update jogo.ameacas set hp = 1 where id = $1", [am.id]);
+    await db.query("update jogo.jogadores set hp = hp_max where id = $1", [jogador.id]);
+    const ryo = Number((await atual()).ryo);
+    let fim = [];
+    for (let k = 0; k < 12 && !doGrupo(fim).some((x) => /está livre/.test(x.texto)); k++) { clock += 6 * 60_000; await db.query("update jogo.jogadores set hp = hp_max where id = $1", [jogador.id]); fim = await enviar("golpear"); }
+    assert(doGrupo(fim).some((x) => /está livre[\s\S]*Kaito Ryuen/.test(x.texto)), "vitória anunciada com o placar");
+    assert(Number((await atual()).ryo) > ryo, "quem lutou recebe ryō");
+    assert.doesNotMatch(texto(await enviar("loja")), /Portas trancadas/);
+    // Calamidade: só com a história desenvolvida
+    const mundoId = (await atual()).mundo_id;
+    const n = Number((await db.query("select count(distinct p.chave) n from jogo.progresso p join jogo.jogadores j on j.id = p.jogador_id where j.mundo_id = $1 and p.chave like 'c:%' and coalesce(p.valor->>'herdado','') = ''", [mundoId]))[0].n);
+    if (n < AMEACA.capitulosParaCalamidade) assert.match(texto(await noGrupo(adminPrivado("mestre calamidade"))), /história ainda está no começo/);
+    const antes = AMEACA.capitulosParaCalamidade; AMEACA.capitulosParaCalamidade = 0;
+    const cal = await noGrupo(adminPrivado("mestre calamidade 19"));
+    AMEACA.capitulosParaCalamidade = antes;
+    assert(doGrupo(cal).some((x) => /CALAMIDADE[\s\S]*Gashadokuro/.test(x.legenda ?? "")), "Calamidade anunciada no grupo");
+    await db.query("update jogo.jogadores set regiao_atual = $2, hp = hp_max where id = $1", [outro.id, longe]);
+    clock += 6 * 60_000;
+    assert.match(texto(await noGrupo(outroPrivado("golpear"))), /🎲[\s\S]*Gashadokuro/, "a Calamidade se ataca de qualquer lugar");
+    const c = (await db.query("select * from jogo.ameacas where estado = 'ativa' and tipo = 'calamidade'"))[0];
+    clock += 49 * 3_600_000;
+    assert(doGrupo(await jogo.aoTick({ tipo: "ameaca", ameaca: Number(c.id) })).some((x) => /vai embora/.test(x.texto)), "sem vitória, ela vai embora no prazo");
+    // espiã
+    const e = await noGrupo(adminPrivado("mestre espiã Rin"));
+    assert(e.some((x) => /Shiori/.test(x.texto) && x.para !== GRUPO) && !doGrupo(e).length, "a espiã chega só no privado do jogador");
+    await noGrupo(outroPrivado("itens"));
+    assert.match(texto(await noGrupo(adminPrivado("mestre relatório Rin"))), /Relatório de Shiori[\s\S]*itens/);
+    assert.match(texto(await noGrupo(adminPrivado("mestre recolher Rin"))), /Meu mapa acaba aqui[\s\S]*Feito/);
+  });
   await t("Olhos da Terra: a mestra entrega o pergaminho a quem é da terra; ler cega e dá as habilidades; admin também concede", async () => {
     await db.query("update jogo.jogadores set regiao_atual = 'R-DAI-6', local_atual = null, atributo_magico = 'Fogo (Chama)', reino = 'Homura' where id = $1", [jogador.id]);
     await enviar("falar tsuchi"); clock += 7 * 3_600_000;

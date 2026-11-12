@@ -19,6 +19,7 @@ import { criarExtras } from "./extras.mjs";
 import { PRESSAO, textoPressao } from "../regras/combate.mjs";
 import { criarSocial } from "./social.mjs";
 import { criarMestre } from "./mestre.mjs";
+import { criarAmeacas } from "./ameacas.mjs";
 import { kitInicial } from "../regras/itens.mjs";
 import { XP_PROXIMO } from "../../scripts/balanceamento.mjs";
 import { comandoExploracao, recuperarVigor, buscarRegioes } from "../regras/exploracao.mjs";
@@ -88,11 +89,12 @@ export function criarJogo({ relogio = null, db, sal = process.env.TELEFONE_SAL ?
   const combate = criarCombate({ db, rng, agora });
   const extras = criarExtras({ db, rng, agora });
   const social = criarSocial({ db, rng, agora });
-  const mestre = criarMestre({ db, agora });
+  const ameacas = criarAmeacas({ db, rng, agora, relogio });
+  const mestre = criarMestre({ db, agora, ameacas });
   // Ganchos do mundo vivo: os modos complementares e, por cima, os contratos da Guilda (que só observam)
   const ganchos = { ...extras,
     aoFalar: async (j, npc, amizade, para) => [...(await extras.aoFalar(j, npc, amizade, para)), ...(await social.aoFalar(j, npc, para))],
-    aoConcluir: async (j, cap, para) => [...(await extras.aoConcluir(j, cap, para)), ...(await social.aoConcluir(j, para))] };
+    aoConcluir: async (j, cap, para) => [...(await extras.aoConcluir(j, cap, para)), ...(await social.aoConcluir(j, para)), ...(await ameacas.aoConcluir(j))] };
   const mundo = criarMundo({ db, ia, rng, agora, ganchos });
   const itens = criarItens({ db, agora });
 
@@ -225,8 +227,15 @@ export function criarJogo({ relogio = null, db, sal = process.env.TELEFONE_SAL ?
       if (preso && !preso.segue) return [...novidades, ...preso.saidas];
       if (preso?.segue) novidades.push(...preso.saidas);
     }
+    if (ativo) {
+      const tc = tn.replace(/^[!/]/, "");
+      const fechada = await ameacas.cidadeFechada(ativo, tc);
+      if (fechada) return [...novidades, { para: msg.chat, texto: fechada }];
+      const am = await ameacas.comando(ativo, tc, msg.chat);
+      if (am.tratado) return [...novidades, ...am.saidas, ...(await mestre.observar(ativo, msg.texto, msg.chat))];
+    }
     const saidas = [...novidades, ...(await privadoBase(msg))];
-    if (ativo) await agendarChegada(ativo.id);
+    if (ativo) { saidas.push(...(await mestre.observar(ativo, msg.texto, msg.chat))); await agendarChegada(ativo.id); }
     return saidas;
   }
 
@@ -257,6 +266,7 @@ export function criarJogo({ relogio = null, db, sal = process.env.TELEFONE_SAL ?
       j = { ...j, ...e.jogador };
       return [...e.saidas, ...(j.regiao_atual !== antes ? await mundo.chegada(j, para) : [])];
     }
+    if (corpo.tipo === "ameaca") return ameacas.aoTick(corpo.ameaca);
     if (corpo.tipo === "resumo") {
       const saidas = [];
       const mundos = await db.query("select id, grupo_wa_id from jogo.mundos where status = 'ativo' and grupo_wa_id is not null");
@@ -509,6 +519,7 @@ missao — sua história e o próximo passo
 acompanhar <nome> — viver a história junto com outro jogador
 explorar — procurar encrenca e achados
 contratos — trabalhos do dia da Guilda (vilas e cidades)
+monstro · golpear — quando há uma ameaça solta, lute junto com o grupo
 viajar <região> · rota · mapa
 > sua ação — fazer o que quiser, com suas palavras
 
