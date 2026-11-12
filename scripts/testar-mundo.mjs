@@ -255,6 +255,10 @@ export async function testarMundoServidor({ db, jogador, outro, mensagem, grupo,
     assert.match(texto(c), /Rin\* fechou os olhos/); assert(c.some((x) => /A terra te escolheu/.test(x.texto)));
     assert.match(texto(await noGrupo(grupo("conceder terra Rin", true))), /já tem os Olhos da Terra/);
   });
+  await t("comando dado envia o infográfico no privado e no grupo", async () => {
+    const pv = await enviar("dado"); assert(pv[0].imagem?.length > 20000 && /1 falha/.test(pv[0].legenda));
+    assert((await noGrupo(outroGrupo("dado")))[0].imagem?.length > 20000);
+  });
   await t("final: derrotar o Rei do Eclipse coroa o Seiō e anuncia no grupo", async () => {
     await db.query(`insert into jogo.progresso (jogador_id, chave) select $1, 'b:' || x from unnest($2::text[]) x on conflict do nothing`,
       [jogador.id, ["reis-antigos", "descida", "kanata", "ninho", "poco", "muralha", "rosto", "arco-homura", "arco-watatsumi", "arco-daichi", "arco-fujin"]]);

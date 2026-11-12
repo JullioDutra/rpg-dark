@@ -138,6 +138,7 @@ export function criarJogo({ db, sal = process.env.TELEFONE_SAL ?? "", admins = (
     if (/^(!|\/)?(entrar( no mundo)?|quero entrar( no mundo)?|entrar no jogo)$/.test(t)) return entrar(msg, mundo);
     if (ehComando(t, "ficha", "carta", "minha ficha", "minha carta")) return ficha(msg, mundo, msg.chat);
     if (ehComando(t, "ajuda", "comandos")) return [{ para: msg.chat, texto: AJUDA }];
+    if (ehComando(t, "dado", "dados", "d20", "como funciona o dado", "guia do dado")) return guiaDado(msg.chat);
     // Duelo e apoio entre jogadores
     if (/^[!/]?(duelo|desafio|x1|apoiar|apoio|aceitar|aceito|recusar|recuso|historia|conceder)\b/.test(t)) {
       const idt = await identidade(msg.autor);
@@ -226,6 +227,7 @@ export function criarJogo({ db, sal = process.env.TELEFONE_SAL ?? "", admins = (
     if (ehComando(t, "reino", "meu reino")) return [...e.saidas, ...chegou, { para, texto: textoReino(j.reino) ?? "Reino desconhecido." }];
     if (ehComando(t, "ficha", "carta", "minha ficha", "minha carta", "status")) return [...e.saidas, ...chegou, { para, imagem: cartaPersonagem(j, j.avatar_dna), legenda: legendaFicha(j, agora()) }];
     if (ehComando(t, "ajuda", "comandos", "menu", "oi", "ola")) return [...e.saidas, ...chegou, { para, texto: AJUDA }];
+    if (ehComando(t, "dado", "dados", "d20", "como funciona o dado", "guia do dado")) return [...e.saidas, ...chegou, ...guiaDado(para)];
     if (chegou.length) return [...e.saidas, ...chegou];
     if (ehAcaoLivre(msg.texto)) return [...e.saidas, ...(await narrador(j, msg.texto, para, { ...(await mundo.contextoNarrador(j)), historia: await extras.historiaPara(j) }))];
     return [...e.saidas, { para, texto: `${ambiente(j.regiao_atual, agora() / 60_000 | 0)}\n\nO que você faz?\n${rodape("locais · missao · explorar · itens · ajuda", "ou escreva sua ação começando com >")}` }];
@@ -385,6 +387,15 @@ export function legendaFicha(j, tempo = Date.now()) {
       Number(j.corrupcao) ? `corrupção ${j.corrupcao}/100` : null, j.titulo ? j.titulo : null);
 }
 
+let GUIA_DADO = null;
+/** Infográfico do dado (gerado por scripts/render-guia-dado.mjs). */
+export function guiaDado(para) {
+  try { GUIA_DADO ??= readFileSync(new URL("../../data/guia/dado.png", import.meta.url)); } catch { GUIA_DADO = null; }
+  const legenda = "*Como funciona o dado*\n\nToda ação de luta rola um dado de 20 lados: 1 falha, 2 a 6 acerta de raspão, 7 a 14 acerta firme, 15 a 19 acerta forte e 20 é o golpe perfeito. " +
+    "Sorte soma no dado (+1 a cada 12 pontos, até +3). O inimigo rola o dele à sua vista.";
+  return GUIA_DADO ? [{ para, imagem: GUIA_DADO, legenda }] : [{ para, texto: legenda }];
+}
+
 const AJUDA = `*Como jogar*
 
 *No grupo*
@@ -411,5 +422,6 @@ boatos — histórias que o povo conta · lembrar — ecos do passado
 
 *Numa luta*
 responda com o número da ação. O dado decide a força.
+dado — imagem explicando o dado e o equilíbrio
 
 ` + rodape("atributos só sobem por mérito", "ninguém, nem a IA, dá poder de graça");

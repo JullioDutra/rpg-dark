@@ -3,6 +3,6 @@
   "regions": ["gru1"],
   "outputDirectory": "public",
   "functions": {
-    "api/**/*.mjs": { "maxDuration": 60, "includeFiles": "{data/*.json,db/migrations/*.sql}" }
+    "api/**/*.mjs": { "maxDuration": 60, "includeFiles": "{data/*.json,data/guia/*.png,db/migrations/*.sql}" }
   }
 }

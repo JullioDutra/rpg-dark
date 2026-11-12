@@ -1,0 +1,507 @@
+{
+ "lutasPorCaso": 400,
+ "casos": [
+  {
+   "id": "lacaio",
+   "rotulo": "Lacaio (explorando)",
+   "vilao": "V001",
+   "nivelJ": 5,
+   "nivelV": 5,
+   "lacaio": true
+  },
+  {
+   "id": "comum",
+   "rotulo": "Vilão comum, no covil",
+   "vilao": "V005",
+   "nivelJ": 8,
+   "nivelV": 8
+  },
+  {
+   "id": "comum+3",
+   "rotulo": "Vilão comum 3 níveis acima",
+   "vilao": "V005",
+   "nivelJ": 5,
+   "nivelV": 8
+  },
+  {
+   "id": "elite",
+   "rotulo": "Elite (médio escalão)",
+   "vilao": "V036",
+   "nivelJ": 20,
+   "nivelV": 20
+  },
+  {
+   "id": "chefe",
+   "rotulo": "Chefe (alto escalão)",
+   "vilao": "V063",
+   "nivelJ": 45,
+   "nivelV": 45
+  },
+  {
+   "id": "rei",
+   "rotulo": "Rei das sombras",
+   "vilao": "V091",
+   "nivelJ": 85,
+   "nivelV": 85
+  },
+  {
+   "id": "divindade",
+   "rotulo": "Divindade, sem preparo",
+   "vilao": "V093",
+   "nivelJ": 90,
+   "nivelV": 88
+  },
+  {
+   "id": "divindade-bencaos",
+   "rotulo": "Divindade, só com as bênçãos da campanha",
+   "vilao": "V093",
+   "nivelJ": 90,
+   "nivelV": 88,
+   "bencaos": true
+  },
+  {
+   "id": "divindade-pronto",
+   "rotulo": "Divindade, preparado para o fim",
+   "vilao": "V093",
+   "nivelJ": 90,
+   "nivelV": 88,
+   "preparado": true
+  },
+  {
+   "id": "final-pronto",
+   "rotulo": "Rei do Eclipse, preparado",
+   "vilao": "V100",
+   "nivelJ": 100,
+   "nivelV": 100,
+   "preparado": true,
+   "reis": true
+  }
+ ],
+ "classes": [
+  "Mago",
+  "Cavaleiro",
+  "Bruxo",
+  "Anti-magia",
+  "Espadachim",
+  "Meio-humano",
+  "Força da Natureza",
+  "Demônio",
+  "Paladino"
+ ],
+ "tabela": {
+  "lacaio": {
+   "Mago": {
+    "vitoria": 100,
+    "rodadas": 3
+   },
+   "Cavaleiro": {
+    "vitoria": 100,
+    "rodadas": 4
+   },
+   "Bruxo": {
+    "vitoria": 100,
+    "rodadas": 3
+   },
+   "Anti-magia": {
+    "vitoria": 100,
+    "rodadas": 3
+   },
+   "Espadachim": {
+    "vitoria": 100,
+    "rodadas": 3
+   },
+   "Meio-humano": {
+    "vitoria": 100,
+    "rodadas": 4
+   },
+   "Força da Natureza": {
+    "vitoria": 100,
+    "rodadas": 4
+   },
+   "Demônio": {
+    "vitoria": 100,
+    "rodadas": 3
+   },
+   "Paladino": {
+    "vitoria": 100,
+    "rodadas": 4
+   }
+  },
+  "comum": {
+   "Mago": {
+    "vitoria": 98,
+    "rodadas": 3
+   },
+   "Cavaleiro": {
+    "vitoria": 100,
+    "rodadas": 5
+   },
+   "Bruxo": {
+    "vitoria": 94,
+    "rodadas": 4
+   },
+   "Anti-magia": {
+    "vitoria": 100,
+    "rodadas": 3
+   },
+   "Espadachim": {
+    "vitoria": 98,
+    "rodadas": 4
+   },
+   "Meio-humano": {
+    "vitoria": 97,
+    "rodadas": 5
+   },
+   "Força da Natureza": {
+    "vitoria": 98,
+    "rodadas": 5
+   },
+   "Demônio": {
+    "vitoria": 99,
+    "rodadas": 3
+   },
+   "Paladino": {
+    "vitoria": 100,
+    "rodadas": 5
+   }
+  },
+  "comum+3": {
+   "Mago": {
+    "vitoria": 58,
+    "rodadas": 5
+   },
+   "Cavaleiro": {
+    "vitoria": 96,
+    "rodadas": 8
+   },
+   "Bruxo": {
+    "vitoria": 53,
+    "rodadas": 5
+   },
+   "Anti-magia": {
+    "vitoria": 93,
+    "rodadas": 5
+   },
+   "Espadachim": {
+    "vitoria": 76,
+    "rodadas": 5
+   },
+   "Meio-humano": {
+    "vitoria": 46,
+    "rodadas": 7
+   },
+   "Força da Natureza": {
+    "vitoria": 50,
+    "rodadas": 6
+   },
+   "Demônio": {
+    "vitoria": 73,
+    "rodadas": 5
+   },
+   "Paladino": {
+    "vitoria": 72,
+    "rodadas": 9
+   }
+  },
+  "elite": {
+   "Mago": {
+    "vitoria": 98,
+    "rodadas": 3
+   },
+   "Cavaleiro": {
+    "vitoria": 100,
+    "rodadas": 4
+   },
+   "Bruxo": {
+    "vitoria": 96,
+    "rodadas": 3
+   },
+   "Anti-magia": {
+    "vitoria": 100,
+    "rodadas": 3
+   },
+   "Espadachim": {
+    "vitoria": 99,
+    "rodadas": 3
+   },
+   "Meio-humano": {
+    "vitoria": 100,
+    "rodadas": 4
+   },
+   "Força da Natureza": {
+    "vitoria": 100,
+    "rodadas": 4
+   },
+   "Demônio": {
+    "vitoria": 97,
+    "rodadas": 4
+   },
+   "Paladino": {
+    "vitoria": 100,
+    "rodadas": 4
+   }
+  },
+  "chefe": {
+   "Mago": {
+    "vitoria": 52,
+    "rodadas": 6
+   },
+   "Cavaleiro": {
+    "vitoria": 100,
+    "rodadas": 11
+   },
+   "Bruxo": {
+    "vitoria": 82,
+    "rodadas": 7
+   },
+   "Anti-magia": {
+    "vitoria": 99,
+    "rodadas": 6
+   },
+   "Espadachim": {
+    "vitoria": 75,
+    "rodadas": 7
+   },
+   "Meio-humano": {
+    "vitoria": 100,
+    "rodadas": 10
+   },
+   "Força da Natureza": {
+    "vitoria": 100,
+    "rodadas": 8
+   },
+   "Demônio": {
+    "vitoria": 72,
+    "rodadas": 9
+   },
+   "Paladino": {
+    "vitoria": 100,
+    "rodadas": 13
+   }
+  },
+  "rei": {
+   "Mago": {
+    "vitoria": 69,
+    "rodadas": 8
+   },
+   "Cavaleiro": {
+    "vitoria": 100,
+    "rodadas": 12
+   },
+   "Bruxo": {
+    "vitoria": 95,
+    "rodadas": 8
+   },
+   "Anti-magia": {
+    "vitoria": 100,
+    "rodadas": 7
+   },
+   "Espadachim": {
+    "vitoria": 66,
+    "rodadas": 8
+   },
+   "Meio-humano": {
+    "vitoria": 100,
+    "rodadas": 10
+   },
+   "Força da Natureza": {
+    "vitoria": 100,
+    "rodadas": 9
+   },
+   "Demônio": {
+    "vitoria": 28,
+    "rodadas": 10
+   },
+   "Paladino": {
+    "vitoria": 100,
+    "rodadas": 13
+   }
+  },
+  "divindade": {
+   "Mago": {
+    "vitoria": 0,
+    "rodadas": 8
+   },
+   "Cavaleiro": {
+    "vitoria": 96,
+    "rodadas": 44
+   },
+   "Bruxo": {
+    "vitoria": 1,
+    "rodadas": 11
+   },
+   "Anti-magia": {
+    "vitoria": 0,
+    "rodadas": 13
+   },
+   "Espadachim": {
+    "vitoria": 0,
+    "rodadas": 8
+   },
+   "Meio-humano": {
+    "vitoria": 0,
+    "rodadas": 17
+   },
+   "Força da Natureza": {
+    "vitoria": 41,
+    "rodadas": 30
+   },
+   "Demônio": {
+    "vitoria": 0,
+    "rodadas": 8
+   },
+   "Paladino": {
+    "vitoria": 99,
+    "rodadas": 46
+   }
+  },
+  "divindade-bencaos": {
+   "Mago": {
+    "vitoria": 0,
+    "rodadas": 8
+   },
+   "Cavaleiro": {
+    "vitoria": 100,
+    "rodadas": 24
+   },
+   "Bruxo": {
+    "vitoria": 28,
+    "rodadas": 12
+   },
+   "Anti-magia": {
+    "vitoria": 49,
+    "rodadas": 12
+   },
+   "Espadachim": {
+    "vitoria": 1,
+    "rodadas": 8
+   },
+   "Meio-humano": {
+    "vitoria": 50,
+    "rodadas": 18
+   },
+   "Força da Natureza": {
+    "vitoria": 98,
+    "rodadas": 20
+   },
+   "Demônio": {
+    "vitoria": 0,
+    "rodadas": 8
+   },
+   "Paladino": {
+    "vitoria": 100,
+    "rodadas": 25
+   }
+  },
+  "divindade-pronto": {
+   "Mago": {
+    "vitoria": 98,
+    "rodadas": 10
+   },
+   "Cavaleiro": {
+    "vitoria": 100,
+    "rodadas": 12
+   },
+   "Bruxo": {
+    "vitoria": 100,
+    "rodadas": 10
+   },
+   "Anti-magia": {
+    "vitoria": 100,
+    "rodadas": 7
+   },
+   "Espadachim": {
+    "vitoria": 99,
+    "rodadas": 8
+   },
+   "Meio-humano": {
+    "vitoria": 100,
+    "rodadas": 9
+   },
+   "Força da Natureza": {
+    "vitoria": 100,
+    "rodadas": 12
+   },
+   "Demônio": {
+    "vitoria": 98,
+    "rodadas": 12
+   },
+   "Paladino": {
+    "vitoria": 100,
+    "rodadas": 13
+   }
+  },
+  "final-pronto": {
+   "Mago": {
+    "vitoria": 98,
+    "rodadas": 10
+   },
+   "Cavaleiro": {
+    "vitoria": 100,
+    "rodadas": 12
+   },
+   "Bruxo": {
+    "vitoria": 100,
+    "rodadas": 9
+   },
+   "Anti-magia": {
+    "vitoria": 100,
+    "rodadas": 7
+   },
+   "Espadachim": {
+    "vitoria": 99,
+    "rodadas": 8
+   },
+   "Meio-humano": {
+    "vitoria": 100,
+    "rodadas": 9
+   },
+   "Força da Natureza": {
+    "vitoria": 100,
+    "rodadas": 12
+   },
+   "Demônio": {
+    "vitoria": 99,
+    "rodadas": 12
+   },
+   "Paladino": {
+    "vitoria": 100,
+    "rodadas": 12
+   }
+  }
+ },
+ "dado": [
+  {
+   "falha": 5,
+   "fraco": 25,
+   "normal": 40,
+   "forte": 25,
+   "critico": 5,
+   "media": 0.99
+  },
+  {
+   "falha": 5,
+   "fraco": 20,
+   "normal": 40,
+   "forte": 30,
+   "critico": 5,
+   "media": 1.02
+  },
+  {
+   "falha": 5,
+   "fraco": 15,
+   "normal": 40,
+   "forte": 35,
+   "critico": 5,
+   "media": 1.05
+  },
+  {
+   "falha": 5,
+   "fraco": 10,
+   "normal": 40,
+   "forte": 40,
+   "critico": 5,
+   "media": 1.08
+  }
+ ]
+}

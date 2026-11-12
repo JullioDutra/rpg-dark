@@ -63,6 +63,9 @@ Veja [comandos, regras implementadas e limites da primeira etapa](docs/32-explor
 | 32 | [**Exploração implementada**](docs/32-exploracao-implementada.md) | Comandos, vigor, viagens persistentes, sorteio, testes e limites da primeira etapa |
 | 33 | [**Narrador e combate**](docs/33-narrador-e-combate-implementados.md) | O que já funciona: textos de origem/região, ação livre com IA, combate solo, XP e níveis |
 | 34 | [**Mundo vivo, combate com dado e auditoria**](docs/34-mundo-vivo-combate-e-auditoria.md) | Locais com imagens, NPCs, capítulos, vilões em covis (derrota única), itens, feitos no grupo, pets, duelo, pactos, o que falta |
+| 35 | [**O dado e o equilíbrio**](docs/35-dado-e-equilibrio.md) | Como o d20 funciona (com imagem), o que soma no dado, simulações por classe · [tabela completa](docs/35b-tabela-equilibrio.md) |
+| 36 | [**Minha história, Olhos da Terra e NPCs**](docs/36-minha-historia-olhos-da-terra-e-npcs.md) | História pessoal do jogador (regras e próximas etapas), a técnica cega da terra, 63 NPCs com retrato, opção feminina |
+| 37 | [**Plano de melhorias e novas funcionalidades**](docs/37-plano-de-melhorias-e-novas-funcionalidades.md) | 35 melhorias por área, 14 funcionalidades novas, sequência recomendada |
 
 ## Dados estruturados (`data/`)
 
@@ -107,6 +110,8 @@ node scripts/testar-linguagem.mjs   # 91 testes do entendimento de fala natural
 node scripts/testar-regras.mjs      # testes das regras (Olho Avaliador)
 node scripts/testar-combate.mjs     # combate (menu, dado, habilidades) e itens
 node scripts/testar-mundo.mjs       # consistência do mundo vivo (regiões, covis, capítulos, campanha)
+node scripts/simular-combate.mjs    # equilíbrio por classe (docs/35b) · render-guia-dado.mjs gera a imagem do dado
+node scripts/render-npcs.mjs        # retratos dos NPCs
 node scripts/testar-exploracao.mjs  # regras de exploração, vigor, rotas e mapas
 bash db/testar-migracoes.sh         # aplica o esquema do banco num Postgres temporário e verifica
 node scripts/testar-ia.mjs          # camada de IA (Sabiá/Claude) com respostas simuladas
