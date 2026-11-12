@@ -90,3 +90,12 @@ Duas causas somadas: (1) a regra do narrador mandava "trazer a cena de volta" ao
 |--------|----------|
 | "Mestre Uo": nome de duas letras não era reconhecido pelo `falar` | Aceita nomes curtos; o rumo mostra o nome inteiro quando o último é curto |
 | Em 23 capítulos o vilão do passo dividia o covil com outro vilão que vinha antes; se o da frente fosse de um capítulo ainda fechado, a "névoa" travava o caminho | O vilão do passo atual vem sempre primeiro, e vilão de capítulo fechado não bloqueia os outros |
+
+## 39.7 Transporte direto pelo mestre
+
+| Comando | Efeito |
+|---------|--------|
+| `mestre mover <nome> <região>` | Transporta o jogador na hora, sem custo. Ele recebe uma cena curta ("o ar se rasga") e a imagem do lugar |
+| `mestre mover todos <região>` | Transporta todos os jogadores do mundo. Cada um vê a chegada no privado e o grupo recebe um anúncio do narrador |
+
+Quem está em luta não é movido (o mestre recebe a lista). Viagem em curso e encontro pendente são encerrados. Diferente do Selo de Passagem (`mestre teleporte`), aqui o destino é escolhido pelo mestre e o jogador não paga nada.

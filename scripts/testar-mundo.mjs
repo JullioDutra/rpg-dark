@@ -453,6 +453,25 @@ export async function testarMundoServidor({ db, jogador, outro, mensagem, grupo,
     assert.match(texto(await enviar("tchau")), /acena com a cabeça/);
     assert.doesNotMatch(texto(await enviar("e o que mais?")), new RegExp(`\\*${n2.nome.split(" ")[0]}`), "depois do tchau a conversa acabou");
   });
+  await t("mestre mover: transporta um jogador ou todos de uma vez, mostra o lugar a cada um e não cita o mestre", async () => {
+    const { REGIAO } = await import("../src/regras/exploracao.mjs");
+    const { MUNDO } = await import("../src/mundo/mundo.mjs");
+    await db.query("update jogo.batalhas set status = 'encerrada' where status <> 'encerrada'");
+    const onde = async (id) => (await db.query("select regiao_atual from jogo.jogadores where id = $1", [id]))[0].regiao_atual;
+    const [d1, d2] = [...REGIAO.values()].filter((r) => MUNDO[r.id] && !r.desbloqueio && ![jogador.regiao_atual].includes(r.id)).slice(3, 5);
+    await db.query("update jogo.jogadores set regiao_atual = $2 where id = any($1)", [[jogador.id, outro.id], [...REGIAO.values()].find((r) => r.id !== d1.id && r.id !== d2.id && MUNDO[r.id]).id]);
+    const um1 = await noGrupo(adminPrivado(`mestre mover Rin ${d1.nome}`));
+    assert.equal(await onde(outro.id), d1.id); assert.notEqual(await onde(jogador.id), d1.id);
+    assert(um1.some((x) => x.imagem && x.para !== GRUPO), "o jogador vê o lugar aonde chegou");
+    assert(um1.some((x) => /se rasga sem barulho/.test(x.texto ?? "")) && /Feito\. Em /.test(um1.at(-1).texto) && !doGrupo(um1).length);
+    const todos = await noGrupo(adminPrivado(`mestre mover todos ${d2.nome}`));
+    assert.equal(await onde(outro.id), d2.id); assert.equal(await onde(jogador.id), d2.id);
+    assert(doGrupo(todos).some((x) => /todas as estrelas[\s\S]*Ninguém sabe quem os chamou/.test(x.texto) && !/mestre|admin/i.test(x.texto)));
+    assert.match(todos.at(-1).texto, /Feito\. Em [\s\S]*Kaito Ryuen[\s\S]*Rin|Feito\. Em [\s\S]*Rin[\s\S]*Kaito Ryuen/);
+    assert.match(texto(await noGrupo(adminPrivado(`mestre mover todos ${d2.nome}`))), /já está lá/);
+    assert.match(texto(await noGrupo(adminPrivado("mestre mover todos lugarnenhum"))), /Para onde\?/);
+    assert.doesNotMatch(texto(await noGrupo(outroPrivado(`mestre mover todos ${d1.nome}`))), /Feito/);
+  });
   await t("Olhos da Terra: a mestra entrega o pergaminho a quem é da terra; ler cega e dá as habilidades; admin também concede", async () => {
     await db.query("update jogo.jogadores set regiao_atual = 'R-DAI-6', local_atual = null, atributo_magico = 'Fogo (Chama)', reino = 'Homura' where id = $1", [jogador.id]);
     await enviar("falar tsuchi"); clock += 7 * 3_600_000;

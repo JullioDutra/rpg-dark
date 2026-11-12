@@ -224,7 +224,11 @@ export function criarJogo({ relogio = null, db, sal = process.env.TELEFONE_SAL ?
     // A história é do mundo: o que outro jogador já concluiu chega como notícia antes de qualquer coisa
     const tn = semAcento(msg.texto.trim().toLowerCase()).replace(/\s+/g, " ");
     // Mão do mestre: só no privado e só para quem está em ADMINS. Para qualquer outra pessoa, "mestre" é uma palavra comum.
-    if (/^[!/]?mestre\b/.test(tn) && admins.length && (await ehAdmin(msg))) return mestre.comando(msg, tn);
+    if (/^[!/]?mestre\b/.test(tn) && admins.length && (await ehAdmin(msg))) {
+      const r = await mestre.comando(msg, tn), extra = [];
+      for (const x of r?.chegadas ?? []) { const pv = x.wa_jid ?? x.wa_lid; if (pv) extra.push(...(await mundo.chegada(x, pv, { nascimento: true }))); } // sem anúncio de "primeiro a chegar": ninguém andou até lá
+      return [...r.slice(0, -1), ...extra, ...r.slice(-1)];
+    }
     const novidades = ativo ? await mundo.herdar(ativo, msg.chat) : [];
     if (ativo) {
       const m = tn.match(/^[!/]?resgatar\s*(.*)$/);

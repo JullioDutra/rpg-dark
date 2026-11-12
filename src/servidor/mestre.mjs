@@ -32,6 +32,8 @@ mestre espiã <nome> — uma viajante passa a acompanhar o jogador e anota o que
 mestre relatório <nome> — o que a espiã viu
 mestre fala <nome> <texto> — a espiã diz isso ao jogador, com as suas palavras
 mestre mapa — mapa do mundo com a posição de todos (só você vê)
+mestre mover <nome> <região> — transporta o jogador na hora, sem custo (ele vê uma passagem se abrir)
+mestre mover todos <região> — transporta todos os jogadores do mundo de uma vez
 mestre teleporte <nome> — dá ao jogador um Selo de Passagem (1 uso): ele escolhe o destino e paga um preço (vida, ryō ou mérito)
 mestre recolher <nome> — a espiã se despede
 mestre quem — lista os personagens e onde estão
@@ -143,6 +145,33 @@ export function criarMestre({ db, agora, ameacas = null }) {
       if (!mon || mon.grau !== 4) return dizer(`Calamidades: ${grandes.map((x) => `${x.id.slice(1)} ${x.nome}`).join(", ")}.`);
       const r = await ameacas.invocar(mundoId, mon.id, "calamidade", null, { mestre: true });
       return r.erro ? dizer(r.erro) : [...r.saidas, ...dizer(`Feito. ${mon.nome} despertou (vida ${r.ameaca.hp_max}).`)];
+    }
+    if (/^(mover|transportar|levar|trazer)$/.test(acao)) {
+      const p = resto.trim().split(/\s+/), geral = /^(todos|todas|todo mundo|geral)$/i.test(semAcento((p[0] ?? "").toLowerCase()));
+      const { alvo: um1, resto: lugar1 } = geral ? { alvo: null, resto: p.slice(1).join(" ") } : nomeEResto(todos, resto);
+      if (!geral && !um1) return dizer("Não achei esse personagem. Use: mestre mover <nome> <região> ou mestre mover todos <região>.");
+      const achadas = lugar1.trim() ? buscarRegioes(lugar1) : [];
+      const destino = achadas.length === 1 ? achadas[0] : achadas.find((r) => semAcento(r.nome.toLowerCase()) === semAcento(lugar1.trim().toLowerCase()));
+      if (!destino) return dizer(achadas.length > 1 ? `Há mais de um lugar com esse nome: ${achadas.slice(0, 6).map((r) => r.nome).join(", ")}. Diga o nome inteiro.` : "Para onde? Diga o nome da região (os nomes aparecem em *mestre mapa*).");
+      const alvos = geral ? todos.filter((x) => String(x.mundo_id) === String(mundoId)) : [um1];
+      const movidos = [], fora = [];
+      for (const x of alvos) {
+        if (x.regiao_atual === destino.id) { fora.push(`${x.nome} (já está lá)`); continue; }
+        if ((await db.query("select 1 from jogo.batalhas b join jogo.participantes_batalha pb on pb.batalha_id = b.id where pb.jogador_id = $1 and b.status <> 'encerrada' limit 1", [x.id])).length) { fora.push(`${x.nome} (em luta)`); continue; }
+        await db.query("update jogo.viagens set concluida_em = $2 where jogador_id = $1 and concluida_em is null", [x.id, new Date(agora())]);
+        await db.query("delete from jogo.exploracoes where jogador_id = $1 and pendente", [x.id]);
+        await db.query("delete from jogo.progresso where jogador_id = $1 and chave in ('falando', 'acomp')", [x.id]);
+        await db.query("update jogo.jogadores set regiao_atual = $2, local_atual = null where id = $1", [x.id, destino.id]);
+        movidos.push({ ...x, regiao_atual: destino.id, local_atual: null });
+      }
+      const saidas = [];
+      for (const x of movidos) if (privado(x)) saidas.push({ para: privado(x), texto: geral
+        ? "O chão some debaixo dos seus pés. Por um instante você vê o mundo inteiro de cima, pequeno como um mapa — e vê que não está caindo sozinho.\n\nQuando o ar volta, você está em outro lugar."
+        : "O ar na sua frente se rasga sem barulho, como pano velho. Do outro lado há outro céu.\n\nVocê não lembra de ter dado o passo. Mas deu." });
+      if (geral && movidos.length && movidos[0].grupo_wa_id) saidas.push({ para: movidos[0].grupo_wa_id, texto: `_Por um instante, todas as estrelas de Yotsuhoshi piscam ao mesmo tempo._\n\nQuando voltam a acender, os aventureiros não estão mais onde estavam. Todos acordam no mesmo lugar: *${destino.nome}*.\n\nNinguém sabe quem os chamou.` });
+      saidas.push({ para, texto: `Feito. Em ${destino.nome}: ${movidos.map((x) => x.nome).join(", ") || "ninguém"}.${fora.length ? `\nNão movidos: ${fora.join(", ")}.` : ""}` });
+      saidas.chegadas = movidos; // o jogo mostra o lugar para cada um
+      return saidas;
     }
     if (/^pressagio$/.test(acao)) {
       const grupos = [...new Set(todos.map((x) => x.grupo_wa_id).filter(Boolean))];
