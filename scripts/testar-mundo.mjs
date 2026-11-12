@@ -556,6 +556,14 @@ export async function testarMundoServidor({ db, jogador, outro, mensagem, grupo,
     assert(mp[0].imagem && /Você está em Planícies Kogane[\s\S]*Homura[\s\S]*5 Planícies Kogane/.test(mp[0].legenda), "o mapa vem com a legenda dos números");
     await db.query("delete from jogo.progresso where jogador_id = $1 and chave in ('p:dai5', 'rumo')", [jogador.id]);
   });
+  await t("mestre tesouros: mapa e legenda dos Grandes Itens, núcleos, santuários e pergaminho, com quem está com cada um; só o mestre vê", async () => {
+    await db.query(`insert into jogo.inventario (jogador_id, item_id, tipo, qtd, dados) values ($1, 'excalibur', 'equipamento', 1, '{}') on conflict do nothing`, [outro.id]);
+    const r = await noGrupo(adminPrivado("mestre tesouros"));
+    assert(r[0].imagem?.length > 5000 && !doGrupo(r).length);
+    assert.match(texto(r), /Os 4 Grandes Itens[\s\S]*Excalibur: com \*Rin[\s\S]*Tenmon no Tama: ainda em[\s\S]*Grimório dos Quatro Céus[\s\S]*núcleos da Árvore-Estrela[\s\S]*Santuários de pet[\s\S]*Mestra Tsuchi/);
+    assert.doesNotMatch(texto(await noGrupo(outroPrivado("mestre tesouros"))), /Tesouros do mundo/);
+    await db.query("delete from jogo.inventario where jogador_id = $1 and item_id = 'excalibur'", [outro.id]);
+  });
   await t("Olhos da Terra: a mestra entrega o pergaminho a quem é da terra; ler cega e dá as habilidades; admin também concede", async () => {
     await db.query("update jogo.jogadores set regiao_atual = 'R-DAI-6', local_atual = null, atributo_magico = 'Fogo (Chama)', reino = 'Homura' where id = $1", [jogador.id]);
     await enviar("falar tsuchi"); clock += 7 * 3_600_000;

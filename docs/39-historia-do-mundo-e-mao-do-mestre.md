@@ -107,3 +107,14 @@ Quem está em luta não é movido (o mestre recebe a lista). Viagem em curso e e
 | "Já fui nos Ninhos no Trigal e não apareceu nada" | A dica vinha como `ir Ninhos no Trigal (e depois lutar)`; copiada inteira, o `ir` não achava o lugar. E "ir" escrito como ação livre (`> vou até os ninhos`) era só narrado | A dica agora é só o comando (`ir Ninhos no Trigal`), o `ir` ignora parênteses, e ação livre que pede o lugar do passo atual leva de verdade até lá (aparece o vilão) |
 | "Tudo que converso fica com essa mensagem embaixo" | A dica do rumo saía em toda narração | Aparece quando o passo muda e depois só a cada 4 narrações |
 | "Tem legenda do mapa?" | O mapa só tinha números | `mapa` traz a lista numerada das regiões de cada reino (os mesmos números do desenho); `locais` mostra os lugares de onde o jogador está |
+
+## 39.9 Mapa dos tesouros (só o mestre)
+
+`mestre tesouros` envia o mapa do mundo com uma bandeira por região e, na mensagem seguinte, a legenda:
+
+- **Os 4 Grandes Itens:** onde cada um se conquista (região, capítulo e nível) ou com quem está agora, se está em uso e onde essa pessoa está. O Shitenchō (grimório) mostra os quatro capítulos de Céu e quantos já foram feitos no mundo.
+- **Os 4 núcleos da Árvore-Estrela:** com qual rei estão ou a quem foram confiados.
+- **Santuários de pet:** os quatro lugares e quais já foram visitados; quem já tem pet.
+- **Pergaminho dos Olhos da Terra:** onde a Mestra Tsuchi o entrega e quem tem uma cópia.
+
+Dois tesouros na mesma região dividem a mesma letra.

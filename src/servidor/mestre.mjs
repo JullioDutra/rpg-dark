@@ -1,6 +1,6 @@
 // Mão invisível do mestre: o administrador age pelo PRIVADO do bot e o mundo reage como se fosse a própria história.
 // Nada aqui cita o administrador: o grupo só vê o narrador. Nenhuma ação dá atributo, nível ou item de equipamento.
-import { MUNDO, VILOES } from "../mundo/mundo.mjs";
+import { MUNDO, VILOES, CAPITULO } from "../mundo/mundo.mjs";
 import { MONSTROS } from "../mundo/monstros.mjs";
 import { REGIAO } from "../regras/exploracao.mjs";
 const nomeR = (rid) => REGIAO.get(rid)?.nome ?? rid;
@@ -32,6 +32,7 @@ mestre espiã <nome> — uma viajante passa a acompanhar o jogador e anota o que
 mestre relatório <nome> — o que a espiã viu
 mestre fala <nome> <texto> — a espiã diz isso ao jogador, com as suas palavras
 mestre mapa — mapa do mundo com a posição de todos (só você vê)
+mestre tesouros — mapa de onde estão os 4 Grandes Itens, os 4 núcleos, os santuários de pet e o pergaminho da terra, e com quem cada um está
 mestre mover <nome> <região> — transporta o jogador na hora, sem custo (ele vê uma passagem se abrir)
 mestre mover todos <região> — transporta todos os jogadores do mundo de uma vez
 mestre teleporte <nome> — dá ao jogador um Selo de Passagem (1 uso): ele escolhe o destino e paga um preço (vida, ryō ou mérito)
@@ -117,6 +118,39 @@ export function criarMestre({ db, agora, ameacas = null }) {
       const lugares = [...porRegiao.entries()];
       const legenda = lugares.map(([rid, js], k) => `*${String.fromCharCode(65 + k)}* ${nomeR(rid)} — ${js.map((x) => `${x.nome} (nv ${x.nivel})`).join(", ")}`).join("\n");
       return [{ para, imagem: imagemMapaCom(lugares.map(([regiao], k) => ({ regiao, rotulo: String.fromCharCode(65 + k) }))), legenda: `*Onde cada um está*\n_bandeiras vermelhas com letra_\n\n${legenda}` }];
+    }
+    if (/^(tesouros|tesouro|grandes|reliquias|lendarios)$/.test(acao)) {
+      // mundo do mestre = o que tem mais jogadores ativos
+      const cont = new Map(); for (const x of todos) cont.set(String(x.mundo_id), (cont.get(String(x.mundo_id)) ?? 0) + 1);
+      const mid = [...cont.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? null;
+      const donos = mid ? await db.query(`select i.item_id, j.nome, j.regiao_atual, i.equipado from jogo.inventario i join jogo.jogadores j on j.id = i.jogador_id
+        where j.mundo_id = $1 and i.item_id = any($2)`, [mid, ["excalibur", "kokugai", "tenmon", "shitencho", "pergaminho-terra"]]) : [];
+      const nucleos = mid ? await db.query("select n.nucleo, n.estado, j.nome from jogo.nucleos n left join jogo.jogadores j on j.id = n.jogador_id where n.mundo_id = $1", [mid]) : [];
+      const feitos = new Set(mid ? (await db.query("select distinct p.chave from jogo.progresso p join jogo.jogadores j on j.id = p.jogador_id where j.mundo_id = $1 and p.chave like 'c:%'", [mid])).map((x) => x.chave.slice(2)) : []);
+      const pets = mid ? await db.query("select p.pet_id, j.nome from jogo.pets p join jogo.jogadores j on j.id = p.jogador_id where j.mundo_id = $1", [mid]) : [];
+      const dono = (id) => { const d = donos.filter((x) => x.item_id === id); return d.length ? `com *${d.map((x) => `${x.nome}${x.equipado ? " (em uso)" : ""}`).join(", ")}*, em ${nomeR(d[0].regiao_atual)}` : null; };
+      const cap = (id) => CAPITULO.get(id), onde = (id) => `${nomeR(cap(id).regiao)} — capítulo _${cap(id).titulo}_ (nível ${cap(id).nivel})`;
+      const NOME_N = { rubro: "Núcleo Rubro", abissal: "Núcleo Abissal", raiz: "Núcleo Raiz", celeste: "Núcleo Celeste" };
+      const ceus = ["hom1-ceu", "wat7", "dai1-ceu", "fuj7"];
+      const pontos = [], linhas = [];
+      // uma bandeira por região: se dois tesouros ficam no mesmo lugar, dividem a letra
+      const marca = (regiao, texto) => { let pnt = pontos.find((x) => x.regiao === regiao); if (!pnt) { pnt = { regiao, rotulo: String.fromCharCode(65 + pontos.length) }; pontos.push(pnt); } linhas.push(`*${pnt.rotulo}* ${texto}`); };
+      linhas.push("*Os 4 Grandes Itens*");
+      for (const [id, capId] of [["excalibur", "fuj3-espada"], ["tenmon", "fuj5"], ["kokugai", "kok3"]])
+        marca(cap(capId).regiao, `${item(id).nome.split(",")[0]}: ${dono(id) ?? (feitos.has(capId) ? "capítulo concluído, item fora das bolsas" : `ainda em ${onde(capId)}`)}`);
+      linhas.push(`_Shitenchō, o Grimório dos Quatro Céus_: ${dono("shitencho") ?? `aparece para quem concluir os quatro Céus (${ceus.filter((c) => feitos.has(c)).length} de 4 feitos no mundo)`}`);
+      for (const c of ceus) marca(cap(c).regiao, `Céu do grimório: ${onde(c)}${feitos.has(c) ? " — concluído" : ""}`);
+      linhas.push("", "*Os 4 núcleos da Árvore-Estrela*");
+      for (const c of [...CAPITULO.values()].filter((x) => x.da?.nucleo)) { const n = nucleos.find((x) => x.nucleo === c.da.nucleo);
+        marca(c.regiao, `${NOME_N[c.da.nucleo]}: ${n ? `${n.estado}${n.nome ? ` a *${n.nome}*` : ""}` : `com o rei, em ${onde(c.id)}`}`); }
+      linhas.push("", "*Santuários de pet*");
+      for (const c of ["hom2", "wat6", "dai2", "fuj2"]) if (cap(c)) marca(cap(c).regiao, `${onde(c)}${feitos.has(c) ? " — já visitado" : ""}`);
+      linhas.push(pets.length ? `_Pets no mundo: ${pets.map((p) => `${p.nome} (${p.pet_id})`).join(", ")}_` : "_Ninguém tem pet ainda._");
+      linhas.push("", "*Pergaminho dos Olhos da Terra*");
+      marca("R-DAI-6", `com a Mestra Tsuchi, em ${nomeR("R-DAI-6")} (ela entrega a quem é da terra)${dono("pergaminho-terra") ? `; uma cópia ${dono("pergaminho-terra")}` : ""}`);
+      const texto = `*Tesouros do mundo* _(só você vê)_\n_bandeiras vermelhas com letra_\n\n${linhas.join("\n")}`;
+      // a legenda do WhatsApp tem limite: manda a imagem com o título e o detalhe em texto
+      return [{ para, imagem: imagemMapaCom(pontos), legenda: "*Tesouros do mundo* — legenda na mensagem seguinte" }, { para, texto }];
     }
     if (acao === "quem") return dizer(todos.length ? todos.map((x) => `*${x.nome}* — ${x.classe}, nível ${x.nivel}, em ${nomeR(x.regiao_atual)}`).join("\n") : "Nenhum personagem ativo.");
 
