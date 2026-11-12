@@ -3,7 +3,7 @@
 // DADO de 20 lados que define a eficácia (falha, raspão, firme, forte, perfeito). O servidor guarda o estado em
 // jogo.batalhas.estado e aplica XP/vida/recompensas ao final.
 import { readFileSync } from "node:fs";
-import { TIERS, XP_VILAO, XP_PROXIMO, K, atributosVilao } from "../../scripts/balanceamento.mjs";
+import { TIERS, XP_VILAO, XP_PROXIMO, K, atributosVilao, ARQUETIPOS } from "../../scripts/balanceamento.mjs";
 import { CONSUMIVEIS } from "./itens.mjs";
 
 const ler = (f) => JSON.parse(readFileSync(new URL(`../../data/${f}`, import.meta.url), "utf8"));
@@ -142,17 +142,52 @@ export function atributosEfetivos(j, agora = Date.now(), equip = {}) {
   return a;
 }
 
-// Elite (médio escalão) enfrentado sozinho: −30% de vida e −15% de ataque. Difícil, mas possível (grupo recomendado).
-export const AJUSTE_SOLO = { medio: { hp: 0.7, ataque: 0.85 }, alto: { hp: 0.55, ataque: 0.75 }, rei: { hp: 0.42, ataque: 0.68 }, divindade: { hp: 0.34, ataque: 0.6 } };
+// ── Equilíbrio por nível de ameaça (doc 38) ──
+// Metas inspiradas nas faixas de ameaça de RPGs de mesa (trivial → extrema): cada degrau deve custar mais e vencer menos.
+// AJUSTE_SOLO adapta vilões pensados para grupo ao combate de um jogador só.
+export const AJUSTE_SOLO = {
+  lacaio: { hp: 1.15, ataque: 1.1 }, comum: { hp: 1.3, ataque: 1.2 }, medio: { hp: 1.25, ataque: 1.2 },
+  alto: { hp: 0.95, ataque: 1.16 }, rei: { hp: 0.56, ataque: 0.82 }, divindade: { hp: 0.44, ataque: 0.585 },
+};
+// Ajuste fino de vilões que a história pede mais duros que o degrau deles (Kanata é o penúltimo portão da campanha).
+export const AJUSTE_VILAO = { V091: { hp: 1.3, ataque: 1.15 } };
+// Passiva de cada classe: dá identidade e segura as classes frágeis sem mexer nas fortes.
+export const PASSIVAS = {
+  Mago: { nome: "Manto Arcano", texto: "recebe 40% menos dano enquanto tiver mana", reducaoComMana: 0.4 },
+  Bruxo: { nome: "Pele Amaldiçoada", texto: "recebe 18% menos dano; inimigos enfraquecidos batem ainda menos", reducao: 0.18 },
+  "Demônio": { nome: "Couraça de Miasma", texto: "recebe 42% menos dano", reducao: 0.42 },
+  Espadachim: { nome: "Reflexos", texto: "o inimigo rola o dado com −4 contra você e você recebe 26% menos dano", dadoInimigo: -4, reducao: 0.26 },
+  "Meio-humano": { nome: "Instinto", texto: "o inimigo rola o dado com −1 contra você; +1 no seu dado com a vida abaixo da metade", dadoInimigo: -1, furia: 1 },
+  "Força da Natureza": { nome: "Raiz Viva", texto: "recupera 3% da vida a cada rodada", regen: 0.03 },
+  "Anti-magia": { nome: "Vazio Interior", texto: "recebe 30% menos dano de magia", reducaoMagia: 0.3 },
+  Cavaleiro: { nome: "Postura de Ferro", texto: "defender bloqueia 10% a mais", defesaExtra: 0.1 },
+  Paladino: { nome: "Fé Inabalável", texto: "curas e proteções valem 25% a mais e você recebe 12% menos dano", curaExtra: 0.25, reducao: 0.12 },
+};
+// Chefes não deixam a luta se arrastar: depois da 8ª rodada, batem 8% mais forte a cada rodada (fúria).
+export const FURIA = { apartir: 8, porRodada: 0.08, max: 2 };
+// Golpes fortes de chefes atravessam parte da defesa (armadura sozinha não vence chefe).
+export const PERFURA_CHEFE = { comum: 0.2, forte: 0.4 };
+// Bônus de dano (bênçãos, apoio, juramento, pactos) somam até este teto.
+export const TETO_BONUS = 1.4;
+// Reis e divindades têm segunda fase aos 50% de vida.
+export const SEGUNDA_FASE = { rei: { ataque: 1.12 }, divindade: { ataque: 1.2 } };
 
 /**
  * opts: equip (bônus), itens ({id: qtd} consumíveis de luta), solo, eco (sombra de um vilão já derrotado no mundo),
  * bonusDano (ex.: 1.1 de um juramento de vingança), aliados (nº de jogadores, escala a vida do inimigo).
  */
-export function novoCombate(j, vilao, nivel, { agora = Date.now(), solo = true, equip = {}, itens = {}, eco = false, bonusDano = 1, aliados = 1, pet = null, sismico = false } = {}) {
+export function novoCombate(j, vilao, nivel, { agora = Date.now(), solo = true, equip = {}, itens = {}, eco = false, bonusDano = 1, aliados = 1, pet = null, sismico = false, lacaio = false } = {}) {
   const at = atributosVilao(nivel, vilao.tier, vilao.arquetipo);
-  const aj = solo && AJUSTE_SOLO[vilao.tier];
-  if (aj) { at.HP = Math.round(at.HP * aj.hp); at.FOR = Math.round(at.FOR * aj.ataque); at.MAG = Math.round(at.MAG * aj.ataque); }
+  const aj = solo && AJUSTE_SOLO[lacaio ? "lacaio" : vilao.tier];
+  if (aj) {
+    // Em chefes, o arquétipo pesa metade (um "bruto" e um "assassino" do mesmo degrau ficam mais parecidos em dificuldade)
+    const arq = ARQUETIPOS[vilao.arquetipo] ?? [1, 1, 1, 1, 1, 1, 1], chefe = ["alto", "rei", "divindade"].includes(vilao.tier) && !lacaio;
+    const nHP = chefe ? arq[5] ** -0.5 : 1, nAtk = chefe ? Math.max(arq[0], arq[2]) ** -0.5 : 1;
+    at.HP = Math.round(at.HP * aj.hp * nHP); at.FOR = Math.round(at.FOR * aj.ataque * nAtk); at.MAG = Math.round(at.MAG * aj.ataque * nAtk);
+    const fino = !lacaio && !eco && AJUSTE_VILAO[vilao.id];
+    if (fino) { at.HP = Math.round(at.HP * fino.hp); at.FOR = Math.round(at.FOR * fino.ataque); at.MAG = Math.round(at.MAG * fino.ataque); }
+    if (chefe) { at.DEF = Math.round(at.DEF * arq[1] ** -0.5); at.RES = Math.round(at.RES * arq[3] ** -0.5); }
+  }
   if (!solo && aliados > 1) at.HP = Math.round(at.HP * (0.6 + 0.4 * aliados));
   if (eco) at.HP = Math.round(at.HP * 0.8);
   const itensLuta = Object.fromEntries(Object.entries(itens).filter(([id, q]) => q > 0 && CONSUMIVEIS[id]?.luta));
@@ -160,13 +195,13 @@ export function novoCombate(j, vilao, nivel, { agora = Date.now(), solo = true, 
     rodada: 1,
     jogador: { id: j.id, nome: j.nome, classe: j.classe, nivel: j.nivel, hp: j.hp, hpMax: j.hp_max, mp: j.mp, mpMax: j.mp_max,
       at: atributosEfetivos(j, agora, equip), elemento: elementoBase(j.atributo_magico), recargas: {}, itens: itensLuta, itensUsados: 0,
-      protecao: 0, protecaoRodadas: 0, foco: false, bonusDano, sismico },
+      protecao: 0, protecaoRodadas: 0, foco: false, bonusDano: Math.min(TETO_BONUS, bonusDano), sismico },
     inimigo: { id: vilao.id, nome: eco ? `Eco de ${vilao.nome}` : vilao.nome, nivel, tier: vilao.tier, arquetipo: vilao.arquetipo, elemento: vilao.elemento,
       fraqueza: vilao.fraqueza, habilidade: vilao.habilidade, hp: at.HP, hpMax: at.HP, at,
       postura: POSTURA[vilao.tier] ?? 0, posturaMax: POSTURA[vilao.tier] ?? 0, atordoado: false, vulneravel: false, preso: 0, fraco: 0, queima: 0, queimaDano: 0,
-      chefe: ["alto", "rei", "divindade"].includes(vilao.tier), eco },
+      chefe: ["alto", "rei", "divindade"].includes(vilao.tier), eco, fase: 1 },
     preparando: false, log: [],
-    pet: pet ? { nome: pet.nome, poder: 0.2 + 0.1 * pet.estagio } : null,
+    pet: pet ? { nome: pet.nome, poder: 0.15 + 0.07 * pet.estagio } : null,
   };
 }
 
@@ -293,7 +328,8 @@ export function resolverRodada(estado, acao, rng) {
     return dano;
   };
   const cegoNoAr = j.sismico && NAO_TOCA_O_CHAO.includes(i.arquetipo);
-  const bd = bonusDado(j.at) - (cegoNoAr ? 2 : 0);
+  const passiva = PASSIVAS[j.classe] ?? {};
+  const bd = bonusDado(j.at) - (cegoNoAr ? 2 : 0) + (passiva.furia && j.hp < j.hpMax / 2 ? passiva.furia : 0);
 
   // 1) Ação do jogador
   if (acao.tipo === "atacar") ferir("fisico", 1, rolar(rng, bd), n(pick(GOLPE_CLASSE[j.classe] ?? GOLPE_CLASSE.Espadachim, e.rodada), { a: i.nome }) + ".");
@@ -306,7 +342,7 @@ export function resolverRodada(estado, acao, rng) {
     const titulo = `*${hab.nome}!* ${hab.frase}`;
     if (hab.tipo === "cura" || hab.tipo === "guarda") {
       const d = rolar(rng, bd);
-      const forca = d.faixa === "falha" ? 0.5 : d.faixa === "critico" ? 1.3 : 1; // curas e guardas nunca falham de todo
+      const forca = (d.faixa === "falha" ? 0.5 : d.faixa === "critico" ? 1.3 : 1) * (1 + (passiva.curaExtra ?? 0)); // curas e guardas nunca falham de todo
       const partes = [];
       if (hab.cura) { const c = Math.min(j.hpMax - j.hp, Math.round(j.hpMax * hab.cura * forca)); j.hp += c; partes.push(`+${c} de vida`); }
       if (hab.protecao) { j.protecao = Math.min(0.9, hab.protecao * (d.faixa === "falha" ? 0.6 : 1)); j.protecaoRodadas = hab.duracao ?? 1; partes.push(`protege ${Math.round(j.protecao * 100)}%`); }
@@ -327,7 +363,7 @@ export function resolverRodada(estado, acao, rng) {
     }
   } else if (acao.tipo === "defender") {
     const d = rolar(rng, bd + (j.sismico && !cegoNoAr ? 2 : 0));
-    defesa = d.defesa;
+    defesa = Math.min(1, d.defesa + (passiva.defesaExtra ?? 0));
     const mana = j.mpMax ? Math.min(j.mpMax - j.mp, Math.ceil(j.mpMax * 0.06)) : 0; j.mp += mana;
     e.log.push(`${dadoTxt(d).replace(d.texto, d.faixa === "critico" ? "defesa perfeita" : d.faixa === "falha" ? "guarda aberta" : `bloqueia ${Math.round(defesa * 100)}%`)}. Você firma os pés e se protege.${mana ? ` _(+${mana} de mana)_` : ""}`);
     if (d.faixa === "critico" && i.posturaMax) i.postura -= 2;
@@ -361,18 +397,27 @@ export function resolverRodada(estado, acao, rng) {
 
   if (i.hp <= 0) { i.hp = 0; e.log.push(`*${i.nome} cai e não se levanta mais.*`); return { estado: e, fim: "vitoria", consumir }; }
 
+  // Segunda fase (reis e divindades): aos 50% de vida a guarda volta, ele bate mais forte e prepara um golpe pesado
+  if (SEGUNDA_FASE[i.tier] && i.fase === 1 && i.hp <= i.hpMax / 2) {
+    i.fase = 2; i.postura = i.posturaMax; i.vulneravel = false; i.atordoado = false; i.preso = 0; e.preparando = true;
+    e.log.push(`*${i.nome} muda.* O ar pesa, a guarda dele se refaz. Ele não está mais se contendo. _(segunda fase: ataques mais fortes)_`);
+  }
   // 2) Ação do inimigo
   if (i.atordoado) { i.atordoado = false; e.log.push(`${i.nome} ainda está zonzo.`); }
   else if (i.preso > 0) { i.preso -= 1; e.log.push(`${i.nome} se debate, sem conseguir agir.`); }
   else {
     const forte = e.preparando;
     const magico = i.at.MAG > i.at.FOR;
-    const d = rolar(rng, clamp(Math.round((i.at.VEL - j.at.VEL) / 8), -3, 3));
+    const d = rolar(rng, clamp(Math.round((i.at.VEL - j.at.VEL) / 8), -3, 3) + (passiva.dadoInimigo ?? 0));
     if (d.faixa === "falha") e.log.push(`🎲 ${d.nat} — ${pick(VOCE_DESVIA, e.rodada)}.`);
     else {
       const multDado = { fraco: 0.7, normal: 1, forte: 1.25, critico: 1.6 }[d.faixa];
-      let dano = danoBase({ atk: magico ? i.at.MAG : i.at.FOR, nivel: i.nivel, def: magico ? j.at.RES : j.at.DEF, poder: forte ? 1.7 : 1,
-        mult: (magico ? multElemento(i.elemento, j.elemento) : 1) * (i.fraco ? 0.75 : 1) * multDado });
+      const furia = i.chefe && e.rodada > FURIA.apartir ? Math.min(1 + FURIA.max, 1 + (e.rodada - FURIA.apartir) * FURIA.porRodada) : 1;
+      const fase2 = i.fase === 2 ? (SEGUNDA_FASE[i.tier]?.ataque ?? 1) : 1;
+      const defJ = (magico ? j.at.RES : j.at.DEF) * (i.chefe ? 1 - (forte ? PERFURA_CHEFE.forte : PERFURA_CHEFE.comum) : 1);
+      const reducao = (passiva.reducao ?? 0) + (passiva.reducaoComMana && j.mp > 0 ? passiva.reducaoComMana : 0) + (magico ? passiva.reducaoMagia ?? 0 : 0);
+      let dano = danoBase({ atk: magico ? i.at.MAG : i.at.FOR, nivel: i.nivel, def: defJ, poder: forte ? 1.7 : 1,
+        mult: (magico ? multElemento(i.elemento, j.elemento) : 1) * (i.fraco ? (passiva.reducao && j.classe === "Bruxo" ? 0.65 : 0.75) : 1) * multDado * furia * fase2 * (1 - reducao) });
       const corte = 1 - (1 - defesa) * (1 - (j.protecaoRodadas ? j.protecao : 0));
       dano = Math.round(dano * (1 - corte));
       j.hp -= dano;
@@ -382,6 +427,7 @@ export function resolverRodada(estado, acao, rng) {
     }
     e.preparando = false;
   }
+  if (passiva.regen && j.hp > 0 && j.hp < j.hpMax) { const c = Math.min(j.hpMax - j.hp, Math.ceil(j.hpMax * passiva.regen)); j.hp += c; }
   if (i.fraco > 0) i.fraco -= 1;
   if (j.protecaoRodadas > 0) { j.protecaoRodadas -= 1; if (!j.protecaoRodadas) j.protecao = 0; }
   for (const k of Object.keys(j.recargas)) { j.recargas[k] -= 1; if (j.recargas[k] <= 0) delete j.recargas[k]; }

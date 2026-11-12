@@ -34,29 +34,28 @@ Toda ação de luta rola **um dado de 20 lados**. O número aparece na mensagem 
 
 ## 35.2 Equilíbrio: o que as simulações mostram
 
-Tabela completa (9 classes × 10 situações, 400 lutas por célula) em **[35b](35b-tabela-equilibrio.md)**, gerada por `node scripts/simular-combate.mjs`.
+Tabela completa (9 classes × 11 situações, 400 lutas por célula) em **[35b](35b-tabela-equilibrio.md)**, gerada por `node scripts/simular-combate.mjs`.
 
-| Situação | O que esperar |
+| Situação | O que esperar (média das 9 classes) |
 |----------|---------------|
-| Lacaios (explorando) | 100% no nível certo: é o treino do dia a dia, em 3 a 4 rodadas |
-| Vilão comum no covil | 94–100%: a primeira prova de cada região |
-| Vilão comum 3 níveis acima | 46–96%: dá para arriscar, mas dói. Classes de armadura pesada aguentam melhor |
-| Elite (médio escalão) | 96–100% no nível do vilão; abaixo do nível, cai rápido |
-| Chefe (alto escalão) | 52–100%: Mago, Espadachim e Demônio precisam jogar bem (proteger-se no golpe forte) |
-| Rei das sombras | 28–100%: é para chegar preparado |
-| Divindade, sem preparo | Quase impossível para 7 das 9 classes. É o esperado |
-| Divindade, só com as bênçãos da campanha | 0–100%: as classes frágeis ainda precisam de mais |
-| Divindade e Rei do Eclipse, preparado | 98–100% com os Grandes Itens, o pet evoluído e o apoio do grupo |
+| Lacaios (explorando) | ~100%: é o treino do dia a dia, em 3 a 5 rodadas |
+| Vilão comum no covil | ~95%: a primeira prova de cada região, já pede poção |
+| Vilão comum 3 níveis acima | ~45%: dá para arriscar, mas dói |
+| Elite (médio escalão) | ~80% no nível do vilão; abaixo do nível, cai rápido |
+| Chefe (alto escalão) | ~60%: é preciso proteger-se no golpe forte e quebrar a guarda |
+| Rei das sombras | ~45%: moeda no ar no mesmo nível. Suba de nível, leve o pet, peça apoio |
+| Kanata | ~55% com as bênçãos dos quatro arcos |
+| Divindade, só com as bênçãos | ~5–10%: quase impossível. É o esperado |
+| Divindade e Rei do Eclipse, preparado | ~65–80% com os Grandes Itens, o pet evoluído e o apoio do grupo |
 
-**Leitura:** o fim do jogo não se vence por nível, e sim por **preparo**: concluir os arcos dos reinos (+5% cada), conquistar os Grandes Itens,
-evoluir o pet e pedir o apoio do grupo (+10% por apoio). É o que faz a campanha inteira valer para a luta final.
+**Leitura:** nenhum degrau é de graça, e o fim do jogo não se vence por nível, e sim por **preparo**: concluir os arcos dos reinos (+5% cada),
+conquistar os Grandes Itens, evoluir o pet e pedir o apoio do grupo (+10% por apoio). O plano completo, as fontes e as alavancas estão no **[doc 38](38-equilibrio-por-ameaca.md)**.
 
 ## 35.3 Pontos de atenção (para ajustar com jogadores reais)
 
-1. **Classes frágeis no fim:** Mago, Bruxo, Espadachim e Demônio dependem demais de itens lendários contra divindades. Opções: dar a cada uma
-   uma segunda proteção no nível 25, ou reduzir o ataque das divindades em 10%.
-2. **Preparado fica fácil demais (98–100%):** com tudo em mãos, a luta final perde tensão. Opção: o Rei do Eclipse ganhar uma segunda fase que ignore parte dos bônus.
-3. **Vilão 3 níveis acima** varia muito entre classes (46% a 96%). Aceitável, mas vale observar se quem escolhe Meio-humano e Força da Natureza desiste cedo.
+1. **Cavaleiro é a classe mais segura** em todos os degraus (lutas longas, mas raramente perde). A fúria dos chefes segura isso; observar.
+2. **Demônio e Força da Natureza** ficam abaixo da média contra divindades mesmo preparados (40–60%).
+3. **Vilão 3 níveis acima** varia muito entre classes (7% a 88%). Meio-humano e Força da Natureza sofrem no começo.
 4. As simulações usam um jogador "razoável". Jogadores reais erram mais no começo e acertam mais depois.
 
 ## 35.4 Como refazer

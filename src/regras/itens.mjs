@@ -7,7 +7,7 @@ const LENDARIOS = JSON.parse(readFileSync(new URL("../../data/itens-lendarios.js
 export const CONSUMIVEIS = {
   pocao: { nome: "Poção de cura", efeito: "recupera 35% da vida", luta: true, fora: true, preco: 30, cura: 0.35 },
   "pocao-mana": { nome: "Poção de mana", efeito: "recupera 40% da mana", luta: true, fora: true, preco: 35, mana: 0.4 },
-  elixir: { nome: "Elixir estelar", efeito: "recupera toda a vida e toda a mana", luta: true, fora: true, preco: 250, cura: 1, mana: 1 },
+  elixir: { nome: "Elixir estelar", efeito: "recupera 60% da vida e 60% da mana", luta: true, fora: true, preco: 250, cura: 0.6, mana: 0.6 },
   "bomba-fumaca": { nome: "Bomba de fumaça", efeito: "fuga garantida de uma luta (não funciona contra chefes)", luta: true, fora: false, preco: 60, fuga: true },
   racao: { nome: "Ração de viagem", efeito: "recupera 30 de vigor", luta: false, fora: true, preco: 40, vigor: 30 },
   bandagem: { nome: "Bandagem de ervas", efeito: "cura uma ferida na hora", luta: false, fora: true, preco: 80, curaFerida: true },
@@ -68,10 +68,10 @@ for (const [id, nome, nivel, bonus] of [
 ]) CATALOGO.set(id, { id, tipo: "equipamento", slot: "acessorio", nivel, nome, bonus, preco: preco(nivel) * 2 });
 // Os 4 Grandes Itens: só se conquistam (masmorras lendárias). Bônus forte, não vendíveis.
 for (const [id, nome, bonus, classes] of [
-  ["excalibur", "Excalibur, a Espada que Caiu das Estrelas", { FOR: 120, MAG: 60, SOR: 10 }, null],
-  ["kokugai", "Kokūgai, a Égide do Quinto Portador", { DEF: 90, RES: 90 }, null],
-  ["tenmon", "Tenmon no Tama, a Joia dos Portões", { VEL: 40, SOR: 20 }, null],
-  ["shitencho", "Shitenchō, o Grimório dos Quatro Céus", { MAG: 130, RES: 40 }, null],
+  ["excalibur", "Excalibur, a Espada que Caiu das Estrelas", { FOR: 115, MAG: 65, SOR: 8 }, null],
+  ["kokugai", "Kokūgai, a Égide do Quinto Portador", { DEF: 75, RES: 75 }, null],
+  ["tenmon", "Tenmon no Tama, a Joia dos Portões", { VEL: 30, SOR: 12 }, null],
+  ["shitencho", "Shitenchō, o Grimório dos Quatro Céus", { MAG: 120, FOR: 60, RES: 20 }, null],
 ]) CATALOGO.set(id, { id, tipo: "equipamento", slot: id === "kokugai" ? "armadura" : id === "tenmon" ? "acessorio" : "arma", nivel: 60, nome, bonus, lendario: true, classes, preco: 0 });
 export const LENDARIOS_DADOS = LENDARIOS;
 

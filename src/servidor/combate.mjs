@@ -89,7 +89,7 @@ export function criarCombate({ db, rng, agora }) {
       const pet = (await q("select nome, estagio from jogo.pets where jogador_id = $1", [j.id]))[0] ?? null;
       const vd = pend.dados.lacaio ? { ...v, nome: nomeLacaio(v), tier: "comum" } : v;
       const estado = novoCombate(j, vd, pend.dados.inimigo.nivel, { agora: tempo, equip: bonusEquip(inv), eco: Boolean(pend.dados.eco),
-        itens: Object.fromEntries(inv.map((i) => [i.item_id, i.qtd])), bonusDano: bonusCampanha(chaves) * (juramento ? 1.15 : 1) * (1 + 0.1 * apoio), pet, sismico: chaves.includes("b:olhos-da-terra") });
+        itens: Object.fromEntries(inv.map((i) => [i.item_id, i.qtd])), bonusDano: bonusCampanha(chaves) * (juramento ? 1.15 : 1) * (1 + 0.1 * apoio), pet, sismico: chaves.includes("b:olhos-da-terra"), lacaio: Boolean(pend.dados.lacaio) });
       estado.contexto = { lacaio: Boolean(pend.dados.lacaio), fixo: Boolean(pend.dados.fixo), eco: Boolean(pend.dados.eco), vilao: v.id, juramento };
       const nb = (await q(`insert into jogo.batalhas (mundo_id, tipo, canal_wa_id, rodada, status, estado)
         values ($1, 'solo', $2, 1, 'aguardando', $3) returning id`, [j.mundo_id, para, JSON.stringify(estado)]))[0];
@@ -251,6 +251,8 @@ export function textoHabilidades(j, terra = false) {
     ? `*${h.nome}* — ${h.resumo}${h.mp ? ` _(${h.mp} de mana)_` : ""}`
     : `_${h.nome} — aprende no nível ${h.nivel}_`);
   const prox = proximaHabilidade(j.classe, j.nivel);
+  const pas = PASSIVAS[j.classe];
+  if (pas) linhas.unshift(`*${pas.nome}* (sempre ativa) — ${pas.texto}`, "");
   if (terra) linhas.push("", "*Olhos da Terra*", ...SISMICO.map((h) => `*${h.nome}* — ${h.resumo}`), "_+2 no dado ao defender · −2 no dado contra espíritos e deuses (não tocam o chão)_");
   return `*Habilidades de ${j.classe}*\n\n${linhas.join("\n")}\n\n${rodape("além disso: atacar, defender" + (j.mp_max > 0 ? ", magia do seu elemento" : ""), prox ? `próxima no nível ${prox.nivel}` : "todas aprendidas")}`;
 }
