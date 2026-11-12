@@ -564,6 +564,51 @@ export async function testarMundoServidor({ db, jogador, outro, mensagem, grupo,
     assert.doesNotMatch(texto(await noGrupo(outroPrivado("mestre tesouros"))), /Tesouros do mundo/);
     await db.query("delete from jogo.inventario where jogador_id = $1 and item_id = 'excalibur'", [outro.id]);
   });
+  await t("grimórios: 40 no jogo, achados explorando ou pelo mestre; abrir respeita classe, nível e limite; as magias entram no menu da luta e funcionam", async () => {
+    const G = await import("../src/regras/grimorios.mjs");
+    const { criarGrimorios } = await import("../src/servidor/grimorios.mjs");
+    assert.equal(G.GRIMORIOS.size, 40);
+    for (const g of G.GRIMORIOS.values()) { assert(g.regiao, `${g.id} tem região`); assert(g.magias.some((m) => !m.utilitaria), `${g.id} tem magia de batalha`); }
+    await db.query("update jogo.batalhas set status = 'encerrada' where status <> 'encerrada'"); await db.query("delete from jogo.exploracoes where pendente");
+    await db.query("delete from jogo.grimorios_jogador"); await db.query("delete from jogo.lutas_grupo"); await db.query("delete from jogo.viagens where concluida_em is null");
+    await db.query("update jogo.jogadores set classe = 'Mago', nivel = 20, hp = hp_max, mp = 200, mp_max = 200, regiao_atual = 'R-HOM-3', local_atual = null where id = $1", [jogador.id]);
+    assert.match(texto(await enviar("grimorios")), /ainda não tem nenhum grimório/);
+    // explorando na região onde ele está escondido
+    const gr = criarGrimorios({ db, rng: () => 0 });
+    const achou = await gr.aoExplorar(await atual(), "pv");
+    assert.match(texto(achou), /encontrou um grimório[\s\S]*Caderno de Faíscas do Mineiro[\s\S]*Faísca/);
+    assert.deepEqual(await criarGrimorios({ db, rng: () => 0.99 }).aoExplorar(await atual(), "pv"), [], "nem toda exploração acha");
+    // pelo mestre, sem citar o mestre
+    const dado = await noGrupo(adminPrivado("mestre grimorio Kaito 8"));
+    assert(dado.some((x) => /encontrou um grimório[\s\S]*Ignição Absoluta/.test(x.texto ?? "")) && /Feito/.test(dado.at(-1).texto) && !doGrupo(dado).length);
+    await noGrupo(adminPrivado("mestre grimorio Kaito 2")); await noGrupo(adminPrivado("mestre grimorio Kaito 5")); await noGrupo(adminPrivado("mestre grimorio Kaito 9")); await noGrupo(adminPrivado("mestre grimorio Kaito 17"));
+    assert.match(texto(await noGrupo(adminPrivado("mestre grimorios"))), /\*01\* Caderno de Faíscas[\s\S]*com Kaito Ryuen/);
+    const lista = texto(await enviar("grimorios"));
+    assert.match(lista, /Seus grimórios[\s\S]*0 de 3 abertos \(Mago\)[\s\S]*6 de 40/);
+    // regras para abrir
+    assert.match(texto(await enviar("abrir grimorio manual do duelista")), /foi escrito para: Espadachim, Cavaleiro, Paladino/);
+    assert.match(texto(await enviar("abrir grimorio g08")), /nível 45/);
+    assert.match(texto(await enviar("abrir grimorio 1")), /Você abre \*Caderno de Faíscas[\s\S]*Faísca[\s\S]*menu das suas lutas/);
+    await enviar("abrir grimorio pergaminho da fenix"); await enviar("abrir grimorio g09");
+    assert.match(texto(await enviar("abrir grimorio g17")), /3 grimórios abertos de cada vez/);
+    assert.match(texto(await enviar("fechar grimorio g09")), /fecha/);
+    // na luta: as magias aparecem no menu e causam efeito
+    await db.query(`insert into jogo.exploracoes (jogador_id, mensagem_id, regiao, tipo, dados, pendente, criada_em) values ($1, $2, 'R-HOM-3', 'encontro', $3, true, $4)`,
+      [jogador.id, `g:${clock}`, JSON.stringify({ inimigo: { id: "V001", nome: "x", nivel: 20 }, lacaio: true }), new Date(clock)]);
+    const luta = texto(await enviar("lutar"));
+    assert.match(luta, /Faísca — _magia de força 1 · 4 de mana_[\s\S]*Penas Ardentes[\s\S]*Calor Restaurador/);
+    const nFaisca = luta.match(/\*(\d+)\* Faísca/)[1];
+    const b0 = (await db.query("select estado from jogo.batalhas where status <> 'encerrada'"))[0].estado;
+    let usou = "";
+    for (let k = 0; k < 6 && !/Faísca|Vitória/.test(usou); k++) usou = texto(await enviar(nFaisca));
+    assert.match(usou, /Faísca|Vitória/);
+    const b1 = (await db.query("select estado from jogo.batalhas order by id desc limit 1"))[0].estado;
+    assert(b1.jogador.mp < b0.jogador.mp || /Vitória/.test(usou), "a magia do grimório gasta mana");
+    await db.query("update jogo.batalhas set status = 'encerrada' where status <> 'encerrada'");
+    // Anti-magia só lê os do Vazio
+    assert.match(G.podeLer({ classe: "Anti-magia", nivel: 99 }, G.GRIMORIOS.get("G01")), /só consegue ler grimórios do Vazio/);
+    assert.equal(G.podeLer({ classe: "Anti-magia", nivel: 99 }, G.GRIMORIOS.get("G32")), null);
+  });
   await t("Olhos da Terra: a mestra entrega o pergaminho a quem é da terra; ler cega e dá as habilidades; admin também concede", async () => {
     await db.query("update jogo.jogadores set regiao_atual = 'R-DAI-6', local_atual = null, atributo_magico = 'Fogo (Chama)', reino = 'Homura' where id = $1", [jogador.id]);
     await enviar("falar tsuchi"); clock += 7 * 3_600_000;

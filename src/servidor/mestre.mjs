@@ -8,6 +8,7 @@ import { AMEACA } from "./ameacas.mjs";
 import { item } from "../regras/itens.mjs";
 import { nomeLacaio } from "./combate.mjs";
 import { imagemMapaCom } from "./exploracao.mjs";
+import { acharGrimorio } from "../regras/grimorios.mjs";
 import { buscarRegioes } from "../regras/exploracao.mjs";
 import { rodape } from "./textos.mjs";
 import { semAcento } from "../linguagem/normalizar.mjs";
@@ -32,6 +33,8 @@ mestre espiã <nome> — uma viajante passa a acompanhar o jogador e anota o que
 mestre relatório <nome> — o que a espiã viu
 mestre fala <nome> <texto> — a espiã diz isso ao jogador, com as suas palavras
 mestre mapa — mapa do mundo com a posição de todos (só você vê)
+mestre grimorios — onde está cada um dos 40 grimórios e quem já tem
+mestre grimorio <nome> <nº> — entrega um grimório ao jogador (ele "encontra" o livro)
 mestre tesouros — mapa de onde estão os 4 Grandes Itens, os 4 núcleos, os santuários de pet e o pergaminho da terra, e com quem cada um está
 mestre mover <nome> <região> — transporta o jogador na hora, sem custo (ele vê uma passagem se abrir)
 mestre mover todos <região> — transporta todos os jogadores do mundo de uma vez
@@ -46,7 +49,7 @@ const ESPIA = { nome: "Shiori", papel: "uma cartógrafa de estrada", maxLog: 25,
     "fica um passo atrás, desenhando o caminho de vocês num mapa.", "pergunta de onde você é, e escuta a resposta com atenção demais para quem só puxa conversa.",
     "ajeita a alça da bolsa e diz que nunca viu ninguém viajar do seu jeito."] };
 
-export function criarMestre({ db, agora, ameacas = null }) {
+export function criarMestre({ db, agora, ameacas = null, grimorios = null }) {
   const gravar = (j, chave, valor) => db.query(`insert into jogo.progresso (jogador_id, chave, valor, criado_em) values ($1, $2, $3, $4)
     on conflict (jogador_id, chave) do update set valor = excluded.valor`, [j.id, chave, JSON.stringify(valor), new Date(agora())]);
   const jogadores = () => db.query(`select j.*, i.wa_jid, i.wa_lid, m.grupo_wa_id from jogo.jogadores j join jogo.identidades i on i.id = j.identidade_id
@@ -152,6 +155,12 @@ export function criarMestre({ db, agora, ameacas = null }) {
       // a legenda do WhatsApp tem limite: manda a imagem com o título e o detalhe em texto
       return [{ para, imagem: imagemMapaCom(pontos), legenda: "*Tesouros do mundo* — legenda na mensagem seguinte" }, { para, texto }];
     }
+    if (/^grimorios$/.test(acao) && grimorios) {
+      const cont = new Map(); for (const x of todos) cont.set(String(x.mundo_id), (cont.get(String(x.mundo_id)) ?? 0) + 1);
+      const txt = await grimorios.relatorio([...cont.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? null);
+      const linhas = txt.split("\n");
+      return [{ para, texto: `*Os 40 grimórios* _(só você vê)_\n\n${linhas.slice(0, 20).join("\n")}` }, { para, texto: linhas.slice(20).join("\n") }];
+    }
     if (acao === "quem") return dizer(todos.length ? todos.map((x) => `*${x.nome}* — ${x.classe}, nível ${x.nivel}, em ${nomeR(x.regiao_atual)}`).join("\n") : "Nenhum personagem ativo.");
 
     if (/^monstros$/.test(acao)) return dizer(`*Monstros* (grau 1 a 3 para cidades; grau 4 são Calamidades)\n\n${MONSTROS.map((x) => `*${x.id.slice(1)}* ${x.nome}, ${x.titulo} — grau ${x.grau}, ${x.elemento}`).join("\n")}`);
@@ -240,6 +249,13 @@ export function criarMestre({ db, agora, ameacas = null }) {
       const hora = (ms) => new Date(ms - 3 * 3_600_000).toISOString().slice(5, 16).replace("T", " ");
       return dizer(`*Relatório de ${e.nome}* — ${alvo.nome}\n\n${alvo.classe}, nível ${alvo.nivel} · vida ${alvo.hp}/${alvo.hp_max} · ${alvo.ryo} ryō · corrupção ${Number(alvo.corrupcao ?? 0)}\nEstá em ${nomeR(alvo.regiao_atual)}.\nLeva: ${inv.map((l) => `${item(l.item_id)?.nome ?? l.item_id}${l.qtd > 1 ? ` ×${l.qtd}` : ""}${l.equipado ? " (em uso)" : ""}`).join(", ") || "nada"}.\n\n` +
         `*O que ele fez* (horário de Brasília)\n${(e.log ?? []).map((l) => `${hora(l.q)} · ${nomeR(l.r)} · ${l.t}`).join("\n") || "Nada ainda."}`);
+    }
+    if (/^grimorio$/.test(acao) && grimorios) {
+      const g = acharGrimorio(extra);
+      if (!g) return dizer("Qual grimório? Use o número (1 a 40) ou parte do nome. Veja a lista com *mestre grimorios*.");
+      const s = await grimorios.entregar(alvo, g, pv ?? para, "Você acorda com um livro debaixo do braço que não estava lá ontem. A capa está morna.\n\n*Você encontrou um grimório.*");
+      if (!s.length) return dizer(`${alvo.nome} já tem ${g.nome}.`);
+      return [...(pv ? s : []), ...dizer(`Feito. ${alvo.nome} recebeu ${g.nome}.`)];
     }
     if (/^(fala|falar|dizer)$/.test(acao)) {
       const e = (await um(db, "select valor from jogo.progresso where jogador_id = $1 and chave = 'espia'", [alvo.id]))?.valor;

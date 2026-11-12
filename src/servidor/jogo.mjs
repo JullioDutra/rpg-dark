@@ -20,6 +20,7 @@ import { PRESSAO, textoPressao } from "../regras/combate.mjs";
 import { criarSocial } from "./social.mjs";
 import { criarMestre } from "./mestre.mjs";
 import { criarAmeacas } from "./ameacas.mjs";
+import { criarGrimorios } from "./grimorios.mjs";
 import { kitInicial } from "../regras/itens.mjs";
 import { XP_PROXIMO } from "../../scripts/balanceamento.mjs";
 import { comandoExploracao, recuperarVigor, buscarRegioes } from "../regras/exploracao.mjs";
@@ -90,11 +91,12 @@ export function criarJogo({ relogio = null, db, sal = process.env.TELEFONE_SAL ?
   const extras = criarExtras({ db, rng, agora });
   const social = criarSocial({ db, rng, agora });
   const ameacas = criarAmeacas({ db, rng, agora, relogio });
-  const mestre = criarMestre({ db, agora, ameacas });
+  const grimorios = criarGrimorios({ db, rng });
+  const mestre = criarMestre({ db, agora, ameacas, grimorios });
   // Ganchos do mundo vivo: os modos complementares e, por cima, os contratos da Guilda (que só observam)
   const ganchos = { ...extras,
     aoFalar: async (j, npc, amizade, para) => [...(await extras.aoFalar(j, npc, amizade, para)), ...(await social.aoFalar(j, npc, para))],
-    aoConcluir: async (j, cap, para) => [...(await extras.aoConcluir(j, cap, para)), ...(await social.aoConcluir(j, para)), ...(await ameacas.aoConcluir(j))] };
+    aoConcluir: async (j, cap, para) => [...(await extras.aoConcluir(j, cap, para)), ...(await social.aoConcluir(j, para)), ...(await ameacas.aoConcluir(j)), ...(await grimorios.aoConcluir(j, cap, para))] };
   const mundo = criarMundo({ db, ia, rng, agora, ganchos });
   const itens = criarItens({ db, agora });
 
@@ -321,14 +323,16 @@ export function criarJogo({ relogio = null, db, sal = process.env.TELEFONE_SAL ?
     const ehLocal = /^(ir|vou|visitar|entrar)\b/.test(tc) ? await mundo.comando(j, tc, msg.texto, para) : { tratado: false };
     if (ehLocal.tratado) return ehLocal.saidas;
     // Comandos do mundo vivo têm verbo próprio: a exploração só confere chegadas (para "falar sobre o mapa" não abrir o mapa)
-    const direto = /^(falar|conversar|perguntar|locais|lugares|olhar|missao|missoes|historia|capitulo|objetivo|diario|caminho|segredos|pistas|amigos|amizades|feitos|noticias|vingar|vinganca|pet|boatos|boato|rumores|contos|ouvir|lembrar|ecos|eco|aceitar pacto|recusar pacto|pacto|resistir|purificar|contratos|contrato|guilda|quadro|ranking|rank|placar|acompanhar|seguir com|ir com|juntar|seguir sozinho|seguir sozinha|separar|deixar grupo|minha historia|aceitar a terra|aceito a terra|fechar o pergaminho|fechar pergaminho)\b/.test(tc);
+    const direto = /^(falar|conversar|perguntar|locais|lugares|olhar|missao|missoes|historia|capitulo|objetivo|diario|caminho|segredos|pistas|amigos|amizades|feitos|noticias|vingar|vinganca|pet|boatos|boato|rumores|contos|ouvir|lembrar|ecos|eco|aceitar pacto|recusar pacto|pacto|resistir|purificar|contratos|contrato|guilda|quadro|grimorio|grimorios|meus grimorios|livros|magias|abrir grimorio|abrir livro|ler grimorio|fechar grimorio|guardar grimorio|equipar grimorio|usar grimorio|ranking|rank|placar|acompanhar|seguir com|ir com|juntar|seguir sozinho|seguir sozinha|separar|deixar grupo|minha historia|aceitar a terra|aceito a terra|fechar o pergaminho|fechar pergaminho)\b/.test(tc);
     const e = await exploracao(j.id, info || direto ? { ...msg, texto: "" } : /^(ir|vou)\b/.test(tc) ? { ...msg, texto: tc.replace(/^(ir|vou)\s+(para |pra |a |ao |à )?/, "viajar ") } : msg);
     j = { ...j, ...e.jogador };
     const chegou = j.regiao_atual !== antes ? await mundo.chegada(j, para) : [];
-    if (e.tratado) return [...e.saidas, ...chegou];
+    if (e.tratado) return [...e.saidas, ...chegou, ...(/^explorar\b/.test(tc) && !e.saidas.some((x) => /precisa descansar|ainda está na estrada/.test(x.texto ?? "")) ? await grimorios.aoExplorar(j, para) : [])];
     // 4) Mundo vivo: locais, NPCs, missão, segredos, amigos, feitos, vingar; pet, pactos, boatos, ecos
     const ex = await extras.comando(j, tc, para, msg.texto);
     if (ex.tratado) return [...e.saidas, ...chegou, ...ex.saidas];
+    const gr = await grimorios.comando(j, tc, para);
+    if (gr.tratado) return [...e.saidas, ...chegou, ...gr.saidas];
     const so = await social.comando(j, tc, para);
     if (so.tratado) return [...e.saidas, ...chegou, ...so.saidas];
     const mv = await mundo.comando(j, tc, msg.texto, para);
@@ -555,6 +559,7 @@ viajar <região> · rota · mapa
 itens — bolsa, o que cada coisa faz e quantos usos tem
 equipar <nº> · usar <nº> · loja (loja poções, loja armas) · descansar
 habilidades · ficha · segredos · amigos · pet
+grimorios — seus livros de magia · abrir grimorio <nº> põe as magias na luta
 minha história — conte quem é o seu personagem
 boatos — histórias que o povo conta · lembrar — ecos do passado
 

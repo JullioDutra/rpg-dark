@@ -82,7 +82,7 @@ export const SISMICO = [
   { id: "t2", nome: "Ler o Chão", frase: "Você sente cada passo dele antes de acontecer.", resumo: "esquiva 70% e prepara o próximo golpe (+50%)", tipo: "guarda", protecao: 0.7, duracao: 1, foco: true, mp: 4, recarga: 3, nivel: 1 },
 ];
 export const NAO_TOCA_O_CHAO = ["espiritual", "divino"];
-const habDe = (j, id) => (KITS[j.classe] ?? []).find((h) => h.id === id) ?? (j.sismico ? SISMICO.find((h) => h.id === id) : null) ?? null;
+const habDe = (j, id) => (KITS[j.classe] ?? []).find((h) => h.id === id) ?? (j.sismico ? SISMICO.find((h) => h.id === id) : null) ?? (j.magias ?? []).find((h) => h.id === id) ?? null;
 const custoMana = (j, h) => (j.mpMax > 0 ? h.mp : 0);
 export const MAGIA = { nome: "Magia elemental", poder: 1.3, mp: 6 };
 export const MAX_ITENS_POR_LUTA = 2;
@@ -176,7 +176,7 @@ export const SEGUNDA_FASE = { rei: { ataque: 1.12 }, divindade: { ataque: 1.2 } 
  * opts: equip (bônus), itens ({id: qtd} consumíveis de luta), solo, eco (sombra de um vilão já derrotado no mundo),
  * bonusDano (ex.: 1.1 de um juramento de vingança), aliados (nº de jogadores, escala a vida do inimigo).
  */
-export function novoCombate(j, vilao, nivel, { agora = Date.now(), solo = true, equip = {}, itens = {}, eco = false, bonusDano = 1, aliados = 1, pet = null, sismico = false, lacaio = false } = {}) {
+export function novoCombate(j, vilao, nivel, { agora = Date.now(), solo = true, equip = {}, itens = {}, eco = false, bonusDano = 1, aliados = 1, pet = null, sismico = false, lacaio = false, magias = [] } = {}) {
   const at = atributosVilao(nivel, vilao.tier, vilao.arquetipo);
   const aj = solo && AJUSTE_SOLO[lacaio ? "lacaio" : vilao.tier];
   if (aj) {
@@ -195,7 +195,7 @@ export function novoCombate(j, vilao, nivel, { agora = Date.now(), solo = true, 
     rodada: 1,
     jogador: { id: j.id, nome: j.nome, classe: j.classe, nivel: j.nivel, hp: j.hp, hpMax: j.hp_max, mp: j.mp, mpMax: j.mp_max,
       at: atributosEfetivos(j, agora, equip), elemento: elementoBase(j.atributo_magico), recargas: {}, itens: itensLuta, itensUsados: 0,
-      protecao: 0, protecaoRodadas: 0, foco: false, bonusDano: Math.min(TETO_BONUS, bonusDano), sismico },
+      protecao: 0, protecaoRodadas: 0, foco: false, bonusDano: Math.min(TETO_BONUS, bonusDano), sismico, magias },
     inimigo: { id: vilao.id, nome: eco ? `Eco de ${vilao.nome}` : vilao.nome, nivel, tier: vilao.tier, arquetipo: vilao.arquetipo, elemento: vilao.elemento,
       fraqueza: vilao.fraqueza, habilidade: vilao.habilidade, hp: at.HP, hpMax: at.HP, at,
       postura: POSTURA[vilao.tier] ?? 0, posturaMax: POSTURA[vilao.tier] ?? 0, atordoado: false, vulneravel: false, preso: 0, fraco: 0, queima: 0, queimaDano: 0,
@@ -251,7 +251,7 @@ export function menu(e) {
   add({ tipo: "atacar" }, "Atacar");
   add({ tipo: "defender" }, "Defender");
   if (j.mpMax > 0) add({ tipo: "magia" }, `Magia de ${j.elemento ?? "mana"}`, `${MAGIA.mp} de mana`, j.mp < MAGIA.mp ? "sem mana" : null);
-  for (const h of [...habilidadesDe(j.classe, j.nivel), ...(j.sismico ? SISMICO : [])]) {
+  for (const h of [...habilidadesDe(j.classe, j.nivel), ...(j.sismico ? SISMICO : []), ...(j.magias ?? [])]) {
     const espera = j.recargas[h.id] ?? 0, mp = custoMana(j, h);
     add({ tipo: "habilidade", id: h.id }, h.nome, [h.resumo, mp ? `${mp} de mana` : null].filter(Boolean).join(" · "),
       espera ? `espera ${espera}` : j.mp < mp ? "sem mana" : null);

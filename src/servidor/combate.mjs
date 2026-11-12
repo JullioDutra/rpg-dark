@@ -6,6 +6,7 @@ import { semAcento } from "../linguagem/normalizar.mjs";
 import { novoCombate, resolverRodada, painel, textoMenu, escolher, recompensa, aplicarXP, atributoPrincipal, HABILIDADES, CLASSES, KITS, proximaHabilidade, SISMICO, PASSIVAS, nivelDeLuta, multAlcance } from "../regras/combate.mjs";
 import { REGIAO, MATERIAIS } from "../regras/exploracao.mjs";
 import { COVIL } from "../mundo/mundo.mjs";
+import { magiasDeBatalha } from "../regras/grimorios.mjs";
 import { bonusEquip, item as itemDe, todosItens, EQUIP_CLASSE } from "../regras/itens.mjs";
 import { XP_PROXIMO } from "../../scripts/balanceamento.mjs";
 import { renderizar } from "../avatar/index.mjs";
@@ -110,11 +111,13 @@ export function criarCombate({ db, rng, agora }) {
       const apoio = pend.dados.fixo ? Number(prog.find((x) => x.chave === "apoio")?.valor ?? 0) : 0;
       if (apoio) await q("delete from jogo.progresso where jogador_id = $1 and chave = 'apoio'", [j.id]);
       const pet = (await q("select nome, estagio from jogo.pets where jogador_id = $1", [j.id]))[0] ?? null;
+      // magias dos grimórios abertos entram no menu da luta
+      const magias = magiasDeBatalha((await q("select grimorio_id from jogo.grimorios_jogador where jogador_id = $1 and equipado order by grimorio_id", [j.id])).map((x) => x.grimorio_id));
       const vd = pend.dados.lacaio ? { ...v, nome: nomeLacaio(v), tier: "comum" } : v;
       // Vilão de covil nunca luta mais que alguns níveis acima do jogador (a história não trava por falta de nível)
       const nivelLuta = pend.dados.fixo ? nivelDeLuta(pend.dados.inimigo.nivel, j.nivel) : pend.dados.inimigo.nivel;
       const estado = novoCombate(j, vd, nivelLuta, { agora: tempo, equip: bonusEquip(inv), eco: Boolean(pend.dados.eco),
-        itens: Object.fromEntries(inv.map((i) => [i.item_id, i.qtd])), bonusDano: bonusCampanha(chaves) * (juramento ? 1.15 : 1) * (1 + 0.1 * apoio), pet, sismico: chaves.includes("b:olhos-da-terra"), lacaio: Boolean(pend.dados.lacaio) });
+        itens: Object.fromEntries(inv.map((i) => [i.item_id, i.qtd])), bonusDano: bonusCampanha(chaves) * (juramento ? 1.15 : 1) * (1 + 0.1 * apoio), pet, sismico: chaves.includes("b:olhos-da-terra"), lacaio: Boolean(pend.dados.lacaio), magias });
       estado.contexto = { lacaio: Boolean(pend.dados.lacaio), fixo: Boolean(pend.dados.fixo), eco: Boolean(pend.dados.eco), vilao: v.id, juramento, nivelReal: pend.dados.inimigo.nivel };
       // Vilão de médio escalão para cima pode ser enfrentado junto por quem está acompanhando a mesma história
       let conjunto = "";
