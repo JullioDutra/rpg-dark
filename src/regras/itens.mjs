@@ -46,6 +46,8 @@ export const EQUIP_CLASSE = {
 const preco = (n) => Math.max(25, Math.round((25 * n ** 1.25) / 5) * 5);
 const CATALOGO = new Map();
 for (const [id, c] of Object.entries(CONSUMIVEIS)) CATALOGO.set(id, { id, tipo: "consumivel", ...c });
+CATALOGO.set("pergaminho-terra", { id: "pergaminho-terra", tipo: "historia", nome: "Pergaminho dos Olhos da Terra",
+  efeito: "ensina a ver pelo chão: você fica cego para sempre e ganha Onda Sísmica, Ler o Chão e +2 no dado ao defender (só para quem é da terra)", preco: 0, lendario: true });
 for (const [id, m] of Object.entries(MATERIAIS_INFO)) CATALOGO.set(id, { id, tipo: "material", nome: m.nome, efeito: "material: pode ser vendido numa loja", preco: m.valor });
 NIVEIS_MATERIAL.forEach((t, i) => {
   const b = Math.round(t.n * 1.1) + 1, a = Math.round(t.n * 0.7) + 1;

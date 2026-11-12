@@ -213,6 +213,48 @@ export async function testarMundoServidor({ db, jogador, outro, mensagem, grupo,
     const r = await noGrupo(grupo("aceitar", false));
     assert.match(texto(r), /Duelo — Rin × Kaito Ryuen/); assert.match(texto(r), /🎲/); assert.match(texto(r), /vence/);
   });
+  await t("minha história: salva por partes, recusa poderes e lore, segredo fica privado, grupo lê o resto", async () => {
+    assert.match(texto(await enviar("minha história")), /Origem.*em branco/);
+    assert.match(texto(await enviar("minha história origem Cresci nas palafitas de Amiya, remendando redes com a minha avó.")), /Anotado.*origem/s);
+    assert.match(texto(await enviar("minha história segredo Fui eu que deixei o barco do meu pai à deriva naquela noite.")), /só o narrador conhece/);
+    assert.match(texto(await enviar("minha história sonho Sou imortal e o mais forte do mundo, com 1000% de dano")), /não o quanto você é forte/);
+    assert.match(texto(await enviar("minha história origem Sou o filho perdido de Kaien e herdei o ovo")), /não pode mexer na história do mundo/);
+    assert.match(texto(await enviar("minha história laço oi")), /Conte um pouco mais/);
+    const ver = texto(await enviar("minha história"));
+    assert.match(ver, /palafitas de Amiya/); assert.match(ver, /barco do meu pai/); assert.match(ver, /Sonho.*em branco/);
+    const pub = texto(await noGrupo(outroGrupo("historia Kaito")));
+    assert.match(pub, /palafitas de Amiya/); assert.doesNotMatch(pub, /barco do meu pai/);
+    const pedidos = [];
+    jogo = novoJogo({ nome: "falsa", async gerarJSON(a) { pedidos.push(a); return { ok: true, provedor: "falsa", dados: a.esquema.properties.fala ? { fala: "— Sei." } : { narracao: "O vento muda.", eventos: [] } }; } });
+    await db.query("update jogo.jogadores set regiao_atual = 'R-WAT-2', local_atual = 'minato' where id = $1", [jogador.id]);
+    clock += 60_000; await enviar("> sento no cais e penso na minha avó");
+    assert.match(pedidos.at(-1).mensagens.at(-1).content, /historia_pessoal.*palafitas de Amiya/s);
+    assert.match(pedidos.at(-1).mensagens.at(-1).content, /NUNCA concede poder/);
+    jogo = novoJogo();
+  });
+  await t("Olhos da Terra: a mestra entrega o pergaminho a quem é da terra; ler cega e dá as habilidades; admin também concede", async () => {
+    await db.query("update jogo.jogadores set regiao_atual = 'R-DAI-6', local_atual = null, atributo_magico = 'Fogo (Chama)', reino = 'Homura' where id = $1", [jogador.id]);
+    await enviar("falar tsuchi"); clock += 7 * 3_600_000;
+    assert.match(texto(await enviar("falar tsuchi")), /não têm raiz/);
+    await db.query("update jogo.jogadores set atributo_magico = 'Terra (Rocha)' where id = $1", [jogador.id]);
+    clock += 7 * 3_600_000;
+    const g = await enviar("falar mestra tsuchi");
+    assert(g[0].imagem?.length > 1000, "retrato da NPC na conversa");
+    assert.match(texto(g), /Pergaminho dos Olhos da Terra/);
+    assert.match(texto(await enviar("itens")), /Pergaminho dos Olhos da Terra[\s\S]*fica cego para sempre/);
+    assert.match(texto(await enviar("usar pergaminho")), /não tem volta/);
+    assert.match(texto(await enviar("fechar o pergaminho")), /continua na sua bolsa/);
+    await enviar("usar pergaminho");
+    const a = await enviar("aceitar a terra");
+    assert.match(texto(a), /Onda Sísmica/); assert(doGrupo(a).some((x) => /Olhos da Terra/.test(x.texto)));
+    assert((await atual()).avatar_dna.acessorios.includes("venda-olhos"));
+    assert.equal((await db.query("select count(*)::int n from jogo.inventario where jogador_id = $1 and item_id = 'pergaminho-terra'", [jogador.id]))[0].n, 0);
+    assert.match(texto(await enviar("habilidades")), /Olhos da Terra[\s\S]*Ler o Chão/);
+    assert.match(texto(await noGrupo(outroGrupo("conceder terra Kaito"))), /Só um administrador/);
+    const c = await noGrupo(grupo("conceder terra Rin", true));
+    assert.match(texto(c), /Rin\* fechou os olhos/); assert(c.some((x) => /A terra te escolheu/.test(x.texto)));
+    assert.match(texto(await noGrupo(grupo("conceder terra Rin", true))), /já tem os Olhos da Terra/);
+  });
   await t("final: derrotar o Rei do Eclipse coroa o Seiō e anuncia no grupo", async () => {
     await db.query(`insert into jogo.progresso (jogador_id, chave) select $1, 'b:' || x from unnest($2::text[]) x on conflict do nothing`,
       [jogador.id, ["reis-antigos", "descida", "kanata", "ninho", "poco", "muralha", "rosto", "arco-homura", "arco-watatsumi", "arco-daichi", "arco-fujin"]]);

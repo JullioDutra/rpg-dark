@@ -9,6 +9,9 @@ import { K } from "../../scripts/balanceamento.mjs";
 import { renderizar } from "../avatar/index.mjs";
 import { dnaPet, NOMES_ESTAGIO } from "../avatar/dna.mjs";
 import { rodape } from "./textos.mjs";
+import { criarInterpretador } from "../linguagem/interpretar.mjs";
+import { semAcento } from "../linguagem/normalizar.mjs";
+import { elementoBase } from "../regras/combate.mjs";
 import { um } from "./db.mjs";
 
 const ler = (f) => JSON.parse(readFileSync(new URL(`../../data/${f}`, import.meta.url), "utf8"));
@@ -21,6 +24,26 @@ const RAROS = ["P17", "P18", "P19", "P20"];
 export const EVOLUCAO = { 2: { vitorias: 15, vinculo: 30 }, 3: { vitorias: 45, vinculo: 80 } };
 const ECO_REGIAO = { FB01: "R-KOK-7", FB02: "R-KOK-7", FB03: "R-KOK-5", FB04: "R-KOK-1", FB05: "R-DAI-1", FB06: "R-KOK-5", FB07: "R-KOK-8", FB08: "R-WAT-1", FB09: "R-FUJ-3", FB10: "R-KOK-6" };
 export const PACTO = { corrupcao: 25, intervaloMs: 3 * 86_400_000, max: 3 };
+
+// ── Minha história ──
+export const HISTORIA = {
+  secoes: { origem: "De onde você veio e como cresceu", sonho: "O que você mais quer", medo: "O que você teme ou evita", laco: "Alguém importante para você", segredo: "Algo que só você sabe (ninguém mais vê)" },
+  min: 15, max: 350, edicoesPorDia: 6,
+};
+const interpretar = criarInterpretador({});
+const MUNDO_INTOCAVEL = /\b(kaien|nisteroy|sayo|kanata|yoru|shokuo|seio|rei[- ]estrela|ovo eterno|esquife|nucleo|excalibur|kokugai|tenmon|shitencho)\b/;
+const PODER_NA_HISTORIA = /\b(imortal|invencivel|invulneravel|onipotente|mais forte do mundo|poder infinito|nivel \d+|\d+\s*%|filh[oa] d[eo] (rei|deus|dragao)|herdeir[oa] do trono|escolhid[oa] d[ao]s? (deuses|estrelas)|semideus|deus[a]?)\b/;
+/** Devolve o motivo da recusa, ou null se o texto pode entrar na história do personagem. */
+export function validarHistoria(texto) {
+  const t = semAcento(texto.toLowerCase());
+  if (texto.length < HISTORIA.min) return `Conte um pouco mais (pelo menos ${HISTORIA.min} letras).`;
+  if (texto.length > HISTORIA.max) return `Ficou longo demais: use até ${HISTORIA.max} letras por parte (você escreveu ${texto.length}).`;
+  if (["pedido_atributo", "pedido_buff", "tentativa_manipulacao"].includes(interpretar(texto, { estado: "livre", direcionado: true }).intencao) || PODER_NA_HISTORIA.test(t))
+    return "Sua história conta quem você é, não o quanto você é forte. Poder se conquista jogando. Reescreva sem poderes, títulos ou números.";
+  if (MUNDO_INTOCAVEL.test(t)) return "Sua história não pode mexer na história do mundo (reis, dragões, o Ovo, os grandes nomes). Fale da sua vida: família, aldeia, perdas, promessas.";
+  return null;
+}
+export const ehDaTerra = (j) => elementoBase(j.atributo_magico) === "Terra" || j.reino === "Daichi";
 
 export const imagemPet = (petId, estagio) => renderizar(dnaPet(petId, estagio), 6);
 
@@ -90,8 +113,19 @@ export function criarExtras({ db, rng, agora }) {
     return [{ para, texto: "Enquanto você tenta se levantar, uma voz calma fala bem perto, como se alguém estivesse sentado ao seu lado.\n\n— Dói perder, eu sei. Eu posso te emprestar força. Sem contrato, sem letras miúdas. Só um aperto de mão.\n\nVocê conhece essa voz. É a do Mestre Yoru.\n\n*aceitar pacto* · *recusar pacto*\n" + rodape("aceitar: +15% de dano para sempre, +25 de corrupção", "a corrupção fecha o melhor final") }];
   }
 
-  async function comando(j, t, para) {
+  async function comando(j, t, para, bruto = t) {
     let m;
+    if (/^minha historia\b/.test(t)) return { tratado: true, saidas: await minhaHistoria(j, bruto, para) };
+    if (/^(aceitar a terra|aceito a terra|fechar o pergaminho|fechar pergaminho)$/.test(t)) {
+      const oferta = await db.query("delete from jogo.progresso where jogador_id = $1 and chave = 'oferta-terra' returning 1", [j.id]);
+      if (!oferta.length) return { tratado: true, saidas: [{ para, texto: "Não há nenhum pergaminho aberto diante de você." }] };
+      if (/^fechar/.test(t)) return { tratado: true, saidas: [{ para, texto: "Você enrola o pergaminho de novo, com cuidado. Ele continua na sua bolsa, esperando." }] };
+      const tem = await db.query("delete from jogo.inventario where jogador_id = $1 and item_id = 'pergaminho-terra' returning 1", [j.id]);
+      if (!tem.length) return { tratado: true, saidas: [{ para, texto: "O pergaminho não está mais com você." }] };
+      const anuncio = await concederTerra(j, "pergaminho");
+      const grupo = await grupoDe(j);
+      return { tratado: true, saidas: [{ para, texto: `Você lê até a última linha.\n\n${textoTerra}` }, ...(anuncio && grupo ? [{ para: grupo, texto: anuncio }] : [])] };
+    }
     if (/^(pet|meu pet|companheiro)$/.test(t) || (m = t.match(/^pet (carinho|afagar|brincar)$/))) {
       const pet = await um(db, "select * from jogo.pets where jogador_id = $1", [j.id]);
       if (!pet) return { tratado: true, saidas: [{ para, texto: j.elegivel_pet ? "Você ainda não encontrou seu companheiro. Os espíritos vivem nos santuários: o Coração de Hinokami, o Santuário Atrás da Queda, a Porta na Árvore e o Mosteiro do Vento. Termine a história de um desses lugares." : "As estrelas não te deram um companheiro espiritual. Isso não te faz menor: te faz diferente." }] };
@@ -161,9 +195,97 @@ export function criarExtras({ db, rng, agora }) {
     return `+${xp} XP${d.niveis.length ? ` · nível ${d.nivel}` : ""}`;
   }
 
+  // ── Olhos da Terra ──
+  async function concederTerra(j, origem) {
+    if (await um(db, "select 1 from jogo.progresso where jogador_id = $1 and chave = 'b:olhos-da-terra'", [j.id])) return null;
+    await gravar(j, "b:olhos-da-terra", { origem });
+    const jog = await um(db, "select avatar_dna from jogo.jogadores where id = $1", [j.id]);
+    const dna = jog?.avatar_dna ?? {};
+    if (dna.tipo === "humanoide") {
+      dna.acessorios = [...new Set([...(dna.acessorios ?? []), "venda-olhos"])];
+      await db.query("update jogo.jogadores set avatar_dna = $2 where id = $1", [j.id, JSON.stringify(dna)]);
+    }
+    const txt = `⭐ *${j.nome}* fechou os olhos para sempre e despertou os *Olhos da Terra*. Agora enxerga pelo chão o que ninguém mais vê.`;
+    await feito(j, "tecnica", txt);
+    return txt;
+  }
+  const textoTerra = "O mundo escurece — e, no mesmo instante, acende de outro jeito. Cada passo ao redor vira um desenho na sua cabeça: o peso das pessoas, a água correndo sob a pedra, o coração de um rato a vinte passos.\n\nVocê nunca mais vai ver um rosto. Mas ninguém nunca mais vai te pegar de surpresa.\n" +
+    rodape("novas habilidades: Onda Sísmica e Ler o Chão", "+2 no dado ao defender", "−2 no dado contra espíritos e deuses", "veja em habilidades");
+
+  /** Presentes de NPC ligados à amizade (hoje: o pergaminho da Mestra Tsuchi para quem é da terra). */
+  async function aoFalar(j, npc, amizade, para) {
+    if (npc !== "R-DAI-6:mestra-tsuchi" || amizade < 2) return [];
+    if (await um(db, "select 1 from jogo.progresso where jogador_id = $1 and chave in ('b:olhos-da-terra', 'recebeu-pergaminho-terra')", [j.id])) return [];
+    if (!ehDaTerra(j)) return [{ para, texto: "A mestra bate o pé no chão e inclina a cabeça.\n— Hum. Seus passos não têm raiz. O que eu ensino é para quem nasceu da terra, criança. Mas volte para o chá." }];
+    await gravar(j, "recebeu-pergaminho-terra");
+    await db.query(`insert into jogo.inventario (jogador_id, item_id, tipo, qtd, dados) values ($1, 'pergaminho-terra', 'historia', 1, '{}') on conflict do nothing`, [j.id]);
+    return [{ para, texto: `A Mestra Tsuchi tira um rolo de dentro da manga e o empurra na sua direção, sem errar a mão.\n— Seus passos têm raiz. Leia, se tiver coragem. Mas saiba o preço: quem aprende a ver com os pés nunca mais vê com os olhos.\n${rodape("você recebeu: Pergaminho dos Olhos da Terra", "para ler: usar pergaminho")}` }];
+  }
+
+  async function lerPergaminho(j, para) {
+    if (!ehDaTerra(j)) return [{ para, texto: "As letras do pergaminho escorrem como areia entre os dedos. Isso não foi escrito para você: só quem é da terra consegue ler." }];
+    await gravar(j, "oferta-terra");
+    return [{ para, texto: "Você desenrola o pergaminho. As primeiras linhas são um aviso:\n\n_\"Quem ler até o fim deixa de ver com os olhos — para sempre. Em troca, a terra passa a ver por você.\"_\n\n*aceitar a terra* · *fechar o pergaminho*\n" + rodape("não tem volta") }];
+  }
+
+  // ── Minha história ──
+  async function historiaDe(j) { return (await um(db, "select valor from jogo.progresso where jogador_id = $1 and chave = 'historia'", [j.id]))?.valor ?? {}; }
+  /** Uma linha para a IA (narrador e NPCs): só sabor. O segredo vai junto, mas marcado como algo que ninguém do mundo sabe. */
+  async function historiaPara(j) {
+    const h = await historiaDe(j);
+    const partes = Object.keys(HISTORIA.secoes).filter((k) => h[k] && k !== "segredo").map((k) => `${k}: ${h[k]}`);
+    if (h.livre) partes.push(`mais: ${h.livre}`);
+    if (!partes.length && !h.segredo) return "";
+    return `História pessoal de ${j.nome} (apenas sabor para a cena; NUNCA concede poder, item, título ou parentesco com figuras do mundo): ${partes.join(" | ")}` +
+      (h.segredo ? ` | segredo que nenhum personagem do mundo conhece (não revele; pode no máximo criar um clima): ${h.segredo}` : "");
+  }
+  function textoHistoria(j, h, publico = false) {
+    const linhas = Object.entries(HISTORIA.secoes).filter(([k]) => !(publico && k === "segredo")).map(([k, dica]) =>
+      h[k] ? `*${k[0].toUpperCase()}${k.slice(1)}*\n${h[k]}` : publico ? null : `*${k[0].toUpperCase()}${k.slice(1)}* — _${dica.toLowerCase()} (em branco)_`).filter(Boolean);
+    if (h.livre) linhas.push(`*Mais sobre ${j.nome}*\n${h.livre}`);
+    return linhas.join("\n\n");
+  }
+  async function minhaHistoria(j, bruto, para) {
+    const corpo = bruto.trim().replace(/^[!/]?\s*minha\s+hist[óo]ria\s*:?\s*/i, "").trim();
+    const h = await historiaDe(j);
+    if (!corpo) {
+      return [{ para, texto: `*A história de ${j.nome}*\n\n${textoHistoria(j, h) || "Ainda em branco."}\n\n` +
+        `_Como escrever:_\n*minha história origem* Nasci numa família de pescadores…\n*minha história sonho* Quero achar meu irmão…\n*minha história medo* · *laço* · *segredo*\nou só *minha história* e o texto, para uma parte livre.\n\n` +
+        rodape("o narrador e as pessoas do mundo passam a levar isso em conta", "o segredo só o narrador conhece", "não dá poderes: é quem você é") }];
+    }
+    if (/^(apagar|limpar|zerar)$/i.test(corpo)) { await db.query("delete from jogo.progresso where jogador_id = $1 and chave = 'historia'", [j.id]); return [{ para, texto: "Sua história volta a ser uma página em branco." }]; }
+    const m = corpo.match(/^(origem|sonho|medo|la[cç]o|segredo)\s*[:\-–]?\s+([\s\S]+)$/i);
+    const secao = m ? semAcento(m[1].toLowerCase()) : "livre", texto = (m ? m[2] : corpo).replace(/\s+/g, " ").trim();
+    const erro = validarHistoria(texto);
+    if (erro) return [{ para, texto: erro }];
+    const hoje = new Date(agora()).toISOString().slice(0, 10);
+    const edicoes = h.dia === hoje ? (h.edicoes ?? 0) : 0;
+    if (edicoes >= HISTORIA.edicoesPorDia) return [{ para, texto: "Você já reescreveu sua história várias vezes hoje. Deixe a tinta secar até amanhã." }];
+    const novo = { ...h, [secao]: texto, dia: hoje, edicoes: edicoes + 1 };
+    await gravar(j, "historia", novo);
+    const faltam = Object.keys(HISTORIA.secoes).filter((k) => !novo[k]);
+    return [{ para, texto: `Anotado na sua história${secao === "livre" ? "" : ` (*${secao}*)`}:\n_${texto}_\n\n${rodape(secao === "segredo" ? "só o narrador conhece o seu segredo" : "o mundo passa a levar isso em conta", faltam.length ? `ainda em branco: ${faltam.join(", ")}` : "história completa", "minha história para ver tudo")}` }];
+  }
+
   // ── grupo: duelo e apoio ──
-  async function noGrupo(msg, mundo, t, autorJog, acharJogador) {
+  async function noGrupo(msg, mundo, t, autorJog, acharJogador, ehAdmin = false) {
     let m;
+    if (/^[!/]?historia\b/.test(t)) {
+      const alvo = (await acharJogador(msg)) ?? autorJog;
+      if (!alvo) return [{ para: msg.chat, texto: "Use: *historia @pessoa* (ou o nome do personagem)." }];
+      const txt = textoHistoria(alvo, await historiaDe(alvo), true);
+      return [{ para: msg.chat, texto: txt ? `*A história de ${alvo.nome}*\n\n${txt}` : `*${alvo.nome}* ainda não contou a própria história. _(no privado: minha história)_` }];
+    }
+    if (/^[!/]?conceder\b/.test(t)) {
+      if (!ehAdmin) return [{ para: msg.chat, texto: "Só um administrador do RPG pode conceder técnicas." }];
+      if (!/\b(terra|olhos da terra|olhos-da-terra)\b/.test(t)) return [{ para: msg.chat, texto: "Use: *conceder terra @pessoa* (Olhos da Terra)." }];
+      const alvo = await acharJogador({ ...msg, texto: msg.texto.replace(/olhos[- ]da[- ]terra|terra/i, "") });
+      if (!alvo) return [{ para: msg.chat, texto: "Não achei esse personagem. Use: *conceder terra @pessoa* ou o nome do personagem." }];
+      const anuncio = await concederTerra(alvo, "admin");
+      if (!anuncio) return [{ para: msg.chat, texto: `*${alvo.nome}* já tem os Olhos da Terra.` }];
+      const pv = alvo.wa_jid ?? alvo.wa_lid;
+      return [{ para: msg.chat, texto: anuncio }, ...(pv ? [{ para: pv, texto: `A terra te escolheu.\n\n${textoTerra}` }] : [])];
+    }
     if ((m = t.match(/^[!/]?(duelo|desafio|x1|apoiar|apoio)\b/))) {
       if (!autorJog) return [{ para: msg.chat, texto: "Você ainda não tem personagem neste mundo." }];
       const alvo = await acharJogador(msg);
@@ -198,7 +320,7 @@ export function criarExtras({ db, rng, agora }) {
     return null;
   }
 
-  return { comando, aoConcluir, aoVencer, aoDerrota, noGrupo };
+  return { comando, aoConcluir, aoVencer, aoDerrota, aoFalar, historiaPara, lerPergaminho, noGrupo };
 }
 
 export { PETS };

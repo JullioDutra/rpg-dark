@@ -75,6 +75,15 @@ for (const [classe, lista] of Object.entries(KITS)) lista.forEach((h, i) => { h.
 export const HABILIDADES = Object.fromEntries(Object.entries(KITS).map(([c, l]) => [c, l[0]]));
 export const habilidadesDe = (classe, nivel) => (KITS[classe] ?? []).filter((h) => nivel >= h.nivel);
 export const proximaHabilidade = (classe, nivel) => (KITS[classe] ?? []).find((h) => nivel < h.nivel) ?? null;
+// Olhos da Terra (地眼): técnica dos filhos da terra. Quem aceita perde a visão e passa a "ver" pelo chão.
+// Ganha duas habilidades e +2 no dado ao defender; contra o que não toca o chão (espíritos e deuses) ataca com −2 no dado.
+export const SISMICO = [
+  { id: "t1", nome: "Onda Sísmica", frase: "Você bate o pé. O chão responde como um tambor.", resumo: "golpe pelo chão que derruba: o inimigo perde a vez", tipo: "melhor", poder: 1.5, prende: 1, mp: 8, recarga: 3, nivel: 1 },
+  { id: "t2", nome: "Ler o Chão", frase: "Você sente cada passo dele antes de acontecer.", resumo: "esquiva 70% e prepara o próximo golpe (+50%)", tipo: "guarda", protecao: 0.7, duracao: 1, foco: true, mp: 4, recarga: 3, nivel: 1 },
+];
+export const NAO_TOCA_O_CHAO = ["espiritual", "divino"];
+const habDe = (j, id) => (KITS[j.classe] ?? []).find((h) => h.id === id) ?? (j.sismico ? SISMICO.find((h) => h.id === id) : null) ?? null;
+const custoMana = (j, h) => (j.mpMax > 0 ? h.mp : 0);
 export const MAGIA = { nome: "Magia elemental", poder: 1.3, mp: 6 };
 export const MAX_ITENS_POR_LUTA = 2;
 
@@ -140,7 +149,7 @@ export const AJUSTE_SOLO = { medio: { hp: 0.7, ataque: 0.85 }, alto: { hp: 0.55,
  * opts: equip (bônus), itens ({id: qtd} consumíveis de luta), solo, eco (sombra de um vilão já derrotado no mundo),
  * bonusDano (ex.: 1.1 de um juramento de vingança), aliados (nº de jogadores, escala a vida do inimigo).
  */
-export function novoCombate(j, vilao, nivel, { agora = Date.now(), solo = true, equip = {}, itens = {}, eco = false, bonusDano = 1, aliados = 1, pet = null } = {}) {
+export function novoCombate(j, vilao, nivel, { agora = Date.now(), solo = true, equip = {}, itens = {}, eco = false, bonusDano = 1, aliados = 1, pet = null, sismico = false } = {}) {
   const at = atributosVilao(nivel, vilao.tier, vilao.arquetipo);
   const aj = solo && AJUSTE_SOLO[vilao.tier];
   if (aj) { at.HP = Math.round(at.HP * aj.hp); at.FOR = Math.round(at.FOR * aj.ataque); at.MAG = Math.round(at.MAG * aj.ataque); }
@@ -151,7 +160,7 @@ export function novoCombate(j, vilao, nivel, { agora = Date.now(), solo = true, 
     rodada: 1,
     jogador: { id: j.id, nome: j.nome, classe: j.classe, nivel: j.nivel, hp: j.hp, hpMax: j.hp_max, mp: j.mp, mpMax: j.mp_max,
       at: atributosEfetivos(j, agora, equip), elemento: elementoBase(j.atributo_magico), recargas: {}, itens: itensLuta, itensUsados: 0,
-      protecao: 0, protecaoRodadas: 0, foco: false, bonusDano },
+      protecao: 0, protecaoRodadas: 0, foco: false, bonusDano, sismico },
     inimigo: { id: vilao.id, nome: eco ? `Eco de ${vilao.nome}` : vilao.nome, nivel, tier: vilao.tier, arquetipo: vilao.arquetipo, elemento: vilao.elemento,
       fraqueza: vilao.fraqueza, habilidade: vilao.habilidade, hp: at.HP, hpMax: at.HP, at,
       postura: POSTURA[vilao.tier] ?? 0, posturaMax: POSTURA[vilao.tier] ?? 0, atordoado: false, vulneravel: false, preso: 0, fraco: 0, queima: 0, queimaDano: 0,
@@ -189,10 +198,10 @@ export function menu(e) {
   add({ tipo: "atacar" }, "Atacar");
   add({ tipo: "defender" }, "Defender");
   if (j.mpMax > 0) add({ tipo: "magia" }, `Magia de ${j.elemento ?? "mana"}`, `${MAGIA.mp} de mana`, j.mp < MAGIA.mp ? "sem mana" : null);
-  for (const h of habilidadesDe(j.classe, j.nivel)) {
-    const espera = j.recargas[h.id] ?? 0;
-    add({ tipo: "habilidade", id: h.id }, h.nome, [h.resumo, h.mp ? `${h.mp} de mana` : null].filter(Boolean).join(" · "),
-      espera ? `espera ${espera}` : j.mp < h.mp ? "sem mana" : null);
+  for (const h of [...habilidadesDe(j.classe, j.nivel), ...(j.sismico ? SISMICO : [])]) {
+    const espera = j.recargas[h.id] ?? 0, mp = custoMana(j, h);
+    add({ tipo: "habilidade", id: h.id }, h.nome, [h.resumo, mp ? `${mp} de mana` : null].filter(Boolean).join(" · "),
+      espera ? `espera ${espera}` : j.mp < mp ? "sem mana" : null);
   }
   for (const [id, q] of Object.entries(j.itens ?? {})) if (q > 0) {
     const c = CONSUMIVEIS[id];
@@ -211,8 +220,8 @@ export function escolher(e, texto) {
   if (/^(a|atacar|ataque|ataco|bater|golpe)$/.test(t)) return por((x) => x.acao.tipo === "atacar");
   if (/^(d|defender|defesa|defendo|bloquear)$/.test(t)) return por((x) => x.acao.tipo === "defender");
   if (/^(m|m1|magia|feitico|feitiço)$/.test(t)) return por((x) => x.acao.tipo === "magia") ?? { erro: "Sua classe não usa magia." };
-  const h = t.match(/^h([1-4])$/);
-  if (h) return por((x) => x.acao.id === `h${h[1]}`) ?? { erro: "Você ainda não aprendeu essa habilidade." };
+  const h = t.match(/^([ht])([1-4])$/);
+  if (h) return por((x) => x.acao.id === `${h[1]}${h[2]}`) ?? { erro: "Você ainda não aprendeu essa habilidade." };
   if (/^(habilidade|skill|especial|h)$/.test(t)) return por((x) => x.acao.tipo === "habilidade");
   if (/^((i|item|usar|usa|bebo|beber) )?(pocao|poção|p|i)$/.test(t)) return por((x) => x.acao.id === "pocao") ?? { erro: "Você não tem poções." };
   if (/^(f|fugir|fujo|correr|corro)$/.test(t)) return por((x) => x.acao.tipo === "fugir") ?? { erro: "Não dá para fugir de um chefe." };
@@ -247,7 +256,9 @@ export function resolverRodada(estado, acao, rng) {
   const e = structuredClone(estado);
   const { jogador: j, inimigo: i } = e;
   e.log = [];
-  const hab = acao.tipo === "habilidade" ? (KITS[j.classe] ?? []).find((h) => h.id === (acao.id ?? "h1")) : null;
+  const habBase = acao.tipo === "habilidade" ? habDe(j, acao.id ?? "h1") : null;
+  // "melhor": usa o atributo mais forte do jogador; o custo de mana some para quem não tem mana
+  const hab = habBase ? { ...habBase, mp: custoMana(j, habBase), tipo: habBase.tipo === "melhor" ? (j.at.MAG > j.at.FOR ? "magico" : "fisico") : habBase.tipo } : null;
 
   // Validação antes de gastar a rodada
   if (acao.tipo === "magia" && (j.mpMax === 0 || j.mp < MAGIA.mp)) return { estado, fim: null, erro: j.mpMax === 0 ? "Sua classe não usa magia." : `Falta mana (precisa de ${MAGIA.mp}).` };
@@ -281,7 +292,8 @@ export function resolverRodada(estado, acao, rng) {
     if (elemento > 1) { e.log.push(`${i.nome} se contorce: é o ponto fraco dele.`); if (i.posturaMax) i.postura -= 2; }
     return dano;
   };
-  const bd = bonusDado(j.at);
+  const cegoNoAr = j.sismico && NAO_TOCA_O_CHAO.includes(i.arquetipo);
+  const bd = bonusDado(j.at) - (cegoNoAr ? 2 : 0);
 
   // 1) Ação do jogador
   if (acao.tipo === "atacar") ferir("fisico", 1, rolar(rng, bd), n(pick(GOLPE_CLASSE[j.classe] ?? GOLPE_CLASSE.Espadachim, e.rodada), { a: i.nome }) + ".");
@@ -314,7 +326,7 @@ export function resolverRodada(estado, acao, rng) {
       if (hab.protecao) { j.protecao = hab.protecao; j.protecaoRodadas = hab.duracao ?? 1; }
     }
   } else if (acao.tipo === "defender") {
-    const d = rolar(rng, bd);
+    const d = rolar(rng, bd + (j.sismico && !cegoNoAr ? 2 : 0));
     defesa = d.defesa;
     const mana = j.mpMax ? Math.min(j.mpMax - j.mp, Math.ceil(j.mpMax * 0.06)) : 0; j.mp += mana;
     e.log.push(`${dadoTxt(d).replace(d.texto, d.faixa === "critico" ? "defesa perfeita" : d.faixa === "falha" ? "guarda aberta" : `bloqueia ${Math.round(defesa * 100)}%`)}. Você firma os pés e se protege.${mana ? ` _(+${mana} de mana)_` : ""}`);

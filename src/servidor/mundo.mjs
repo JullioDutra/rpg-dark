@@ -279,7 +279,7 @@ export function criarMundo({ db, ia = null, rng, agora, ganchos = {} }) {
       const sistema = `Você interpreta ${p.nome}, ${p.papel}, num RPG de anime (Yotsuhoshi) jogado no WhatsApp, em português do Brasil. Jeito de falar: ${p.jeito}. ` +
         `Você SABE disto e deve contar com suas palavras${daHistoria || !rel ? " nesta conversa" : " se fizer sentido"}: ${p.sabe}. ` +
         `Regras: responda só como o personagem, em até 450 caracteres, sem emojis, sem listas; falas entre aspas ou com travessão; não invente fatos grandes do mundo além do que você sabe; ` +
-        `nunca dê itens, poderes ou números; não resolva a missão pelo jogador. Relação com o jogador: ${amizade >= AMIZADE.proximo ? "amigo próximo, fala com carinho" : amizade >= AMIZADE.amigo ? "amigo" : rel ? "conhecido" : "primeiro encontro"}.`;
+        `nunca dê itens, poderes ou números; não resolva a missão pelo jogador. ${ganchos.historiaPara ? await ganchos.historiaPara(j) : ""} Relação com o jogador: ${amizade >= AMIZADE.proximo ? "amigo próximo, fala com carinho" : amizade >= AMIZADE.amigo ? "amigo" : rel ? "conhecido" : "primeiro encontro"}.`;
       const esquema = { type: "object", additionalProperties: false, required: ["fala"], properties: { fala: { type: "string" } } };
       try {
         const res = await Promise.race([
@@ -295,6 +295,7 @@ export function criarMundo({ db, ia = null, rng, agora, ganchos = {} }) {
       await db.query(`insert into jogo.inventario (jogador_id, item_id, tipo, qtd, dados) values ($1, 'pocao', 'consumivel', 2, '{}') on conflict (jogador_id, item_id) do update set qtd = jogo.inventario.qtd + 2`, [j.id]);
       saidas.push({ para, texto: `${p.nome} coloca um embrulho na sua mão. — Leva. Você vai precisar mais do que eu.\n${rodape("+2 poções de cura")}` });
     }
+    if (ganchos.aoFalar) saidas.push(...(await ganchos.aoFalar(j, chave, amizade, para)));
     saidas.push(...(await avancar(j, rid, { t: "falar", a: nid }, para, st)));
     return saidas;
   }

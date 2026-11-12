@@ -80,7 +80,7 @@ export function criarNarrador({ db, ia, agora = () => Date.now() }) {
       .reverse().map((c) => ({ role: c.papel === "jogador" ? "user" : "assistant", content: c.texto }));
     const ficha = { nome: j.nome, classe: j.classe, casta: j.casta, nivel: j.nivel, rank: j.rank, hp: `${j.hp}/${j.hp_max}`, mp: `${j.mp}/${j.mp_max}`,
       atributo_magico: j.atributo_magico, regiao: regiao?.nome, em_viagem_para: viagem ? REGIAO.get(viagem.destino)?.nome : null,
-      encontro_pendente: Boolean(pendente) };
+      encontro_pendente: Boolean(pendente), ...(contexto?.historia && { historia_pessoal: contexto.historia }) };
 
     const r = await Promise.race([
       narrar(ia, { bibliaDoMundo: biblia(j) + (contexto ? `\nLugar exato: ${contexto.local ?? "—"}\nPessoas que existem aqui (use só estas): ${contexto.npcs.join("; ") || "ninguém conhecido"}` : ""),

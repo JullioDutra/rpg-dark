@@ -139,7 +139,7 @@ export function criarJogo({ db, sal = process.env.TELEFONE_SAL ?? "", admins = (
     if (ehComando(t, "ficha", "carta", "minha ficha", "minha carta")) return ficha(msg, mundo, msg.chat);
     if (ehComando(t, "ajuda", "comandos")) return [{ para: msg.chat, texto: AJUDA }];
     // Duelo e apoio entre jogadores
-    if (/^[!/]?(duelo|desafio|x1|apoiar|apoio|aceitar|aceito|recusar|recuso)\b/.test(t)) {
+    if (/^[!/]?(duelo|desafio|x1|apoiar|apoio|aceitar|aceito|recusar|recuso|historia|conceder)\b/.test(t)) {
       const idt = await identidade(msg.autor);
       const eu = await um(db, "select * from jogo.jogadores where mundo_id = $1 and identidade_id = $2 and estado = 'ativo'", [mundo.id, idt.id]);
       const achar = async (m) => {
@@ -150,7 +150,7 @@ export function criarJogo({ db, sal = process.env.TELEFONE_SAL ?? "", admins = (
         return todos.find((x) => alvos.some((a) => [dig(x.wa_jid), dig(x.wa_lid)].some((d) => d && (d === a || mesmoNumero(d, a)))))
           ?? (nome.length >= 3 ? todos.find((x) => x.nome_normalizado === nome || x.nome_normalizado.startsWith(nome)) : null) ?? null;
       };
-      const r = await extras.noGrupo(msg, mundo, t, eu, achar);
+      const r = await extras.noGrupo(msg, mundo, t, eu, achar, /^[!/]?conceder\b/.test(t) ? await ehAdmin(msg) : false);
       if (r) return r;
     }
     if (ehComando(t, "feitos", "noticias", "mural")) {
@@ -203,19 +203,20 @@ export function criarJogo({ db, sal = process.env.TELEFONE_SAL ?? "", admins = (
     const tc = t.replace(/^[!/]/, "");
     // 2) Itens, loja, descanso
     const it = await itens(j, tc, para);
+    if (it.pergaminhoTerra) return extras.lerPergaminho(j, para);
     if (it.tratado) return it.mudouRegiao ? [...it.saidas, ...(await mundo.chegada(j, para))] : it.saidas;
     // 3) Exploração e viagens (também confere chegadas pendentes); ao mudar de região, mostra o lugar
     const antes = j.regiao_atual;
     const ehLocal = /^(ir|vou|visitar|entrar)\b/.test(tc) ? await mundo.comando(j, tc, msg.texto, para) : { tratado: false };
     if (ehLocal.tratado) return ehLocal.saidas;
     // Comandos do mundo vivo têm verbo próprio: a exploração só confere chegadas (para "falar sobre o mapa" não abrir o mapa)
-    const direto = /^(falar|conversar|perguntar|locais|lugares|olhar|missao|missoes|historia|capitulo|objetivo|diario|caminho|segredos|pistas|amigos|amizades|feitos|noticias|vingar|vinganca|pet|boatos|boato|rumores|contos|ouvir|lembrar|ecos|eco|aceitar pacto|recusar pacto|pacto|resistir|purificar)\b/.test(tc);
+    const direto = /^(falar|conversar|perguntar|locais|lugares|olhar|missao|missoes|historia|capitulo|objetivo|diario|caminho|segredos|pistas|amigos|amizades|feitos|noticias|vingar|vinganca|pet|boatos|boato|rumores|contos|ouvir|lembrar|ecos|eco|aceitar pacto|recusar pacto|pacto|resistir|purificar|minha historia|aceitar a terra|aceito a terra|fechar o pergaminho|fechar pergaminho)\b/.test(tc);
     const e = await exploracao(j.id, info || direto ? { ...msg, texto: "" } : /^(ir|vou)\b/.test(tc) ? { ...msg, texto: tc.replace(/^(ir|vou)\s+(para |pra |a |ao |à )?/, "viajar ") } : msg);
     j = { ...j, ...e.jogador };
     const chegou = j.regiao_atual !== antes ? await mundo.chegada(j, para) : [];
     if (e.tratado) return [...e.saidas, ...chegou];
     // 4) Mundo vivo: locais, NPCs, missão, segredos, amigos, feitos, vingar; pet, pactos, boatos, ecos
-    const ex = await extras.comando(j, tc, para);
+    const ex = await extras.comando(j, tc, para, msg.texto);
     if (ex.tratado) return [...e.saidas, ...chegou, ...ex.saidas];
     const mv = await mundo.comando(j, tc, msg.texto, para);
     if (mv.tratado) return [...e.saidas, ...chegou, ...mv.saidas];
@@ -226,7 +227,7 @@ export function criarJogo({ db, sal = process.env.TELEFONE_SAL ?? "", admins = (
     if (ehComando(t, "ficha", "carta", "minha ficha", "minha carta", "status")) return [...e.saidas, ...chegou, { para, imagem: cartaPersonagem(j, j.avatar_dna), legenda: legendaFicha(j, agora()) }];
     if (ehComando(t, "ajuda", "comandos", "menu", "oi", "ola")) return [...e.saidas, ...chegou, { para, texto: AJUDA }];
     if (chegou.length) return [...e.saidas, ...chegou];
-    if (ehAcaoLivre(msg.texto)) return [...e.saidas, ...(await narrador(j, msg.texto, para, await mundo.contextoNarrador(j)))];
+    if (ehAcaoLivre(msg.texto)) return [...e.saidas, ...(await narrador(j, msg.texto, para, { ...(await mundo.contextoNarrador(j)), historia: await extras.historiaPara(j) }))];
     return [...e.saidas, { para, texto: `${ambiente(j.regiao_atual, agora() / 60_000 | 0)}\n\nO que você faz?\n${rodape("locais · missao · explorar · itens · ajuda", "ou escreva sua ação começando com >")}` }];
   }
 
@@ -390,6 +391,7 @@ const AJUDA = `*Como jogar*
 entrar no mundo — criar seu personagem
 ficha — sua carta · feitos — o que aconteceu no mundo
 duelo @pessoa — duelo amistoso · apoiar @pessoa — mandar forças
+historia @pessoa — ler a história de alguém
 
 *Pelo mundo* (no privado)
 locais — o que existe onde você está
@@ -404,6 +406,7 @@ viajar <região> · rota · mapa
 itens — bolsa, o que cada coisa faz e quantos usos tem
 equipar <nº> · usar <nº> · loja · descansar
 habilidades · ficha · segredos · amigos · pet
+minha história — conte quem é o seu personagem
 boatos — histórias que o povo conta · lembrar — ecos do passado
 
 *Numa luta*

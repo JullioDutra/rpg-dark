@@ -139,6 +139,22 @@ t("eco tem menos vida; juramento e bênçãos aumentam o dano", () => {
   const db = b.inimigo.hp - resolverRodada(b, { tipo: "atacar" }, d(10, 10)).estado.inimigo.hp;
   assert(db > da);
 });
+t("Olhos da Terra: duas habilidades novas, +2 ao defender, −2 contra quem não toca o chão; sem mana custa zero", () => {
+  const e = novoCombate(jog("Cavaleiro"), V("V001"), 2, { sismico: true });
+  const m = menu(e).map((x) => x.rotulo);
+  assert(m.includes("Onda Sísmica") && m.includes("Ler o Chão"));
+  assert(!menu(novoCombate(jog("Cavaleiro"), V("V001"), 2)).some((x) => x.rotulo === "Onda Sísmica"));
+  const r = resolverRodada(e, escolher(e, "t1").acao, d(10, 10)).estado;
+  assert(r.inimigo.hp < e.inimigo.hp && r.jogador.hp === e.jogador.hp, "Onda Sísmica fere e o inimigo perde a vez");
+  const semTerra = resolverRodada(novoCombate(jog("Cavaleiro"), V("V001"), 2), { tipo: "defender" }, d(13, 10)).estado;   // 13 → firme (50%)
+  const comTerra = resolverRodada(e, { tipo: "defender" }, d(13, 10)).estado;                                              // 13+2 → forte (70%)
+  assert(e.jogador.hp - comTerra.jogador.hp < e.jogador.hp - semTerra.jogador.hp);
+  const esp = VILOES.find((v) => v.arquetipo === "espiritual");
+  const f = novoCombate(jog("Cavaleiro", { nivel: 30 }), esp, esp.nivel, { sismico: true });
+  assert.match(resolverRodada(f, { tipo: "atacar" }, d(7, 10)).estado.log[0], /de raspão/);   // 7−2 = 5 → raspão
+  const am = novoCombate(jog("Anti-magia", { mp: 0, mp_max: 0 }), V("V001"), 2, { sismico: true });
+  assert.equal(menu(am).find((x) => x.acao.id === "t1").bloqueio, null);
+});
 t("vitória e derrota encerram a batalha", () => {
   let e = novoCombate(jog("Espadachim", { nivel: 30, atributos: { FOR: 400, DEF: 300, MAG: 5, RES: 300, VEL: 300, SOR: 7 } }), V("V001"), 2);
   assert.equal(resolverRodada(e, { tipo: "atacar" }, d(10)).fim, "vitoria");

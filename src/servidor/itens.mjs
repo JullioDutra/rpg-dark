@@ -75,6 +75,7 @@ export function criarItens({ db, agora }) {
       const l = achar(linhas, m[2], (x) => item(x.item_id)?.nome ?? x.item_id);
       const c = l && CONSUMIVEIS[l.item_id];
       if (!l) return dizer("Você não tem isso na bolsa. Veja com *itens*.");
+      if (l.item_id === "pergaminho-terra") return { tratado: false, saidas: [], pergaminhoTerra: true };
       if (!c) return dizer(item(l.item_id)?.tipo === "equipamento" ? `Isso se equipa: *equipar ${item(l.item_id).nome.toLowerCase()}*.` : "Isso não se usa assim.");
       if (!c.fora) return dizer(`${c.nome} só serve durante uma luta.`);
       const partes = [];

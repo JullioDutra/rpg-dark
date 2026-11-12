@@ -3,7 +3,7 @@
 // Devolve também `eventos` (vilão derrotado, derrota, nível…) para o mundo vivo anunciar no grupo e avançar a história.
 import { readFileSync } from "node:fs";
 import { semAcento } from "../linguagem/normalizar.mjs";
-import { novoCombate, resolverRodada, painel, textoMenu, escolher, recompensa, aplicarXP, atributoPrincipal, HABILIDADES, CLASSES, KITS, proximaHabilidade } from "../regras/combate.mjs";
+import { novoCombate, resolverRodada, painel, textoMenu, escolher, recompensa, aplicarXP, atributoPrincipal, HABILIDADES, CLASSES, KITS, proximaHabilidade, SISMICO } from "../regras/combate.mjs";
 import { REGIAO, MATERIAIS } from "../regras/exploracao.mjs";
 import { bonusEquip, item as itemDe, todosItens, EQUIP_CLASSE } from "../regras/itens.mjs";
 import { XP_PROXIMO } from "../../scripts/balanceamento.mjs";
@@ -68,7 +68,10 @@ export function criarCombate({ db, rng, agora }) {
         await q("update jogo.jogadores set hp = $2, mp = $3, recuperacao_em = $4 where id = $1", [j.id, j.hp, j.mp, iso]);
       }
       if (/^(distribuir|pontos)\b/.test(t)) { await distribuir(q, j, t, dizer); return fim(true); }
-      if (/^(habilidades|tecnicas|golpes|skills)$/.test(t)) { dizer(textoHabilidades(j)); return fim(true); }
+      if (/^(habilidades|tecnicas|golpes|skills)$/.test(t)) {
+        const terra = (await q("select 1 from jogo.progresso where jogador_id = $1 and chave = 'b:olhos-da-terra'", [j.id])).length > 0;
+        dizer(textoHabilidades(j, terra)); return fim(true);
+      }
       if (!/^(lutar|enfrentar|luto|lutar!|atacar|a|aceito lutar|bora|1)$/.test(t)) return fim(false);
       const pend = (await q("select * from jogo.exploracoes where jogador_id = $1 and pendente and tipo = 'encontro' for update", [j.id]))[0];
       if (!pend) { if (["a", "atacar", "1"].includes(t)) return fim(false); dizer("Não há ninguém para enfrentar aqui. Use *explorar*, ou vá a um lugar perigoso com *ir <lugar>*."); return fim(true); }
@@ -86,7 +89,7 @@ export function criarCombate({ db, rng, agora }) {
       const pet = (await q("select nome, estagio from jogo.pets where jogador_id = $1", [j.id]))[0] ?? null;
       const vd = pend.dados.lacaio ? { ...v, nome: nomeLacaio(v), tier: "comum" } : v;
       const estado = novoCombate(j, vd, pend.dados.inimigo.nivel, { agora: tempo, equip: bonusEquip(inv), eco: Boolean(pend.dados.eco),
-        itens: Object.fromEntries(inv.map((i) => [i.item_id, i.qtd])), bonusDano: bonusCampanha(chaves) * (juramento ? 1.15 : 1) * (1 + 0.1 * apoio), pet });
+        itens: Object.fromEntries(inv.map((i) => [i.item_id, i.qtd])), bonusDano: bonusCampanha(chaves) * (juramento ? 1.15 : 1) * (1 + 0.1 * apoio), pet, sismico: chaves.includes("b:olhos-da-terra") });
       estado.contexto = { lacaio: Boolean(pend.dados.lacaio), fixo: Boolean(pend.dados.fixo), eco: Boolean(pend.dados.eco), vilao: v.id, juramento };
       const nb = (await q(`insert into jogo.batalhas (mundo_id, tipo, canal_wa_id, rodada, status, estado)
         values ($1, 'solo', $2, 1, 'aguardando', $3) returning id`, [j.mundo_id, para, JSON.stringify(estado)]))[0];
@@ -242,12 +245,13 @@ export function criarCombate({ db, rng, agora }) {
 }
 
 /** Lista das habilidades da classe: as que já tem e as que ainda vai aprender. */
-export function textoHabilidades(j) {
+export function textoHabilidades(j, terra = false) {
   const kit = KITS[j.classe] ?? [];
   const linhas = kit.map((h) => j.nivel >= h.nivel
     ? `*${h.nome}* — ${h.resumo}${h.mp ? ` _(${h.mp} de mana)_` : ""}`
     : `_${h.nome} — aprende no nível ${h.nivel}_`);
   const prox = proximaHabilidade(j.classe, j.nivel);
+  if (terra) linhas.push("", "*Olhos da Terra*", ...SISMICO.map((h) => `*${h.nome}* — ${h.resumo}`), "_+2 no dado ao defender · −2 no dado contra espíritos e deuses (não tocam o chão)_");
   return `*Habilidades de ${j.classe}*\n\n${linhas.join("\n")}\n\n${rodape("além disso: atacar, defender" + (j.mp_max > 0 ? ", magia do seu elemento" : ""), prox ? `próxima no nível ${prox.nivel}` : "todas aprendidas")}`;
 }
 
