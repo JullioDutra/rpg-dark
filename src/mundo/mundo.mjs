@@ -2,10 +2,19 @@
 import { readFileSync } from "node:fs";
 import { REGIOES_A } from "./regioes-a.mjs";
 import { REGIOES_B } from "./regioes-b.mjs";
+import { NOVAS, FEMININAS, dnaNpc } from "./regioes-c.mjs";
 
 const ler = (f) => JSON.parse(readFileSync(new URL(`../../data/${f}`, import.meta.url), "utf8"));
 export const VILOES = new Map(ler("viloes.json").map((v) => [v.id, v]));
 export const MUNDO = { ...REGIOES_A, ...REGIOES_B };
+// Novas personagens entram nos locais indicados
+for (const [rid, lid, id, npc] of NOVAS) {
+  MUNDO[rid].npcs[id] = npc;
+  const l = MUNDO[rid].locais.find((x) => x.id === lid);
+  l.npcs = [...(l.npcs ?? []), id];
+}
+for (const r of Object.values(MUNDO)) for (const [id, n] of Object.entries(r.npcs)) n.fem = FEMININAS.has(id);
+export { dnaNpc, FEMININAS };
 
 export const COVIL = new Map();      // vilão → { regiao, local, ordem }
 export const CAPITULO = new Map();   // id → capítulo (+ regiao)

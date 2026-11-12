@@ -81,7 +81,8 @@ try {
   ok(/Kaito Ryuen/.test(textos(cer)) && /Primeira estrela/.test(textos(cer)) && /Quarta estrela/.test(textos(cer)) && cer.some((s) => s.espera), "cerimônia com 4 estrelas e suspense");
   ok(/Não entendi/.test(textos(await enviar(ev(JOG, "dragão supremo", P)))), "classe inválida pede de novo");
   const cl = await enviar(ev(JOG, "1", P));
-  ok(/Cabelo/.test(textos(cl)), "classe escolhida → aparência");
+  ok(/Feminino/.test(textos(cl)) && /Masculino/.test(textos(cl)), "classe escolhida → escolha entre feminino e masculino");
+  ok(/Cabelo/.test(textos(await enviar(ev(JOG, "feminino", P)))), "gênero escolhido → cabelo");
   for (const r of ["2", "ruivo", "3"]) await enviar(ev(JOG, r, P));
   const prev = await enviar(ev(JOG, "0", P));
   ok(prev[0]?.imagem?.length > 1000 && /confirmar/.test(prev[0].legenda), "prévia do avatar em PNG");
@@ -100,6 +101,7 @@ try {
   ok(/já vive neste mundo/.test(textos(await enviar(ev(JOG, "entrar no mundo")))), "não cria 2º personagem");
   ok((await enviar(ev(JOG, "ficha")))[0]?.imagem, "ficha no grupo");
   ok(/^R-[A-Z]{3}-\d$/.test(j.regiao_atual), "região inicial gravada como ID do mapa");
+  ok(j.avatar_dna?.feminino === true, "personagem feminina: avatar com traços femininos");
   ok((await db.query("select qtd from jogo.inventario where jogador_id = $1 and item_id = 'pocao'", [j.id]))[0]?.qtd === 3, "kit inicial: 3 poções");
   ok(/Perigo:/.test(textos(await enviar(ev(JOG, "onde estou", P)))), "comando onde estou");
   ok(/Sua casa/.test(textos(await enviar(ev(JOG, "minha aldeia", P)))) && /Quem governa/.test(textos(await enviar(ev(JOG, "reino", P)))), "comandos aldeia e reino");

@@ -135,7 +135,7 @@ export async function testarMundoServidor({ db, jogador, outro, mensagem, grupo,
     await db.query("update jogo.jogadores set regiao_atual = 'R-WAT-1', local_atual = null where id = $1", [jogador.id]);
     for (let i = 0; i < 3; i++) { clock += 7 * 3_600_000; await enviar("falar mestre uo"); }
     assert.equal((await db.query("select amizade from jogo.relacoes where jogador_id = $1 and npc = 'R-WAT-1:mestre-uo'", [jogador.id]))[0].amizade, 3);
-    assert.match(texto(await enviar("amigos")), /Mestre Uo.*amiga/);
+    assert.match(texto(await enviar("amigos")), /Mestre Uo.*amigo/);
     // sai e volta: chegada sorteia a morte (rng 0 < 12%)
     await db.query("update jogo.jogadores set regiao_atual = 'R-WAT-2' where id = $1", [jogador.id]);
     await db.query(`insert into jogo.viagens (jogador_id, origem, destino, partida_em, chegada_em) values ($1, 'R-WAT-2', 'R-WAT-1', $2, $3)`, [jogador.id, new Date(clock - 700_000), new Date(clock - 1000)]);
@@ -143,7 +143,7 @@ export async function testarMundoServidor({ db, jogador, outro, mensagem, grupo,
     const ch = await enviar("viagem");
     assert(ch.some((x) => x.imagem && /Ryūgū-jō/.test(x.legenda)), "chegada com imagem da cidade");
     assert.match(texto(ch), /Mestre Uo\* está no chão/);
-    assert(doGrupo(ch).some((x) => /foi morta\(o\) por/.test(x.texto)));
+    assert(doGrupo(ch).some((x) => /foi morto por/.test(x.texto)));
     const morto = (await db.query("select * from jogo.npcs_mortos where jogador_id = $1", [jogador.id]))[0];
     const v = await enviar("vingar");
     assert.match(texto(v), /\+15% de dano/); assert(doGrupo(v).some((x) => /jurou vingar/.test(x.texto)));

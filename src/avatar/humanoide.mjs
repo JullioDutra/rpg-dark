@@ -14,7 +14,7 @@ export const CATALOGO = {
   sobrancelha: ["neutra", "brava", "triste", "grossa", "nenhuma"],
   boca: ["neutra", "sorriso", "sorriso-torto", "seria", "presa", "aberta", "lingua", "triste"],
   cabelo: ["espetado", "baguncado", "franja-longa", "longo", "flutuante", "rabo", "trancas", "tranca-lateral",
-    "careca", "meio-raspado", "coque", "chanel"],
+    "careca", "meio-raspado", "coque", "chanel", "maria-chiquinha", "rabo-alto", "ondulado", "hime"],
   corCabelo: Object.keys(CABELO),
   roupa: ["quimono", "samurai", "placas", "manto-alto", "corte", "jaqueta-penas", "trapos", "robe-mago",
     "sagrada", "couraca-osso", "nu"],
@@ -189,6 +189,33 @@ function cabelo(t, estilo, r) {
       frente.elipse(CX, 7, 4, 3.5);
       franja([24, 29, 35, 40], 21, 6);
       mechasLaterais(26);
+      break;
+    case "maria-chiquinha":   // dois rabos laterais
+      capa();
+      franja([23, 27, 31, 35, 39], 24, 5);
+      for (const lado of [-1, 1]) {
+        tras.elipse(CX + lado * 13, 17, 3, 3);
+        tras.poligono([[CX + lado * 11, 17], [CX + lado * 16, 16], [CX + lado * 21, 34], [CX + lado * 19, 50], [CX + lado * 14, 44], [CX + lado * 13, 28]]);
+      }
+      break;
+    case "rabo-alto":         // rabo de cavalo alto e comprido
+      capa();
+      frente.elipse(CX, 6.5, 3, 2.5);
+      tras.poligono([[CX - 2, 4], [CX + 4, 3], [CX + 20, 16], [CX + 22, 40], [CX + 17, 54], [CX + 14, 36], [CX + 9, 16]]);
+      franja([24, 28, 32, 36, 40], 24, 5);
+      mechasLaterais(30);
+      break;
+    case "ondulado":          // longo com ondas
+      capa();
+      tras.poligono([[18, 16], [46, 16], [51, 30], [48, 42], [52, 54], [46, 63], [18, 63], [12, 54], [16, 42], [13, 30]]);
+      franja([24, 29, 35, 40], 23, 6);
+      for (const lado of [-1, 1]) for (let k = 0; k < 4; k++) frente.elipse(CX + lado * (12.5 + (k % 2)), 22 + k * 5, 2.4, 3);
+      break;
+    case "hime":              // franja reta e mechas retas na altura do queixo
+      capa();
+      tras.poligono([[19, 16], [45, 16], [48, 58], [43, 63], [21, 63], [16, 58]]);
+      frente.retangulo(22, 17, 42, 21);
+      frente.poligono([[19.5, 17], [24, 17], [24, 36], [19.5, 36]]).poligono([[40, 17], [44.5, 17], [44.5, 36], [40, 36]]);
       break;
     case "chanel":
       capa();
@@ -405,6 +432,12 @@ const ACESSORIO = {
     t.pintar(t.mascara().linha(22, 21, 44, 27), "#1c1c1c");
   }],
   sardas: ["rosto", (t, c) => { for (const [x, y] of [[25, 31], [27, 32], [24, 32], [37, 32], [39, 31], [40, 32]]) t.set(x, y, c.pele[1]); }],
+  cilios: ["rosto", (t) => { for (const [x, y] of [[22, 25], [23, 24], [41, 25], [40, 24]]) t.set(x, y, "#1a1024"); }],
+  labios: ["rosto", (t, c) => { for (const x of [31, 32, 33]) t.set(x, 34, misturar("#d0506a", c.pele[2], 0.35)); }],
+  flor: ["frente", (t) => { for (const [x, y] of [[19, 14], [21, 14], [20, 13], [20, 15]]) t.set(x, y, "#ff9ac8"); t.set(20, 14, "#ffe060"); }],
+  laco: ["frente", (t, c) => { t.pintar(t.mascara().poligono([[27, 5], [31, 8], [27, 11]]).poligono([[37, 5], [33, 8], [37, 11]]), c.destaque ?? "#c0392b"); t.set(32, 8, "#ffffff"); }],
+  brincos: ["frente", (t) => { t.set(21, 30, "#ffd23a"); t.set(43, 30, "#ffd23a"); t.set(21, 31, "#ffd23a"); t.set(43, 31, "#ffd23a"); }],
+  "venda-olhos": ["frente", (t) => { t.pintar(t.mascara().retangulo(21, 25, 43, 28), "#e8e0d0"); t.pintar(t.mascara().retangulo(21, 28, 43, 28), "#b8b0a0"); }],
   rubor: ["rosto", (t) => { for (const x of [24, 25, 39, 40]) t.set(x, 31, "#f08a9a"); }],
   curativo: ["rosto", (t) => { t.pintar(t.mascara().retangulo(30, 29, 34, 30), "#f4e2c4"); }],
   "pintura-crescente": ["rosto", (t) => {
@@ -538,7 +571,8 @@ export function desenharHumanoide(t, d) {
     rosto: d.rosto ?? "oval", pele, cabelo: corCabelo, roupa: d.corRoupa, destaque: d.corRoupa?.[2],
     aura: d.aura, corPena: d.corPena, corPelagem: d.corPelagem, corAsas: d.corAsas, crista: d.crista,
   };
-  const acess = (d.acessorios ?? []).filter((a) => ACESSORIO[a]);
+  // Traços femininos: cílios e lábios entram sozinhos; o resto (cabelo, flor, laço, brincos) é escolha
+  const acess = [...(d.feminino ? ["cilios", "labios"] : []), ...(d.acessorios ?? [])].filter((a, i, l) => ACESSORIO[a] && l.indexOf(a) === i);
   const fase = (f) => acess.filter((a) => ACESSORIO[a][0] === f).forEach((a) => ACESSORIO[a][1](t, ctx, r));
 
   const hair = cabelo(t, d.cabelo ?? "baguncado", r);

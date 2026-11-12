@@ -1,7 +1,8 @@
 // Mundo vivo no servidor: chegada às regiões (com imagens), locais, NPCs (amizade, morte, vingança), capítulos da
 // história (o motor avança os passos por ações concretas; a IA só narra), vilões em covis com derrota única e
 // anúncio dos feitos no grupo.
-import { MUNDO, VILOES, COVIL, CAPITULO, local as localDe, npcDe } from "../mundo/mundo.mjs";
+import { MUNDO, VILOES, COVIL, CAPITULO, local as localDe, npcDe, dnaNpc } from "../mundo/mundo.mjs";
+import { renderizar } from "../avatar/index.mjs";
 import { REGIAO, normal } from "../regras/exploracao.mjs";
 import { aplicarXP } from "../regras/combate.mjs";
 import { item as itemDe } from "../regras/itens.mjs";
@@ -16,6 +17,7 @@ const GRANDES = ["excalibur", "kokugai", "tenmon", "shitencho"];
 export const AMIZADE = { amigo: 3, proximo: 6, intervaloMs: 6 * 3_600_000, chanceMorte: 0.12, intervaloMorteMs: 7 * 86_400_000 };
 
 export const imagemLocal = (rid, l) => renderCena(l.cena, REGIAO.get(rid)?.reino ?? "Kokū", `${rid}:${l.id}`);
+export const imagemNpc = (rid, id) => renderizar(dnaNpc(rid, id, MUNDO[rid].npcs[id], REGIAO.get(rid)?.reino ?? "Kokū"), 6);
 const nomeRegiao = (rid) => REGIAO.get(rid)?.nome ?? rid;
 const xpCapitulo = (nivel) => Math.round(60 * nivel ** 1.2);
 
@@ -233,7 +235,7 @@ export function criarMundo({ db, ia = null, rng, agora, ganchos = {} }) {
     await db.query("update jogo.jogadores set local_atual = $2 where id = $1", [j.id, l.id]);
     j.local_atual = l.id;
     const mortos = new Set((await db.query("select npc from jogo.npcs_mortos where mundo_id = $1", [j.mundo_id])).map((x) => x.npc));
-    const gente = (l.npcs ?? []).map((n) => { const p = r.npcs[n]; return mortos.has(`${rid}:${n}`) ? `_${p.nome} (${p.papel}) — há flores onde ela(e) costumava ficar_` : `*${p.nome}*, ${p.papel}`; });
+    const gente = (l.npcs ?? []).map((n) => { const p = r.npcs[n]; return mortos.has(`${rid}:${n}`) ? `_${p.nome} (${p.papel}) — há flores onde ${p.fem ? "ela" : "ele"} costumava ficar_` : `*${p.nome}*, ${p.papel}`; });
     const servicos = [l.servicos?.includes("loja") && "*loja*", l.servicos?.includes("descanso") && "*descansar*"].filter(Boolean);
     const saidas = [{ para, imagem: imagemLocal(rid, l), legenda: `*${l.nome}*\n\n${l.desc}${gente.length ? `\n\nAqui você vê: ${gente.join("; ")}.` : ""}` +
       `${servicos.length || gente.length ? `\n${rodape(...servicos.map((s) => s.replace(/\*/g, "")), gente.length ? "falar <nome>" : null)}` : ""}` }];
@@ -258,7 +260,7 @@ export function criarMundo({ db, ia = null, rng, agora, ganchos = {} }) {
     if (npcLocal && j.local_atual !== npcLocal) { await db.query("update jogo.jogadores set local_atual = $2 where id = $1", [j.id, npcLocal]); j.local_atual = npcLocal; }
     const morto = await um(db, "select * from jogo.npcs_mortos where mundo_id = $1 and npc = $2", [j.mundo_id, chave]);
     if (morto) {
-      const saidas = [{ para, texto: `Onde *${p.nome}* costumava ficar há flores e uma lamparina acesa. ${VILOES.get(morto.vilao_id)?.nome ?? "Alguém"} tirou a vida dela(e).\n\nEntre as flores, um bilhete com a letra de ${p.nome}: _"Se eu não puder te contar pessoalmente: ${p.sabe}."_` }];
+      const saidas = [{ para, texto: `Onde *${p.nome}* costumava ficar há flores e uma lamparina acesa. ${VILOES.get(morto.vilao_id)?.nome ?? "Alguém"} tirou a vida ${p.fem ? "dela" : "dele"}.\n\nEntre as flores, um bilhete com a letra de ${p.nome}: _"Se eu não puder te contar pessoalmente: ${p.sabe}."_` }];
       saidas.push(...(await avancar(j, rid, { t: "falar", a: nid }, para, st)));
       return saidas;
     }
@@ -288,7 +290,7 @@ export function criarMundo({ db, ia = null, rng, agora, ganchos = {} }) {
       } catch { /* cai no texto pronto */ }
     }
     resposta ??= `— ${p.sabe[0].toUpperCase()}${p.sabe.slice(1)}.`;
-    const saidas = [{ para, texto: `*${p.nome}*, ${p.papel}\n\n${resposta}${ganha && amizade === AMIZADE.amigo ? `\n\n_${p.nome} agora te considera uma pessoa amiga._` : ganha && amizade === AMIZADE.proximo ? `\n\n_${p.nome} confia em você como em poucos._` : ""}` }];
+    const saidas = [{ para, imagem: imagemNpc(rid, nid), legenda: `*${p.nome}*, ${p.papel}\n\n${resposta}${ganha && amizade === AMIZADE.amigo ? `\n\n_${p.nome} agora te considera ${j.avatar_dna?.feminino ? "uma amiga" : "um amigo"}._` : ganha && amizade === AMIZADE.proximo ? `\n\n_${p.nome} confia em você como em poucos._` : ""}` }];
     if (ganha && amizade === AMIZADE.amigo) {
       await db.query(`insert into jogo.inventario (jogador_id, item_id, tipo, qtd, dados) values ($1, 'pocao', 'consumivel', 2, '{}') on conflict (jogador_id, item_id) do update set qtd = jogo.inventario.qtd + 2`, [j.id]);
       saidas.push({ para, texto: `${p.nome} coloca um embrulho na sua mão. — Leva. Você vai precisar mais do que eu.\n${rodape("+2 poções de cura")}` });
@@ -312,8 +314,8 @@ export function criarMundo({ db, ia = null, rng, agora, ganchos = {} }) {
     const novo = await db.query(`insert into jogo.npcs_mortos (mundo_id, npc, vilao_id, jogador_id, criado_em) values ($1, $2, $3, $4, $5) on conflict do nothing returning 1`,
       [j.mundo_id, a.npc, v.id, j.id, new Date(agora())]);
     if (!novo.length) return [];
-    return [{ para, texto: `Tem gente demais na rua, e ninguém fala alto.\n\nVocê abre caminho e entende antes de ver: *${p.nome}* está no chão, coberta(o) por um pano. Alguém segura seu braço.\n— Foi *${v.nome_completo}*. Veio procurando por você. ${p.nome} não disse onde você estava.\n\nVocê pode *vingar* ${p.nome} — ou carregar isso em silêncio.` },
-      ...(await feito(j, "luto", `*${p.nome}*, ${p.papel} de ${nomeRegiao(rid)}, foi morta(o) por *${v.nome_completo}*. Era amiga(o) de ${j.nome}.`, { grupo: mundo.grupo_wa_id }))];
+    return [{ para, texto: `Tem gente demais na rua, e ninguém fala alto.\n\nVocê abre caminho e entende antes de ver: *${p.nome}* está no chão, ${p.fem ? "coberta" : "coberto"} por um pano. Alguém segura seu braço.\n— Foi *${v.nome_completo}*. Veio procurando por você. ${p.nome} não disse onde você estava.\n\nVocê pode *vingar* ${p.nome} — ou carregar isso em silêncio.` },
+      ...(await feito(j, "luto", `*${p.nome}*, ${p.papel} de ${nomeRegiao(rid)}, foi ${p.fem ? "morta" : "morto"} por *${v.nome_completo}*. Era ${p.fem ? "amiga" : "amigo"} de ${j.nome}.`, { grupo: mundo.grupo_wa_id }))];
   }
 
   async function vingar(j, para) {
@@ -354,7 +356,7 @@ export function criarMundo({ db, ia = null, rng, agora, ganchos = {} }) {
           const [rid, nid] = l.npc.split(":"), p = MUNDO[rid].npcs[nid];
           await db.query("update jogo.jogadores set merito = merito + 30 where id = $1", [j.id]);
           saidas.push({ para, texto: `Acabou. Você fica um tempo olhando para as próprias mãos.\n\n${p.nome} não volta. Mas quem fez aquilo não vai fazer de novo — com ninguém.\n${rodape("vingança cumprida", "+30 de mérito")}` });
-          saidas.push(...(await feito(j, "vinganca", `*${j.nome}* cumpriu o juramento: ${p.nome} foi vingada(o). *${v.nome}* não existe mais.`, { grupo: mundo.grupo_wa_id })));
+          saidas.push(...(await feito(j, "vinganca", `*${j.nome}* cumpriu o juramento: ${p.nome} foi ${p.fem ? "vingada" : "vingado"}. *${v.nome}* não existe mais.`, { grupo: mundo.grupo_wa_id })));
         }
         saidas.push(...(await avancar(j, c.regiao, { t: "derrotar", a: v.id }, para)));
         // Próximo perigo no mesmo local
@@ -414,7 +416,7 @@ export function criarMundo({ db, ia = null, rng, agora, ganchos = {} }) {
     if (/^(amigos|amizades|conhecidos)$/.test(t)) {
       const rel = await db.query("select * from jogo.relacoes where jogador_id = $1 order by amizade desc limit 20", [j.id]);
       const mortos = new Set((await db.query("select npc from jogo.npcs_mortos where mundo_id = $1", [j.mundo_id])).map((x) => x.npc));
-      const linhas = rel.map((x) => { const [r, n] = x.npc.split(":"), p = MUNDO[r]?.npcs[n]; return p ? `${p.nome} (${nomeRegiao(r)}) — ${mortos.has(x.npc) ? "_morta(o)_" : x.amizade >= AMIZADE.proximo ? "amizade forte" : x.amizade >= AMIZADE.amigo ? "amiga(o)" : "conhecida(o)"}` : null; }).filter(Boolean);
+      const linhas = rel.map((x) => { const [r, n] = x.npc.split(":"), p = MUNDO[r]?.npcs[n]; return p ? `${p.nome} (${nomeRegiao(r)}) — ${mortos.has(x.npc) ? (p.fem ? "_morta_" : "_morto_") : x.amizade >= AMIZADE.proximo ? "amizade forte" : x.amizade >= AMIZADE.amigo ? (p.fem ? "amiga" : "amigo") : (p.fem ? "conhecida" : "conhecido")}` : null; }).filter(Boolean);
       return { tratado: true, saidas: [{ para, texto: linhas.length ? `*Quem você conhece*\n\n${linhas.join("\n")}` : "Você ainda não conversou com ninguém. Use *falar <nome>* nas vilas e cidades." }] };
     }
     if (/^(feitos|noticias|mural)$/.test(t)) {

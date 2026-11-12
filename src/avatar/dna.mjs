@@ -159,7 +159,7 @@ export function dnaJogador({ id, reino, casta, classe, elemento, rank = "E", tip
   if (corrupcao >= 75) acessorios.push("anel-eclipse");
   const el = elemento?.split(" ")[0];
   return {
-    id, tipo: "humanoide", reino, elemento: el,
+    id, tipo: "humanoide", reino, elemento: el, feminino: escolhas.genero === "feminino",
     rosto: escolhas.rosto ?? "oval", pele: escolhas.pele ?? "media",
     olhos: cv.olhos ?? escolhas.olhos ?? "grande", corOlhos: cv.corOlhos ?? escolhas.corOlhos ?? "castanho",
     sobrancelha: escolhas.sobrancelha ?? "neutra", boca: escolhas.boca ?? "neutra",

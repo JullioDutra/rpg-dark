@@ -35,9 +35,11 @@ const DESCRICAO_CLASSE = {
 };
 const ROTULOS = { baguncado: "Bagunçado", "franja-longa": "Franja longa", "tranca-lateral": "Trança lateral", trancas: "Tranças",
   "meio-raspado": "Meio raspado", media: "Média", palida: "Pálida", ambar: "Âmbar", "verde-agua": "Verde-água", "cinza-cinza": "Cinza-pálido",
-  "azul-escuro": "Azul-escuro" };
+  "azul-escuro": "Azul-escuro", "maria-chiquinha": "Maria-chiquinha", "rabo-alto": "Rabo de cavalo alto", hime: "Liso com franja reta",
+  rabo: "Rabo baixo", feminino: "Feminino", masculino: "Masculino" };
 const rotulo = (s) => ROTULOS[s] ?? s.replace(/-/g, " ").replace(/^./, (c) => c.toUpperCase());
 const APARENCIA = [
+  { campo: "genero", titulo: "*Seu personagem é…*", opcoes: ["feminino", "masculino"], semSurpresa: true },
   { campo: "cabelo", titulo: "*Cabelo*", opcoes: CATALOGO.cabelo },
   { campo: "corCabelo", titulo: "*Cor do cabelo*", opcoes: Object.keys(CABELO) },
   { campo: "pele", titulo: "*Pele*", opcoes: Object.keys(PELE).filter((p) => !["osso", "espectral", "pedra"].includes(p)) },
@@ -234,7 +236,7 @@ export function criarJogo({ db, sal = process.env.TELEFONE_SAL ?? "", admins = (
     if (j.etapa_criacao === "classe") return `⭐ *Quarta estrela — Caminho*\n\nA última estrela espera sua escolha. Responda com o número:\n\n${s.classes.map((c, i) => `*${i + 1}* ${c} — _${DESCRICAO_CLASSE[c] ?? ""}_`).join("\n")}`;
     if (j.etapa_criacao?.startsWith("ap:")) {
       const ap = APARENCIA.find((a) => `ap:${a.campo}` === j.etapa_criacao);
-      return `${ap.titulo}\n${lista(ap.opcoes)}\n${rodape("responda com o número", "0 = surpresa")}`;
+      return `${ap.titulo}\n${lista(ap.opcoes)}\n${rodape("responda com o número", ap.semSurpresa ? null : "0 = surpresa")}`;
     }
     if (j.etapa_criacao === "confirmar") return "*1* confirmar · *2* refazer";
     return "";
@@ -276,9 +278,9 @@ export function criarJogo({ db, sal = process.env.TELEFONE_SAL ?? "", admins = (
       if (!classe) return [{ para, texto: "Não entendi. " + perguntaDaEtapa(j) }];
       const a = atributosIniciais(D, { classe, casta: j.casta, reino: j.reino, mana: est.sorteio.mana }, rng);
       await db.query(`update jogo.jogadores set classe = $2, tipo_animal = $3, atributos = $4, hp = $5, hp_max = $5, mp = $6, mp_max = $6,
-        etapa_criacao = 'ap:cabelo' where id = $1`, [j.id, classe, a.tipoAnimal, JSON.stringify(a.atributos), a.hp, a.mp]);
+        etapa_criacao = 'ap:genero' where id = $1`, [j.id, classe, a.tipoAnimal, JSON.stringify(a.atributos), a.hp, a.mp]);
       return [{ para, texto: `O caminho do *${classe}* se abre diante de você.${a.tipoAnimal ? ` No seu sangue corre a fera: ${a.tipoAnimal.replace("_", " ")}.` : ""}\n\nAgora, como o mundo vai te ver?` },
-        { para, texto: perguntaDaEtapa({ etapa_criacao: "ap:cabelo" }) }];
+        { para, texto: perguntaDaEtapa({ etapa_criacao: "ap:genero" }) }];
     }
 
     if (etapa?.startsWith("ap:")) {
@@ -295,8 +297,8 @@ export function criarJogo({ db, sal = process.env.TELEFONE_SAL ?? "", admins = (
 
     if (etapa === "confirmar") {
       if (/^(2|refazer|nao|mudar)$/.test(t)) {
-        await db.query("update jogo.jogadores set etapa_criacao = 'ap:cabelo', avatar_dna = $2 where id = $1", [j.id, JSON.stringify({ ...est, escolhas: {} })]);
-        return [{ para, texto: perguntaDaEtapa({ etapa_criacao: "ap:cabelo" }) }];
+        await db.query("update jogo.jogadores set etapa_criacao = 'ap:genero', avatar_dna = $2 where id = $1", [j.id, JSON.stringify({ ...est, escolhas: {} })]);
+        return [{ para, texto: perguntaDaEtapa({ etapa_criacao: "ap:genero" }) }];
       }
       if (!/^(1|confirmar|confirmo|sim|ok)$/.test(t)) return [{ para, texto: perguntaDaEtapa(j) }];
       const dna = montarDna(j, est.sorteio, est.escolhas);
