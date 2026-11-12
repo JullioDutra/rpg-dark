@@ -94,7 +94,15 @@ export function criarNarrador({ db, ia, agora = () => Date.now() }) {
       new Promise((ok) => setTimeout(() => ok({ narracao: "_As estrelas silenciam por um instante… tente de novo em alguns segundos._", eventos: [], falha: "tempo" }), 20000)),
     ]);
     // O rumo vem do motor, não da IA: uma linha com o comando exato que faz a história andar
-    const rumo = contexto?.ameaca ? `\n\n_Para ferir ${contexto.ameaca.nome.split(",")[0]}:_ *golpear*` : contexto?.capitulo?.comando ? `\n\n_A história continua com:_ *${contexto.capitulo.comando}*` : "";
+    // A dica do comando aparece quando o passo muda e depois só de vez em quando (a cada 4 narrações), para não poluir a conversa
+    let rumo = "";
+    if (contexto?.ameaca) rumo = `\n\n_Para ferir ${contexto.ameaca.nome.split(",")[0]}:_ *golpear*`;
+    else if (contexto?.capitulo?.comando) {
+      const cmd = contexto.capitulo.comando, visto = (await um(db, "select valor from jogo.progresso where jogador_id = $1 and chave = 'rumo'", [j.id]))?.valor;
+      const n = visto?.cmd === cmd ? Number(visto.n ?? 0) + 1 : 0;
+      await db.query(`insert into jogo.progresso (jogador_id, chave, valor, criado_em) values ($1, 'rumo', $2, $3) on conflict (jogador_id, chave) do update set valor = excluded.valor`, [j.id, JSON.stringify({ cmd, n }), new Date(tempo)]);
+      if (n % 4 === 0) rumo = `\n\n_A história continua com:_ *${cmd}*${/^ir /.test(cmd) && contexto.capitulo.luta ? "\n_(chegando lá, digite *lutar*)_" : ""}`;
+    }
     const saidas = [{ para, texto: `${r.narracao}${r.falha ? "" : rumo}` }];
     if (r.falha) return saidas;
     await db.query("delete from jogo.progresso where jogador_id = $1 and chave = 'falando'", [j.id]); // a cena mudou: frases soltas voltam a ser ação, não conversa

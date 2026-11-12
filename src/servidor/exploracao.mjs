@@ -10,6 +10,12 @@ import { textoRegiao, ambiente, rodape } from "./textos.mjs";
 import { COVIL } from "../mundo/mundo.mjs";
 import { imagemVilao, nomeLacaio } from "./combate.mjs";
 
+/** Legenda do mapa: o número de cada região, por reino (os números são os mesmos desenhados no mapa). */
+export function legendaMapa(reino = null) {
+  const numero = (id) => Number(id.split("-").at(-1));
+  return MUNDO.reinos.filter((r) => !reino || r.id === reino).map((r) =>
+    `*${r.nome ?? r.id}*\n${[...r.regioes].sort((a, b) => numero(a.id) - numero(b.id)).map((g) => `${numero(g.id)} ${g.nome}${g.tipo === "capital" ? " (capital)" : ""}`).join(" · ")}`).join("\n\n");
+}
 let baseMapa;
 /** Mapa do mundo com vários marcadores (uso do mestre): [{ regiao, rotulo }]. */
 export function imagemMapaCom(marcadores) {
@@ -42,7 +48,7 @@ export function criarExploracao({ db, rng, agora }) {
     const saidas = [];
     const dizer = (texto) => saidas.push({ para: msg.chat, texto });
     const mapa = (reino = null) => saidas.push({ para: msg.chat, regiaoMapa: j.regiao_atual, reinoMapa: reino,
-      legenda: `🗺️ *${nomeRegiao(j.regiao_atual)}*\n${rodape("viajar <região> · rota <região>")}` });
+      legenda: `🗺️ *Você está em ${nomeRegiao(j.regiao_atual)}*\n\n${legendaMapa(reino)}\n\n${rodape("viajar <região> · rota <região>", reino ? "mapa mundo" : "mapa <reino> aproxima", "locais mostra os lugares de onde você está")}` });
     const cmd = comandoExploracao(msg.texto);
     const resultado = (tratado = true) => ({ jogador: j, saidas, tratado });
     if (!j) return resultado(false);

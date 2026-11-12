@@ -530,6 +530,32 @@ export async function testarMundoServidor({ db, jogador, outro, mensagem, grupo,
     assert.equal((await db.query("select count(*)::int n from jogo.lutas_grupo"))[0].n, 0);
     await db.query("update jogo.batalhas set status = 'encerrada' where status <> 'encerrada'");
   });
+  await t("rumo do capítulo: ir ao covil funciona com a dica copiada inteira e com ação livre; a dica não aparece em toda mensagem; mapa tem legenda", async () => {
+    await db.query("update jogo.batalhas set status = 'encerrada' where status <> 'encerrada'"); await db.query("delete from jogo.exploracoes where pendente");
+    await db.query("delete from jogo.viagens where concluida_em is null"); await db.query("delete from jogo.lutas_grupo"); await db.query("delete from jogo.ameacas");
+    await db.query("delete from jogo.progresso where jogador_id = $1 and chave in ('c:dai5', 'p:dai5', 'rumo', 'falando', 'acomp')", [jogador.id]);
+    await db.query("delete from jogo.derrotas_vilao where jogador_id = $1 and vilao_id in ('V017', 'V018')", [jogador.id]);
+    await db.query("insert into jogo.progresso (jogador_id, chave, valor) values ($1, 'p:dai5', '1')", [jogador.id]);
+    await db.query("update jogo.jogadores set regiao_atual = 'R-DAI-5', local_atual = null, hp = hp_max where id = $1", [jogador.id]);
+    clock += 60_000;
+    const copiado = await enviar("ir Ninhos no Trigal (e depois lutar)");
+    assert.match(texto(copiado), /Ninhos no Trigal[\s\S]*Rato-Toupeira[\s\S]*lutar/, "a dica copiada com parênteses leva ao covil e mostra o vilão");
+    await enviar("recuar"); clock += 60_000;
+    const pedidos = [];
+    jogo = novoJogo({ nome: "falsa", async gerarJSON(a) { pedidos.push(a); return { ok: true, provedor: "falsa", dados: { narracao: "O trigo balança.", eventos: [] } }; } });
+    const livre = await enviar("> vou até os ninhos no trigal ver o que tem lá");
+    assert.match(texto(livre), /Rato-Toupeira[\s\S]*lutar/, "ação livre que pede o lugar do passo vai de verdade até lá");
+    assert.equal(pedidos.length, 0, "não gastou narração para isso");
+    await enviar("recuar");
+    // a dica aparece na 1ª narração do passo e depois só a cada 4
+    const dicas = [];
+    for (let k = 0; k < 5; k++) { clock += 60_000; dicas.push(/A história continua com:_ \*ir Ninhos no Trigal\*/.test(texto(await enviar("> olho o céu por um tempo")))); }
+    assert.deepEqual(dicas, [true, false, false, false, true]);
+    jogo = novoJogo();
+    const mp = await enviar("mapa");
+    assert(mp[0].imagem && /Você está em Planícies Kogane[\s\S]*Homura[\s\S]*5 Planícies Kogane/.test(mp[0].legenda), "o mapa vem com a legenda dos números");
+    await db.query("delete from jogo.progresso where jogador_id = $1 and chave in ('p:dai5', 'rumo')", [jogador.id]);
+  });
   await t("Olhos da Terra: a mestra entrega o pergaminho a quem é da terra; ler cega e dá as habilidades; admin também concede", async () => {
     await db.query("update jogo.jogadores set regiao_atual = 'R-DAI-6', local_atual = null, atributo_magico = 'Fogo (Chama)', reino = 'Homura' where id = $1", [jogador.id]);
     await enviar("falar tsuchi"); clock += 7 * 3_600_000;

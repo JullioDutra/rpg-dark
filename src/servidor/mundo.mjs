@@ -549,8 +549,8 @@ export function criarMundo({ db, ia = null, rng, agora, ganchos = {} }) {
       const st = await estado(j);
       return { tratado: true, saidas: [{ para, texto: `*${nomeRegiao(rid)}*\n\n${listaLocais(rid, st)}\n\n${rodape("ir <nº ou nome>", "falar <nome>")}` }] };
     }
-    if ((m = t.match(/^(ir|vou|visitar|entrar)\s+(?:para |pra |ao |a |no |na |em )?(.+)$/)) && MUNDO[rid]) {
-      const alvo = m[2];
+    if ((m = t.match(/^(ir|vou|visitar|entrar)\s+(?:para |pra |ao |a |no |na |em |aos |as |nos |nas )?(.+)$/)) && MUNDO[rid]) {
+      const alvo = m[2].replace(/\(.*$/, "").replace(/\s+e depois.*$/, "").trim() || m[2];
       const r = MUNDO[rid];
       const ehLocal = /^\d+$/.test(alvo) ? Number(alvo) <= r.locais.length : r.locais.some((x) => normal(x.nome).includes(normal(alvo)) || x.id === normal(alvo));
       if (ehLocal) return { tratado: true, saidas: await ir(j, alvo, para) };
@@ -603,7 +603,7 @@ export function criarMundo({ db, ia = null, rng, agora, ganchos = {} }) {
       local: l ? `${l.nome}: ${l.desc}` : null,
       npcs: Object.values(r?.npcs ?? {}).map((n) => `${n.nome} (${n.papel}; ${n.jeito})`),
       capitulo: at && !at.bloqueado ? { titulo: at.cap.titulo, passo_atual: at.cap.passos[at.passo].txt, passos_ja_feitos: at.passo, total_de_passos: at.cap.passos.length,
-        comando: comandoDoPasso(j.regiao_atual, at.cap.passos[at.passo]) } : null,
+        comando: comandoDoPasso(j.regiao_atual, at.cap.passos[at.passo]), luta: at.cap.passos[at.passo].t === "derrotar" } : null,
       objetivo: objetivoCampanha(st.B),
     };
   }
@@ -614,13 +614,16 @@ export function criarMundo({ db, ia = null, rng, agora, ganchos = {} }) {
     if (p.t === "falar") { const nome = r.npcs[p.a]?.nome ?? p.a, ultimo = nome.split(" ").at(-1); return `falar ${ultimo.length >= 4 ? ultimo : nome}`; }
     if (p.t === "ir") return `ir ${localDe(rid, p.a)?.nome ?? p.a}`;
     const c = COVIL.get(p.a);
-    return c ? `ir ${localDe(c.regiao, c.local)?.nome ?? c.local} (e depois lutar)` : "lutar";
+    return c ? `ir ${localDe(c.regiao, c.local)?.nome ?? c.local}` : "lutar";
   }
   const PARADAS = new Set(["de", "da", "do", "das", "dos", "a", "o", "as", "os", "e", "em", "no", "na", "nos", "nas", "ao", "aos", "para", "pra", "com", "um", "uma"]);
   /**
    * Frase livre que na verdade é uma ação do jogo: "quero ouvir a Ine" → falar; "subo até as costelas" → ir.
    * Devolve { tipo: "falar", bruto } | { tipo: "ir", alvo } | null. Assim a história anda mesmo sem o comando exato.
    */
+  let estadoRecente = null; // preenchido por contextoNarrador/intencaoCom, para a checagem do passo sem nova consulta
+  const capituloAtivoSimples = (j) => (estadoRecente?.id === j.id ? capituloAtivo(j.regiao_atual, estadoRecente.st) : null);
+  async function intencaoCom(j, texto) { estadoRecente = { id: j.id, st: await estado(j) }; return intencao(j, texto); }
   function intencao(j, texto) {
     const r = MUNDO[j.regiao_atual];
     if (!r) return null;
@@ -631,7 +634,12 @@ export function criarMundo({ db, ia = null, rng, agora, ganchos = {} }) {
     }
     if (/\b(ir|vou|vamos|subir|subo|descer|desco|entrar|entro|seguir|sigo|caminhar|caminho|andar|ando|voltar|volto|atravessar|atravesso|correr|corro|visitar|visito)\b/.test(t)) {
       const l = r.locais.find((x) => normal(x.nome).split(" ").some((w) => w.length >= 4 && !PARADAS.has(w) && palavras.has(w)));
-      if (l) return { tipo: "ir", alvo: l.id };
+      if (l) {
+        // é o lugar que o passo atual da história pede? então vale mesmo quando a frase veio como ação (">")
+        const at = capituloAtivoSimples(j), p = at?.cap.passos[at.passo];
+        const alvoDoPasso = p?.t === "ir" ? p.a : p?.t === "derrotar" ? COVIL.get(p.a)?.local : null;
+        return { tipo: "ir", alvo: l.id, doPasso: alvoDoPasso === l.id };
+      }
     }
     return null;
   }
@@ -647,7 +655,7 @@ export function criarMundo({ db, ia = null, rng, agora, ganchos = {} }) {
     return falar(j, atual.nid, texto, para);
   }
 
-  return { comando, chegada, aoEventos, contextoNarrador, estado, capituloAtivo, herdar, continuarConversa, intencao };
+  return { comando, chegada, aoEventos, contextoNarrador, estado, capituloAtivo, herdar, continuarConversa, intencao: intencaoCom };
 }
 
 export { ambiente };

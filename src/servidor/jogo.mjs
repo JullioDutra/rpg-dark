@@ -344,9 +344,9 @@ export function criarJogo({ relogio = null, db, sal = process.env.TELEFONE_SAL ?
     // Frase livre que é uma ação do jogo ("quero ouvir a Ine", "subo até as costelas") vira o comando: é assim que a história anda
     if (!/^\d+$/.test(tc)) {
       const emAmeaca = await ameacas.cenaPara(j);
-      const it2 = emAmeaca ? null : mundo.intencao(j, msg.texto); // no meio de uma luta em grupo, frase livre não vira passo de capítulo
+      const it2 = emAmeaca ? null : await mundo.intencao(j, msg.texto); // no meio de uma luta em grupo, frase livre não vira passo de capítulo
       // com ">" o jogador pediu narração: só conversa vira comando; deslocamento fica com o narrador
-      const feito = it2?.tipo === "falar" ? await mundo.comando(j, "falar", it2.bruto, para) : it2?.tipo === "ir" && !msg.texto.trim().startsWith(">") ? await mundo.comando(j, `ir ${it2.alvo}`, `ir ${it2.alvo}`, para) : null;
+      const feito = it2?.tipo === "falar" ? await mundo.comando(j, "falar", it2.bruto, para) : it2?.tipo === "ir" && (it2.doPasso || !msg.texto.trim().startsWith(">")) ? await mundo.comando(j, `ir ${it2.alvo}`, `ir ${it2.alvo}`, para) : null;
       if (feito?.tratado) return [...e.saidas, ...feito.saidas];
     }
     // Frase solta durante uma conversa vai para a pessoa com quem se está falando; o que soa como ação ("eu quero…", "vou…", "tento…") vai para o narrador

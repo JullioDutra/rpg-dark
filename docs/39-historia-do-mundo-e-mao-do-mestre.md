@@ -99,3 +99,11 @@ Duas causas somadas: (1) a regra do narrador mandava "trazer a cena de volta" ao
 | `mestre mover todos <região>` | Transporta todos os jogadores do mundo. Cada um vê a chegada no privado e o grupo recebe um anúncio do narrador |
 
 Quem está em luta não é movido (o mestre recebe a lista). Viagem em curso e encontro pendente são encerrados. Diferente do Selo de Passagem (`mestre teleporte`), aqui o destino é escolhido pelo mestre e o jogador não paga nada.
+
+## 39.8 Ajustes vindos de jogadores (mapa e dica do rumo)
+
+| Retorno do jogador | Causa | Correção |
+|--------------------|-------|----------|
+| "Já fui nos Ninhos no Trigal e não apareceu nada" | A dica vinha como `ir Ninhos no Trigal (e depois lutar)`; copiada inteira, o `ir` não achava o lugar. E "ir" escrito como ação livre (`> vou até os ninhos`) era só narrado | A dica agora é só o comando (`ir Ninhos no Trigal`), o `ir` ignora parênteses, e ação livre que pede o lugar do passo atual leva de verdade até lá (aparece o vilão) |
+| "Tudo que converso fica com essa mensagem embaixo" | A dica do rumo saía em toda narração | Aparece quando o passo muda e depois só a cada 4 narrações |
+| "Tem legenda do mapa?" | O mapa só tinha números | `mapa` traz a lista numerada das regiões de cada reino (os mesmos números do desenho); `locais` mostra os lugares de onde o jogador está |
