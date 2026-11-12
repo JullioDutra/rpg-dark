@@ -378,6 +378,22 @@ export async function testarMundoServidor({ db, jogador, outro, mensagem, grupo,
     const g1 = texto(await enviar("golpear"));
     assert.match(g1, /🎲[\s\S]*Tsuchigumo/);
     assert.match(texto(await enviar("golpear")), /recuperando o fôlego/);
+    // ação livre no meio da luta: a vida não "reseta" e o narrador fica na luta, sem puxar missão do lugar
+    await db.query("update jogo.jogadores set hp = hp_max - 40, recuperacao_em = $2 where id = $1", [jogador.id, new Date(clock - 20 * 3_600_000)]);
+    await db.query("update jogo.ameaca_golpes set ultimo_em = $2 where jogador_id = $1", [jogador.id, new Date(clock - 10 * 60_000)]);
+    let apanhou = null;
+    for (let k = 0; k < 8 && !apanhou; k++) { const antes = Number((await atual()).hp); await enviar("golpear"); const dep = Number((await atual()).hp);
+      if (dep < antes) apanhou = dep; else { clock += 6 * 60_000; await db.query("update jogo.jogadores set recuperacao_em = $2 where id = $1", [jogador.id, new Date(clock - 20 * 3_600_000)]); } }
+    assert(apanhou, "o monstro acertou pelo menos uma vez");
+    const pedidosA = [];
+    jogo = novoJogo({ nome: "falsa", async gerarJSON(a) { pedidosA.push(a); return { ok: true, provedor: "falsa", dados: { narracao: "Você rola para trás de uma carroça.", eventos: [] } }; } });
+    clock += 30_000;
+    const livreA = await enviar("> me escondo atrás da carroça e observo o monstro");
+    assert(Number((await atual()).hp) <= apanhou + 2, "a vida não volta sozinha por causa de uma ação livre");
+    assert.match(pedidosA.at(-1).mensagens.at(-1).content, /ameaca_presente[\s\S]*Tsuchigumo[\s\S]*Não comece nem continue missões/);
+    assert.doesNotMatch(pedidosA.at(-1).mensagens.at(-1).content, /passo_atual/);
+    assert.match(texto(livreA), /carroça[\s\S]*Para ferir Tsuchigumo:_ \*golpear\*/);
+    jogo = novoJogo(); clock += 6 * 60_000;
     await db.query("update jogo.jogadores set regiao_atual = $2, hp = hp_max where id = $1", [outro.id, rid]);
     assert.match(texto(await noGrupo(outroPrivado("golpear"))), /lutando junto: \+25%|passa no vazio/);
     const am = (await db.query("select * from jogo.ameacas where estado = 'ativa' and tipo = 'monstro'"))[0];

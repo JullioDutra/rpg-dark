@@ -343,7 +343,8 @@ export function criarJogo({ relogio = null, db, sal = process.env.TELEFONE_SAL ?
     if (chegou.length) return [...e.saidas, ...chegou];
     // Frase livre que é uma ação do jogo ("quero ouvir a Ine", "subo até as costelas") vira o comando: é assim que a história anda
     if (!/^\d+$/.test(tc)) {
-      const it2 = mundo.intencao(j, msg.texto);
+      const emAmeaca = await ameacas.cenaPara(j);
+      const it2 = emAmeaca ? null : mundo.intencao(j, msg.texto); // no meio de uma luta em grupo, frase livre não vira passo de capítulo
       // com ">" o jogador pediu narração: só conversa vira comando; deslocamento fica com o narrador
       const feito = it2?.tipo === "falar" ? await mundo.comando(j, "falar", it2.bruto, para) : it2?.tipo === "ir" && !msg.texto.trim().startsWith(">") ? await mundo.comando(j, `ir ${it2.alvo}`, `ir ${it2.alvo}`, para) : null;
       if (feito?.tratado) return [...e.saidas, ...feito.saidas];
@@ -354,7 +355,7 @@ export function criarJogo({ relogio = null, db, sal = process.env.TELEFONE_SAL ?
       const conversa = await mundo.continuarConversa(j, msg.texto, para);
       if (conversa) return [...e.saidas, ...conversa];
     }
-    if (ehAcaoLivre(msg.texto)) return [...e.saidas, ...(await narrador(j, msg.texto, para, { ...(await mundo.contextoNarrador(j)), historia: await extras.historiaPara(j) }))];
+    if (ehAcaoLivre(msg.texto)) return [...e.saidas, ...(await narrador(j, msg.texto, para, { ...(await mundo.contextoNarrador(j)), historia: await extras.historiaPara(j), ameaca: await ameacas.cenaPara(j) }))];
     return [...e.saidas, { para, texto: `${ambiente(j.regiao_atual, agora() / 60_000 | 0)}\n\nO que você faz?\n${rodape("locais · missao · explorar · itens · ajuda", "ou escreva sua ação começando com >")}` }];
   }
 

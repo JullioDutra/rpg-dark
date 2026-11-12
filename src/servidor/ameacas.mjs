@@ -148,7 +148,8 @@ export function criarAmeacas({ db, rng, agora, relogio = null }) {
     if (!depois) return [{ para, texto: `Quando você chega, *${m.nome}* já não está mais lá.` }];
     await db.query(`insert into jogo.ameaca_golpes (ameaca_id, jogador_id, dano, golpes, ultimo_em) values ($1, $2, $3, 1, $4)
       on conflict (ameaca_id, jogador_id) do update set dano = jogo.ameaca_golpes.dano + excluded.dano, golpes = jogo.ameaca_golpes.golpes + 1, ultimo_em = excluded.ultimo_em`, [a.id, j.id, dano, new Date(agora())]);
-    if (leva > 0) await db.query("update jogo.jogadores set hp = greatest(1, hp - $2) where id = $1", [j.id, leva]);
+    // recuperacao_em marca de quando a vida começa a voltar: sem atualizar aqui, a próxima mensagem "curava" tudo de uma vez
+    await db.query("update jogo.jogadores set hp = greatest(1, hp - $2), recuperacao_em = $3 where id = $1", [j.id, leva, new Date(agora())]);
     const linhas = [
       `🎲 ${d.nat} — ${d.faixa === "falha" ? `seu golpe passa no vazio. ${m.nome} nem olha.` : `${d.faixa === "critico" ? "*Golpe perfeito!* " : ""}você acerta *${m.nome}*${junto ? ", aproveitando a abertura que um companheiro deixou" : ""}. _(−${dano})_`}`,
       `🎲 ${c.nat} — ${leva > 0 ? `${m.nome} revida${c.faixa === "critico" ? " em cheio" : ""}. _(−${leva})_` : `${m.nome} revida, e você sai do caminho a tempo.`}`,
@@ -202,10 +203,20 @@ export function criarAmeacas({ db, rng, agora, relogio = null }) {
     return r.saidas ?? [];
   }
 
+  /** Para o narrador: há uma ameaça que este jogador pode enfrentar agora? (monstro na região dele ou Calamidade) */
+  async function cenaPara(j) {
+    const { aqui } = await ativaPara(j);
+    if (!aqui) return null;
+    // A Calamidade vale para o mundo inteiro e dura dias: só vira "a cena" de quem está lutando agora (golpeou há pouco)
+    if (aqui.tipo === "calamidade" && !(await db.query("select 1 from jogo.ameaca_golpes where ameaca_id = $1 and jogador_id = $2 and ultimo_em > $3", [aqui.id, j.id, new Date(agora() - 15 * 60_000)])).length) return null;
+    const m = MONSTRO.get(aqui.monstro);
+    return { tipo: aqui.tipo, nome: `${m.nome}, ${m.titulo}`, descricao: m.desc, vida: `${Math.round((aqui.hp / aqui.hp_max) * 100)}%`, onde: aqui.regiao ? nomeRegiao(aqui.regiao) : "o mundo inteiro" };
+  }
+
   async function aoTick(id) {
     const a = await um(db, "select * from jogo.ameacas where id = $1 and estado = 'ativa'", [id]);
     return a && +new Date(a.termina_em) <= agora() ? encerrarPorTempo(a) : [];
   }
 
-  return { comando, invocar, aoConcluir, aoTick, cidadeFechada, capitulosDoMundo };
+  return { comando, invocar, aoConcluir, aoTick, cidadeFechada, capitulosDoMundo, cenaPara };
 }

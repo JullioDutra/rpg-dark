@@ -299,7 +299,7 @@ export function criarMestre({ db, agora, ameacas = null }) {
     const k = { vida: "vida", sangue: "vida", ryo: "ryo", ouro: "ryo", merito: "merito", nome: "merito", memoria: "merito" }[pg[1] ?? ""];
     if (!k) return dizer(`Com o que você paga?\n\n${precos()}`);
     if (!PRECOS[k].pode(j)) return dizer(`${PRECOS[k].falta}\n\n${precos()}`);
-    const sql = { vida: "hp = greatest(1, hp - $2)", ryo: "ryo = ryo - $2", merito: "merito = merito - $2" }[k], valor = { vida: Math.floor(j.hp_max / 2), ryo: 60 * j.nivel, merito: 20 }[k];
+    const sql = { vida: `hp = greatest(1, hp - $2), recuperacao_em = '${new Date(agora()).toISOString()}'`, ryo: "ryo = ryo - $2", merito: "merito = merito - $2" }[k], valor = { vida: Math.floor(j.hp_max / 2), ryo: 60 * j.nivel, merito: 20 }[k];
     await db.query(`update jogo.jogadores set ${sql}, regiao_atual = $3, local_atual = null where id = $1`, [j.id, valor, selo.destino]);
     await db.query("delete from jogo.progresso where jogador_id = $1 and chave = 'teleporte'", [j.id]);
     j.regiao_atual = selo.destino; j.local_atual = null;

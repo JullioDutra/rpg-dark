@@ -54,3 +54,11 @@ Ainda **não** é mostrado aos jogadores nem muda o mundo em 25/50/75% (item C d
 ## 40.6 Duelo amistoso por turnos (no grupo)
 
 Detalhes e calibração em **[42](42-duelo-entre-jogadores.md)**.
+
+## 40.7 Correções: ação livre no meio da luta em grupo
+
+| Problema | Causa | Correção |
+|----------|-------|----------|
+| A vida "resetava" depois de uma ação livre (`>`) | O contra-ataque do monstro tirava vida sem atualizar o marco de recuperação; a mensagem seguinte calculava horas de descanso e curava tudo | O golpe do monstro (e o preço em vida do Selo de Passagem) agora atualiza esse marco |
+| O narrador puxava uma missão do lugar no meio da luta | O narrador não sabia que havia uma ameaça em cena e seguia o capítulo da região | Com monstro na região (ou Calamidade que o jogador golpeou nos últimos 15 min), a cena é a luta: a ação acontece diante do monstro, sem capítulo, e a resposta termina com `Para ferir <monstro>: golpear` |
+| Frase livre virava passo de capítulo durante a luta | O atalho "ouvir a Ine" / "subo até X" valia sempre | Desligado enquanto a ameaça estiver em cena |
