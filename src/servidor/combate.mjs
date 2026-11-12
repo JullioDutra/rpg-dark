@@ -3,7 +3,7 @@
 // Devolve também `eventos` (vilão derrotado, derrota, nível…) para o mundo vivo anunciar no grupo e avançar a história.
 import { readFileSync } from "node:fs";
 import { semAcento } from "../linguagem/normalizar.mjs";
-import { novoCombate, resolverRodada, painel, textoMenu, escolher, recompensa, aplicarXP, atributoPrincipal, HABILIDADES, CLASSES, KITS, proximaHabilidade, SISMICO } from "../regras/combate.mjs";
+import { novoCombate, resolverRodada, painel, textoMenu, escolher, recompensa, aplicarXP, atributoPrincipal, HABILIDADES, CLASSES, KITS, proximaHabilidade, SISMICO, PASSIVAS } from "../regras/combate.mjs";
 import { REGIAO, MATERIAIS } from "../regras/exploracao.mjs";
 import { bonusEquip, item as itemDe, todosItens, EQUIP_CLASSE } from "../regras/itens.mjs";
 import { XP_PROXIMO } from "../../scripts/balanceamento.mjs";
