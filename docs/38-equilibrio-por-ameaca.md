@@ -26,14 +26,14 @@ A meta é a **média das 9 classes**, jogador no nível do vilão, com o preparo
 | Lacaio (explorando) | Trivial | 95–100% | 100% |
 | Vilão comum, no covil | Baixa | 80–95% | 95% |
 | Vilão comum 3 níveis acima | Severa | 25–55% | 47% |
-| Elite (médio escalão) | Moderada | 60–80% | 79% |
-| Chefe (alto escalão) | Severa | 45–65% | 62% |
-| Rei das sombras | Extrema | 35–55% | 43% |
-| Kanata | Extrema | 40–60% | 56% |
-| Divindade, só com as bênçãos | Além do extremo | 5–25% | 6% |
-| Divindade, preparado | Severa | 60–80% | 77% |
-| Rei do Eclipse, sem Grandes Itens | Além do extremo | 5–25% | 10% |
-| Rei do Eclipse, preparado | Severa | 55–75% | 66% |
+| Elite (médio escalão) | Moderada | 60–80% | 74% |
+| Chefe (alto escalão) | Severa | 45–65% | 48% |
+| Rei das sombras (2 bênçãos, pet) | Extrema | 30–50% | 43% |
+| Kanata (4 bênçãos + ninho, pet) | Extrema | 35–55% | 47% |
+| Divindade (bênçãos da campanha, pet) | Além do extremo | 2–20% | 5% |
+| Divindade, preparado (2 Grandes Itens, 2 apoios) | Severa | 50–70% | 67% |
+| Rei do Eclipse (bênçãos, sem itens lendários) | Além do extremo | 2–20% | 10% |
+| Rei do Eclipse, preparado (3 Grandes Itens, 3 apoios) | Severa | 45–65% | 56% |
 
 Antes deste ajuste: elite 96–100%, chefe até 100%, divindade preparado 98–100%. Ou seja, quem chegava preparado não corria risco.
 
@@ -52,6 +52,31 @@ Antes deste ajuste: elite 96–100%, chefe até 100%, divindade preparado 98–1
 | Elixir estelar | Era cura total; agora recupera 60% da vida e da mana | 60% |
 | Pet | Dano do pet um pouco menor | 0,15 + 0,07 por estágio |
 | Grandes Itens | Ocupam o espaço da arma/armadura/acessório e valem cerca de 30% mais que o equipamento celeste | ver `itens.mjs` |
+
+## 38.3b Segunda rodada: pressão no dado (a faixa de erro cresce com a ameaça)
+
+Pedido: aumentar a dificuldade fazendo o **erro pesar mais** contra inimigos fortes. O que outros jogos fazem:
+
+| Jogo | Como o inimigo forte mexe no acerto | O que aproveitamos |
+|------|-------------------------------------|--------------------|
+| Pathfinder 2e | Quatro graus de sucesso; errar por 10 vira falha crítica, e contra dificuldades muito altas até o 20 natural pode não bastar | A dificuldade desloca os graus do dado |
+| World of Warcraft | Chefes contam como 3 níveis acima do jogador: a chance de errar sobe por uma fórmula de nível | Cada degrau tem uma pressão fixa e previsível |
+| Guild Wars 2 | Golpes de raspão ficam mais comuns a cada nível que o inimigo tem a mais | Pressão aumenta os golpes "de raspão" |
+| Diablo II | Acerto por razão ataque/defesa, com piso de 5% e teto de 95% | O 20 continua sempre perfeito |
+
+Regra aplicada (`PRESSAO` em `src/regras/combate.mjs`), mostrada ao jogador no começo da luta e no comando `dado`:
+
+| Inimigo | O seu dado falha em | E perde | Erro |
+|---------|:---:|:---:|:---:|
+| Lacaio e comum | 1 | nada | 5% |
+| Elite | 1 | 1 | 5% |
+| Chefe | 1 a 2 | 1 | 10% |
+| Rei das sombras | 1 a 2 | 2 | 10% |
+| Divindade | 1 a 3 | 2 | 15% |
+
+Com a pressão, as metas dos degraus altos desceram um pouco (rei 30–50%, Kanata 35–55%, divindade preparado 50–70%, final preparado 45–65%)
+e `AJUSTE_SOLO` foi recalibrado para as médias caírem dentro delas. Fontes desta rodada: regras de testes do Pathfinder 2e (roll20.net/compendium/pf2),
+blog da Paizo sobre acertos e falhas críticas, warcraft.wiki.gg (Hit cap), wiki.guildwars2.com e theamazonbasin.com (Attack).
 
 ## 38.4 A campanha continua possível
 
