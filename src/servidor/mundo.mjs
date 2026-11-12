@@ -16,8 +16,19 @@ const ARCOS = { "arco-homura": "Homura (Kagutsuchi-jō)", "arco-watatsumi": "Wat
 const GRANDES = ["excalibur", "kokugai", "tenmon", "shitencho"];
 export const AMIZADE = { amigo: 3, proximo: 6, intervaloMs: 6 * 3_600_000, chanceMorte: 0.12, intervaloMorteMs: 7 * 86_400_000 };
 
-export const imagemLocal = (rid, l) => renderCena(l.cena, REGIAO.get(rid)?.reino ?? "Kokū", `${rid}:${l.id}`);
-export const imagemNpc = (rid, id) => renderizar(dnaNpc(rid, id, MUNDO[rid].npcs[id], REGIAO.get(rid)?.reino ?? "Kokū"), 6);
+// Cenas e retratos são determinísticos: guardam-se em memória para não redesenhar a cada mensagem.
+const CACHE_IMG = new Map();
+export function comCache(chave, gerar) {
+  if (CACHE_IMG.has(chave)) return CACHE_IMG.get(chave);
+  const img = gerar();
+  if (CACHE_IMG.size >= 150) CACHE_IMG.delete(CACHE_IMG.keys().next().value);
+  CACHE_IMG.set(chave, img);
+  return img;
+}
+export const imagemLocal = (rid, l) => comCache(`l:${rid}:${l.id}`, () => renderCena(l.cena, REGIAO.get(rid)?.reino ?? "Kokū", `${rid}:${l.id}`));
+export const imagemNpc = (rid, id) => comCache(`n:${rid}:${id}`, () => renderizar(dnaNpc(rid, id, MUNDO[rid].npcs[id], REGIAO.get(rid)?.reino ?? "Kokū"), 6));
+/** Conversas com NPC narradas pela IA, por jogador e por dia. Passando disso, o NPC responde com o texto pronto. */
+export const LIMITE_CONVERSAS_IA = 40;
 const nomeRegiao = (rid) => REGIAO.get(rid)?.nome ?? rid;
 const xpCapitulo = (nivel) => Math.round(60 * nivel ** 1.2);
 
@@ -275,7 +286,11 @@ export function criarMundo({ db, ia = null, rng, agora, ganchos = {} }) {
     const passo = at && !at.bloqueado ? at.cap.passos[at.passo] : null;
     const daHistoria = passo?.t === "falar" && passo.a === nid;
     let resposta = null;
-    if (ia) {
+    const hoje = new Date(tempo).toISOString().slice(0, 10);
+    const uso = (await um(db, "select valor from jogo.progresso where jogador_id = $1 and chave = 'ia-npc'", [j.id]))?.valor;
+    const usadas = uso?.dia === hoje ? Number(uso.n ?? 0) : 0;
+    if (ia && usadas < LIMITE_CONVERSAS_IA) {
+      await gravar(j, "ia-npc", { dia: hoje, n: usadas + 1 });
       const sistema = `Você interpreta ${p.nome}, ${p.papel}, num RPG de anime (Yotsuhoshi) jogado no WhatsApp, em português do Brasil. Jeito de falar: ${p.jeito}. ` +
         `Você SABE disto e deve contar com suas palavras${daHistoria || !rel ? " nesta conversa" : " se fizer sentido"}: ${p.sabe}. ` +
         `Regras: responda só como o personagem, em até 450 caracteres, sem emojis, sem listas; falas entre aspas ou com travessão; não invente fatos grandes do mundo além do que você sabe; ` +

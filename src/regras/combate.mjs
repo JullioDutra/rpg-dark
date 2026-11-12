@@ -269,7 +269,12 @@ export function textoMenu(e) {
   return menu(e).map((x) => `*${x.n}* ${x.rotulo}${x.bloqueio ? ` _(${x.bloqueio})_` : x.detalhe ? ` — _${x.detalhe}_` : ""}`).join("\n");
 }
 
-export function painel(e) {
+/** Menu em poucas linhas, para depois que o jogador já conhece as opções (da 3ª rodada em diante). */
+export function textoMenuCurto(e) {
+  return `${menu(e).map((x) => (x.bloqueio ? `~${x.n} ${x.rotulo}~` : `*${x.n}* ${x.rotulo}`)).join(" · ")}\n_? mostra os detalhes_`;
+}
+
+export function painel(e, { completo = false } = {}) {
   const { jogador: j, inimigo: i } = e;
   const guarda = i.posturaMax ? `  guarda ${"◆".repeat(Math.max(0, i.postura))}${"◇".repeat(i.posturaMax - Math.max(0, i.postura))}` : "";
   const estados = [i.vulneravel && "*aberto*", i.preso && "preso", i.fraco && "fraco", i.queima && "ferido"].filter(Boolean).join(" · ");
@@ -279,7 +284,7 @@ export function painel(e) {
     e.preparando ? `_${i.nome} recua e junta forças… o próximo golpe vai ser pesado. Defender é uma boa ideia._` : null,
     [`${i.nome} ${barra(i.hp, i.hpMax)} ${Math.max(0, i.hp)}${guarda}${estados ? `  ${estados}` : ""}`,
       `Você ${barra(j.hp, j.hpMax)} ${Math.max(0, j.hp)}/${j.hpMax}${j.mpMax ? ` · mana ${j.mp}` : ""}${j.protecaoRodadas ? " · protegido" : ""}${j.foco ? " · concentrado" : ""}`].join("\n"),
-    textoMenu(e),
+    completo || e.rodada <= 2 ? textoMenu(e) : textoMenuCurto(e),
   ].filter(Boolean).join("\n\n");
 }
 

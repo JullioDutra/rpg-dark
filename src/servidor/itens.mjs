@@ -107,12 +107,15 @@ export function criarItens({ db, agora }) {
       return { tratado: true, mudouRegiao: Boolean(set.regiao_atual), saidas: [{ para, texto: `Você usa *${c.nome}*.${c.retorno ? " As letras queimam em azul e o mundo dobra ao seu redor." : ""}\n${rodape(...partes, l.qtd > 1 ? `restam ${l.qtd - 1}` : "era o último")}` }] };
     }
 
-    if (/^(loja|comprar|mercado|vender)$/.test(t)) {
+    if ((m = t.match(/^(?:loja|comprar|mercado|vender)(?:\s+(?:de\s+)?(pocoes|pocao|consumiveis|armas?|armaduras?|acessorios?))?$/))) {
       const tipo = tipoLoja(j);
       if (!tipo) return dizer("Não há loja por aqui. Procure uma vila ou cidade.");
-      const lista = estoque(tipo, j);
-      const txt = lista.map((it, i) => `*${i + 1}* ${it.nome} — ${it.preco} ryō\n   _${efeitoItem(it)}_`).join("\n");
-      return dizer(`*Loja*\n_${j.classe} usa: ${descricaoEquipClasse(j.classe)}_\n\n${txt}\n\n${rodape(`você tem ${j.ryo} ryō`, "comprar <nº> [quantidade]", "vender <nº da sua bolsa>")}`);
+      // Abas: o número de cada item é sempre o mesmo, com ou sem filtro (comprar <nº> não muda)
+      const aba = !m[1] ? null : /^poc|^cons/.test(m[1]) ? "consumivel" : /^armad/.test(m[1]) ? "armadura" : /^arma/.test(m[1]) ? "arma" : "acessorio";
+      const lista = estoque(tipo, j).map((it, i) => ({ it, n: i + 1 })).filter(({ it }) => !aba || (aba === "consumivel" ? it.tipo === "consumivel" : it.slot === aba));
+      if (!lista.length) return dizer("Esta loja não tem nada desse tipo para a sua classe agora. Veja tudo com *loja*.");
+      const txt = lista.map(({ it, n }) => `*${n}* ${it.nome} — ${it.preco} ryō\n   _${efeitoItem(it)}_`).join("\n");
+      return dizer(`*Loja*${aba ? ` — ${{ consumivel: "poções e utilidades", arma: "armas", armadura: "armaduras", acessorio: "acessórios" }[aba]}` : ""}\n_${j.classe} usa: ${descricaoEquipClasse(j.classe)}_\n\n${txt}\n\n${rodape(`você tem ${j.ryo} ryō`, "comprar <nº> [quantidade]", "vender <nº da sua bolsa>", aba ? null : "abas: loja poções · loja armas · loja armaduras")}`);
     }
     if ((m = t.match(/^comprar\s+(\d+)(?:\s+(\d+))?$/))) {
       const tipo = tipoLoja(j);
@@ -152,7 +155,7 @@ export function criarItens({ db, agora }) {
       const pago = await db.query(`update jogo.jogadores set ryo = ryo - $2, hp = hp_max, mp = mp_max, recuperacao_em = $3 where id = $1 and ryo >= $2 returning ryo`, [j.id, custo, new Date(agora())]);
       if (!pago.length) return dizer(`Uma noite custa ${custo} ryō e você tem ${j.ryo}. Você dorme ao relento: a vida volta mais devagar.`);
       Object.assign(j, { ryo: pago[0].ryo, hp: j.hp_max, mp: j.mp_max });
-      return dizer(`Uma cama de verdade, uma sopa quente. Você acorda inteiro.\n${rodape(`vida ${j.hp_max}/${j.hp_max}`, `mana ${j.mp_max}/${j.mp_max}`, `−${custo} ryō`)}`);
+      return { ...dizer(`Uma cama de verdade, uma sopa quente. Você acorda inteiro.\n${rodape(`vida ${j.hp_max}/${j.hp_max}`, `mana ${j.mp_max}/${j.mp_max}`, `−${custo} ryō`)}`), descansou: true };
     }
     return { tratado: false, saidas: [] };
   };

@@ -16,9 +16,15 @@ const REINO_DA_REGIAO = new Map([...REGIAO.values()].map((r) => [r.nome, r.reino
 export const RECUPERACAO_POR_HORA = 0.2; // fora de combate: 20% da vida e da mana por hora
 const ATRIBUTOS = ["FOR", "DEF", "MAG", "RES", "VEL", "SOR"];
 
+const CACHE_VILAO = new Map();
 export function imagemVilao(v, escala = 6) {
   const dna = DNA_MASCARA[v.id] ?? DNA_VILOES[v.id];
   if (!dna) return null;
+  const chave = `${v.id}:${escala}`;
+  if (!CACHE_VILAO.has(chave)) { if (CACHE_VILAO.size >= 60) CACHE_VILAO.delete(CACHE_VILAO.keys().next().value); CACHE_VILAO.set(chave, desenharVilao(v, dna, escala)); }
+  return CACHE_VILAO.get(chave);
+}
+function desenharVilao(v, dna, escala) {
   return renderizar({ id: v.id, elemento: v.elemento, reino: REINO_DA_REGIAO.get(v.regiao) ?? "Kokū",
     brilhoAura: ["rei", "divindade"].includes(v.tier), ...dna }, escala);
 }
@@ -102,7 +108,7 @@ export function criarCombate({ db, rng, agora }) {
 
     if (!b.estado?.inimigo) return fim(false);
     // Em batalha
-    if (/^(\?|opcoes|painel|batalha|menu)$/.test(t)) { dizer(painel(b.estado)); return fim(true); }
+    if (/^(\?|opcoes|painel|batalha|menu)$/.test(t)) { dizer(painel(b.estado, { completo: true })); return fim(true); }
     const esc = escolher(b.estado, t);
     if (!esc) {
       if (/^(ficha|carta|ajuda|comandos|status|itens|bolsa)$/.test(t)) return fim(false);

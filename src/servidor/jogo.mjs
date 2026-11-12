@@ -16,6 +16,7 @@ import { criarCombate } from "./combate.mjs";
 import { criarMundo } from "./mundo.mjs";
 import { criarItens } from "./itens.mjs";
 import { criarExtras } from "./extras.mjs";
+import { criarSocial } from "./social.mjs";
 import { kitInicial } from "../regras/itens.mjs";
 import { XP_PROXIMO } from "../../scripts/balanceamento.mjs";
 import { comandoExploracao, recuperarVigor, buscarRegioes } from "../regras/exploracao.mjs";
@@ -78,7 +79,12 @@ export function criarJogo({ db, sal = process.env.TELEFONE_SAL ?? "", admins = (
   const narrador = criarNarrador({ db, ia, agora });
   const combate = criarCombate({ db, rng, agora });
   const extras = criarExtras({ db, rng, agora });
-  const mundo = criarMundo({ db, ia, rng, agora, ganchos: extras });
+  const social = criarSocial({ db, rng, agora });
+  // Ganchos do mundo vivo: os modos complementares e, por cima, os contratos da Guilda (que só observam)
+  const ganchos = { ...extras,
+    aoFalar: async (j, npc, amizade, para) => [...(await extras.aoFalar(j, npc, amizade, para)), ...(await social.aoFalar(j, npc, para))],
+    aoConcluir: async (j, cap, para) => [...(await extras.aoConcluir(j, cap, para)), ...(await social.aoConcluir(j, para))] };
+  const mundo = criarMundo({ db, ia, rng, agora, ganchos });
   const itens = criarItens({ db, agora });
 
   async function identidade(autor) {
@@ -140,7 +146,8 @@ export function criarJogo({ db, sal = process.env.TELEFONE_SAL ?? "", admins = (
     if (ehComando(t, "ajuda", "comandos")) return [{ para: msg.chat, texto: AJUDA }];
     if (ehComando(t, "dado", "dados", "d20", "como funciona o dado", "guia do dado")) return guiaDado(msg.chat);
     // Duelo e apoio entre jogadores
-    if (/^[!/]?(duelo|desafio|x1|apoiar|apoio|aceitar|aceito|recusar|recuso|historia|conceder)\b/.test(t)) {
+    if (ehComando(t, "ranking", "rank", "placar")) return social.ranking(mundo.id, msg.chat);
+    if (/^[!/]?(duelo|desafio|x1|apoiar|apoio|aceitar|aceito|recusar|recuso|historia|conceder|dar)\b/.test(t)) {
       const idt = await identidade(msg.autor);
       const eu = await um(db, "select * from jogo.jogadores where mundo_id = $1 and identidade_id = $2 and estado = 'ativo'", [mundo.id, idt.id]);
       const achar = async (m) => {
@@ -151,6 +158,7 @@ export function criarJogo({ db, sal = process.env.TELEFONE_SAL ?? "", admins = (
         return todos.find((x) => alvos.some((a) => [dig(x.wa_jid), dig(x.wa_lid)].some((d) => d && (d === a || mesmoNumero(d, a)))))
           ?? (nome.length >= 3 ? todos.find((x) => x.nome_normalizado === nome || x.nome_normalizado.startsWith(nome)) : null) ?? null;
       };
+      if (/^[!/]?dar\b/.test(t)) return social.dar(msg, eu, achar);
       const r = await extras.noGrupo(msg, mundo, t, eu, achar, /^[!/]?conceder\b/.test(t) ? await ehAdmin(msg) : false);
       if (r) return r;
     }
@@ -200,18 +208,18 @@ export function criarJogo({ db, sal = process.env.TELEFONE_SAL ?? "", admins = (
     // 1) Luta em andamento (ou "lutar"): tem prioridade sobre tudo
     const c = info ? null : await combate(j.id, msg);
     if (c) j = { ...j, ...c.jogador };
-    if (c?.tratado) return [...c.saidas, ...(await mundo.aoEventos(j, c.eventos, para))];
+    if (c?.tratado) return [...c.saidas, ...(await mundo.aoEventos(j, c.eventos, para)), ...(await social.aoEventos(j, c.eventos, para))];
     const tc = t.replace(/^[!/]/, "");
     // 2) Itens, loja, descanso
     const it = await itens(j, tc, para);
     if (it.pergaminhoTerra) return extras.lerPergaminho(j, para);
-    if (it.tratado) return it.mudouRegiao ? [...it.saidas, ...(await mundo.chegada(j, para))] : it.saidas;
+    if (it.tratado) return it.mudouRegiao ? [...it.saidas, ...(await mundo.chegada(j, para))] : it.descansou ? [...it.saidas, ...(await social.sonho(j, para))] : it.saidas;
     // 3) Exploração e viagens (também confere chegadas pendentes); ao mudar de região, mostra o lugar
     const antes = j.regiao_atual;
     const ehLocal = /^(ir|vou|visitar|entrar)\b/.test(tc) ? await mundo.comando(j, tc, msg.texto, para) : { tratado: false };
     if (ehLocal.tratado) return ehLocal.saidas;
     // Comandos do mundo vivo têm verbo próprio: a exploração só confere chegadas (para "falar sobre o mapa" não abrir o mapa)
-    const direto = /^(falar|conversar|perguntar|locais|lugares|olhar|missao|missoes|historia|capitulo|objetivo|diario|caminho|segredos|pistas|amigos|amizades|feitos|noticias|vingar|vinganca|pet|boatos|boato|rumores|contos|ouvir|lembrar|ecos|eco|aceitar pacto|recusar pacto|pacto|resistir|purificar|minha historia|aceitar a terra|aceito a terra|fechar o pergaminho|fechar pergaminho)\b/.test(tc);
+    const direto = /^(falar|conversar|perguntar|locais|lugares|olhar|missao|missoes|historia|capitulo|objetivo|diario|caminho|segredos|pistas|amigos|amizades|feitos|noticias|vingar|vinganca|pet|boatos|boato|rumores|contos|ouvir|lembrar|ecos|eco|aceitar pacto|recusar pacto|pacto|resistir|purificar|contratos|contrato|guilda|quadro|ranking|rank|placar|minha historia|aceitar a terra|aceito a terra|fechar o pergaminho|fechar pergaminho)\b/.test(tc);
     const e = await exploracao(j.id, info || direto ? { ...msg, texto: "" } : /^(ir|vou)\b/.test(tc) ? { ...msg, texto: tc.replace(/^(ir|vou)\s+(para |pra |a |ao |à )?/, "viajar ") } : msg);
     j = { ...j, ...e.jogador };
     const chegou = j.regiao_atual !== antes ? await mundo.chegada(j, para) : [];
@@ -219,6 +227,8 @@ export function criarJogo({ db, sal = process.env.TELEFONE_SAL ?? "", admins = (
     // 4) Mundo vivo: locais, NPCs, missão, segredos, amigos, feitos, vingar; pet, pactos, boatos, ecos
     const ex = await extras.comando(j, tc, para, msg.texto);
     if (ex.tratado) return [...e.saidas, ...chegou, ...ex.saidas];
+    const so = await social.comando(j, tc, para);
+    if (so.tratado) return [...e.saidas, ...chegou, ...so.saidas];
     const mv = await mundo.comando(j, tc, msg.texto, para);
     if (mv.tratado) return [...e.saidas, ...chegou, ...mv.saidas];
     if (ehComando(t, "onde estou", "regiao", "minha regiao", "local", "onde to", "onde eu estou"))
@@ -402,6 +412,7 @@ const AJUDA = `*Como jogar*
 entrar no mundo — criar seu personagem
 ficha — sua carta · feitos — o que aconteceu no mundo
 duelo @pessoa — duelo amistoso · apoiar @pessoa — mandar forças
+dar <item> @pessoa — dar uma poção, um material ou ryō · ranking
 historia @pessoa — ler a história de alguém
 
 *Pelo mundo* (no privado)
@@ -410,12 +421,13 @@ ir <lugar> — visitar um lugar
 falar <nome> — conversar com alguém
 missao — sua história e o próximo passo
 explorar — procurar encrenca e achados
+contratos — trabalhos do dia da Guilda (vilas e cidades)
 viajar <região> · rota · mapa
 > sua ação — fazer o que quiser, com suas palavras
 
 *Suas coisas*
 itens — bolsa, o que cada coisa faz e quantos usos tem
-equipar <nº> · usar <nº> · loja · descansar
+equipar <nº> · usar <nº> · loja (loja poções, loja armas) · descansar
 habilidades · ficha · segredos · amigos · pet
 minha história — conte quem é o seu personagem
 boatos — histórias que o povo conta · lembrar — ecos do passado

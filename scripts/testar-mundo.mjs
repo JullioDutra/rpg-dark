@@ -232,6 +232,41 @@ export async function testarMundoServidor({ db, jogador, outro, mensagem, grupo,
     assert.match(pedidos.at(-1).mensagens.at(-1).content, /NUNCA concede poder/);
     jogo = novoJogo();
   });
+  await t("Guilda e convívio: contratos do dia pagam sozinhos, sonho ao descansar aponta a história, ranking, dar item e abas da loja", async () => {
+    const { criarSocial, contratosDoDia } = await import("../src/servidor/social.mjs");
+    const { MUNDO } = await import("../src/mundo/mundo.mjs");
+    const rid = Object.keys(MUNDO).find((k) => MUNDO[k].tipo === "capital" && MUNDO[k].locais.some((l) => l.servicos?.includes("loja")));
+    await db.query("update jogo.jogadores set regiao_atual = $2, local_atual = null, ryo = 500, hp = hp_max where id = $1", [jogador.id, rid]);
+    await db.query("delete from jogo.progresso where jogador_id = $1 and chave in ('contratos', 'sonhos', 'presentes')", [jogador.id]);
+    const q = texto(await enviar("contratos"));
+    assert.match(q, /Quadro da Guilda[\s\S]*Limpar a estrada[\s\S]*Ouvir o povo/);
+    const j = await atual(), hoje = new Date(clock).toISOString().slice(0, 10);
+    const social = criarSocial({ db, rng: () => 0, agora: () => clock });
+    const cacar = contratosDoDia(j, hoje).find((c) => c.id === "cacar");
+    let pago = [];
+    for (let i = 0; i < cacar.alvo; i++) pago = await social.aoEventos(j, [{ tipo: "vitoria" }], "pv");
+    assert.match(texto(pago), /Contrato cumprido[\s\S]*ryō/);
+    assert.equal(Number((await atual()).ryo), 500 + cacar.ryo);
+    assert.deepEqual(await social.aoEventos(j, [{ tipo: "vitoria" }], "pv"), [], "contrato pago não paga de novo");
+    assert.match(texto(await enviar("contratos")), /cumprido/);
+    // sonho: sempre termina no próximo passo da campanha
+    assert.match(texto(await social.sonho(j, "pv")), /você sonha[\s\S]*certeza quieta/);
+    // ranking, no privado e no grupo
+    assert.match(texto(await enviar("ranking")), /nomes mais falados[\s\S]*Rin/);
+    assert.match(texto(await noGrupo(grupo("ranking"))), /nomes mais falados/);
+    // abas da loja mantêm a numeração
+    const tudo = texto(await enviar("loja")), pocoes = texto(await enviar("loja poções"));
+    assert.match(pocoes, /poções e utilidades[\s\S]*Poção de cura/); assert.doesNotMatch(pocoes, /Espada|Cajado|Katana|Manto/);
+    assert(tudo.length > pocoes.length);
+    // dar: poção e ryō passam de um jogador para o outro; equipamento não
+    await db.query(`insert into jogo.inventario (jogador_id, item_id, tipo, qtd, dados) values ($1, 'pocao', 'consumivel', 2, '{}') on conflict (jogador_id, item_id) do update set qtd = 2`, [jogador.id]);
+    const antes = (await db.query("select coalesce(sum(qtd), 0)::int n from jogo.inventario where jogador_id = $1 and item_id = 'pocao'", [outro.id]))[0].n;
+    assert.match(texto(await noGrupo(grupo("dar poção Rin"))), /Kaito Ryuen\* entrega \*Poção de cura\* a \*Rin/);
+    assert.equal((await db.query("select sum(qtd)::int n from jogo.inventario where jogador_id = $1 and item_id = 'pocao'", [outro.id]))[0].n, antes + 1);
+    assert.match(texto(await noGrupo(grupo("dar 40 ryo Rin"))), /entrega 40 ryō/);
+    assert.match(texto(await noGrupo(grupo("dar 999999 ryo Rin"))), /Quantidade inválida|não tem/);
+    assert.match(texto(await noGrupo(grupo("dar espada Rin"))), /não tem isso para dar/);
+  });
   await t("Olhos da Terra: a mestra entrega o pergaminho a quem é da terra; ler cega e dá as habilidades; admin também concede", async () => {
     await db.query("update jogo.jogadores set regiao_atual = 'R-DAI-6', local_atual = null, atributo_magico = 'Fogo (Chama)', reino = 'Homura' where id = $1", [jogador.id]);
     await enviar("falar tsuchi"); clock += 7 * 3_600_000;
