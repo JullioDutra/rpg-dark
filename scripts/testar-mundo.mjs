@@ -324,6 +324,19 @@ export async function testarMundoServidor({ db, jogador, outro, mensagem, grupo,
     assert.match(texto(await noGrupo(adminPrivado("mestre presente Rin excalibur"))), /Só poções/);
     assert(doGrupo(await noGrupo(adminPrivado("mestre presságio As estrelas piscaram duas vezes."))).some((x) => /estrelas piscaram/.test(x.texto)));
   });
+  await t("relógio: a chegada de viagem avisa sozinha e a crônica do dia sai no grupo", async () => {
+    const { MUNDO } = await import("../src/mundo/mundo.mjs");
+    const r = (await db.query("select regiao_atual from jogo.jogadores where id = $1", [outro.id]))[0].regiao_atual;
+    const destino = Object.keys(MUNDO).find((k) => k !== r);
+    await db.query("delete from jogo.viagens where jogador_id = $1 and concluida_em is null", [outro.id]);
+    await db.query("insert into jogo.viagens (jogador_id, origem, destino, partida_em, chegada_em) values ($1, $2, $3, $4, $5)", [outro.id, r, destino, new Date(clock - 600_000), new Date(clock - 1000)]);
+    const ch = await jogo.aoTick({ tipo: "chegada", jogador: Number(outro.id) });
+    assert(ch.length && ch.some((x) => x.imagem), "chegada manda a cena do lugar no privado");
+    assert.equal((await db.query("select regiao_atual from jogo.jogadores where id = $1", [outro.id]))[0].regiao_atual, destino);
+    assert.deepEqual(await jogo.aoTick({ tipo: "chegada", jogador: Number(outro.id) }), [], "não avisa duas vezes");
+    const cr = await jogo.aoTick({ tipo: "resumo" });
+    assert(doGrupo(cr).some((x) => /Crônica do dia/.test(x.texto)), "crônica no grupo");
+  });
   await t("Olhos da Terra: a mestra entrega o pergaminho a quem é da terra; ler cega e dá as habilidades; admin também concede", async () => {
     await db.query("update jogo.jogadores set regiao_atual = 'R-DAI-6', local_atual = null, atributo_magico = 'Fogo (Chama)', reino = 'Homura' where id = $1", [jogador.id]);
     await enviar("falar tsuchi"); clock += 7 * 3_600_000;

@@ -13,6 +13,28 @@ export function criarIA() {
   return reserva ? comReserva(principal, reserva) : principal;
 }
 
+/** Cliente do relógio da VPS. Sem RELOGIO_URL, devolve null (o jogo funciona, só não avisa sozinho). Nunca derruba uma mensagem. */
+export function criarRelogio() {
+  const base = process.env.RELOGIO_URL, segredo = process.env.RELOGIO_SEGREDO;
+  if (!base || !segredo) return null;
+  const jogoUrl = process.env.JOGO_URL ?? "https://rpg-dark.vercel.app";
+  return {
+    async agendar(id, quandoMs, corpo = {}) {
+      try {
+        const r = await fetch(`${base.replace(/\/$/, "")}/agendar`, { method: "POST", signal: AbortSignal.timeout(4000),
+          headers: { "content-type": "application/json", "x-relogio-segredo": segredo },
+          body: JSON.stringify({ id, quando: new Date(quandoMs).toISOString(), url: `${jogoUrl}/api/tick`, corpo }) });
+        if (!r.ok) console.warn("relogio: agendar", id, r.status);
+        return r.ok;
+      } catch (e) { console.warn("relogio: fora do ar", String(e.message ?? e).slice(0, 120)); return false; }
+    },
+    async saude() {
+      const r = await fetch(`${base.replace(/\/$/, "")}/saude`, { signal: AbortSignal.timeout(4000) });
+      return r.ok ? r.json() : { ok: false, http: r.status };
+    },
+  };
+}
+
 export async function montarProducao() {
   const db = await bancoNeon();
   await garantirEsquema(db);
@@ -24,5 +46,5 @@ export async function montarProducao() {
       return Boolean(p?.admin);
     } catch { return false; }
   };
-  return { db, evo, jogo: criarJogo({ db, ehAdminGrupo, ia: criarIA() }) };
+  return { db, evo, jogo: criarJogo({ db, ehAdminGrupo, ia: criarIA(), relogio: criarRelogio() }) };
 }

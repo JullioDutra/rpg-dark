@@ -131,4 +131,10 @@ Tudo abaixo é **paralelo à campanha**: dá ryō, mérito e um pouco de XP, nun
 | K | Contratos da Guilda: 3 por dia, pagos na hora em que são cumpridos | `contratos` numa vila ou cidade |
 | L | Sonhos ao descansar (40% das noites), sempre lembrando o próximo passo da história | `descansar` |
 
-Ficam para depois do relógio na VPS: 6, 27, C, N, 26, A, H.
+| 6 | Com o relógio na VPS, o bot avisa sozinho quando a viagem termina e mostra o lugar | automático |
+| 27 | Crônica do dia no grupo às 21h (só nos dias em que houve feitos) | automático |
+| 31 | Relógio ligado (`RELOGIO_URL`); `/api/saude` mostra se ele responde e se o segredo confere | — |
+
+Docs 38 e 39 cobrem: pressão no dado, história do mundo (capítulo único + `acompanhar`), conversas com fim e a mão do mestre.
+
+Ainda em aberto (maiores, pedem desenho próprio): luta em grupo (26), Chefe de Mundo (A), Torneio (H), Relógio do Eclipse ativo (C), vozes do mundo (N).

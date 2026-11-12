@@ -3,6 +3,7 @@
 import { responder } from "../src/servidor/http.mjs";
 import { bancoNeon, garantirEsquema, urlBanco, um } from "../src/servidor/db.mjs";
 import { criarEvolution } from "../src/servidor/evolution.mjs";
+import { criarRelogio } from "../src/servidor/montar.mjs";
 
 const PECAS = ["DATABASE_URL", "BLOB_READ_WRITE_TOKEN", "EVOLUTION_URL", "EVOLUTION_API_KEY", "EVOLUTION_INSTANCIA",
   "WEBHOOK_SECRET", "RELOGIO_URL", "RELOGIO_SEGREDO", "TELEFONE_SAL", "IA_PROVEDOR", "MARITACA_API_KEY", "MARITACA_MODELO", "ADMINS"];
@@ -13,7 +14,14 @@ async function checar(fn) {
 
 export default async function handler(req, res) {
   const configurado = Object.fromEntries(PECAS.map((k) => [k, Boolean(k === "DATABASE_URL" ? urlBanco() : process.env[k])]));
-  const [banco, evolution, maritaca] = await Promise.all([
+  const [relogio, banco, evolution, maritaca] = await Promise.all([
+    process.env.RELOGIO_URL ? checar(async () => {
+      const r = criarRelogio();
+      const s = await r.saude();
+      // agenda um prazo de teste para daqui a 30 dias com o mesmo id de sempre: confirma que o segredo confere, sem efeito no jogo
+      const segredo_confere = await r.agendar("teste-saude", Date.now() + 30 * 86_400_000, { tipo: "teste" });
+      return { ...s, segredo_confere };
+    }) : null,
     urlBanco() ? checar(async () => {
       const db = await bancoNeon();
       const m = await garantirEsquema(db);
@@ -42,5 +50,5 @@ export default async function handler(req, res) {
       return { ok: true, modelo_configurado_existe: modelos.includes(process.env.MARITACA_MODELO ?? "sabiazinho-4"), modelos };
     }) : null,
   ]);
-  responder(res, 200, { ok: true, servico: "rpg-yotsuhoshi", regiao: process.env.VERCEL_REGION ?? null, configurado, banco, evolution, maritaca });
+  responder(res, 200, { ok: true, servico: "rpg-yotsuhoshi", regiao: process.env.VERCEL_REGION ?? null, configurado, banco, relogio, evolution, maritaca });
 }

@@ -74,7 +74,13 @@ function hashTelefone(sal, chave) {
   return createHash("sha256").update(`${sal}:${chave}`).digest("hex");
 }
 
-export function criarJogo({ db, sal = process.env.TELEFONE_SAL ?? "", admins = (process.env.ADMINS ?? "").split(/[,\s]+/).filter(Boolean),
+/** Próximas 21h no horário de Brasília (UTC−3), em ms. */
+export function proximoResumo(ms) {
+  const d = new Date(ms); d.setUTCHours(24, 0, 0, 0); // 00:00 UTC = 21:00 em Brasília
+  return d.getTime();
+}
+
+export function criarJogo({ relogio = null, db, sal = process.env.TELEFONE_SAL ?? "", admins = (process.env.ADMINS ?? "").split(/[,\s]+/).filter(Boolean),
   ehAdminGrupo = async () => false, ia = null, rng = rngSeguro, agora = () => Date.now() }) {
   const D = dados();
   const exploracao = criarExploracao({ db, rng, agora });
@@ -219,7 +225,54 @@ export function criarJogo({ db, sal = process.env.TELEFONE_SAL ?? "", admins = (
       if (preso && !preso.segue) return [...novidades, ...preso.saidas];
       if (preso?.segue) novidades.push(...preso.saidas);
     }
-    return [...novidades, ...(await privadoBase(msg))];
+    const saidas = [...novidades, ...(await privadoBase(msg))];
+    if (ativo) await agendarChegada(ativo.id);
+    return saidas;
+  }
+
+  // ── tempo: o relógio da VPS chama de volta na hora de um prazo (chegada de viagem, resumo do dia) ──
+  let resumoAgendadoAte = 0;
+  async function agendarChegada(jogadorId) {
+    if (!relogio) return;
+    const v = await um(db, "select chegada_em from jogo.viagens where jogador_id = $1 and concluida_em is null", [jogadorId]);
+    if (v) await relogio.agendar(`chegada:${jogadorId}`, +new Date(v.chegada_em) + 2000, { tipo: "chegada", jogador: Number(jogadorId) });
+  }
+  async function agendarResumo() {
+    if (!relogio || resumoAgendadoAte > agora()) return;
+    const quando = proximoResumo(agora());
+    resumoAgendadoAte = Math.min(quando, agora() + 6 * 3_600_000);
+    await relogio.agendar("resumo-diario", quando, { tipo: "resumo" });
+  }
+  /** Chamado por /api/tick. corpo: { tipo: "chegada", jogador } | { tipo: "resumo" } */
+  async function aoTick(corpo = {}) {
+    if (corpo.tipo === "chegada") {
+      let j = await um(db, `select j.*, i.wa_jid, i.wa_lid from jogo.jogadores j join jogo.identidades i on i.id = j.identidade_id where j.id = $1 and j.estado = 'ativo'`, [corpo.jogador]);
+      const para = j?.wa_jid ?? j?.wa_lid;
+      if (!para) return [];
+      const v = await um(db, "select chegada_em from jogo.viagens where jogador_id = $1 and concluida_em is null", [j.id]);
+      if (!v) return []; // já chegou por conta própria
+      if (+new Date(v.chegada_em) > agora()) { await agendarChegada(j.id); return []; }
+      const antes = j.regiao_atual;
+      const e = await exploracao(j.id, { chat: para, id: `tick:${agora()}`, texto: "" });
+      j = { ...j, ...e.jogador };
+      return [...e.saidas, ...(j.regiao_atual !== antes ? await mundo.chegada(j, para) : [])];
+    }
+    if (corpo.tipo === "resumo") {
+      const saidas = [];
+      const mundos = await db.query("select id, grupo_wa_id from jogo.mundos where status = 'ativo' and grupo_wa_id is not null");
+      for (const m of mundos) {
+        const fs = await db.query("select texto, tipo from jogo.feitos where mundo_id = $1 and criado_em > $2 order by id", [m.id, new Date(agora() - 24 * 3_600_000)]);
+        if (!fs.length) continue; // dia sem feitos: o grupo fica em paz
+        const linhas = fs.slice(-8).map((f) => `• ${f.texto.split("\n").find((l) => /\p{L}/u.test(l.replace(/\*[^*]*CAIU[^*]*\*/u, ""))) ?? f.texto.split("\n")[0]}`.replace(/^• [^\p{L}*_]+/u, "• "));
+        const topo = await db.query("select nome, nivel from jogo.jogadores where mundo_id = $1 and estado = 'ativo' order by nivel desc, xp desc limit 3", [m.id]);
+        saidas.push({ para: m.grupo_wa_id, texto: `*Crônica do dia em Yotsuhoshi*\n\n${linhas.join("\n")}${fs.length > 8 ? `\n_…e mais ${fs.length - 8}._` : ""}\n\n` +
+          `_Nas tavernas, os nomes mais repetidos esta noite:_ ${topo.map((x) => `${x.nome} (nível ${x.nivel})`).join(", ")}.\n${rodape("feitos mostra os últimos", "ranking mostra todos")}` });
+      }
+      resumoAgendadoAte = 0;
+      await agendarResumo();
+      return saidas;
+    }
+    return [];
   }
   async function privadoBase(msg) {
     const idt = await identidade(msg.autor);
@@ -409,8 +462,10 @@ export function criarJogo({ db, sal = process.env.TELEFONE_SAL ?? "", admins = (
       if (msg.quando && agora() - msg.quando > 10 * 60_000) return []; // histórico antigo (reconexão)
       const nova = await db.query("insert into jogo.mensagens_processadas (wa_message_id) values ($1) on conflict do nothing returning 1", [`${msg.chat}:${msg.id}`]);
       if (!nova.length) return [];
+      await agendarResumo();
       return msg.grupo ? noGrupo(msg) : noPrivado(msg);
     },
+    aoTick,
   };
 }
 
