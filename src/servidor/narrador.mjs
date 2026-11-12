@@ -85,14 +85,17 @@ export function criarNarrador({ db, ia, agora = () => Date.now() }) {
     const r = await Promise.race([
       narrar(ia, { bibliaDoMundo: biblia(j) + (contexto ? `\nLugar exato: ${contexto.local ?? "—"}\nPessoas que existem aqui (use só estas): ${contexto.npcs.join("; ") || "ninguém conhecido"}` : ""),
         marco: contexto?.capitulo ? { capitulo: contexto.capitulo.titulo, passo_atual: contexto.capitulo.passo_atual,
-          regra: "A cena FICA neste passo até o jogador cumpri-lo com uma ação do jogo (ir a um lugar, falar com alguém, lutar). Não pule, não resolva nem revele os próximos passos. Se o jogador se afastar, traga a cena de volta com um detalhe que lembre o objetivo." }
+          regra: "O capítulo só avança por comandos do jogo (o motor cuida disso e avisa o jogador). Você NÃO precisa segurar o jogador neste passo: deixe a ação dele acontecer aqui, com um resultado local. Só não resolva, não pule e não revele os próximos passos do capítulo, e não entregue o que o passo atual vai dar. Nunca traga o jogador de volta à força nem faça um personagem interrompê-lo." }
           : { capitulo: null, regra: "Não há capítulo ativo aqui: narre uma cena curta de passagem, sem inventar tramas novas nem vilões.", objetivo_geral: contexto?.objetivo ?? m?.objetivo ?? null },
         ficha, permitidos,
         chaves: [], historico, acao, alegacoes: i.entidades?.alegacoes_de_poder ?? [] }),
       new Promise((ok) => setTimeout(() => ok({ narracao: "_As estrelas silenciam por um instante… tente de novo em alguns segundos._", eventos: [], falha: "tempo" }), 20000)),
     ]);
-    const saidas = [{ para, texto: r.narracao }];
+    // O rumo vem do motor, não da IA: uma linha com o comando exato que faz a história andar
+    const rumo = contexto?.capitulo?.comando ? `\n\n_A história continua com:_ *${contexto.capitulo.comando}*` : "";
+    const saidas = [{ para, texto: `${r.narracao}${r.falha ? "" : rumo}` }];
     if (r.falha) return saidas;
+    await db.query("delete from jogo.progresso where jogador_id = $1 and chave = 'falando'", [j.id]); // a cena mudou: frases soltas voltam a ser ação, não conversa
 
     await db.query(`insert into jogo.cenas (jogador_id, papel, texto, dados, criado_em) values ($1, 'jogador', $2, $3, $4), ($1, 'narrador', $5, $6, $4)`,
       [j.id, acao.slice(0, 600), JSON.stringify({ alegacoes: i.entidades?.alegacoes_de_poder ?? [] }), new Date(tempo), r.narracao,

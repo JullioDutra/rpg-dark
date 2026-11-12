@@ -300,14 +300,19 @@ export function criarMundo({ db, ia = null, rng, agora, ganchos = {} }) {
   // ── vilões nos covis ──
   const capsDoVilao = (v) => [...CAPITULO.values()].filter((c) => c.passos.some((p) => p.t === "derrotar" && p.a === v));
   async function proximoVilao(j, rid, l, st) {
-    for (const v of l.viloes ?? []) {
+    // O vilão do passo atual do capítulo vem primeiro, mesmo que haja outro "na frente" no mesmo covil (senão a história trava atrás de um vilão de outro capítulo)
+    const at = capituloAtivo(rid, st), passo = at && !at.bloqueado ? at.cap.passos[at.passo] : null;
+    const daHistoria = passo?.t === "derrotar" && (l.viloes ?? []).includes(passo.a) && !st.D.has(passo.a) ? passo.a : null;
+    let fechado = null;
+    for (const v of [...(daHistoria ? [daHistoria] : []), ...(l.viloes ?? []).filter((x) => x !== daHistoria)]) {
       if (st.D.has(v)) continue;
       const caps = capsDoVilao(v);
-      if (caps.length && caps.every((c) => (c.requer ?? []).some((r) => !st.B.has(r)))) return { v, bloqueado: true };
+      // vilão de capítulo que ainda não abriu não bloqueia os outros: só fica para depois
+      if (v !== daHistoria && caps.length && caps.every((c) => (c.requer ?? []).some((r) => !st.B.has(r)))) { fechado ??= { v, bloqueado: true }; continue; }
       const dono = await um(db, `select x.nome from jogo.derrotas_vilao d join jogo.jogadores x on x.id = d.jogador_id where d.mundo_id = $1 and d.vilao_id = $2 and d.primeiro`, [j.mundo_id, v]);
       return { v, eco: Boolean(dono), dono: dono?.nome ?? null };
     }
-    return null;
+    return fechado;
   }
   async function encontroFixo(j, rid, l, alvo, para) {
     const v = VILOES.get(alvo.v);
@@ -388,7 +393,7 @@ export function criarMundo({ db, ia = null, rng, agora, ganchos = {} }) {
     // "falar com a Oharu sobre o pilar": tira preposições e artigos, acha a pessoa pelo trecho mais longo do começo e o resto é a fala
     const palavras = `${alvo} ${fala}`.trim().split(/\s+/).filter(Boolean);
     while (palavras.length && /^(com|para|pra|a|o|as|os|ao|aos|à|às|da|do|de)$/i.test(normal(palavras[0]))) palavras.shift();
-    const bate = (trecho) => { const x = normal(trecho); if (x.length < 3) return null;
+    const bate = (trecho) => { const x = normal(trecho); if (x.length < 2) return null;
       return nomes.find(([id, n]) => normal(n.nome) === x || id === x) ?? nomes.find(([, n]) => normal(n.nome).split(" ").some((w) => w === x)) ?? nomes.find(([, n]) => normal(n.nome).startsWith(x)) ?? null; };
     let achado = null, nPalavras = 0;
     for (let k = Math.min(4, palavras.length); k >= 1 && !achado; k--) { achado = bate(palavras.slice(0, k).join(" ")); if (achado) nPalavras = k; }
@@ -434,7 +439,7 @@ export function criarMundo({ db, ia = null, rng, agora, ganchos = {} }) {
       const sistema = `Você interpreta ${p.nome}, ${p.papel}, num RPG de anime (Yotsuhoshi) jogado no WhatsApp, em português do Brasil. Jeito de falar: ${p.jeito}. ` +
         `Você SABE disto e deve contar com suas palavras${daHistoria || !rel ? " nesta conversa" : " se fizer sentido"}: ${p.sabe}. ` +
         `Regras: responda só como o personagem, em até 450 caracteres, sem emojis, sem listas; falas entre aspas ou com travessão; não invente fatos grandes do mundo além do que você sabe; ` +
-        `nunca dê itens, poderes ou números; não resolva a missão pelo jogador. O que o aventureiro precisa fazer agora: ${rumo} ${turno >= CONVERSA.falas ? "Esta é a última fala desta conversa: despeça-se com naturalidade e mande o aventureiro seguir o caminho dele." : turno >= 2 ? "Termine a fala puxando o aventureiro de volta para o que ele precisa fazer." : ""} ${ganchos.historiaPara ? await ganchos.historiaPara(j) : ""} Relação com o jogador: ${amizade >= AMIZADE.proximo ? "amigo próximo, fala com carinho" : amizade >= AMIZADE.amigo ? "amigo" : rel ? "conhecido" : "primeiro encontro"}.`;
+        `nunca dê itens, poderes ou números; não resolva a missão pelo jogador. O que o aventureiro precisa fazer agora: ${rumo} ${turno >= CONVERSA.falas ? "Esta é a última fala desta conversa: despeça-se com naturalidade." : turno >= 2 ? "Se ainda não lembrou nesta conversa, lembre em uma frase curta o que ele precisa fazer; se já lembrou, não repita." : ""} Responda ao que ele disse ou perguntou. Você só fala: nunca descreva o que o aventureiro faz, nunca o segure, puxe ou leve a outro lugar, e não termine oferecendo duas opções. ${ganchos.historiaPara ? await ganchos.historiaPara(j) : ""} Relação com o jogador: ${amizade >= AMIZADE.proximo ? "amigo próximo, fala com carinho" : amizade >= AMIZADE.amigo ? "amigo" : rel ? "conhecido" : "primeiro encontro"}.`;
       const esquema = { type: "object", additionalProperties: false, required: ["fala"], properties: { fala: { type: "string" } } };
       try {
         const res = await Promise.race([
@@ -597,9 +602,38 @@ export function criarMundo({ db, ia = null, rng, agora, ganchos = {} }) {
     return {
       local: l ? `${l.nome}: ${l.desc}` : null,
       npcs: Object.values(r?.npcs ?? {}).map((n) => `${n.nome} (${n.papel}; ${n.jeito})`),
-      capitulo: at && !at.bloqueado ? { titulo: at.cap.titulo, passo_atual: at.cap.passos[at.passo].txt, passos_ja_feitos: at.passo, total_de_passos: at.cap.passos.length } : null,
+      capitulo: at && !at.bloqueado ? { titulo: at.cap.titulo, passo_atual: at.cap.passos[at.passo].txt, passos_ja_feitos: at.passo, total_de_passos: at.cap.passos.length,
+        comando: comandoDoPasso(j.regiao_atual, at.cap.passos[at.passo]) } : null,
       objetivo: objetivoCampanha(st.B),
     };
+  }
+
+  /** O comando exato que cumpre um passo de capítulo (para o jogador nunca ficar sem saber o que digitar). */
+  function comandoDoPasso(rid, p) {
+    const r = MUNDO[rid];
+    if (p.t === "falar") { const nome = r.npcs[p.a]?.nome ?? p.a, ultimo = nome.split(" ").at(-1); return `falar ${ultimo.length >= 4 ? ultimo : nome}`; }
+    if (p.t === "ir") return `ir ${localDe(rid, p.a)?.nome ?? p.a}`;
+    const c = COVIL.get(p.a);
+    return c ? `ir ${localDe(c.regiao, c.local)?.nome ?? c.local} (e depois lutar)` : "lutar";
+  }
+  const PARADAS = new Set(["de", "da", "do", "das", "dos", "a", "o", "as", "os", "e", "em", "no", "na", "nos", "nas", "ao", "aos", "para", "pra", "com", "um", "uma"]);
+  /**
+   * Frase livre que na verdade é uma ação do jogo: "quero ouvir a Ine" → falar; "subo até as costelas" → ir.
+   * Devolve { tipo: "falar", bruto } | { tipo: "ir", alvo } | null. Assim a história anda mesmo sem o comando exato.
+   */
+  function intencao(j, texto) {
+    const r = MUNDO[j.regiao_atual];
+    if (!r) return null;
+    const t = normal(texto.replace(/^>\s*/, "")), palavras = new Set(t.split(/[^a-z0-9]+/).filter(Boolean));
+    if (/\b(falar|falo|fala|perguntar|pergunto|ouvir|ouco|escutar|escuto|conversar|converso|dizer|digo|responder|respondo|chamar|chamo|sentar|sento)\b/.test(t)) {
+      const npc = Object.entries(r.npcs ?? {}).find(([, n]) => normal(n.nome).split(" ").some((w) => w.length >= 3 && !PARADAS.has(w) && palavras.has(w)));
+      if (npc) return { tipo: "falar", bruto: `falar ${npc[1].nome} ${texto.replace(/^>\s*/, "")}` };
+    }
+    if (/\b(ir|vou|vamos|subir|subo|descer|desco|entrar|entro|seguir|sigo|caminhar|caminho|andar|ando|voltar|volto|atravessar|atravesso|correr|corro|visitar|visito)\b/.test(t)) {
+      const l = r.locais.find((x) => normal(x.nome).split(" ").some((w) => w.length >= 4 && !PARADAS.has(w) && palavras.has(w)));
+      if (l) return { tipo: "ir", alvo: l.id };
+    }
+    return null;
   }
 
   /** Frase solta logo depois de falar com alguém: continua a conversa com a mesma pessoa. Devolve null se não há conversa em andamento. */
@@ -613,7 +647,7 @@ export function criarMundo({ db, ia = null, rng, agora, ganchos = {} }) {
     return falar(j, atual.nid, texto, para);
   }
 
-  return { comando, chegada, aoEventos, contextoNarrador, estado, capituloAtivo, herdar, continuarConversa };
+  return { comando, chegada, aoEventos, contextoNarrador, estado, capituloAtivo, herdar, continuarConversa, intencao };
 }
 
 export { ambiente };

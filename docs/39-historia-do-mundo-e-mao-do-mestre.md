@@ -70,3 +70,23 @@ Não abre durante luta, encontro ou viagem, nem para regiões ainda fechadas par
 (`>` continua sendo ação; `tchau` encerra). Antes, "falar com a X" podia cair na pessoa errada e a frase seguinte ia para o narrador.
 
 **Mais ações:** o vigor volta 20 por hora (era 10) e o narrador aceita 100 ações livres por dia (era 80). As conversas com NPC pela IA têm trava de 150 por dia.
+
+## 39.6 Correção do "loop do narrador" e varredura de diálogos e ações
+
+**O que aconteceu:** o jogador fazia uma ação livre ("quero colher o orvalho") e o narrador o puxava de volta para o passo do capítulo ("Ine te puxa de volta… ouça minha teoria"), sem nunca avançar.
+Duas causas somadas: (1) a regra do narrador mandava "trazer a cena de volta" ao passo; (2) responder "ouvir Ine" continuava sendo texto livre, e só o comando `falar Ine` fazia o capítulo andar.
+
+| Correção | Efeito |
+|----------|--------|
+| Regras do narrador | A ação do jogador sempre acontece e tem resultado; ninguém o puxa, segura ou dá sermão; escolha oferecida é cumprida; não repete a mesma proposta; termina com pergunta aberta |
+| Rumo vem do motor | Quando há capítulo ativo, a narração termina com `A história continua com: falar Ine` (o comando exato) |
+| Frase livre vira comando | "quero ouvir a Ine", "sento para escutar o capitão" → `falar`; "subo até as costelas" → `ir`. Com `>` na frente, só conversa vira comando |
+| Conversa × ação | Depois de falar com alguém, perguntas continuam a conversa; frases que soam como ação ("eu quero…", "vou…", "tento…") vão para o narrador. Quando o narrador responde, a conversa anterior se encerra |
+| NPC não insiste | Lembra a missão no máximo uma vez por conversa, só fala (não descreve nem move o jogador) e não termina com duas opções |
+
+**Varredura dos 171 passos dos 54 capítulos** (`falar`, `ir`, `derrotar`):
+
+| Achado | Correção |
+|--------|----------|
+| "Mestre Uo": nome de duas letras não era reconhecido pelo `falar` | Aceita nomes curtos; o rumo mostra o nome inteiro quando o último é curto |
+| Em 23 capítulos o vilão do passo dividia o covil com outro vilão que vinha antes; se o da frente fosse de um capítulo ainda fechado, a "névoa" travava o caminho | O vilão do passo atual vem sempre primeiro, e vilão de capítulo fechado não bloqueia os outros |

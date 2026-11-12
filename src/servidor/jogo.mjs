@@ -337,8 +337,16 @@ export function criarJogo({ relogio = null, db, sal = process.env.TELEFONE_SAL ?
     if (ehComando(t, "ajuda", "comandos", "menu", "oi", "ola")) return [...e.saidas, ...chegou, { para, texto: AJUDA }];
     if (ehComando(t, "dado", "dados", "d20", "como funciona o dado", "guia do dado")) return [...e.saidas, ...chegou, ...guiaDado(para)];
     if (chegou.length) return [...e.saidas, ...chegou];
-    // Frase solta durante uma conversa vai para a pessoa com quem se está falando (ações continuam com ">")
-    if (!msg.texto.trim().startsWith(">") && !/^\d+$/.test(tc)) {
+    // Frase livre que é uma ação do jogo ("quero ouvir a Ine", "subo até as costelas") vira o comando: é assim que a história anda
+    if (!/^\d+$/.test(tc)) {
+      const it2 = mundo.intencao(j, msg.texto);
+      // com ">" o jogador pediu narração: só conversa vira comando; deslocamento fica com o narrador
+      const feito = it2?.tipo === "falar" ? await mundo.comando(j, "falar", it2.bruto, para) : it2?.tipo === "ir" && !msg.texto.trim().startsWith(">") ? await mundo.comando(j, `ir ${it2.alvo}`, `ir ${it2.alvo}`, para) : null;
+      if (feito?.tratado) return [...e.saidas, ...feito.saidas];
+    }
+    // Frase solta durante uma conversa vai para a pessoa com quem se está falando; o que soa como ação ("eu quero…", "vou…", "tento…") vai para o narrador
+    const soaComoAcao = /^(eu\s+)?(quero|vou|tento|tentar|pego|pegar|colho|colher|subo|subir|corro|correr|ataco|atacar|uso|usar|abro|abrir|sigo|seguir|olho|olhar|procuro|procurar|examino|examinar|investigo|investigar|ando|andar|entro|entrar|saio|sair|volto|voltar|escalo|pulo|leio|toco|me\s|saco|guardo|escondo|observo|espero)\b/.test(tc);
+    if (!msg.texto.trim().startsWith(">") && !/^\d+$/.test(tc) && !soaComoAcao) {
       const conversa = await mundo.continuarConversa(j, msg.texto, para);
       if (conversa) return [...e.saidas, ...conversa];
     }

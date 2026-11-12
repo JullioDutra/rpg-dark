@@ -164,10 +164,24 @@ export async function testarMundoServidor({ db, jogador, outro, mensagem, grupo,
     const pedidos = [];
     jogo = novoJogo({ nome: "falsa", async gerarJSON(a) { pedidos.push(a); return { ok: true, provedor: "falsa", dados: a.esquema.properties.fala ? { fala: "— Cuidado com o lago, menino." } : { narracao: "O vento muda.", eventos: [] } }; } });
     await db.query("update jogo.jogadores set regiao_atual = 'R-WAT-2', local_atual = 'minato' where id = $1", [jogador.id]);
-    clock += 60_000; await enviar("> olho o porto procurando o navio estranho");
+    clock += 60_000; const n1 = await enviar("> olho o porto procurando o navio estranho");
+    assert.match(texto(n1), /O vento muda\.[\s\S]*A história continua com:_ \*falar Gorō\*/, "o motor mostra o comando exato que faz a história andar");
     const ctx = pedidos.at(-1).mensagens.at(-1).content;
-    assert.match(ctx, /O Navio sem Tripulação/); assert.match(ctx, /passo_atual/); assert.match(ctx, /FICA neste passo/);
+    assert.match(ctx, /O Navio sem Tripulação/); assert.match(ctx, /passo_atual/); assert.match(ctx, /só avança por comandos do jogo[\s\S]*Nunca traga o jogador de volta à força/);
     assert.match(pedidos.at(-1).sistema, /Capitão Gorō/);
+    assert.match(pedidos.at(-1).sistema, /A ação do jogador SEMPRE acontece[\s\S]*Não repita a cena/);
+    // frase livre que é uma ação do jogo vira o comando (era aqui que o jogador ficava em loop com o narrador)
+    clock += 60_000;
+    const livre = await enviar("quero sentar e ouvir o que o capitão Gorō tem a dizer");
+    assert.match(texto(livre), /\*Capitão Gorō\*[\s\S]*Cuidado com o lago/); assert.match(texto(livre), /A história avança|Capítulo concluído/, "ouvir a pessoa do passo faz o capítulo andar");
+    // no meio da conversa, o que soa como ação vai para o narrador, não para o NPC
+    clock += 60_000;
+    const acao2 = await enviar("eu quero tentar pescar no lago");
+    assert.match(texto(acao2), /O vento muda/); assert.doesNotMatch(texto(acao2), /Cuidado com o lago/);
+    // e uma pergunta solta logo depois de falar com alguém continua a conversa
+    clock += 60_000; await enviar("falar gorō");
+    clock += 60_000; assert.match(texto(await enviar("e o navio, capitão?")), /Cuidado com o lago/);
+    clock += 60_000;
     const f = await enviar("falar gorō o que houve com o navio?");
     assert.match(texto(f), /Cuidado com o lago/); assert.match(pedidos.at(-1).sistema, /Você interpreta Capitão Gorō/);
     jogo = novoJogo();

@@ -11,7 +11,11 @@ REGRAS INVIOLÁVEIS:
 4. Siga o marco atual <marco>: você decide COMO a cena acontece, não SE ela acontece.
 5. Só use vilões, fatos e subfases listados em <permitidos>. Nunca revele o roteiro, o final ou segredos.
 6. Chaves de Conhecimento só valem para quem as conquistou (<chaves>). Nunca entregue uma.
-7. Toda consequência mecânica vai em "eventos"; o motor decide se aplica.`;
+7. Toda consequência mecânica vai em "eventos"; o motor decide se aplica.
+8. A ação do jogador SEMPRE acontece na cena e tem um resultado concreto, mesmo que pequeno. Nunca desfaça, ignore nem interrompa a ação. Nenhum personagem puxa, segura, leva de volta ou dá sermão para impedir o que o jogador decidiu fazer.
+9. Se a ação responde a uma escolha que você ofereceu na mensagem anterior, cumpra exatamente essa escolha e mostre o que acontece.
+10. Não repita a cena nem a proposta das mensagens anteriores: a história anda para a frente. Se o jogador recusou ou ignorou algo, não ofereça de novo.
+11. Termine com uma pergunta aberta e curta sobre o que o jogador faz. Não ofereça opções que dependam de outro personagem decidir por ele.`;
 
 const NEUTRA = "_As estrelas silenciam por um instante… (tente de novo em alguns segundos)_";
 
