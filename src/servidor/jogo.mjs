@@ -231,6 +231,8 @@ export function criarJogo({ relogio = null, db, sal = process.env.TELEFONE_SAL ?
       const tc = tn.replace(/^[!/]/, "");
       const fechada = await ameacas.cidadeFechada(ativo, tc);
       if (fechada) return [...novidades, { para: msg.chat, texto: fechada }];
+      const ps = await mestre.passagem(ativo, tc, msg.chat);
+      if (ps.tratado) return [...novidades, ...ps.saidas, ...(ps.mudouRegiao ? await mundo.chegada(ativo, msg.chat) : [])];
       const am = await ameacas.comando(ativo, tc, msg.chat);
       if (am.tratado) return [...novidades, ...am.saidas, ...(await mestre.observar(ativo, msg.texto, msg.chat))];
     }
@@ -329,6 +331,11 @@ export function criarJogo({ relogio = null, db, sal = process.env.TELEFONE_SAL ?
     if (ehComando(t, "ajuda", "comandos", "menu", "oi", "ola")) return [...e.saidas, ...chegou, { para, texto: AJUDA }];
     if (ehComando(t, "dado", "dados", "d20", "como funciona o dado", "guia do dado")) return [...e.saidas, ...chegou, ...guiaDado(para)];
     if (chegou.length) return [...e.saidas, ...chegou];
+    // Frase solta durante uma conversa vai para a pessoa com quem se está falando (ações continuam com ">")
+    if (!msg.texto.trim().startsWith(">") && !/^\d+$/.test(tc)) {
+      const conversa = await mundo.continuarConversa(j, msg.texto, para);
+      if (conversa) return [...e.saidas, ...conversa];
+    }
     if (ehAcaoLivre(msg.texto)) return [...e.saidas, ...(await narrador(j, msg.texto, para, { ...(await mundo.contextoNarrador(j)), historia: await extras.historiaPara(j) }))];
     return [...e.saidas, { para, texto: `${ambiente(j.regiao_atual, agora() / 60_000 | 0)}\n\nO que você faz?\n${rodape("locais · missao · explorar · itens · ajuda", "ou escreva sua ação começando com >")}` }];
   }

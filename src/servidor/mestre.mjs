@@ -7,6 +7,8 @@ const nomeR = (rid) => REGIAO.get(rid)?.nome ?? rid;
 import { AMEACA } from "./ameacas.mjs";
 import { item } from "../regras/itens.mjs";
 import { nomeLacaio } from "./combate.mjs";
+import { imagemMapaCom } from "./exploracao.mjs";
+import { buscarRegioes } from "../regras/exploracao.mjs";
 import { rodape } from "./textos.mjs";
 import { semAcento } from "../linguagem/normalizar.mjs";
 import { um } from "./db.mjs";
@@ -28,6 +30,9 @@ mestre monstro <nº ou nome> <cidade> — solta um monstro numa região; quem es
 mestre calamidade [nº ou nome] — desperta uma Calamidade para o mundo inteiro (só com a história já desenvolvida; 48 h)
 mestre espiã <nome> — uma viajante passa a acompanhar o jogador e anota o que ele faz
 mestre relatório <nome> — o que a espiã viu
+mestre fala <nome> <texto> — a espiã diz isso ao jogador, com as suas palavras
+mestre mapa — mapa do mundo com a posição de todos (só você vê)
+mestre teleporte <nome> — dá ao jogador um Selo de Passagem (1 uso): ele escolhe o destino e paga um preço (vida, ryō ou mérito)
 mestre recolher <nome> — a espiã se despede
 mestre quem — lista os personagens e onde estão
 
@@ -103,6 +108,14 @@ export function criarMestre({ db, agora, ameacas = null }) {
     const acao = m[1] ?? "", resto = msg.texto.trim().replace(/^[!/]?\s*mestre\s+\S+\s*/i, "");
     const todos = await jogadores();
     if (!acao || /^(ajuda|comandos)$/.test(acao)) return dizer(AJUDA_MESTRE);
+    if (acao === "mapa") {
+      if (!todos.length) return dizer("Nenhum personagem ativo.");
+      const porRegiao = new Map();
+      for (const x of todos) porRegiao.set(x.regiao_atual, [...(porRegiao.get(x.regiao_atual) ?? []), x]);
+      const lugares = [...porRegiao.entries()];
+      const legenda = lugares.map(([rid, js], k) => `*${String.fromCharCode(65 + k)}* ${nomeR(rid)} — ${js.map((x) => `${x.nome} (nv ${x.nivel})`).join(", ")}`).join("\n");
+      return [{ para, imagem: imagemMapaCom(lugares.map(([regiao], k) => ({ regiao, rotulo: String.fromCharCode(65 + k) }))), legenda: `*Onde cada um está*\n_bandeiras vermelhas com letra_\n\n${legenda}` }];
+    }
     if (acao === "quem") return dizer(todos.length ? todos.map((x) => `*${x.nome}* — ${x.classe}, nível ${x.nivel}, em ${nomeR(x.regiao_atual)}`).join("\n") : "Nenhum personagem ativo.");
 
     if (/^monstros$/.test(acao)) return dizer(`*Monstros* (grau 1 a 3 para cidades; grau 4 são Calamidades)\n\n${MONSTROS.map((x) => `*${x.id.slice(1)}* ${x.nome}, ${x.titulo} — grau ${x.grau}, ${x.elemento}`).join("\n")}`);
@@ -165,6 +178,17 @@ export function criarMestre({ db, agora, ameacas = null }) {
       return dizer(`*Relatório de ${e.nome}* — ${alvo.nome}\n\n${alvo.classe}, nível ${alvo.nivel} · vida ${alvo.hp}/${alvo.hp_max} · ${alvo.ryo} ryō · corrupção ${Number(alvo.corrupcao ?? 0)}\nEstá em ${nomeR(alvo.regiao_atual)}.\nLeva: ${inv.map((l) => `${item(l.item_id)?.nome ?? l.item_id}${l.qtd > 1 ? ` ×${l.qtd}` : ""}${l.equipado ? " (em uso)" : ""}`).join(", ") || "nada"}.\n\n` +
         `*O que ele fez* (horário de Brasília)\n${(e.log ?? []).map((l) => `${hora(l.q)} · ${nomeR(l.r)} · ${l.t}`).join("\n") || "Nada ainda."}`);
     }
+    if (/^(fala|falar|dizer)$/.test(acao)) {
+      const e = (await um(db, "select valor from jogo.progresso where jogador_id = $1 and chave = 'espia'", [alvo.id]))?.valor;
+      if (!e) return dizer(`Ninguém está acompanhando ${alvo.nome}. Primeiro: mestre espiã ${primeiro}`);
+      if (!extra) return dizer(`Use: mestre fala ${primeiro} <o que ela diz>`);
+      if (!pv) return dizer("Esse jogador ainda não abriu o privado com o bot.");
+      return [{ para: pv, texto: `${e.nome} encosta ao seu lado e fala baixo:\n— ${extra.slice(0, 500)}` }, ...dizer(`Feito. ${e.nome} disse isso a ${alvo.nome}.`)];
+    }
+    if (/^(teleporte|teletransporte|selo|passagem)$/.test(acao)) {
+      await gravar(alvo, "teleporte", { usos: 1, destino: null });
+      return [...(pv ? [{ para: pv, texto: `Você acorda com um peso estranho na palma da mão: um selo de pedra clara, morno, com um desenho de porta que você nunca viu.\n\nNinguém sabe dizer de onde veio. Mas você sabe, sem saber como, o que ele faz: *abre uma passagem para qualquer lugar do mundo, uma única vez*. E sabe também que portas assim nunca abrem de graça.\n${rodape("teleportar <lugar> para ver o preço")}` }] : []), ...dizer(`Feito. ${alvo.nome} recebeu um Selo de Passagem.`)];
+    }
     if (/^(recolher|dispensar)$/.test(acao)) {
       const tinha = await db.query("delete from jogo.progresso where jogador_id = $1 and chave = 'espia' returning 1", [alvo.id]);
       if (!tinha.length) return dizer(`Ninguém está acompanhando ${alvo.nome}.`);
@@ -215,5 +239,43 @@ export function criarMestre({ db, agora, ameacas = null }) {
     return n % 6 === 0 ? [{ para, texto: `_${e.nome} ${ESPIA.falas[(n / 6) % ESPIA.falas.length | 0]}_` }] : [];
   }
 
-  return { comando, bloqueio, resgatar, observar };
+  // ── Selo de Passagem: o jogador escolhe o destino e paga um preço ──
+  const PRECOS = {
+    vida: { nome: "sangue", texto: (j) => `metade da sua vida máxima (${Math.floor(j.hp_max / 2)})`, pode: (j) => j.hp > j.hp_max / 2, falta: "Você não tem vida suficiente para pagar em sangue." },
+    ryo: { nome: "ouro", texto: (j) => `${60 * j.nivel} ryō`, pode: (j) => Number(j.ryo) >= 60 * j.nivel, falta: "Você não tem ryō suficiente." },
+    merito: { nome: "nome", texto: () => "20 de mérito (um pouco do que o mundo lembra de você)", pode: (j) => Number(j.merito) >= 20, falta: "O mundo ainda lembra pouco de você: falta mérito." },
+  };
+  /** Comandos do jogador ligados ao selo. Devolve { tratado, saidas, mudouRegiao }. */
+  async function passagem(j, t, para) {
+    const m = t.match(/^(?:teleportar|teletransportar|atravessar|usar selo)\s*(?:para |pra |a |ao |à )?(.*)$/), pg = t.match(/^pagar\s*(?:com |em )?(vida|sangue|ryo|ouro|merito|nome|memoria)?$/);
+    if (!m && !pg) return { tratado: false, saidas: [] };
+    const dizer = (texto) => ({ tratado: true, saidas: [{ para, texto }] });
+    const selo = (await um(db, "select valor from jogo.progresso where jogador_id = $1 and chave = 'teleporte'", [j.id]))?.valor;
+    if (!selo || Number(selo.usos) < 1) return m ? dizer("Você não tem como abrir uma passagem. Dizem que existem selos que fazem isso, mas ninguém sabe quem os entrega.") : { tratado: false, saidas: [] };
+    const ocupado = (await db.query("select 1 from jogo.viagens where jogador_id = $1 and concluida_em is null union all select 1 from jogo.exploracoes where jogador_id = $1 and pendente", [j.id])).length
+      || (await db.query("select 1 from jogo.batalhas b join jogo.participantes_batalha p on p.batalha_id = b.id where p.jogador_id = $1 and b.status <> 'encerrada' limit 1", [j.id])).length;
+    if (ocupado) return dizer("O selo fica frio na sua mão. Ele não abre no meio de uma luta, de um encontro ou de uma viagem.");
+    const precos = () => Object.entries(PRECOS).map(([k, p]) => `*pagar ${k === "merito" ? "merito" : k}* — ${p.texto(j)}${p.pode(j) ? "" : " _(você não tem)_"}`).join("\n");
+    if (m) {
+      const achadas = m[1].trim() ? buscarRegioes(m[1]) : [];
+      const destino = achadas.length === 1 ? achadas[0] : achadas.find((r) => semAcento(r.nome.toLowerCase()) === semAcento(m[1].trim().toLowerCase()));
+      if (!destino) return dizer(achadas.length > 1 ? `Há mais de um lugar com esse nome: ${achadas.slice(0, 5).map((r) => r.nome).join(", ")}. Diga o nome inteiro.` : "Para onde? Use *teleportar <nome da região>* (veja os nomes no *mapa*).");
+      if (destino.id === j.regiao_atual) return dizer("Você já está aí.");
+      if (destino.desbloqueio && !(await db.query("select 1 from jogo.marcos where mundo_id = $1 and marco_id = $2 and status = 'concluido' limit 1", [j.mundo_id, destino.desbloqueio])).length)
+        return dizer("O selo esquenta e recua. Aquele lugar ainda está fechado para o mundo inteiro; nem uma porta dessas passa pela névoa.");
+      await gravar(j, "teleporte", { ...selo, destino: destino.id });
+      return dizer(`O selo se abre como um olho. Do outro lado, você vê *${destino.nome}*.\n\nUma voz sem dono pergunta com o que você paga:\n\n${precos()}\n\n${rodape("o selo só abre uma vez", "desistir: é só não pagar")}`);
+    }
+    if (!selo.destino) return dizer("Primeiro diga para onde: *teleportar <lugar>*.");
+    const k = { vida: "vida", sangue: "vida", ryo: "ryo", ouro: "ryo", merito: "merito", nome: "merito", memoria: "merito" }[pg[1] ?? ""];
+    if (!k) return dizer(`Com o que você paga?\n\n${precos()}`);
+    if (!PRECOS[k].pode(j)) return dizer(`${PRECOS[k].falta}\n\n${precos()}`);
+    const sql = { vida: "hp = greatest(1, hp - $2)", ryo: "ryo = ryo - $2", merito: "merito = merito - $2" }[k], valor = { vida: Math.floor(j.hp_max / 2), ryo: 60 * j.nivel, merito: 20 }[k];
+    await db.query(`update jogo.jogadores set ${sql}, regiao_atual = $3, local_atual = null where id = $1`, [j.id, valor, selo.destino]);
+    await db.query("delete from jogo.progresso where jogador_id = $1 and chave = 'teleporte'", [j.id]);
+    j.regiao_atual = selo.destino; j.local_atual = null;
+    return { tratado: true, mudouRegiao: true, saidas: [{ para, texto: `Você paga em ${PRECOS[k].nome}. O selo racha ao meio, e o mundo dobra como papel.\n\nUm passo. Só um.\n${rodape(`−${PRECOS[k].texto(j)}`, "o selo virou pó")}` }] };
+  }
+
+  return { comando, bloqueio, resgatar, observar, passagem };
 }

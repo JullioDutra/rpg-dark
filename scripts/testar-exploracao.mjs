@@ -52,10 +52,10 @@ export async function testarRegrasExploracao() {
   });
   await t("vigor preserva fração de hora e respeita teto/relogin", () => {
     const inicio = Date.UTC(2026, 0, 1), j = { vigor: 20, vigor_em: new Date(inicio) };
-    assert.equal(recuperarVigor(j, inicio + 3_600_000).vigor, 30);
-    let p = recuperarVigor(j, inicio + 359_999);
+    assert.equal(recuperarVigor(j, inicio + 3_600_000).vigor, 40);
+    let p = recuperarVigor(j, inicio + 179_999);
     assert.equal(p.vigor, 20); assert.equal(+p.vigor_em, inicio);
-    p = recuperarVigor(p, inicio + 360_000);
+    p = recuperarVigor(p, inicio + 180_000);
     assert.equal(p.vigor, 21);
     p = recuperarVigor(j, inicio + 12 * 3_600_000);
     assert.equal(p.vigor, 100); assert.equal(+p.vigor_em, inicio + 12 * 3_600_000);
@@ -134,7 +134,7 @@ export async function testarExploracaoServidor({ db, jogador, mensagem, grupo })
     const s = await enviar("viagem");
     assert.match(texto(s), /Você chega a/); assert(s.some((x) => x.imagem));
     assert.equal((await atual()).regiao_atual, "R-HOM-1");
-    assert.equal((await atual()).vigor, 86);
+    assert.equal((await atual()).vigor, 88);
     assert.doesNotMatch(texto(await enviar("viagem")), /Você chega a/);
   });
   await t("evento de estrada persistido aparece só uma vez, no prazo", async () => {
@@ -164,7 +164,7 @@ export async function testarExploracaoServidor({ db, jogador, mensagem, grupo })
     assert.match(texto(await enviar("explorar")), /precisa descansar/);
     assert.match(texto(await enviar("viajar R-HOM-1")), /precisa descansar/);
     assert.equal((await atual()).vigor, 9);
-    clock += 360_000; numeros = [.99];
+    clock += 180_000; numeros = [.99];
     assert.match(texto(await enviar("explorar")), /recupera o fôlego/);
     assert.equal((await atual()).vigor, 5);
   });

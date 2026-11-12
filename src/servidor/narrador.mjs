@@ -19,7 +19,7 @@ const MARCOS = new Map(HISTORIA.atos.flatMap((a) => a.marcos.map((m) => [m.id, {
 const FATOS = new Map((HISTORIA.fatos ?? []).map((f) => [f.id, f]));
 const interpretar = criarInterpretador({ regioes: REGIOES });
 
-export const LIMITES = { intervaloMs: 6000, porDia: 80, historico: 6 };
+export const LIMITES = { intervaloMs: 6000, porDia: 100, historico: 6 };
 
 const RECUSAS = {
   pedido_atributo: "As estrelas não dão poder a quem pede. Força se conquista: lutando, treinando, escolhendo.",

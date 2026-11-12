@@ -385,10 +385,22 @@ export function criarMundo({ db, ia = null, rng, agora, ganchos = {} }) {
     const st = await estado(j);
     const nomes = Object.entries(r?.npcs ?? {});
     if (!nomes.length) return [{ para, texto: "Não há ninguém para conversar por aqui." }];
-    const t = normal(alvo);
-    const [nid, p] = nomes.find(([id, n]) => normal(n.nome) === t || id === t) ?? nomes.find(([, n]) => normal(n.nome).includes(t) || t.includes(normal(n.nome).split(" ").at(-1))) ?? [];
+    // "falar com a Oharu sobre o pilar": tira preposições e artigos, acha a pessoa pelo trecho mais longo do começo e o resto é a fala
+    const palavras = `${alvo} ${fala}`.trim().split(/\s+/).filter(Boolean);
+    while (palavras.length && /^(com|para|pra|a|o|as|os|ao|aos|à|às|da|do|de)$/i.test(normal(palavras[0]))) palavras.shift();
+    const bate = (trecho) => { const x = normal(trecho); if (x.length < 3) return null;
+      return nomes.find(([id, n]) => normal(n.nome) === x || id === x) ?? nomes.find(([, n]) => normal(n.nome).split(" ").some((w) => w === x)) ?? nomes.find(([, n]) => normal(n.nome).startsWith(x)) ?? null; };
+    let achado = null, nPalavras = 0;
+    for (let k = Math.min(4, palavras.length); k >= 1 && !achado; k--) { achado = bate(palavras.slice(0, k).join(" ")); if (achado) nPalavras = k; }
+    // sem nome reconhecido: se há uma conversa em andamento aqui, a frase inteira é para aquela pessoa
+    const atual = st.P.get("falando");
+    if (!achado && palavras.length && atual?.rid === rid && agora() - Number(atual.em) < CONVERSA.janelaMs && r.npcs[atual.nid]) { achado = [atual.nid, r.npcs[atual.nid]]; nPalavras = 0; }
+    const [nid, p] = achado ?? [];
+    fala = palavras.slice(nPalavras).join(" ");
+    const t = achado ? "ok" : "";
     if (!p || !t) return [{ para, texto: `Com quem? Aqui em ${nomeRegiao(rid)} você pode falar com:\n\n${nomes.map(([, n]) => `*${n.nome}*, ${n.papel}`).join("\n")}\n\n${rodape("falar <nome>")}` }];
     const chave = `${rid}:${nid}`;
+    await gravar(j, "falando", { rid, nid, em: agora() });
     const npcLocal = npcDe(rid, nid)?.local;
     if (npcLocal && j.local_atual !== npcLocal) { await db.query("update jogo.jogadores set local_atual = $2 where id = $1", [j.id, npcLocal]); j.local_atual = npcLocal; }
     const morto = await um(db, "select * from jogo.npcs_mortos where mundo_id = $1 and npc = $2", [j.mundo_id, chave]);
@@ -433,7 +445,7 @@ export function criarMundo({ db, ia = null, rng, agora, ganchos = {} }) {
       } catch { /* cai no texto pronto */ }
     }
     resposta ??= `— ${p.sabe[0].toUpperCase()}${p.sabe.slice(1)}.`;
-    const saidas = [{ para, imagem: imagemNpc(rid, nid), legenda: `*${p.nome}*, ${p.papel}\n\n${resposta}${ganha && amizade === AMIZADE.amigo ? `\n\n_${p.nome} agora te considera ${j.avatar_dna?.feminino ? "uma amiga" : "um amigo"}._` : ganha && amizade === AMIZADE.proximo ? `\n\n_${p.nome} confia em você como em poucos._` : ""}` }];
+    const saidas = [{ para, imagem: imagemNpc(rid, nid), legenda: `*${p.nome}*, ${p.papel}\n\n${resposta}${ganha && amizade === AMIZADE.amigo ? `\n\n_${p.nome} agora te considera ${j.avatar_dna?.feminino ? "uma amiga" : "um amigo"}._` : ganha && amizade === AMIZADE.proximo ? `\n\n_${p.nome} confia em você como em poucos._` : ""}${turno === 1 ? `\n${rodape("responda direto para continuar a conversa", "> para agir", "tchau para encerrar")}` : ""}` }];
     if (ganha && amizade === AMIZADE.amigo) {
       await db.query(`insert into jogo.inventario (jogador_id, item_id, tipo, qtd, dados) values ($1, 'pocao', 'consumivel', 2, '{}') on conflict (jogador_id, item_id) do update set qtd = jogo.inventario.qtd + 2`, [j.id]);
       saidas.push({ para, texto: `${p.nome} coloca um embrulho na sua mão. — Leva. Você vai precisar mais do que eu.\n${rodape("+2 poções de cura")}` });
@@ -590,7 +602,18 @@ export function criarMundo({ db, ia = null, rng, agora, ganchos = {} }) {
     };
   }
 
-  return { comando, chegada, aoEventos, contextoNarrador, estado, capituloAtivo, herdar };
+  /** Frase solta logo depois de falar com alguém: continua a conversa com a mesma pessoa. Devolve null se não há conversa em andamento. */
+  async function continuarConversa(j, texto, para) {
+    const atual = (await um(db, "select valor from jogo.progresso where jogador_id = $1 and chave = 'falando'", [j.id]))?.valor;
+    if (!atual || atual.rid !== j.regiao_atual || agora() - Number(atual.em) >= CONVERSA.janelaMs || !MUNDO[atual.rid]?.npcs[atual.nid]) return null;
+    if (/^(tchau|adeus|ate logo|até logo|ate mais|até mais|obrigado|obrigada|valeu|sair|fim)[.!]*$/i.test(texto.trim())) {
+      await db.query("delete from jogo.progresso where jogador_id = $1 and chave = 'falando'", [j.id]);
+      return [{ para, texto: `${MUNDO[atual.rid].npcs[atual.nid].nome} acena com a cabeça e volta ao que estava fazendo.\n${rodape("missao mostra o próximo passo")}` }];
+    }
+    return falar(j, atual.nid, texto, para);
+  }
+
+  return { comando, chegada, aoEventos, contextoNarrador, estado, capituloAtivo, herdar, continuarConversa };
 }
 
 export { ambiente };

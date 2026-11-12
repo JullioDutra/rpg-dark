@@ -54,3 +54,19 @@ O grupo só vê o narrador; nenhuma mensagem cita o administrador. Nenhuma açã
 | `mestre emboscada <nome>` | Um lacaio da região o cerca agora |
 
 Quem resgata ganha +10 de mérito, e o resgate entra nos feitos do mundo.
+
+## 39.5 Acréscimos
+
+| Comando do mestre | Efeito |
+|-------------------|--------|
+| `mestre fala <nome> <texto>` | A espiã diz o texto ao jogador, como fala dela (precisa estar acompanhando) |
+| `mestre mapa` | Mapa do mundo com uma bandeira por região ocupada e a legenda de quem está onde. Só o mestre recebe |
+| `mestre teleporte <nome>` | O jogador recebe um Selo de Passagem de um uso |
+
+**Selo de Passagem (lado do jogador):** `teleportar <região>` mostra o destino e o preço; `pagar vida` (metade da vida máxima), `pagar ryo` (60 × nível) ou `pagar merito` (20) abre a passagem e ele chega na hora.
+Não abre durante luta, encontro ou viagem, nem para regiões ainda fechadas para o mundo.
+
+**Conversas:** `falar com a Oharu sobre o pilar` entende preposições e artigos e separa o nome da fala. Depois de falar com alguém, frases soltas continuam a conversa com a mesma pessoa por até 20 minutos
+(`>` continua sendo ação; `tchau` encerra). Antes, "falar com a X" podia cair na pessoa errada e a frase seguinte ia para o narrador.
+
+**Mais ações:** o vigor volta 20 por hora (era 10) e o narrador aceita 100 ações livres por dia (era 80). As conversas com NPC pela IA têm trava de 150 por dia.

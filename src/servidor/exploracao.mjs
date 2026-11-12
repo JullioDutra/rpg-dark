@@ -11,6 +11,15 @@ import { COVIL } from "../mundo/mundo.mjs";
 import { imagemVilao, nomeLacaio } from "./combate.mjs";
 
 let baseMapa;
+/** Mapa do mundo com vários marcadores (uso do mestre): [{ regiao, rotulo }]. */
+export function imagemMapaCom(marcadores) {
+  baseMapa ??= desenharMapa().t;
+  const t = new Tela(baseMapa.w, baseMapa.h);
+  t.px = baseMapa.px.slice();
+  finalizar(t, MUNDO.conexoes, { titulo: true, marcadores });
+  rotuloReinos(t);
+  return t.png(5);
+}
 export function imagemMapa(regiao, reino = null) {
   baseMapa ??= desenharMapa().t;
   // Nunca desenhar marcadores no cache compartilhado entre jogadores.

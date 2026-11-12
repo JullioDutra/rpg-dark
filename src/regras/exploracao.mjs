@@ -11,7 +11,7 @@ export const SUBFASES = ler("subfases");
 export const ANIMAIS = ler("animais");
 const VILOES = ler("viloes");
 export const CUSTO_VIGOR = Object.freeze({ explorar: 10, viajar: 15, masmorra: 25 });
-export const INTERVALO_VIGOR = 360_000; // 1 ponto a cada 6 minutos = 10 por hora
+export const INTERVALO_VIGOR = 180_000; // 1 ponto a cada 3 minutos = 20 por hora
 export const CHANCES_BASE = Object.freeze({ encontro: 40, descoberta: 15, achado: 15, evento: 15, fauna: 10, nada: 5 });
 export const MATERIAIS = {
   Homura: { id: "mat-obsidiana", nome: "Fragmento de obsidiana" },

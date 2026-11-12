@@ -386,6 +386,49 @@ export async function testarMundoServidor({ db, jogador, outro, mensagem, grupo,
     assert.match(texto(await noGrupo(adminPrivado("mestre relatório Rin"))), /Relatório de Shiori[\s\S]*itens/);
     assert.match(texto(await noGrupo(adminPrivado("mestre recolher Rin"))), /Meu mapa acaba aqui[\s\S]*Feito/);
   });
+  await t("mestre: fala pela espiã, mapa com todos, selo de teleporte que cobra um preço; conversa com NPC continua sem repetir o nome", async () => {
+    const { MUNDO } = await import("../src/mundo/mundo.mjs");
+    const { REGIAO } = await import("../src/regras/exploracao.mjs");
+    await db.query("delete from jogo.viagens where concluida_em is null"); await db.query("delete from jogo.exploracoes where pendente");
+    await db.query("update jogo.batalhas set status = 'encerrada' where status <> 'encerrada'");
+    await db.query("update jogo.jogadores set hp = hp_max, ryo = 5, merito = 0 where id = $1", [outro.id]);
+    // fala pela espiã
+    assert.match(texto(await noGrupo(adminPrivado("mestre fala Rin oi"))), /Ninguém está acompanhando/);
+    await noGrupo(adminPrivado("mestre espiã Rin"));
+    const f = await noGrupo(adminPrivado("mestre fala Rin Eu não iria por esse caminho hoje."));
+    assert(f.some((x) => /Shiori encosta[\s\S]*não iria por esse caminho/.test(x.texto) && x.para !== GRUPO) && !doGrupo(f).length);
+    // mapa só para o mestre
+    const mp = await noGrupo(adminPrivado("mestre mapa"));
+    assert(mp[0].imagem?.length > 5000 && /Onde cada um está[\s\S]*Rin/.test(mp[0].legenda) && !doGrupo(mp).length);
+    assert.doesNotMatch(texto(await noGrupo(outroPrivado("mestre mapa"))), /Onde cada um está/);
+    // selo de teleporte
+    assert.match(texto(await noGrupo(outroPrivado("teleportar Kyōkai"))), /não tem como abrir uma passagem/);
+    const s = await noGrupo(adminPrivado("mestre teleporte Rin"));
+    assert(s.some((x) => /selo de pedra clara/.test(x.texto)) && !doGrupo(s).length);
+    const aqui = (await db.query("select regiao_atual from jogo.jogadores where id = $1", [outro.id]))[0].regiao_atual;
+    const destino = [...REGIAO.values()].find((r) => r.id !== aqui && !r.desbloqueio && MUNDO[r.id]);
+    assert.match(texto(await noGrupo(outroPrivado(`teleportar ${destino.nome}`))), /com o que você paga[\s\S]*pagar vida[\s\S]*pagar ryo[\s\S]*você não tem/);
+    assert.match(texto(await noGrupo(outroPrivado("pagar ryo"))), /não tem ryō suficiente/);
+    const hp = (await db.query("select hp, hp_max from jogo.jogadores where id = $1", [outro.id]))[0];
+    const ch = await noGrupo(outroPrivado("pagar vida"));
+    assert.match(texto(ch), /paga em sangue/); assert(ch.some((x) => x.imagem), "chega vendo o lugar");
+    const dep = (await db.query("select hp, regiao_atual from jogo.jogadores where id = $1", [outro.id]))[0];
+    assert.equal(dep.regiao_atual, destino.id); assert.equal(dep.hp, hp.hp - Math.floor(hp.hp_max / 2));
+    assert.match(texto(await noGrupo(outroPrivado(`teleportar ${REGIAO.get(aqui).nome}`))), /não tem como abrir/, "o selo é de um uso só");
+    await noGrupo(adminPrivado("mestre recolher Rin"));
+    // conversa: "falar com a <nome>" acha a pessoa certa, e a frase seguinte continua com ela
+    const rid = Object.keys(MUNDO).find((k) => Object.keys(MUNDO[k].npcs ?? {}).length >= 2);
+    await db.query("update jogo.jogadores set regiao_atual = $2, local_atual = null, hp = hp_max where id = $1", [jogador.id, rid]);
+    const [n1, n2] = Object.values(MUNDO[rid].npcs);
+    clock += 30 * 60_000;
+    const c1 = await enviar(`falar com a ${n2.nome.split(" ").at(-1)}`);
+    assert.match(texto(c1), new RegExp(`\\*${n2.nome.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\*`), "preposição e artigo não confundem o nome");
+    const c2 = await enviar("e o que mais?");
+    assert.match(texto(c2), new RegExp(n2.nome.split(" ")[0]), "frase solta continua com a mesma pessoa");
+    assert.doesNotMatch(texto(c2), new RegExp(`\\*${n1.nome.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\*,`));
+    assert.match(texto(await enviar("tchau")), /acena com a cabeça/);
+    assert.doesNotMatch(texto(await enviar("e o que mais?")), new RegExp(`\\*${n2.nome.split(" ")[0]}`), "depois do tchau a conversa acabou");
+  });
   await t("Olhos da Terra: a mestra entrega o pergaminho a quem é da terra; ler cega e dá as habilidades; admin também concede", async () => {
     await db.query("update jogo.jogadores set regiao_atual = 'R-DAI-6', local_atual = null, atributo_magico = 'Fogo (Chama)', reino = 'Homura' where id = $1", [jogador.id]);
     await enviar("falar tsuchi"); clock += 7 * 3_600_000;
