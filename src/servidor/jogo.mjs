@@ -544,6 +544,7 @@ ir <lugar> — visitar um lugar
 falar <nome> — conversar com alguém
 missao — sua história e o próximo passo
 acompanhar <nome> — viver a história junto com outro jogador
+entrar na luta — lutar ao lado de quem você acompanha (elites e chefes)
 explorar — procurar encrenca e achados
 contratos — trabalhos do dia da Guilda (vilas e cidades)
 monstro · golpear — quando há uma ameaça solta, lute junto com o grupo

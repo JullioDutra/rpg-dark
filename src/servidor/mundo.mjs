@@ -209,7 +209,7 @@ export function criarMundo({ db, ia = null, rng, agora, ganchos = {} }) {
     const passo = Math.max(at.passo, atL.passo);
     await gravar(j, `p:${at.cap.id}`, passo);
     if (passo !== atL.passo) await gravar(lider, `p:${at.cap.id}`, passo);
-    return [{ para, texto: `Você alcança *${lider.nome}* e os dois seguem lado a lado.\n\n${textoPasso(at.cap, passo)}\n${rodape("o que um fizer, vale para os dois", "o capítulo termina para os dois ao mesmo tempo", "para se separar: seguir sozinho")}` },
+    return [{ para, texto: `Você alcança *${lider.nome}* e os dois seguem lado a lado.\n\n${textoPasso(at.cap, passo)}\n${rodape("o que um fizer, vale para os dois", "o capítulo termina para os dois ao mesmo tempo", "vilões de elite para cima podem ser enfrentados juntos: entrar na luta", "para se separar: seguir sozinho")}` },
       ...(privado(lider) ? [{ para: privado(lider), texto: `*${j.nome}* te alcançou e vai acompanhar você em _${at.cap.titulo}_.\n${rodape("o que um fizer, vale para os dois")}` }] : [])];
   }
 

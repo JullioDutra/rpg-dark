@@ -488,6 +488,48 @@ export async function testarMundoServidor({ db, jogador, outro, mensagem, grupo,
     assert.match(texto(await noGrupo(adminPrivado("mestre mover todos lugarnenhum"))), /Para onde\?/);
     assert.doesNotMatch(texto(await noGrupo(outroPrivado(`mestre mover todos ${d1.nome}`))), /Feito/);
   });
+  await t("luta em conjunto: vilão de médio escalão com vida compartilhada entre quem acompanha a história; entrar é opcional e a vitória é de todos", async () => {
+    const { VILOES, COVIL } = await import("../src/mundo/mundo.mjs");
+    const v = [...VILOES.values()].find((x) => x.tier === "medio"), c = COVIL.get(v.id);
+    await db.query("update jogo.batalhas set status = 'encerrada' where status <> 'encerrada'"); await db.query("delete from jogo.exploracoes where pendente");
+    await db.query("delete from jogo.viagens where concluida_em is null"); await db.query("delete from jogo.lutas_grupo");
+    await db.query("delete from jogo.derrotas_vilao where vilao_id = $1", [v.id]);
+    await db.query("update jogo.jogadores set regiao_atual = $2, local_atual = $3, hp = 99999, hp_max = 99999, nivel = $4 where id = any($1)", [[jogador.id, outro.id], c.regiao, c.local, v.nivel]);
+    await db.query(`insert into jogo.progresso (jogador_id, chave, valor) values ($1, 'acomp', $2) on conflict (jogador_id, chave) do update set valor = excluded.valor`, [outro.id, JSON.stringify({ lider: Number(jogador.id), rid: c.regiao })]);
+    const pendente = (id) => db.query(`insert into jogo.exploracoes (jogador_id, mensagem_id, regiao, tipo, dados, pendente, criada_em) values ($1, $2, $3, 'encontro', $4, true, $5)`,
+      [id, `t:${id}:${clock}`, c.regiao, JSON.stringify({ inimigo: { id: v.id, nome: v.nome, nivel: v.nivel }, fixo: true, eco: false, local: c.local }), new Date(clock)]);
+    await pendente(jogador.id);
+    const ini = await enviar("lutar");
+    assert.match(texto(ini), /companheiros foram avisados/); assert(ini.some((x) => /começou a luta contra[\s\S]*entrar na luta/.test(x.texto ?? "") && x.para !== GRUPO), "o companheiro é convidado no privado");
+    const luta0 = (await db.query("select * from jogo.lutas_grupo"))[0];
+    assert.equal(luta0.membros.length, 1);
+    const ent = await noGrupo(outroPrivado("entrar na luta"));
+    assert.match(texto(ent), /entra na luta ao lado de \*Kaito Ryuen\*[\s\S]*\*1\* Atacar/);
+    assert(ent.some((x) => /Rin\* entrou na luta ao seu lado/.test(x.texto ?? "")), "quem já lutava é avisado");
+    const luta1 = (await db.query("select * from jogo.lutas_grupo"))[0];
+    assert.equal(luta1.membros.length, 2); assert(luta1.inimigo.hpMax > luta0.inimigo.hpMax, "o vilão ganha fôlego com mais um adversário");
+    // um golpe de Rin aparece no vilão que Kaito enfrenta
+    let hpAntes = luta1.inimigo.hp;
+    for (let k = 0; k < 6 && (await db.query("select inimigo from jogo.lutas_grupo"))[0].inimigo.hp >= hpAntes; k++) await noGrupo(outroPrivado("1"));
+    const luta2 = (await db.query("select * from jogo.lutas_grupo"))[0];
+    assert(luta2.inimigo.hp < hpAntes, "o dano de um vale para todos");
+    assert.match(texto(await enviar("?")), new RegExp(`${luta2.inimigo.hp}`), "o painel do companheiro mostra a vida compartilhada");
+    // golpe final de um: vitória para os dois
+    await db.query("update jogo.lutas_grupo set inimigo = jsonb_set(inimigo, '{hp}', '1')");
+    let fimK = [];
+    for (let k = 0; k < 10 && !/Vitória/.test(texto(fimK)); k++) fimK = await enviar("1");
+    assert.match(texto(fimK), /Vitória/); assert(fimK.some((x) => /caiu![\s\S]*golpe final foi de \*Kaito Ryuen\*[\s\S]*ok/.test(x.texto ?? "")), "o companheiro é chamado para recolher a vitória");
+    const rec = await noGrupo(outroPrivado("ok"));
+    assert.match(texto(rec), /Vitória[\s\S]*XP/, "quem lutou junto recebe a vitória");
+    assert.equal((await db.query("select count(*)::int n from jogo.batalhas where status <> 'encerrada'"))[0].n, 0);
+    // sozinho continua valendo: sem companheiros, nenhuma luta de grupo é aberta
+    await db.query("delete from jogo.progresso where chave = 'acomp'"); await db.query("delete from jogo.lutas_grupo");
+    await db.query("update jogo.jogadores set regiao_atual = 'R-HOM-1' where id = $1", [outro.id]);
+    await pendente(jogador.id);
+    assert.doesNotMatch(texto(await enviar("lutar")), /companheiros foram avisados/);
+    assert.equal((await db.query("select count(*)::int n from jogo.lutas_grupo"))[0].n, 0);
+    await db.query("update jogo.batalhas set status = 'encerrada' where status <> 'encerrada'");
+  });
   await t("Olhos da Terra: a mestra entrega o pergaminho a quem é da terra; ler cega e dá as habilidades; admin também concede", async () => {
     await db.query("update jogo.jogadores set regiao_atual = 'R-DAI-6', local_atual = null, atributo_magico = 'Fogo (Chama)', reino = 'Homura' where id = $1", [jogador.id]);
     await enviar("falar tsuchi"); clock += 7 * 3_600_000;
