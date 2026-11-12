@@ -28,7 +28,7 @@ export function comCache(chave, gerar) {
 export const imagemLocal = (rid, l) => comCache(`l:${rid}:${l.id}`, () => renderCena(l.cena, REGIAO.get(rid)?.reino ?? "Kokū", `${rid}:${l.id}`));
 export const imagemNpc = (rid, id) => comCache(`n:${rid}:${id}`, () => renderizar(dnaNpc(rid, id, MUNDO[rid].npcs[id], REGIAO.get(rid)?.reino ?? "Kokū"), 6));
 /** Conversas com NPC narradas pela IA, por jogador e por dia. Passando disso, o NPC responde com o texto pronto. */
-export const LIMITE_CONVERSAS_IA = 150;
+export const LIMITE_CONVERSAS_IA = 200;
 /** Uma conversa tem começo e fim: depois de 4 falas seguidas com a mesma pessoa, ela se despede e aponta o caminho. */
 export const CONVERSA = { falas: 4, janelaMs: 20 * 60_000 };
 /** Quem só ouve uma história já vivida por outro jogador aprende com ela, mas menos do que quem a viveu. */

@@ -69,7 +69,7 @@ Não abre durante luta, encontro ou viagem, nem para regiões ainda fechadas par
 **Conversas:** `falar com a Oharu sobre o pilar` entende preposições e artigos e separa o nome da fala. Depois de falar com alguém, frases soltas continuam a conversa com a mesma pessoa por até 20 minutos
 (`>` continua sendo ação; `tchau` encerra). Antes, "falar com a X" podia cair na pessoa errada e a frase seguinte ia para o narrador.
 
-**Mais ações:** o vigor volta 20 por hora (era 10) e o narrador aceita 100 ações livres por dia (era 80). As conversas com NPC pela IA têm trava de 150 por dia.
+**Mais ações:** o vigor volta 20 por hora (era 10) e o narrador aceita 200 ações livres por dia e as conversas com NPC pela IA também têm limite de 200 por dia.
 
 ## 39.6 Correção do "loop do narrador" e varredura de diálogos e ações
 
