@@ -6,6 +6,7 @@ import { novoCombate, resolverRodada, aplicarXP, multElemento, rankDoNivel, reco
   atributosEfetivos, habilidadesDe, proximaHabilidade } from "../src/regras/combate.mjs";
 import { item, bonusEquip, podeEquipar, kitInicial, estoque, efeitoItem, EQUIP_CLASSE, todosItens } from "../src/regras/itens.mjs";
 import { XP_PROXIMO } from "./balanceamento.mjs";
+import { DUELO, novoDuelo, painelDuelo, menuDuelo, escolherDuelo, agirDuelo, ajusteDuelo, parDuelo } from "../src/regras/duelo.mjs";
 
 const VILOES = JSON.parse(readFileSync(new URL("../data/viloes.json", import.meta.url)));
 const V = (id) => VILOES.find((v) => v.id === id);
@@ -201,5 +202,39 @@ t("itens: cada classe tem o que usar; regras de equipar; loja; descrição", () 
   assert.match(efeitoItem(item("pocao")), /35% da vida/);
   assert.match(efeitoItem(item("arma-katana-2")), /FOR \+7.*exige nível 5/);
   assert(todosItens().length > 100);
+});
+t("duelo: turnos, dado às claras, guarda que quebra, vantagem de elemento, cura pela metade e fôlego por classe", () => {
+  const A = { ...jog("Anti-magia", { nivel: 12 }), id: 1, nome: "Aki" }, B = { ...jog("Mago", { nivel: 12 }), id: 2, nome: "Bo" };
+  let e = novoDuelo(A, B, 0);
+  assert.equal(e.lados[0].guarda, DUELO.guarda); assert.match(painelDuelo(e), /Vez de (Aki|Bo)[\s\S]*\*1\* Atacar[\s\S]*guarda ◆/);
+  assert.equal(e.lados[1].hpMax, Math.round(B.hp_max * ajusteDuelo("Mago", 12) * parDuelo("Mago", "Anti-magia")), "vida de duelo usa o ajuste da classe e do confronto");
+  // quem não está na vez não escolhe; a escolha é pelo número
+  assert.match(escolherDuelo(e, "99").erro, /Escolha um número/);
+  // Quebra-Selo (Anti-magia, nível 12) tira 4 de guarda; um golpe perfeito tira mais 1: a guarda quebra e o próximo golpe entra com +50%
+  e.vez = 0;
+  const quebra = menuDuelo(e).find((x) => x.rotulo === "Quebra-Selo");
+  let r = agirDuelo(e, quebra.acao, d(20), 0);
+  assert.match(r.estado.log.join("\n"), /🎲 \*20\*[\s\S]*guarda de Bo quebrou/);
+  assert.equal(r.estado.lados[1].aberto, true);
+  const semAbertura = agirDuelo({ ...e, vez: 0 }, { tipo: "atacar" }, d(10), 0).estado, comAbertura = agirDuelo({ ...r.estado, vez: 0 }, { tipo: "atacar" }, d(10), 0).estado;
+  const dano = (antes, depois) => antes.lados[1].hp - depois.lados[1].hp;
+  assert(dano(r.estado, comAbertura) > dano(e, semAbertura) * 1.3, "golpe em guarda aberta vale mais");
+  assert.equal(comAbertura.lados[1].aberto, false); assert.equal(comAbertura.lados[1].guarda, DUELO.guarda);
+  // elemento: Água vence Fogo no ciclo → magia com vantagem bate mais e abala a guarda
+  const agua = { ...jog("Mago", { nivel: 12, atributo_magico: "Água" }), id: 3, nome: "Mizu" }, fogo = { ...jog("Mago", { nivel: 12, atributo_magico: "Fogo" }), id: 4, nome: "Hi" };
+  const neutro = { ...fogo, atributo_magico: "Água", id: 5, nome: "Nami" };
+  const golpe = (x, y) => { const s0 = { ...novoDuelo(x, y, 0), vez: 0 }; const s1 = agirDuelo(s0, { tipo: "magia" }, d(10), 0).estado; return { dano: s0.lados[1].hp - s1.lados[1].hp, guarda: s1.lados[1].guarda, log: s1.log.join(" ") }; };
+  const v = golpe(agua, fogo), nn = golpe(agua, neutro);
+  assert(multElemento("Água", "Fogo") > 1 ? v.dano > nn.dano && v.guarda < nn.guarda && /leva vantagem/.test(v.log) : true, "vantagem de elemento vale no duelo");
+  // cura vale metade
+  const P = { ...jog("Paladino", { nivel: 12 }), id: 6, nome: "Pal" };
+  let c = { ...novoDuelo(P, A, 0), vez: 0 }; c.lados[0].hp = 1;
+  const cura = menuDuelo(c).find((x) => x.rotulo === "Mãos de Luz");
+  const curado = agirDuelo(c, cura.acao, d(10), 0).estado.lados[0].hp - 1;
+  assert(curado > 0 && curado <= Math.ceil(c.lados[0].hpMax * 0.35 * 1.25 * DUELO.cura) + 1, "cura vale metade no duelo");
+  // um duelo inteiro termina com vencedor
+  let x = novoDuelo(A, B, 0), fim = null, k = 0; const rr = d(3, 14, 9, 17, 6, 11, 20, 8);
+  while (!fim && k++ < 80) { const o = agirDuelo(x, menuDuelo(x).find((m) => !m.bloqueio).acao, rr, 0); x = o.estado; fim = o.fim; }
+  assert(fim?.vencedor && fim.perdedor && fim.vencedor.id !== fim.perdedor.id);
 });
 console.log(`${n} testes de combate passaram`);

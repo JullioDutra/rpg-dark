@@ -1,6 +1,6 @@
 // Duelo amistoso entre dois jogadores, por turnos, com o mesmo dado e as mesmas habilidades das batalhas.
 // Ninguém se machuca de verdade: a vida do duelo é uma cópia (os dois entram inteiros) e nada volta para a ficha.
-import { KITS, MAGIA, PASSIVAS, FAIXAS, habilidadesDe, atributosEfetivos, elementoBase, rolar, bonusDado } from "./combate.mjs";
+import { KITS, MAGIA, PASSIVAS, FAIXAS, habilidadesDe, atributosEfetivos, elementoBase, multElemento, rolar, bonusDado } from "./combate.mjs";
 import { K } from "../../scripts/balanceamento.mjs";
 
 export const DUELO = {
@@ -9,17 +9,77 @@ export const DUELO = {
   esperaMs: 5 * 60_000, // sem resposta nesse tempo, o outro pode pedir a vitória (wo)
   validadeMs: 30 * 60_000,
   xpVencedor: 0.02, xpPerdedor: 0.01, porDia: 3, // fração do XP do nível; só os 3 primeiros duelos do dia rendem
+  guarda: 5,            // pontos de guarda de cada duelista; zerou, fica "aberto" (o próximo golpe vale +50%)
+  aberto: 1.5,
+  cura: 0.5,            // curas, roubo de vida e regeneração valem metade: um duelo não pode virar disputa de quem se cura mais
+  passivaDefesa: 0.5,   // reduções de dano das passivas valem metade contra outro jogador
+  mistura: 0.5,         // quanto a defesa usada puxa para a média de DEF e RES (0 = como nas batalhas, 1 = só a média)
 };
+/**
+ * Calibração por classe e por faixa de nível (gerada por scripts/simular-duelo.mjs calibrar): multiplicador da vida de duelo.
+ * As classes foram pensadas contra vilões; uma contra a outra, sem ajuste, algumas ganham sempre. Meta: 45–55% contra o campo.
+ */
+export const NIVEIS_AJUSTE = [10, 30, 60, 90];
+export const AJUSTE_DUELO = {
+  Mago: [0.95, 0.94, 1.00, 1.05],
+  Cavaleiro: [1.08, 0.97, 0.83, 0.72],
+  Bruxo: [0.97, 1.12, 1.17, 1.15],
+  "Anti-magia": [0.58, 0.53, 0.56, 0.53],
+  Espadachim: [0.74, 0.67, 0.80, 0.90],
+  "Meio-humano": [1.39, 1.18, 1.13, 1.21],
+  "Força da Natureza": [1.05, 1.03, 0.99, 0.90],
+  "Demônio": [1.18, 1.56, 1.61, 1.88],
+  Paladino: [1.15, 1.19, 1.06, 0.93],
+};
+/**
+ * Fôlego extra contra o adversário que é o ponto fraco natural da classe ("Classe|Adversário": multiplicador de vida).
+ * Só existe para confrontos que, mesmo com o ajuste por classe, ficavam fora de 35–65%.
+ */
+export const PAR_DUELO = {
+  "Mago|Anti-magia": 1.28,
+  "Mago|Demônio": 1.06,
+  "Cavaleiro|Bruxo": 1.04,
+  "Cavaleiro|Força da Natureza": 1.28,
+  "Bruxo|Mago": 1.08,
+  "Bruxo|Anti-magia": 1.17,
+  "Anti-magia|Espadachim": 1.37,
+  "Anti-magia|Meio-humano": 1.33,
+  "Espadachim|Cavaleiro": 1.24,
+  "Espadachim|Paladino": 1.11,
+  "Meio-humano|Cavaleiro": 1.07,
+  "Meio-humano|Paladino": 1.12,
+  "Força da Natureza|Mago": 1.07,
+  "Força da Natureza|Bruxo": 1.18,
+  "Força da Natureza|Anti-magia": 1.04,
+  "Força da Natureza|Demônio": 1.07,
+  "Demônio|Paladino": 1.13,
+  "Paladino|Bruxo": 1.11,
+  "Paladino|Força da Natureza": 1.13,
+  "Bruxo|Demônio": 1.04,
+};
+export const parDuelo = (classe, adversario) => PAR_DUELO[`${classe}|${adversario}`] ?? 1;
+/** Multiplicador de vida de duelo da classe naquele nível (interpola entre as faixas calibradas). */
+export function ajusteDuelo(classe, nivel) {
+  const t = AJUSTE_DUELO[classe];
+  if (!t) return 1;
+  if (nivel <= NIVEIS_AJUSTE[0]) return t[0];
+  for (let k = 1; k < NIVEIS_AJUSTE.length; k++) if (nivel <= NIVEIS_AJUSTE[k]) {
+    const f = (nivel - NIVEIS_AJUSTE[k - 1]) / (NIVEIS_AJUSTE[k] - NIVEIS_AJUSTE[k - 1]);
+    return t[k - 1] + (t[k] - t[k - 1]) * f;
+  }
+  return t.at(-1);
+}
 const barra = (v, max, n = 8) => { const c = Math.max(0, Math.min(n, Math.round((v / max) * n))); return "▰".repeat(c) + "▱".repeat(n - c); };
 
-function lado(j) {
+function lado(j, adversario = null) {
   const at = atributosEfetivos(j, Date.now(), j.equip ?? {});
-  return { id: Number(j.id), nome: j.nome, classe: j.classe, nivel: j.nivel, hp: j.hp_max, hpMax: j.hp_max, mp: j.mp_max, mpMax: j.mp_max, at,
+  const vida = Math.round(j.hp_max * ajusteDuelo(j.classe, j.nivel) * (adversario ? parDuelo(j.classe, adversario.classe) : 1));
+  return { id: Number(j.id), nome: j.nome, classe: j.classe, nivel: j.nivel, hp: vida, hpMax: vida, mp: j.mp_max, mpMax: j.mp_max, at, guarda: DUELO.guarda, aberto: false,
     elemento: elementoBase(j.atributo_magico), recargas: {}, protecao: 0, protecaoTurnos: 0, foco: false, fraco: 0, preso: 0, imune: 0, queima: 0, queimaDano: 0, turnos: 0 };
 }
 
 export function novoDuelo(a, b, agora = Date.now()) {
-  const lados = [lado(a), lado(b)];
+  const lados = [lado(a, b), lado(b, a)];
   const e = { lados, vez: lados[0].at.VEL >= lados[1].at.VEL ? 0 : 1, log: [], ultimo: agora, inicio: agora };
   e.log.push(`${lados[e.vez].nome} é mais rápido e começa.`);
   return e;
@@ -48,12 +108,12 @@ export function escolherDuelo(e, texto) {
 
 export function painelDuelo(e, { menu = true } = {}) {
   const [a, b] = e.lados, j = e.lados[e.vez];
-  const linha = (x) => `${x.nome} ${barra(x.hp, x.hpMax)} ${Math.max(0, x.hp)}/${x.hpMax}${x.mpMax ? ` · mana ${x.mp}` : ""}${x.protecaoTurnos ? " · protegido" : ""}${x.foco ? " · concentrado" : ""}${x.fraco ? " · fraco" : ""}${x.queima ? " · ferido" : ""}`;
+  const linha = (x) => `${x.nome} ${barra(x.hp, x.hpMax)} ${Math.max(0, x.hp)}/${x.hpMax}${x.mpMax ? ` · mana ${x.mp}` : ""}${x.protecaoTurnos ? " · protegido" : ""}${x.foco ? " · concentrado" : ""}${x.fraco ? " · fraco" : ""}${x.queima ? " · ferido" : ""}${x.aberto ? " · *aberto*" : ""}  guarda ${"◆".repeat(Math.max(0, x.guarda))}${"◇".repeat(DUELO.guarda - Math.max(0, x.guarda))}`;
   return [
     `⚔️ *Duelo — ${a.nome} × ${b.nome}*`,
     e.log.length ? e.log.join("\n") : null,
     `${linha(a)}\n${linha(b)}`,
-    menu ? `*Vez de ${j.nome}.* Responda aqui com o número:\n${menuDuelo(e).map((x) => `*${x.n}* ${x.rotulo}${x.bloqueio ? ` _(${x.bloqueio})_` : x.detalhe ? ` — _${x.detalhe}_` : ""}`).join("\n")}\n_desistir encerra · o dado é o mesmo das batalhas: 1 erra, 20 é perfeito_` : null,
+    menu ? `*Vez de ${j.nome}.* Responda aqui com o número:\n${menuDuelo(e).map((x) => `*${x.n}* ${x.rotulo}${x.bloqueio ? ` _(${x.bloqueio})_` : x.detalhe ? ` — _${x.detalhe}_` : ""}`).join("\n")}\n_desistir encerra · mesmo dado das batalhas: 1 erra, 20 é perfeito · guarda ◆ zerada = próximo golpe +50%_` : null,
   ].filter(Boolean).join("\n\n");
 }
 
@@ -65,6 +125,8 @@ function abrirVez(e) {
     const j = e.lados[e.vez];
     for (const k of Object.keys(j.recargas)) if (j.recargas[k] > 0) j.recargas[k] -= 1;
     if (j.imune > 0) j.imune -= 1;
+    const regen = PASSIVAS[j.classe]?.regen;
+    if (regen && j.hp > 0 && j.hp < j.hpMax) j.hp = Math.min(j.hpMax, j.hp + Math.ceil(j.hpMax * regen * DUELO.cura));
     if (j.queima > 0) { j.hp -= j.queimaDano; j.queima -= 1; e.log.push(`${j.nome} sente a ferida arder. _(−${j.queimaDano})_`); if (j.hp <= 0) return 1 - e.vez; }
     if (j.preso > 0) { j.preso -= 1; j.imune = 2; j.turnos += 1; e.log.push(`${j.nome} está preso e perde a vez.`); e.vez = 1 - e.vez; continue; }
     return null;
@@ -81,18 +143,31 @@ export function agirDuelo(estado, acao, rng, agora = Date.now()) {
   e.log = [];
   const j = e.lados[e.vez], o = e.lados[1 - e.vez];
   const pj = PASSIVAS[j.classe] ?? {}, po = PASSIVAS[o.classe] ?? {};
-  const bd = bonusDado(j.at) + Math.ceil((po.dadoInimigo ?? 0) / 2) + (pj.furia && j.hp < j.hpMax / 2 ? pj.furia : 0);
-  const curar = (x, q) => { const c = Math.min(x.hpMax - x.hp, Math.round(q)); x.hp += c; return c; };
+  const bd = bonusDado(j.at) + (po.dadoInimigo ?? 0) + (pj.furia && j.hp < j.hpMax / 2 ? pj.furia : 0);
+  const curar = (x, q) => { const c = Math.max(0, Math.min(x.hpMax - x.hp, Math.round(q * DUELO.cura))); x.hp += c; return c; };
   const ferir = (tipo, poder, d, nome, x = {}) => {
     if (d.faixa === "falha") { e.log.push(`${dadoTxt(d)}. ${j.nome} usa ${nome}, e ${o.nome} sai do caminho.`); return 0; }
     const magico = tipo === "magico";
-    const def = (magico ? o.at.RES : o.at.DEF) * (1 - (x.ignoraDef ?? 0));
-    const reducao = (po.reducao ?? 0) + (po.reducaoComMana && o.mp > 0 ? po.reducaoComMana : 0) + (magico ? po.reducaoMagia ?? 0 : 0);
-    const mult = d.mult * (j.foco ? 1.5 : 1) * (j.fraco ? 0.75 : 1) * (1 - reducao) * (1 - (o.protecaoTurnos ? o.protecao : 0)) * DUELO.dano;
+    // No duelo, defesa física e mágica se aproximam: sem isso, quem tem só uma das duas perde sempre para o tipo "errado" de adversário
+    const media = ((o.at.DEF ?? 0) + (o.at.RES ?? 0)) / 2;
+    const def = ((magico ? o.at.RES : o.at.DEF) * (1 - DUELO.mistura) + media * DUELO.mistura) * (1 - (x.ignoraDef ?? 0));
+    const reducao = ((po.reducao ?? 0) + (po.reducaoComMana && o.mp > 0 ? po.reducaoComMana : 0) + (magico ? po.reducaoMagia ?? 0 : 0)) * DUELO.passivaDefesa;
+    const elemento = magico ? multElemento(j.elemento, o.elemento) : 1;
+    const aberto = o.aberto;
+    const mult = d.mult * elemento * (aberto ? DUELO.aberto : 1) * (j.foco ? 1.5 : 1) * (j.fraco ? (po.reducao && o.classe === "Bruxo" ? 0.65 : 0.75) : 1) * (1 - reducao)
+      * (1 - (o.protecaoTurnos && !aberto ? o.protecao : 0)) * DUELO.dano;
     let dano = 0;
     for (let g = 0; g < (x.golpes ?? 1); g++) dano += Math.max(1, Math.round((((magico ? j.at.MAG : j.at.FOR) * 3 * K(j.nivel)) / (K(j.nivel) + Math.max(0, def))) * poder * mult));
     o.hp -= dano; j.foco = false;
-    e.log.push(`${dadoTxt(d)}. ${j.nome} acerta ${o.nome} com ${nome}${o.protecaoTurnos ? ", através da guarda" : ""}. _(${dano} de dano)_`);
+    e.log.push(`${dadoTxt(d)}. ${j.nome} acerta ${o.nome} com ${nome}${aberto ? ", de guarda aberta (+50%)" : o.protecaoTurnos ? ", através da proteção" : ""}. _(${dano} de dano)_`);
+    if (elemento > 1) e.log.push(`O elemento de ${j.nome} leva vantagem sobre o de ${o.nome}.`);
+    else if (elemento < 1) e.log.push(`O elemento de ${o.nome} resiste ao de ${j.nome}.`);
+    // guarda: golpe perfeito tira 1, vantagem de elemento tira 2, habilidades de quebra tiram o que dizem
+    if (aberto) { o.aberto = false; o.guarda = DUELO.guarda; }
+    else {
+      o.guarda -= (d.faixa === "critico" ? 1 : 0) + (elemento > 1 ? 2 : 0) + (x.postura ?? 0);
+      if (o.guarda <= 0) { o.guarda = 0; o.aberto = true; o.protecao = 0; o.protecaoTurnos = 0; e.log.push(`*A guarda de ${o.nome} quebrou!* O próximo golpe entra com +50%.`); }
+    }
     return dano;
   };
 
@@ -102,6 +177,8 @@ export function agirDuelo(estado, acao, rng, agora = Date.now()) {
     const d = rolar(rng, bd);
     j.protecao = Math.min(0.8, FAIXAS[d.faixa].defesa + (pj.defesaExtra ?? 0)); j.protecaoTurnos = 1;
     e.log.push(`${dadoTxt(d)}. ${j.nome} fecha a guarda. _(bloqueia ${Math.round(j.protecao * 100)}% do próximo golpe)_`);
+    if (j.aberto) { j.aberto = false; j.guarda = Math.ceil(DUELO.guarda / 2); e.log.push(`${j.nome} recompõe a postura.`); }
+    if (d.faixa === "critico" && !o.aberto) { o.guarda = Math.max(0, o.guarda - 2); e.log.push(`Defesa perfeita: ${o.nome} perde o equilíbrio.`); if (!o.guarda) { o.aberto = true; o.protecao = 0; o.protecaoTurnos = 0; e.log.push(`*A guarda de ${o.nome} quebrou!*`); } }
   } else if (acao.tipo === "habilidade") {
     const h = (KITS[j.classe] ?? []).find((x) => x.id === acao.id);
     if (!h) return { estado, fim: null, erro: "Habilidade desconhecida." };
