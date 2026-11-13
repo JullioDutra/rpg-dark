@@ -187,7 +187,7 @@ export function criarJogo({ relogio = null, db, sal = process.env.TELEFONE_SAL ?
       const eu = await um(db, "select * from jogo.jogadores where mundo_id = $1 and identidade_id = $2 and estado = 'ativo'", [mundo.id, idt.id]);
       return mestre.resgatar(eu, t.replace(/^[!/]?resgatar\s*/, "").replace(/@\S+/g, "").trim(), msg.chat);
     }
-    if (/^[!/]?(duelo|duelar|duelando|desafio|desafiar|x1|pvp|apoiar|apoio|aceitar|aceito|recusar|recuso|historia|conceder|dar)\b/.test(t)) {
+    if (/^[!/]?(duelo|duelar|duelando|desafio|desafiar|x1|pvp|apoiar|apoio|aceitar|aceito|recusar|recuso|historia|conceder|dar|vender|comprar)\b/.test(t)) {
       const idt = await identidade(msg.autor);
       const eu = await um(db, "select * from jogo.jogadores where mundo_id = $1 and identidade_id = $2 and estado = 'ativo'", [mundo.id, idt.id]);
       const achar = async (m) => {
@@ -198,6 +198,11 @@ export function criarJogo({ relogio = null, db, sal = process.env.TELEFONE_SAL ?
         return todos.find((x) => alvos.some((a) => [dig(x.wa_jid), dig(x.wa_lid)].some((d) => d && (d === a || mesmoNumero(d, a)))))
           ?? (nome.length >= 3 ? todos.find((x) => x.nome_normalizado === nome || x.nome_normalizado.startsWith(nome)) : null) ?? null;
       };
+      // grimórios mudam de dono: doação, venda e a resposta do comprador
+      if (/^[!/]?dar\s+(o\s+)?(grimorio|livro)\b/.test(t)) return grimorios.dar(msg, eu, achar);
+      if (/^[!/]?vender\s+(o\s+)?(grimorio|livro)\b/.test(t)) return grimorios.vender(msg, eu, achar);
+      if (/^[!/]?(comprar grimorio|comprar o grimorio|aceitar compra|recusar compra)$/.test(t)) { const rv = await grimorios.responderVenda(msg, eu, !/^[!/]?recusar/.test(t)); if (rv) return rv; }
+      if (/^[!/]?(vender|comprar)\b/.test(t)) return [];
       if (/^[!/]?dar\b/.test(t)) return social.dar(msg, eu, achar);
       const r = await extras.noGrupo(msg, mundo, t, eu, achar, /^[!/]?conceder\b/.test(t) ? await ehAdmin(msg) : false);
       if (r) return r;
@@ -267,6 +272,8 @@ export function criarJogo({ relogio = null, db, sal = process.env.TELEFONE_SAL ?
       const tc = tn.replace(/^[!/]/, "");
       const fechada = await ameacas.cidadeFechada(ativo, tc);
       if (fechada) return [...novidades, { para: msg.chat, texto: fechada }];
+      // resposta à pergunta da espiã ("você confia em mim?")
+      if (/^(sim|s|confio|confio sim|nao|n|nao confio)[.!]*$/.test(tc)) { const re = await mestre.respostaEspia(ativo, /^(sim|s|confio)/.test(tc), msg.chat); if (re) return [...novidades, ...re]; }
       const mMissao = tc.match(/^(aceitar|aceito|recusar|recuso)\s+(?:a\s+|o\s+)?(missao|chamado)$/);
       if (mMissao) { const r = await seteLuzes.responder(ativo, /^aceit/.test(mMissao[1]), msg.chat); if (r) return [...novidades, ...r]; }
       const ps = await mestre.passagem(ativo, tc, msg.chat);
@@ -580,6 +587,7 @@ entrar no mundo — criar seu personagem
 ficha — sua carta · feitos — o que aconteceu no mundo
 duelo @pessoa (ou duelar @pessoa) — duelo amistoso por turnos · apoiar @pessoa — mandar forças
 dar <item> @pessoa — dar uma poção, um material ou ryō · ranking
+dar grimorio <nº> @pessoa · vender grimorio <nº> @pessoa <preço> — o livro muda de dono
 historia @pessoa — ler a história de alguém
 
 *Pelo mundo* (no privado)

@@ -6,8 +6,8 @@ import { semAcento } from "../linguagem/normalizar.mjs";
 import { novoCombate, resolverRodada, painel, textoMenu, escolher, recompensa, aplicarXP, atributoPrincipal, HABILIDADES, CLASSES, KITS, proximaHabilidade, SISMICO, PASSIVAS, nivelDeLuta, multAlcance, REVIGORAR } from "../regras/combate.mjs";
 import { REGIAO, MATERIAIS } from "../regras/exploracao.mjs";
 import { COVIL } from "../mundo/mundo.mjs";
-import { magiasDeBatalha } from "../regras/grimorios.mjs";
-import { bonusEquip, item as itemDe, todosItens, EQUIP_CLASSE } from "../regras/itens.mjs";
+import { magiasDeBatalha, GRIMORIOS, podeLer, maxGrimorios } from "../regras/grimorios.mjs";
+import { bonusEquip, item as itemDe, todosItens, EQUIP_CLASSE, habilidadesDosItens, HABILIDADE_ITEM } from "../regras/itens.mjs";
 import { XP_PROXIMO } from "../../scripts/balanceamento.mjs";
 import { renderizar } from "../avatar/index.mjs";
 import { DNA_VILOES, DNA_MASCARA } from "../avatar/dna.mjs";
@@ -81,7 +81,11 @@ export function criarCombate({ db, rng, agora }) {
       if (/^(distribuir|pontos)\b/.test(t)) { await distribuir(q, j, t, dizer); return fim(true); }
       if (/^(habilidades|tecnicas|golpes|skills)$/.test(t)) {
         const terra = (await q("select 1 from jogo.progresso where jogador_id = $1 and chave = 'b:olhos-da-terra'", [j.id])).length > 0;
-        dizer(textoHabilidades(j, terra)); return fim(true);
+        const abertos = (await q("select grimorio_id from jogo.grimorios_jogador where jogador_id = $1 and equipado order by grimorio_id", [j.id])).map((x) => x.grimorio_id);
+        const fechados = (await q("select grimorio_id from jogo.grimorios_jogador where jogador_id = $1 and not equipado order by grimorio_id", [j.id])).map((x) => x.grimorio_id);
+        const invH = await q("select item_id, equipado from jogo.inventario where jogador_id = $1", [j.id]);
+        const petH = (await q("select nome from jogo.pets where jogador_id = $1", [j.id]))[0] ?? null;
+        dizer(textoHabilidades(j, terra, { abertos, fechados, inv: invH, pet: petH })); return fim(true);
       }
       const querEntrar = /^(entrar na luta|entro na luta|lutar junto|ajudar na luta|entrar na batalha)$/.test(t);
       if (!querEntrar && !/^(lutar|enfrentar|luto|lutar!|atacar|a|aceito lutar|bora|1)$/.test(t)) return fim(false);
@@ -112,7 +116,8 @@ export function criarCombate({ db, rng, agora }) {
       if (apoio) await q("delete from jogo.progresso where jogador_id = $1 and chave = 'apoio'", [j.id]);
       const pet = (await q("select nome, estagio from jogo.pets where jogador_id = $1", [j.id]))[0] ?? null;
       // magias dos grimórios abertos entram no menu da luta
-      const magias = magiasDeBatalha((await q("select grimorio_id from jogo.grimorios_jogador where jogador_id = $1 and equipado order by grimorio_id", [j.id])).map((x) => x.grimorio_id));
+      // e também a habilidade de cada Grande Item equipado. Nada disso tira as habilidades da classe: é acréscimo.
+      const magias = [...magiasDeBatalha((await q("select grimorio_id from jogo.grimorios_jogador where jogador_id = $1 and equipado order by grimorio_id", [j.id])).map((x) => x.grimorio_id)), ...habilidadesDosItens(inv)];
       const vd = pend.dados.lacaio ? { ...v, nome: nomeLacaio(v), tier: "comum" } : v;
       // Vilão de covil nunca luta mais que alguns níveis acima do jogador (a história não trava por falta de nível)
       const nivelLuta = pend.dados.fixo ? nivelDeLuta(pend.dados.inimigo.nivel, j.nivel) : pend.dados.inimigo.nivel;
@@ -341,7 +346,7 @@ export function criarCombate({ db, rng, agora }) {
 }
 
 /** Lista das habilidades da classe: as que já tem e as que ainda vai aprender. */
-export function textoHabilidades(j, terra = false) {
+export function textoHabilidades(j, terra = false, extra = null) {
   const kit = KITS[j.classe] ?? [];
   const linhas = kit.map((h) => j.nivel >= h.nivel
     ? `*${h.nome}* — ${h.resumo}${h.mp ? ` _(${h.mp} de mana)_` : ""}`
@@ -353,6 +358,20 @@ export function textoHabilidades(j, terra = false) {
     ? `*Sopro de Mana* (fora de luta: *revigorar*) — gasta 90% da sua mana e devolve ${REVIGORAR.vigor} de vigor a você e a todos os jogadores na mesma região`
     : `_Sopro de Mana — aprende no nível ${REVIGORAR.nivel}_`);
   if (terra) linhas.push("", "*Olhos da Terra*", ...SISMICO.map((h) => `*${h.nome}* — ${h.resumo}`), "_+2 no dado ao defender · −2 no dado contra espíritos e deuses (não tocam o chão)_");
+  // O que veio de fora da classe: grimórios, Grandes Itens e companheiro. Sempre dizendo se está valendo agora ou não, e por quê.
+  if (extra) {
+    const custo = (h) => (j.mp_max > 0 && h.mp ? ` _(${h.mp} de mana)_` : "");
+    const gr = [];
+    for (const id of extra.abertos ?? []) { const g = GRIMORIOS.get(id); if (g) gr.push(`*${g.nome}* — _aberto: valendo nas suas lutas_`, ...g.magias.filter((m) => !m.utilitaria).map((m) => `   ${m.nome} — ${m.resumo}${custo(m)}`)); }
+    for (const id of extra.fechados ?? []) { const g = GRIMORIOS.get(id); if (!g) continue; const motivo = podeLer(j, g);
+      gr.push(motivo ? `_${g.nome} — não pode usar ainda: ${motivo.replace(/\.$/, "")}_` : `_${g.nome} — fechado: use *abrir grimorio ${g.id.toLowerCase()}* para ganhar ${g.magias.filter((m) => !m.utilitaria).map((m) => m.nome).join(", ")}_`); }
+    if (gr.length) linhas.push("", `*De grimórios* (${(extra.abertos ?? []).length} de ${maxGrimorios(j.classe)} abertos)`, ...gr);
+    const it = [];
+    for (const l of extra.inv ?? []) { const h = HABILIDADE_ITEM[l.item_id]; if (!h) continue;
+      it.push(l.equipado ? `*${h.nome}* (${itemDe(l.item_id).nome.split(",")[0]}) — ${h.resumo}${custo(h)}` : `_${h.nome} — você tem ${itemDe(l.item_id).nome.split(",")[0]}, mas não está equipado: equipe para usar_`); }
+    if (it.length) linhas.push("", "*De Grandes Itens*", ...it);
+    if (extra.pet) linhas.push("", `*${extra.pet.nome}* (companheiro) — ataca junto com você em toda rodada`);
+  }
   return `*Habilidades de ${j.classe}*\n\n${linhas.join("\n")}\n\n${rodape("além disso: atacar, defender" + (j.mp_max > 0 ? ", magia do seu elemento" : ""), prox ? `próxima no nível ${prox.nivel}` : "todas aprendidas")}`;
 }
 

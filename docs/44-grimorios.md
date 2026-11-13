@@ -57,3 +57,30 @@ Custo de mana: o do texto original. Espera: 2 a 4 rodadas, conforme a força.
 - As magias não foram calibradas por simulação. As mais fortes (rank A e S, força 2,2 a 2,6) equivalem às habilidades de nível 25 das classes, mas um Mago com 3 grimórios abertos tem bem mais opções que hoje.
 - Grimórios não valem no duelo amistoso nem nas lutas contra monstro/Calamidade (`golpear`).
 - A conversão simplifica: efeitos de grupo viram efeito no próprio jogador, invocações viram dano contínuo.
+
+## 44.7 Grimório muda de dono, e o que cada um pode usar
+
+**Doar e vender (no grupo):**
+
+| Comando | Efeito |
+|---------|--------|
+| `dar grimorio <nº da sua lista> @pessoa` | O livro passa para a outra pessoa na hora |
+| `vender grimorio <nº> @pessoa <preço>` | Abre uma oferta de 10 minutos; a pessoa responde `comprar grimorio` ou `recusar compra` |
+
+- Quem entrega **perde as magias do livro na hora** (ele sai da lista e do menu das lutas). Quem recebe fica com ele fechado e abre se puder.
+- A venda só acontece se o comprador tiver o ryō; o pagamento e a troca de dono acontecem juntos.
+- Ninguém fica com dois do mesmo. Vale também para o Grimório das Sete Luzes.
+
+**O que pode e o que não pode usar:** `grimorios` mostra em cada livro uma das três situações — *ABERTO* (as magias estão nas lutas), *FECHADO* (pode usar: é só abrir) ou *NÃO PODE USAR AINDA* (com o motivo: classe ou nível).
+`habilidades` junta tudo num lugar: passiva, habilidades da classe (as que tem e as que vai aprender), magias dos grimórios abertos, habilidades dos Grandes Itens e o companheiro.
+
+**Habilidades de Grandes Itens** (somam às da classe; valem só com o item equipado):
+
+| Item | Habilidade | Efeito |
+|------|------------|--------|
+| Excalibur | Lâmina das Estrelas (20 de mana) | Golpe de força 2,2 que atravessa 30% da defesa |
+| Kokūgai | Égide do Quinto Portador (18 de mana) | Corta 80% do dano por 2 rodadas |
+| Tenmon no Tama | Portão Aberto (14 de mana) | Esquiva 60% por 1 rodada e o próximo golpe vale +50% |
+| Shitenchō | Quatro Céus (30 de mana) | Quatro golpes de força 0,7 com o melhor atributo |
+
+Nada disso substitui o que a classe já tem ou vai aprender: é acréscimo. Valem nas batalhas, nas lutas em conjunto e no `golpear`; não valem no duelo amistoso.

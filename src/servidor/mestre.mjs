@@ -42,6 +42,8 @@ mestre tesouros — mapa de onde estão os 4 Grandes Itens, os 4 núcleos, os sa
 mestre mover <nome> <região> — transporta o jogador na hora, sem custo (ele vê uma passagem se abrir)
 mestre mover todos <região> — transporta todos os jogadores do mundo de uma vez
 mestre teleporte <nome> — dá ao jogador um Selo de Passagem (1 uso): ele escolhe o destino e paga um preço (vida, ryō ou mérito)
+mestre roubo <nome> — a espiã pergunta ao jogador "você confia em mim?" (sim/não). Se ele disser sim, ela some com TODOS os itens da bolsa (grimórios e ryō ficam). Se disser não, ela vai embora de mãos vazias
+mestre devolver <nome> — devolve ao jogador tudo o que a espiã levou
 mestre recolher <nome> — a espiã se despede
 mestre quem — lista os personagens e onde estão
 
@@ -261,7 +263,10 @@ export function criarMestre({ db, agora, ameacas = null, grimorios = null, seteL
     }
     if (/^(relatorio|relato)$/.test(acao)) {
       const e = (await um(db, "select valor from jogo.progresso where jogador_id = $1 and chave = 'espia'", [alvo.id]))?.valor;
-      if (!e) return dizer(`Ninguém está acompanhando ${alvo.nome}. Use: mestre espiã ${primeiro}`);
+      if (!e) {
+        const fim = (await um(db, "select valor from jogo.progresso where jogador_id = $1 and chave = 'espia-fim'", [alvo.id]))?.valor;
+        return dizer(fim ? `Ninguém acompanha ${alvo.nome} agora. Da última vez: ele respondeu *${fim.resposta}* e ela ${fim.levou ? `levou ${fim.levou} tipo${fim.levou > 1 ? "s" : ""} de item (devolver: mestre devolver ${primeiro})` : "foi embora de mãos vazias"}.` : `Ninguém está acompanhando ${alvo.nome}. Use: mestre espiã ${primeiro}`);
+      }
       const inv = await db.query("select item_id, qtd, equipado from jogo.inventario where jogador_id = $1 order by equipado desc, qtd desc limit 8", [alvo.id]);
       const hora = (ms) => new Date(ms - 3 * 3_600_000).toISOString().slice(5, 16).replace("T", " ");
       return dizer(`*Relatório de ${e.nome}* — ${alvo.nome}\n\n${alvo.classe}, nível ${alvo.nivel} · vida ${alvo.hp}/${alvo.hp_max} · ${alvo.ryo} ryō · corrupção ${Number(alvo.corrupcao ?? 0)}\nEstá em ${nomeR(alvo.regiao_atual)}.\nLeva: ${inv.map((l) => `${item(l.item_id)?.nome ?? l.item_id}${l.qtd > 1 ? ` ×${l.qtd}` : ""}${l.equipado ? " (em uso)" : ""}`).join(", ") || "nada"}.\n\n` +
@@ -284,6 +289,22 @@ export function criarMestre({ db, agora, ameacas = null, grimorios = null, seteL
     if (/^(teleporte|teletransporte|selo|passagem)$/.test(acao)) {
       await gravar(alvo, "teleporte", { usos: 1, destino: null });
       return [...(pv ? [{ para: pv, texto: `Você acorda com um peso estranho na palma da mão: um selo de pedra clara, morno, com um desenho de porta que você nunca viu.\n\nNinguém sabe dizer de onde veio. Mas você sabe, sem saber como, o que ele faz: *abre uma passagem para qualquer lugar do mundo, uma única vez*. E sabe também que portas assim nunca abrem de graça.\n${rodape("teleportar <lugar> para ver o preço")}` }] : []), ...dizer(`Feito. ${alvo.nome} recebeu um Selo de Passagem.`)];
+    }
+    if (/^(roubo|roubar|golpe|trair)$/.test(acao)) {
+      const e = (await um(db, "select valor from jogo.progresso where jogador_id = $1 and chave = 'espia'", [alvo.id]))?.valor;
+      if (!e) return dizer(`Ninguém está acompanhando ${alvo.nome}. Primeiro: mestre espiã ${primeiro}`);
+      if (!pv) return dizer("Esse jogador ainda não abriu o privado com o bot.");
+      await gravar(alvo, "espia-pergunta", { em: agora(), nome: e.nome });
+      return [{ para: pv, texto: `${e.nome} para de desenhar. Fecha o caderninho azul devagar, e pela primeira vez olha direto para você.\n\n— Posso te perguntar uma coisa? A gente anda junto faz um tempo. *Você confia em mim?*\n\n*sim* · *não*` },
+        ...dizer(`Feito. ${e.nome} fez a pergunta a ${alvo.nome}. O resultado aparece em: mestre relatório ${primeiro}`)];
+    }
+    if (/^(devolver|restituir)$/.test(acao)) {
+      const r = (await um(db, "select valor from jogo.progresso where jogador_id = $1 and chave = 'roubado'", [alvo.id]))?.valor;
+      if (!r?.itens?.length) return dizer(`Não há nada de ${alvo.nome} para devolver.`);
+      for (const it of r.itens) await db.query(`insert into jogo.inventario (jogador_id, item_id, tipo, qtd, equipado, dados) values ($1, $2, $3, $4, false, $5)
+        on conflict (jogador_id, item_id) do update set qtd = jogo.inventario.qtd + excluded.qtd`, [alvo.id, it.item_id, it.tipo, it.qtd, JSON.stringify(it.dados ?? {})]);
+      await db.query("delete from jogo.progresso where jogador_id = $1 and chave = 'roubado'", [alvo.id]);
+      return [...(pv ? [{ para: pv, texto: `Você acorda com um peso conhecido ao lado da cabeça: a sua bolsa. Tudo dentro, até o que você já tinha dado por perdido. Em cima, um bilhete sem assinatura, com letra de quem desenha mapas:\n\n_"Desculpa. Não era pra ser você."_\n${rodape("seus itens voltaram", "veja em itens e equipe de novo o que quiser")}` }] : []), ...dizer(`Feito. ${r.itens.length} tipo(s) de item devolvidos a ${alvo.nome}.`)];
     }
     if (/^(recolher|dispensar)$/.test(acao)) {
       const tinha = await db.query("delete from jogo.progresso where jogador_id = $1 and chave = 'espia' returning 1", [alvo.id]);
@@ -373,5 +394,24 @@ export function criarMestre({ db, agora, ameacas = null, grimorios = null, seteL
     return { tratado: true, mudouRegiao: true, saidas: [{ para, texto: `Você paga em ${PRECOS[k].nome}. O selo racha ao meio, e o mundo dobra como papel.\n\nUm passo. Só um.\n${rodape(`−${PRECOS[k].texto(j)}`, "o selo virou pó")}` }] };
   }
 
-  return { comando, bloqueio, resgatar, observar, passagem };
+  /** Resposta do jogador à pergunta da espiã ("sim"/"não"). Devolve null se não há pergunta pendente. */
+  async function respostaEspia(j, confia, para) {
+    const p = (await db.query("delete from jogo.progresso where jogador_id = $1 and chave = 'espia-pergunta' returning valor", [j.id]))[0]?.valor;
+    if (!p) return null;
+    const nome = p.nome ?? ESPIA.nome;
+    await db.query("delete from jogo.progresso where jogador_id = $1 and chave = 'espia'", [j.id]); // de um jeito ou de outro, ela vai embora
+    if (!confia) {
+      await gravar(j, "espia-fim", { resposta: "não", levou: 0, em: agora() });
+      return [{ para, texto: `${nome} fica um instante em silêncio. Depois sorri de um jeito que você ainda não tinha visto: sem esforço.\n\n— Que bom. Continua assim.\n\nEla ajeita a capa, deixa o caderninho azul em cima de uma pedra e toma a estrada sem olhar para trás. Dentro do caderno, todas as páginas sobre você foram arrancadas.` }];
+    }
+    // confiou: ela leva a bolsa inteira (itens e equipamento). Grimórios e ryō ficam. Tudo fica guardado para o mestre poder devolver.
+    const itens = await db.query("select item_id, tipo, qtd, equipado, dados from jogo.inventario where jogador_id = $1", [j.id]);
+    const antes = (await um(db, "select valor from jogo.progresso where jogador_id = $1 and chave = 'roubado'", [j.id]))?.valor?.itens ?? [];
+    await gravar(j, "roubado", { em: agora(), por: nome, itens: [...antes, ...itens] });
+    await db.query("delete from jogo.inventario where jogador_id = $1", [j.id]);
+    await gravar(j, "espia-fim", { resposta: "sim", levou: itens.length, em: agora() });
+    return [{ para, texto: `${nome} sorri, e alguma coisa nos olhos dela relaxa.\n\n— Então me deixa carregar a sua bolsa hoje. Você parece cansado.\n\nVocê dorme bem naquela noite. Melhor do que em muito tempo.\n\nDe manhã, não há ${nome}. Não há bolsa. Não há arma ao lado do cobertor. Só o caderninho azul, aberto na última página, com o desenho de alguém dormindo — e, embaixo, uma palavra só:\n\n_"Obrigada."_\n${rodape(itens.length ? "você perdeu todos os itens e o equipamento" : "você não tinha nada para ela levar", "seus grimórios e seu ryō ficaram", "uma loja vende o básico para recomeçar")}` }];
+  }
+
+  return { comando, bloqueio, resgatar, observar, passagem, respostaEspia };
 }

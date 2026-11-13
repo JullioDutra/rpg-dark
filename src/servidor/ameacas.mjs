@@ -8,7 +8,7 @@ import { renderizar } from "../avatar/index.mjs";
 import { imagemDragao } from "../avatar/especiais.mjs";
 import { atributosEfetivos, rolar, bonusDado, aplicarXP, habilidadesDe, MAGIA, elementoBase, PASSIVAS } from "../regras/combate.mjs";
 import { magiasDeBatalha } from "../regras/grimorios.mjs";
-import { bonusEquip } from "../regras/itens.mjs";
+import { bonusEquip, habilidadesDosItens } from "../regras/itens.mjs";
 import { K, XP_PROXIMO } from "../../scripts/balanceamento.mjs";
 import { rodape } from "./textos.mjs";
 import { um } from "./db.mjs";
@@ -139,7 +139,8 @@ export function criarAmeacas({ db, rng, agora, relogio = null }) {
     add("Atacar", { nome: "um golpe direto", tipo: "fisico", poder: 1, mp: 0 });
     if (temMana) add(`Magia de ${elementoBase(j.atributo_magico) ?? "mana"}`, { nome: "magia", tipo: "magico", poder: MAGIA.poder, mp: MAGIA.mp }, `${MAGIA.mp} de mana`, j.mp < MAGIA.mp ? "sem mana" : null);
     const abertos = (await db.query("select grimorio_id from jogo.grimorios_jogador where jogador_id = $1 and equipado order by grimorio_id", [j.id])).map((x) => x.grimorio_id);
-    for (const h of [...habilidadesDe(j.classe, j.nivel), ...magiasDeBatalha(abertos)])
+    const equipados = await db.query("select item_id, equipado from jogo.inventario where jogador_id = $1 and equipado", [j.id]);
+    for (const h of [...habilidadesDe(j.classe, j.nivel), ...magiasDeBatalha(abertos), ...habilidadesDosItens(equipados)])
       add(h.nome, { ...h, mp: custo(h) }, [h.resumo, custo(h) ? `${custo(h)} de mana` : null].filter(Boolean).join(" · "), j.mp < custo(h) ? "sem mana" : null);
     return itens;
   }

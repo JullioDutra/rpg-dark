@@ -1,5 +1,5 @@
 // Itens no privado: bolsa detalhada (o que cada item faz e quantos usos tem), equipar, usar, loja e descanso.
-import { item, efeitoItem, podeEquipar, estoque, precoVenda, CONSUMIVEIS, descricaoEquipClasse, bonusEquip } from "../regras/itens.mjs";
+import { item, efeitoItem, podeEquipar, estoque, precoVenda, CONSUMIVEIS, descricaoEquipClasse, bonusEquip, HABILIDADE_ITEM } from "../regras/itens.mjs";
 import { REGIAO, REGIOES, normal } from "../regras/exploracao.mjs";
 import { MUNDO } from "../mundo/mundo.mjs";
 import { rodape } from "./textos.mjs";
@@ -66,7 +66,8 @@ export function criarItens({ db, agora }) {
           await q("commit");
         } catch (e) { await q("rollback"); throw e; }
       });
-      return dizer(`Você equipa *${it.nome}*.\n${rodape(efeitoItem(it), `ocupa: ${SLOT[it.slot]}`)}\n\n${await totais(j)}`);
+      const hab = HABILIDADE_ITEM[it.id];
+      return dizer(`Você equipa *${it.nome}*.\n${rodape(efeitoItem(it), `ocupa: ${SLOT[it.slot]}`)}${hab ? `\n\n*Nova habilidade nas suas lutas: ${hab.nome}* — ${hab.resumo}.\n_Ela se soma às que você já tem e vale enquanto o item estiver equipado._` : ""}\n\n${await totais(j)}`);
     }
     if ((m = t.match(/^(desequipar|guardar|tirar)\s+(.+)$/))) {
       const linhas = (await bolsa(j)).filter((x) => x.equipado);

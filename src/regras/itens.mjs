@@ -127,4 +127,17 @@ export function estoque(tipo, j) {
   return [...cons, ...eq];
 }
 
+/**
+ * Cada Grande Item, enquanto estiver EQUIPADO, soma uma habilidade ao menu das lutas (além dos atributos).
+ * Não substitui nada da classe: é um acréscimo. Guardou o item, a habilidade some.
+ */
+export const HABILIDADE_ITEM = {
+  excalibur: { id: "li-excalibur", nome: "Lâmina das Estrelas", frase: "A espada lembra de onde caiu.", resumo: "golpe de força 2,2 que atravessa 30% da defesa", tipo: "fisico", poder: 2.2, ignoraDef: 0.3, mp: 20, recarga: 4, nivel: 1, origem: "excalibur" },
+  kokugai: { id: "li-kokugai", nome: "Égide do Quinto Portador", frase: "A égide se abre como uma asa.", resumo: "corta 80% do dano por 2 rodadas", tipo: "guarda", protecao: 0.8, duracao: 2, mp: 18, recarga: 5, nivel: 1, origem: "kokugai" },
+  tenmon: { id: "li-tenmon", nome: "Portão Aberto", frase: "A joia mostra o instante seguinte.", resumo: "esquiva 60% por 1 rodada e o próximo golpe vale +50%", tipo: "guarda", protecao: 0.6, duracao: 1, foco: true, mp: 14, recarga: 4, nivel: 1, origem: "tenmon" },
+  shitencho: { id: "li-shitencho", nome: "Quatro Céus", frase: "Quatro páginas viram ao mesmo tempo.", resumo: "quatro golpes de força 0,7, com o seu melhor atributo", tipo: "melhor", poder: 0.7, golpes: 4, mp: 30, recarga: 4, nivel: 1, origem: "shitencho" },
+};
+/** Habilidades que vêm do que está equipado (linhas de jogo.inventario). */
+export const habilidadesDosItens = (linhas = []) => linhas.filter((l) => l.equipado && HABILIDADE_ITEM[l.item_id]).map((l) => HABILIDADE_ITEM[l.item_id]);
+
 export const precoVenda = (it) => (it?.lendario ? 0 : Math.floor((it?.preco ?? 0) * 0.4));

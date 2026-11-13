@@ -96,3 +96,15 @@ Antes, a IA podia narrar "ela te entrega um frasco" sem nada acontecer. Agora:
 - Quem entrega é o motor: o item entra na bolsa e a mensagem termina com `+1 Poção de cura (na sua bolsa)`.
 - Limite: 3 por dia por jogador, com 20 minutos entre um e outro. Fora do limite ou da lista, a cena avisa que nada foi guardado.
 - A instrução para a IA passou a ser: nunca dizer que o jogador recebeu algo sem propor o item.
+
+## 40.11 A espiã rouba (ou não)
+
+| Comando do mestre | Efeito |
+|-------------------|--------|
+| `mestre roubo <nome>` | A espiã (que precisa estar acompanhando o jogador) pergunta: "Você confia em mim?" — *sim* ou *não* |
+| `mestre relatório <nome>` | Depois que ela se foi, mostra o que ele respondeu e quanto ela levou |
+| `mestre devolver <nome>` | Devolve tudo o que ela levou (o jogador acha a bolsa com um bilhete) |
+
+- **Se ele responde "sim":** ela some durante a noite com **todos os itens da bolsa**, inclusive o equipamento e os Grandes Itens. Grimórios e ryō ficam.
+- **Se ele responde "não":** ela vai embora de mãos vazias.
+- Nos dois casos ela deixa de acompanhar o jogador. O que foi levado fica guardado, para o mestre poder devolver.

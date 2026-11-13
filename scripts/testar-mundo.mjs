@@ -794,6 +794,83 @@ export async function testarMundoServidor({ db, jogador, outro, mensagem, grupo,
     assert.match(texto(await noGrupo(outroPrivado("diario 99"))), /Seu diário tem estas partes/);
     await db.query("delete from jogo.progresso where jogador_id = $1 and chave = $2", [outro.id, `c:${cap.id}`]);
   });
+  await t("grimório muda de dono (doar e vender tiram o poder de quem entrega); habilidades mostram o que vale e o que não; Grande Item equipado soma habilidade", async () => {
+    await db.query("update jogo.batalhas set status = 'encerrada' where status <> 'encerrada'"); await db.query("delete from jogo.exploracoes where pendente"); await db.query("delete from jogo.ameacas");
+    await db.query("delete from jogo.grimorios_jogador"); await db.query("delete from jogo.inventario where jogador_id = any($1)", [[jogador.id, outro.id]]);
+    await db.query("delete from jogo.progresso where chave in ('oferta-grimorio', 'duelo-ativo', 'duelo-estado', 'falando', 'ameaca-vez', 'espia', 'espia-pergunta', 'roubado', 'espia-fim')");
+    await db.query("update jogo.jogadores set classe = 'Mago', nivel = 20, hp = hp_max, mp = 200, mp_max = 200, ryo = 100, regiao_atual = 'R-HOM-3', local_atual = null where id = $1", [jogador.id]);
+    await db.query("update jogo.jogadores set classe = 'Mago', nivel = 20, ryo = 1000, regiao_atual = 'R-HOM-3' where id = $1", [outro.id]);
+    await db.query("insert into jogo.grimorios_jogador (jogador_id, grimorio_id, equipado) values ($1, 'G01', true), ($1, 'G09', false), ($1, 'G08', false)", [jogador.id]);
+    const tem = async (id, g) => (await db.query("select equipado from jogo.grimorios_jogador where jogador_id = $1 and grimorio_id = $2", [id, g]))[0] ?? null;
+    // habilidades: o que vale agora, o que pode abrir e o que ainda não pode usar
+    const h = texto(await enviar("habilidades"));
+    assert.match(h, /De grimórios[\s\S]*Caderno de Faíscas do Mineiro\* — _aberto: valendo nas suas lutas_[\s\S]*Faísca/);
+    assert.match(h, /fechado: use \*abrir grimorio g09\*/); assert.match(h, /não pode usar ainda:[\s\S]*nível 45/);
+    assert.match(h, /Rajada Arcana/, "as habilidades da classe continuam todas lá");
+    assert.match(texto(await enviar("grimorios")), /ABERTO — as magias dele estão no menu[\s\S]*NÃO PODE USAR AINDA[\s\S]*FECHADO — você pode usar/);
+    // doar: muda de dono e o poder sai de quem entregou
+    const dz = texto(await noGrupo(grupo("dar grimorio g01 Rin", false)));
+    assert.match(dz, /Kaito Ryuen\* entrega \*Caderno de Faíscas do Mineiro\* a \*Rin[\s\S]*saem das lutas de quem entregou/);
+    assert.equal(await tem(jogador.id, "G01"), null); assert.deepEqual(await tem(outro.id, "G01"), { equipado: false });
+    assert.doesNotMatch(texto(await enviar("habilidades")), /Caderno de Faíscas/);
+    assert.match(texto(await noGrupo(grupo("dar grimorio g09 Rin", false))), /entrega/);
+    assert.match(texto(await noGrupo(outroGrupo("dar grimorio g09 Kaito"))), /entrega \*Manual das Marés|entrega \*/);
+    // vender: oferta, falta de ryō, compra
+    assert.match(texto(await noGrupo(outroGrupo("vender grimorio g01 Kaito 500"))), /oferece \*Caderno de Faíscas do Mineiro\* a \*Kaito Ryuen\* por \*500 ryō[\s\S]*comprar grimorio/);
+    assert.match(texto(await noGrupo(grupo("comprar grimorio", false))), /não tem 500 ryō/);
+    assert.deepEqual(await tem(outro.id, "G01"), { equipado: false }, "sem pagamento, o livro não sai");
+    await noGrupo(outroGrupo("vender grimorio g01 Kaito 60"));
+    const cp = texto(await noGrupo(grupo("comprar grimorio", false)));
+    assert.match(cp, /Negócio fechado[\s\S]*paga 60 ryō[\s\S]*saem das lutas de quem entregou/);
+    assert.equal(await tem(outro.id, "G01"), null); assert.deepEqual(await tem(jogador.id, "G01"), { equipado: false });
+    assert.equal(Number((await atual()).ryo), 40); assert.equal(Number((await db.query("select ryo from jogo.jogadores where id = $1", [outro.id]))[0].ryo), 1060);
+    await noGrupo(outroGrupo("vender grimorio g09 Kaito 10")); // Rin não tem mais o g09
+    assert.match(texto(await noGrupo(grupo("recusar compra", false))) + "x", /x|recusa/);
+    // Grande Item equipado: habilidade nova, somada às da classe, só enquanto equipado
+    await db.query(`insert into jogo.inventario (jogador_id, item_id, tipo, qtd, dados) values ($1, 'kokugai', 'equipamento', 1, '{}')`, [jogador.id]);
+    await db.query("update jogo.jogadores set nivel = 60 where id = $1", [jogador.id]);
+    assert.match(texto(await enviar("habilidades")), /Égide do Quinto Portador — você tem Kokūgai, mas não está equipado/);
+    assert.match(texto(await enviar("equipar kokugai")), /Nova habilidade nas suas lutas: Égide do Quinto Portador/);
+    assert.match(texto(await enviar("habilidades")), /De Grandes Itens[\s\S]*\*Égide do Quinto Portador\* \(Kokūgai\) — corta 80%/);
+    await db.query(`insert into jogo.exploracoes (jogador_id, mensagem_id, regiao, tipo, dados, pendente, criada_em) values ($1, $2, 'R-HOM-3', 'encontro', $3, true, $4)`,
+      [jogador.id, `li:${clock}`, JSON.stringify({ inimigo: { id: "V001", nome: "x", nivel: 60 }, lacaio: true }), new Date(clock)]);
+    const luta = texto(await enviar("lutar"));
+    assert.match(luta, /Rajada Arcana[\s\S]*Égide do Quinto Portador/, "no menu da luta: habilidades da classe e a do Grande Item");
+    await db.query("update jogo.batalhas set status = 'encerrada' where status <> 'encerrada'");
+    await db.query("update jogo.jogadores set nivel = 20 where id = $1", [jogador.id]);
+  });
+  await t("espiã: pergunta se o jogador confia nela; com 'sim' leva todos os itens (grimórios e ryō ficam), com 'não' vai embora; o mestre pode devolver", async () => {
+    await db.query("delete from jogo.progresso where chave in ('espia', 'espia-pergunta', 'roubado', 'espia-fim')");
+    await db.query("delete from jogo.inventario where jogador_id = $1", [outro.id]); await db.query("delete from jogo.grimorios_jogador where jogador_id = $1", [outro.id]);
+    await db.query(`insert into jogo.inventario (jogador_id, item_id, tipo, qtd, equipado, dados) values ($1, 'pocao', 'consumivel', 3, false, '{}'), ($1, 'arma-cajado-2', 'equipamento', 1, true, '{}')`, [outro.id]);
+    await db.query("insert into jogo.grimorios_jogador (jogador_id, grimorio_id, equipado) values ($1, 'G09', true)", [outro.id]);
+    const ryo = Number((await db.query("select ryo from jogo.jogadores where id = $1", [outro.id]))[0].ryo);
+    const inv = async () => (await db.query("select item_id, qtd from jogo.inventario where jogador_id = $1 order by item_id", [outro.id]));
+    assert.match(texto(await noGrupo(adminPrivado("mestre roubo Rin"))), /Ninguém está acompanhando/);
+    assert.match(texto(await noGrupo(outroPrivado("sim"))) + "x", /x/); // sem pergunta pendente, "sim" não faz nada especial
+    assert.equal((await inv()).length, 2);
+    // ela pergunta; ele diz que não: vai embora de mãos vazias
+    await noGrupo(adminPrivado("mestre espiã Rin"));
+    const pq = await noGrupo(adminPrivado("mestre roubo Rin"));
+    assert(pq.some((x) => /Você confia em mim\?[\s\S]*\*sim\* · \*não\*/.test(x.texto ?? "") && x.para !== GRUPO) && !doGrupo(pq).length);
+    assert.match(texto(await noGrupo(outroPrivado("não"))), /Que bom\. Continua assim/);
+    assert.equal((await inv()).length, 2, "disse não: nada foi levado");
+    assert.match(texto(await noGrupo(adminPrivado("mestre relatório Rin"))), /respondeu \*não\*[\s\S]*mãos vazias/);
+    // de novo; agora ele confia: ela leva tudo, menos grimórios e ryō
+    await noGrupo(adminPrivado("mestre espiã Rin")); await noGrupo(adminPrivado("mestre roubo Rin"));
+    const rb = texto(await noGrupo(outroPrivado("sim")));
+    assert.match(rb, /não há Shiori\. Não há bolsa[\s\S]*Obrigada[\s\S]*seus grimórios e seu ryō ficaram/);
+    assert.equal((await inv()).length, 0, "confiou: a bolsa inteira se foi");
+    assert.equal((await db.query("select count(*)::int n from jogo.grimorios_jogador where jogador_id = $1", [outro.id]))[0].n, 1);
+    assert.equal(Number((await db.query("select ryo from jogo.jogadores where id = $1", [outro.id]))[0].ryo), ryo);
+    assert.equal((await db.query("select 1 from jogo.progresso where jogador_id = $1 and chave = 'espia'", [outro.id])).length, 0, "ela sumiu");
+    assert.match(texto(await noGrupo(adminPrivado("mestre relatório Rin"))), /respondeu \*sim\*[\s\S]*levou 2 tipos[\s\S]*mestre devolver/);
+    // o mestre devolve
+    const dv = await noGrupo(adminPrivado("mestre devolver Rin"));
+    assert(dv.some((x) => /sua bolsa[\s\S]*Não era pra ser você/.test(x.texto ?? "")));
+    assert.deepEqual((await inv()).map((x) => `${x.item_id}:${x.qtd}`), ["arma-cajado-2:1", "pocao:3"]);
+    assert.match(texto(await noGrupo(adminPrivado("mestre devolver Rin"))), /Não há nada/);
+  });
   await t("Olhos da Terra: a mestra entrega o pergaminho a quem é da terra; ler cega e dá as habilidades; admin também concede", async () => {
     await db.query("update jogo.jogadores set regiao_atual = 'R-DAI-6', local_atual = null, atributo_magico = 'Fogo (Chama)', reino = 'Homura' where id = $1", [jogador.id]);
     await enviar("falar tsuchi"); clock += 7 * 3_600_000;
