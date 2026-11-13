@@ -55,6 +55,36 @@ export const feraDe = (tipoAnimal) => FERAS[tipoAnimal] ?? null;
 /** Habilidades que a transformação soma, até o estágio atual (0 = ainda não despertou). */
 export const habilidadesDaFera = (tipoAnimal, estagio = 0) => (FERAS[tipoAnimal]?.estagios ?? []).slice(0, Math.max(0, Math.min(3, estagio))).map((e) => e.hab);
 
+// Traços que a união soma ao retrato do próprio jogador, por estágio (acumulam). O rosto, o cabelo, a pele e a roupa continuam os dele.
+const UNIAO_COMUM = [
+  { boca: "presa", olhos: "afiado" },                                  // 1º: presas e olhar de fera
+  { acessorios: ["pelagem", "pintura-crescente"] },                    // 2º: pelagem no corpo e a marca da lua no rosto
+  { acessorios: ["halo", "brasas"], olhos: "brilho", brilhoAura: true }, // 3º: aura, fagulhas e olhos acesos
+];
+const UNIAO_ANIMAL = {
+  raposa: [{ acessorios: ["orelhas-raposa"] }, {}, {}],
+  lobo: [{ acessorios: ["orelhas-lobo"] }, {}, {}],
+  tigre: [{ acessorios: ["orelhas-gato"] }, { acessorios: ["cicatriz"] }, {}],
+  corvo: [{ acessorios: ["asas-penas"] }, { acessorios: ["pena"] }, {}],
+  serpente: [{ acessorios: ["chifres-pequenos"] }, {}, { olhos: "dragao" }],
+  coelho: [{ acessorios: ["orelhas-raposa"] }, { acessorios: ["rubor"] }, {}],
+  dragao_menor: [{ acessorios: ["chifres-pequenos"] }, { acessorios: ["chifres-dragao"] }, { acessorios: ["asas-morcego", "sombra-dragao"], olhos: "dragao" }],
+};
+/**
+ * O personagem DEPOIS da união: o retrato dele com os traços da fera somados, até o estágio dado.
+ * `base` é o retrato original (guardado em avatar_dna.base no primeiro despertar), para os estágios não se acumularem errado.
+ */
+export function dnaUniao(base, tipoAnimal, estagio) {
+  const d = { ...base, acessorios: [...(base.acessorios ?? [])] };
+  for (let i = 0; i < Math.min(3, estagio); i++) for (const camada of [UNIAO_COMUM[i], UNIAO_ANIMAL[tipoAnimal]?.[i] ?? {}]) {
+    for (const a of camada.acessorios ?? []) if (!d.acessorios.includes(a)) d.acessorios.push(a);
+    for (const k of ["boca", "olhos", "brilhoAura"]) if (camada[k] !== undefined) d[k] = camada[k];
+  }
+  // chifres pequenos dão lugar aos de dragão quando eles chegam
+  if (d.acessorios.includes("chifres-dragao")) d.acessorios = d.acessorios.filter((a) => a !== "chifres-pequenos");
+  return { ...d, id: `${base.id ?? "j"}-uniao-${estagio}` };
+}
+
 /** DNA da forma animal, com as cores do próprio jogador (pelo = cor do cabelo, olhos = cor dos olhos, aura = elemento dele). */
 export function dnaFera(tipoAnimal, estagio, dnaJogador, cores) {
   const f = FERAS[tipoAnimal], e = f.estagios[estagio - 1];

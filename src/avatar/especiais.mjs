@@ -167,59 +167,62 @@ export const imagemDragao = (escala = 5) => (cacheDragao ??= desenharDragao().pn
 export const imagemGrimorioLuzes = (escala = 5) => (cacheGrimorio ??= desenharGrimorio().png(escala));
 
 /**
- * Arte da transformação mística (Meio-humano): à esquerda o personagem como ele é, à direita a forma animal com as
- * cores dele (pelo = cabelo, olhos = olhos), ligados por uma descarga de energia. 152×96.
- * estagio 1–3 muda a intensidade: mais raios, lua maior, moldura dourada e as marcas de estágio embaixo.
+ * Arte da transformação mística (Meio-humano), em três quadros: o personagem como era, a fera que ele carrega
+ * (com as cores dele) e, em destaque, o personagem DEPOIS da união. 224×96.
+ * estagio 1–3 muda a intensidade: mais raios, lua maior, anéis de energia e as marcas de estágio embaixo.
  */
-export function desenharTransformacao(dnaHumano, dnaAnimal, estagio = 1) {
-  const L = 152, A = 96, t = new Tela(L, A);
+export function desenharTransformacao(dnaHumano, dnaAnimal, estagio = 1, dnaUnido = null) {
+  const L = 224, A = 96, t = new Tela(L, A);
   const energia = CABELO[dnaHumano?.corCabelo] ?? "#b266ff", r = rng(`transf-${dnaAnimal.id}`);
   const claro = misturar(energia, "#ffffff", 0.55);
-  // fundo: noite com clarão vindo do meio
+  const X = [6, 80, 154], Y = 14, foco = X[2] + 32; // o terceiro quadro (a união) é o centro da luz
   for (let y = 0; y < A; y++) for (let x = 0; x < L; x++) {
-    const d = Math.hypot((x - 76) / 1.25, y - 48) / 62;
+    const d = Math.hypot((x - foco) / 1.5, y - 46) / 70;
     t.set(x, y, misturar(misturar(energia, "#241640", 0.5), "#07051a", Math.min(1, d * 0.95)));
   }
-  // lua atrás da fera (cresce com o estágio)
-  const lua = t.mascara().elipse(112, 44, 26 + estagio * 5, 26 + estagio * 5);
+  // lua atrás da união (cresce com o estágio)
+  const lua = t.mascara().elipse(foco, 44, 28 + estagio * 5, 28 + estagio * 5);
   for (let y = 0; y < A; y++) for (let x = 0; x < L; x++) if (lua.tem(x, y)) t.set(x, y, misturar(t.get(x, y), "#fff6d8", 0.16 + estagio * 0.07));
-  // raios saindo da costura central
-  for (let k = 0; k < 10 + estagio * 8; k++) {
-    const ang = r() * Math.PI * 2, comp = 20 + r() * (30 + estagio * 10);
-    for (let d = 6; d < comp; d++) {
-      const x = Math.round(76 + Math.cos(ang) * d * 1.3), y = Math.round(48 + Math.sin(ang) * d);
-      const f = t.get(x, y); if (f && (d + k) % 2 === 0) t.set(x, y, misturar(f, k % 3 ? claro : "#ffffff", 0.75 - d / 130));
+  // raios saindo de trás da união
+  for (let k = 0; k < 14 + estagio * 10; k++) {
+    const ang = r() * Math.PI * 2, comp = 30 + r() * (40 + estagio * 14);
+    for (let d = 8; d < comp; d++) {
+      const x = Math.round(foco + Math.cos(ang) * d * 1.4), y = Math.round(46 + Math.sin(ang) * d);
+      const f = t.get(x, y); if (f && (d + k) % 2 === 0) t.set(x, y, misturar(f, k % 3 ? claro : "#ffffff", 0.75 - d / 150));
     }
   }
-  // anéis de energia em volta da fera (um por estágio)
+  // anéis de energia (um por estágio)
   for (let k = 1; k <= estagio; k++) {
-    const anel = t.mascara().elipse(114, 46, 36 + k * 7, 34 + k * 6);
-    anel.apagar(t.mascara().elipse(114, 46, 35 + k * 7, 33 + k * 6));
+    const anel = t.mascara().elipse(foco, 46, 38 + k * 7, 36 + k * 6);
+    anel.apagar(t.mascara().elipse(foco, 46, 37 + k * 7, 35 + k * 6));
     for (let y = 0; y < A; y++) for (let x = 0; x < L; x++) if (anel.tem(x, y) && (x + y) % 2 === 0) t.set(x, y, misturar(t.get(x, y), claro, 0.7));
   }
-  // estrelas / fagulhas
-  for (let i = 0; i < 60; i++) { const x = Math.floor(r() * L), y = Math.floor(r() * A); t.set(x, y, r() < 0.3 ? "#ffffff" : claro); }
-  // os dois retratos
+  for (let i = 0; i < 90; i++) { const x = Math.floor(r() * L), y = Math.floor(r() * A); t.set(x, y, r() < 0.3 ? "#ffffff" : claro); }
+  // os três retratos
   const copiar = (origem, ox, oy) => { for (let y = 0; y < 64; y++) for (let x = 0; x < 64; x++) { const c = origem.get(x, y); if (c) t.set(ox + x, oy + y, c); } };
-  copiar(montar(dnaHumano), 6, 14);
-  copiar(montar(dnaAnimal), 82, 14);
-  // molduras: a do jogador sóbria, a da fera na cor da energia (dourada no estágio 3)
+  copiar(montar(dnaHumano), X[0], Y);
+  copiar(montar(dnaAnimal), X[1], Y);
+  copiar(montar(dnaUnido ?? dnaHumano), X[2], Y);
   const moldura = (ox, oy, cor, esp) => { const m = t.mascara().retangulo(ox - esp, oy - esp, ox + 63 + esp, oy + 63 + esp); m.apagar(t.mascara().retangulo(ox, oy, ox + 63, oy + 63)); t.carimbar(m, rampa(cor), { sombra: 1 }); };
-  moldura(6, 14, "#5a5470", 2);
-  moldura(82, 14, estagio >= 3 ? "#f0c040" : energia, estagio >= 2 ? 3 : 2);
-  // costura: relâmpago em ziguezague do peito do jogador até a fera
-  let x = 70, y = 8;
+  moldura(X[0], Y, "#5a5470", 2);
+  moldura(X[1], Y, energia, 2);
+  moldura(X[2], Y, "#f0c040", 3 + (estagio >= 3 ? 1 : 0)); // a união é sempre a moldura dourada, mais grossa no 3º despertar
+  // entre o 1º e o 2º quadro: o relâmpago (o sangue desperta). Entre o 2º e o 3º: dois fios que se trançam (a união).
+  let x = 73, y = 8;
   const raio = t.mascara();
-  while (y < 88) { const nx = 72 + (r() - 0.5) * 12, ny = y + 5 + r() * 5; raio.linha(x, y, nx, ny, 2); x = nx; y = ny; }
+  while (y < 88) { const nx = 75 + (r() - 0.5) * 8, ny = y + 5 + r() * 5; raio.linha(x, y, nx, ny, 2); x = nx; y = ny; }
   t.carimbar(raio, ["#1a1030", energia, claro, "#ffffff"], { sombra: 1 });
-  // faíscas indo de um retrato para o outro
-  for (let i = 0; i < 26 + estagio * 10; i++) { const fx = 66 + r() * 20, fy = 12 + r() * 70; t.set(Math.round(fx), Math.round(fy), i % 2 ? claro : "#ffffff"); }
-  // marcas do estágio (1 a 3 losangos) embaixo, no centro
+  for (let yy = 14; yy < 78; yy++) {
+    const a = Math.sin(yy / 5) * 3, b = -a;
+    t.set(Math.round(148 + a), yy, "#ffffff"); t.set(Math.round(148 + b), yy, claro);
+    if (yy % 2 === 0) { t.set(Math.round(148 + a) + 1, yy, claro); t.set(Math.round(148 + b) - 1, yy, energia); }
+  }
+  // marcas do estágio (1 a 3 losangos) embaixo do quadro da união
   for (let k = 0; k < 3; k++) {
-    const cx = 76 + (k - 1) * 9, cy = 88;
+    const cx = foco + (k - 1) * 9, cy = 88;
     const lz = t.mascara().poligono([[cx, cy - 4], [cx + 4, cy], [cx, cy + 4], [cx - 4, cy]]);
     t.carimbar(lz, k < estagio ? ["#3a2606", "#b07a1e", "#f0c040", "#fff1a8"] : ["#15121f", "#2a2638", "#3a3550", "#4a4566"], { sombra: 1 });
   }
   return t;
 }
-export const imagemTransformacao = (dnaHumano, dnaAnimal, estagio, escala = 5) => desenharTransformacao(dnaHumano, dnaAnimal, estagio).png(escala);
+export const imagemTransformacao = (dnaHumano, dnaAnimal, estagio, dnaUnido = null, escala = 4) => desenharTransformacao(dnaHumano, dnaAnimal, estagio, dnaUnido).png(escala);

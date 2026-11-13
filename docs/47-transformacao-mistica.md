@@ -1,7 +1,7 @@
 # 47 — Transformação mística dos Meio-humanos
 
 Código: `src/regras/fera.mjs` (dados e regras), `src/servidor/fera.mjs` (comandos), arte em `src/avatar/especiais.mjs` (`desenharTransformacao`).
-Exemplos da arte: `docs/img/fera-raposa-3.png`, `docs/img/fera-lobo-2.png`.
+Exemplos da arte: `docs/img/fera-raposa-3.png`, `docs/img/fera-lobo-2.png`, `docs/img/fera-dragao-3.png`.
 
 ## 47.1 Planejamento
 
@@ -49,6 +49,19 @@ Exemplos da arte: `docs/img/fera-raposa-3.png`, `docs/img/fera-lobo-2.png`.
 | dragão menor | 1 | Filhote de Dragão | **Sopro Menor** | golpe de força 1,5 e queimadura por 3 rodadas | 12 | 3 |
 |  | 2 | Dragão Alado | **Escamas** | corta 70% do dano por 2 rodadas | 14 | 5 |
 |  | 3 | Ryūjin, o Dragão Menor Desperto | **Voo Rasante** | golpe de força 2,5 que atravessa 30% da defesa | 28 | 5 |
+
+## 47.3b O personagem depois da união
+
+A arte tem **três quadros**: o personagem como era, a fera (com as cores dele) e, em destaque na moldura dourada, **o personagem depois da união**.
+Essa terceira imagem passa a ser a aparência dele de verdade: a `ficha` e a carta mostram o retrato novo a partir do despertar.
+
+| Estágio | O que o retrato ganha (todos os animais) | Por animal |
+|:---:|------------------------------------------|------------|
+| 1 | Presas e olhar de fera | Orelhas ou traço do animal (raposa, lobo, tigre; penas para o corvo; chifres pequenos para serpente e dragão) |
+| 2 | Pelagem no corpo e a marca da lua no rosto | Tigre: cicatriz · Corvo: pena · Coelho: rubor · Dragão: chifres de dragão |
+| 3 | Aura, fagulhas e olhos acesos | Serpente: olhos de dragão · Dragão: asas e sombra de dragão |
+
+Rosto, cabelo, cor do cabelo, cor dos olhos, pele e roupa **não mudam**: continua sendo o mesmo personagem. O retrato original fica guardado, e o que ele ganhar por outros caminhos (como a venda dos Olhos da Terra) é mantido.
 
 ## 47.4 Limites conhecidos
 

@@ -919,11 +919,20 @@ export async function testarMundoServidor({ db, jogador, outro, mensagem, grupo,
     const nFogo = luta.match(/\*(\d+)\* Fogo-Fátuo/)[1];
     assert.match(texto(await enviar(nFogo)), /Fogo-Fátuo|Vitória|passa/);
     await db.query("update jogo.batalhas set status = 'encerrada' where status <> 'encerrada'");
+    // depois da união, a ficha mostra o personagem com os traços da fera; o retrato original fica guardado
+    const unido = (await atual()).avatar_dna;
+    assert(unido.base && !unido.base.acessorios.includes("halo"), "o retrato original fica guardado, sem os traços da fera");
+    for (const tr of ["orelhas-raposa", "pelagem", "pintura-crescente", "halo", "brasas"]) assert(unido.acessorios.includes(tr), `a união soma ${tr}`);
+    assert.equal(unido.boca, "presa"); assert.equal(unido.olhos, "brilho"); assert.equal(unido.brilhoAura, true);
+    for (const k of ["cabelo", "corCabelo", "corOlhos", "pele", "rosto", "roupa"]) assert.equal(unido[k], unido.base[k], `a união não muda ${k}`);
+    assert.equal(F.dnaUniao(unido.base, "raposa", 1).acessorios.includes("halo"), false, "no 1º despertar ainda não há aura");
+    const fichaDepois = (await enviar("ficha")).at(-1);
+    assert(fichaDepois.imagem?.length > 1000, "a ficha sai com o retrato novo");
     // a forma animal usa as cores do próprio jogador
-    const dna = (await atual()).avatar_dna, { CABELO } = await import("../src/avatar/paletas.mjs");
+    const dna = unido.base, { CABELO } = await import("../src/avatar/paletas.mjs");
     const animal = F.dnaFera("raposa", 3, dna, { cabelo: CABELO });
     assert.equal(animal.cor, CABELO[dna.corCabelo]); assert.equal(animal.corOlhos, dna.corOlhos); assert.equal(animal.caudas, 9);
-    await db.query("update jogo.jogadores set classe = 'Mago', tipo_animal = null where id = $1", [jogador.id]);
+    await db.query("update jogo.jogadores set classe = 'Mago', tipo_animal = null, avatar_dna = $2 where id = $1", [jogador.id, JSON.stringify(unido.base)]);
     await db.query("delete from jogo.progresso where chave = 'fera'");
   });
   await t("Olhos da Terra: a mestra entrega o pergaminho a quem é da terra; ler cega e dá as habilidades; admin também concede", async () => {

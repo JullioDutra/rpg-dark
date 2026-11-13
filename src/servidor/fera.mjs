@@ -1,6 +1,6 @@
 // Transformação mística dos Meio-humanos no jogo: despertar (por relíquia achada ou pelo mestre), ver a própria forma,
 // e o anúncio com a arte no grupo. As habilidades de cada estágio entram no menu das lutas (ver regras/fera.mjs).
-import { FERAS, feraDe, habilidadesDaFera, dnaFera, NIVEL_ESTAGIO, CHANCE_RELIQUIA } from "../regras/fera.mjs";
+import { FERAS, feraDe, habilidadesDaFera, dnaFera, dnaUniao, NIVEL_ESTAGIO, CHANCE_RELIQUIA } from "../regras/fera.mjs";
 import { imagemTransformacao } from "../avatar/especiais.mjs";
 import { CABELO } from "../avatar/paletas.mjs";
 import { rodape } from "./textos.mjs";
@@ -11,7 +11,9 @@ const ORDINAL = ["primeiro", "segundo", "terceiro"];
 
 export function criarFera({ db, rng, agora }) {
   const estagioDe = async (jogadorId) => Number((await um(db, "select valor from jogo.progresso where jogador_id = $1 and chave = 'fera'", [jogadorId]))?.valor?.estagio ?? 0);
-  const arte = (j, estagio) => imagemTransformacao(j.avatar_dna, dnaFera(j.tipo_animal, estagio, j.avatar_dna, { cabelo: CABELO }), estagio);
+  // o retrato original fica guardado em avatar_dna.base no primeiro despertar; a aparência atual é sempre recalculada a partir dele
+  const baseDe = (j) => { const { base, ...atual } = j.avatar_dna ?? {}; return base ?? atual; };
+  const arte = (j, estagio) => { const base = baseDe(j); return imagemTransformacao(base, dnaFera(j.tipo_animal, estagio, base, { cabelo: CABELO }), estagio, dnaUniao(base, j.tipo_animal, estagio)); };
   const linhaHab = (h, temMana) => `*${h.nome}* — ${h.resumo}${temMana && h.mp ? ` _(${h.mp} de mana)_` : ""}`;
 
   /** Sobe um estágio. forcar = veio do mestre (ignora o nível mínimo). Devolve as saídas (privado + grupo) ou uma recusa em texto. */
@@ -25,13 +27,22 @@ export function criarFera({ db, rng, agora }) {
     await db.query(`insert into jogo.progresso (jogador_id, chave, valor, criado_em) values ($1, 'fera', $2, $3) on conflict (jogador_id, chave) do update set valor = excluded.valor`, [j.id, JSON.stringify({ estagio: novo }), new Date(agora())]);
     const mundo = await um(db, "select grupo_wa_id from jogo.mundos where id = $1", [j.mundo_id]);
     await db.query("insert into jogo.feitos (mundo_id, jogador_id, tipo, texto, criado_em) values ($1, $2, 'fera', $3, $4)", [j.mundo_id, j.id, `${j.nome} despertou a fera: ${e.nome}.`, new Date(agora())]);
+    // a união muda a aparência do personagem de verdade: a ficha passa a mostrar o retrato com os traços da fera
+    if (j.avatar_dna) {
+      // o que o personagem ganhou por outros caminhos depois do último despertar (ex.: a venda dos Olhos da Terra) passa a fazer parte do retrato de base
+      const b0 = baseDe(j), jaDaUniao = atual ? dnaUniao(b0, j.tipo_animal, atual).acessorios : (b0.acessorios ?? []);
+      const base = { ...b0, acessorios: [...(b0.acessorios ?? []), ...(j.avatar_dna.acessorios ?? []).filter((x) => !jaDaUniao.includes(x) && !(b0.acessorios ?? []).includes(x))] };
+      const unido = { ...dnaUniao(base, j.tipo_animal, novo), id: base.id, base };
+      await db.query("update jogo.jogadores set avatar_dna = $2 where id = $1", [j.id, JSON.stringify(unido)]);
+      j = { ...j, avatar_dna: unido };
+    }
     const img = j.avatar_dna ? arte(j, novo) : null;
     const privado = `${novo === 1 ? "Começa como uma coceira atrás dos olhos. Depois os sons ficam altos demais, os cheiros nítidos demais, e você entende que não está ficando doente: está ficando *inteiro*." : novo === 2 ? "Desta vez não dói. O corpo já conhece o caminho, e vai mais longe do que da primeira vez." : "Não há mais fronteira entre você e o que você carrega. Nunca houve: você só não sabia olhar."}\n\n` +
       `*${e.nome}* — ${ORDINAL[novo - 1]} despertar da ${f.ser} que corre no seu sangue.\n\n*Nova habilidade:* ${linhaHab(e.hab, j.mp_max > 0)}\n_${e.hab.frase}_\n\n` +
-      rodape("ela se soma às que você já tem", "aparece no menu de todas as suas lutas", novo < 3 ? `próximo despertar: nível ${NIVEL_ESTAGIO[novo]} e outra relíquia` : "esta é a forma final", "fera mostra a sua forma");
+      rodape("o terceiro quadro é você agora: a sua ficha passa a mostrar essa aparência", "a habilidade se soma às que você já tem", "aparece no menu de todas as suas lutas", novo < 3 ? `próximo despertar: nível ${NIVEL_ESTAGIO[novo]} e outra relíquia` : "esta é a forma final", "fera mostra a sua forma");
     const legenda = `${"⭐".repeat(novo)} *${novo === 3 ? "A FERA ANCESTRAL DESPERTOU" : novo === 2 ? "O SANGUE ANTIGO RESPONDE" : "UMA FERA ACORDOU"}*\n\n` +
       `${novo === 3 ? "O céu muda de cor por um instante, e todo animal do continente levanta a cabeça ao mesmo tempo." : novo === 2 ? "A lua parece mais perto esta noite." : "Em algum lugar, um coração bateu duas vezes ao mesmo tempo."}\n\n` +
-      `*${j.nome}* despertou a ${f.ser} que carrega no sangue e agora é *${e.nome}*.\n\n_À esquerda, quem ${j.avatar_dna?.feminino ? "ela" : "ele"} é. À direita, o que sempre esteve lá dentro._`;
+      `*${j.nome}* despertou a ${f.ser} que carrega no sangue e agora é *${e.nome}*.\n\n_À esquerda, quem ${j.avatar_dna?.feminino ? "ela" : "ele"} era. No meio, o que sempre esteve lá dentro. À direita, quem ${j.avatar_dna?.feminino ? "ela" : "ele"} é agora._`;
     return { estagio: novo, saidas: [
       img ? { para, imagem: img, legenda: privado } : { para, texto: privado },
       ...(mundo?.grupo_wa_id ? [img ? { para: mundo.grupo_wa_id, imagem: img, legenda } : { para: mundo.grupo_wa_id, texto: legenda }] : []),
