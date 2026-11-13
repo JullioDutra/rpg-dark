@@ -16,12 +16,12 @@ import { criarCombate } from "./combate.mjs";
 import { criarMundo } from "./mundo.mjs";
 import { criarItens } from "./itens.mjs";
 import { criarExtras } from "./extras.mjs";
-import { PRESSAO, textoPressao } from "../regras/combate.mjs";
+import { PRESSAO, textoPressao, atributosEfetivos } from "../regras/combate.mjs";
 import { criarSocial } from "./social.mjs";
 import { criarMestre } from "./mestre.mjs";
 import { criarAmeacas } from "./ameacas.mjs";
 import { criarGrimorios } from "./grimorios.mjs";
-import { kitInicial } from "../regras/itens.mjs";
+import { kitInicial, bonusEquip, item as itemDe } from "../regras/itens.mjs";
 import { XP_PROXIMO } from "../../scripts/balanceamento.mjs";
 import { comandoExploracao, recuperarVigor, buscarRegioes } from "../regras/exploracao.mjs";
 import { textoOrigem, textoRegiao, textoReino, textoPrimeirosPassos, rodape, NOME_CASTA, ambiente } from "./textos.mjs";
@@ -213,11 +213,18 @@ export function criarJogo({ relogio = null, db, sal = process.env.TELEFONE_SAL ?
     ];
   }
 
+  /** Ficha com o equipamento somado: a carta e a legenda mostram os atributos que realmente valem nas lutas. */
+  async function fichaCompleta(j, para) {
+    const inv = await db.query("select item_id, equipado from jogo.inventario where jogador_id = $1 and equipado", [j.id]);
+    const bonus = bonusEquip(inv), efetivos = atributosEfetivos(j, agora(), bonus);
+    return { para, imagem: cartaPersonagem({ ...j, atributos: efetivos }, j.avatar_dna), legenda: legendaFicha(j, agora(), { bonus, itens: inv.map((l) => itemDe(l.item_id)?.nome ?? l.item_id) }) };
+  }
+
   async function ficha(msg, mundo, destino) {
     const idt = await identidade(msg.autor);
     const j = await um(db, "select * from jogo.jogadores where mundo_id = $1 and identidade_id = $2 and estado <> 'criando'", [mundo.id, idt.id]);
     if (!j) return [{ para: destino, texto: "Você ainda não tem personagem neste mundo. Digite *entrar no mundo* no grupo." }];
-    return [{ para: destino, imagem: cartaPersonagem(j, j.avatar_dna), legenda: legendaFicha(j, agora()) }];
+    return [await fichaCompleta(j, destino)];
   }
 
   // ───────────────────────────── privado ─────────────────────────────
@@ -348,7 +355,7 @@ export function criarJogo({ relogio = null, db, sal = process.env.TELEFONE_SAL ?
       return [...e.saidas, ...chegou, { para, texto: textoRegiao(j.regiao_atual) ?? "Não consegui achar sua região." }];
     if (ehComando(t, "aldeia", "minha aldeia", "casa", "minha casa", "origem")) return [...e.saidas, ...chegou, { para, texto: textoOrigem(j, aldeiaDe(j)) }];
     if (ehComando(t, "reino", "meu reino")) return [...e.saidas, ...chegou, { para, texto: textoReino(j.reino) ?? "Reino desconhecido." }];
-    if (ehComando(t, "ficha", "carta", "minha ficha", "minha carta", "status")) return [...e.saidas, ...chegou, { para, imagem: cartaPersonagem(j, j.avatar_dna), legenda: legendaFicha(j, agora()) }];
+    if (ehComando(t, "ficha", "carta", "minha ficha", "minha carta", "status")) return [...e.saidas, ...chegou, await fichaCompleta(j, para)];
     if (ehComando(t, "ajuda", "comandos", "menu", "oi", "ola")) return [...e.saidas, ...chegou, { para, texto: AJUDA }];
     if (ehComando(t, "dado", "dados", "d20", "como funciona o dado", "guia do dado")) return [...e.saidas, ...chegou, ...guiaDado(para)];
     if (chegou.length) return [...e.saidas, ...chegou];
@@ -516,14 +523,20 @@ export function criarJogo({ relogio = null, db, sal = process.env.TELEFONE_SAL ?
   };
 }
 
-export function legendaFicha(j, tempo = Date.now()) {
-  const a = j.atributos ?? {};
+/**
+ * Legenda da ficha. Com `equip` ({ bonus, itens }), os atributos aparecem já com o equipamento somado
+ * (é o valor que vale nas lutas) e, entre parênteses, quanto veio dos itens.
+ */
+export function legendaFicha(j, tempo = Date.now(), equip = null) {
+  const a = j.atributos ?? {}, b = equip?.bonus ?? {};
+  const linha = ["FOR", "DEF", "MAG", "RES", "VEL", "SOR"].map((k) => `${k} ${(a[k] ?? 0) + (b[k] ?? 0)}${b[k] ? ` _(+${b[k]})_` : ""}`).join(" · ");
   return `*${j.nome}* — ${j.classe ?? "?"}, nível ${j.nivel} · rank ${j.rank}\n` +
     `${NOME_CASTA[j.casta] ?? ""} de ${j.aldeia ?? "?"} · ${j.atributo_magico ?? "?"}${j.elegivel_pet ? " · elegível a pet" : ""}\n\n` +
     `Vida ${j.hp}/${j.hp_max} · Mana ${j.mp}/${j.mp_max} · Vigor ${recuperarVigor(j, tempo).vigor}\n` +
-    `FOR ${a.FOR} · DEF ${a.DEF} · MAG ${a.MAG} · RES ${a.RES} · VEL ${a.VEL} · SOR ${a.SOR}\n` +
+    `${linha}\n` +
+    (equip?.itens?.length ? `_Equipado: ${equip.itens.join(" · ")}_\n` : equip ? "_Nada equipado. Veja *itens* e use *equipar <nº>*._\n" : "") +
     rodape(`XP ${j.xp}/${XP_PROXIMO(j.nivel)}`, j.ryo != null ? `${j.ryo} ryō` : null, j.pontos_livres ? `${j.pontos_livres} pontos livres` : null,
-      Number(j.corrupcao) ? `corrupção ${j.corrupcao}/100` : null, j.titulo ? j.titulo : null);
+      Number(j.corrupcao) ? `corrupção ${j.corrupcao}/100` : null, j.titulo ? j.titulo : null, Object.keys(b).length ? "(+n) vem do equipamento e já vale nas lutas" : null);
 }
 
 let GUIA_DADO = null;

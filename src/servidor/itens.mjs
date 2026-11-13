@@ -27,6 +27,12 @@ export function criarItens({ db, agora }) {
   };
   const temDescanso = (j) => MUNDO[j.regiao_atual]?.locais.some((l) => l.servicos?.includes("descanso"));
 
+  /** Atributos como ficam agora, com tudo que está equipado (é o que vale nas lutas e o que a ficha mostra). */
+  const totais = async (j) => {
+    const b = bonusEquip(await db.query("select item_id, equipado from jogo.inventario where jogador_id = $1 and equipado", [j.id])), a = j.atributos ?? {};
+    return `*Seus atributos agora*\n${["FOR", "DEF", "MAG", "RES", "VEL", "SOR"].map((k) => `${k} ${(a[k] ?? 0) + (b[k] ?? 0)}${b[k] ? ` _(+${b[k]})_` : ""}`).join(" · ")}\n${rodape("já vale nas lutas", "ficha mostra tudo")}`;
+  };
+
   return async function comando(j, t, para) {
     const dizer = (texto) => ({ tratado: true, saidas: [{ para, texto }] });
     let m;
@@ -60,14 +66,14 @@ export function criarItens({ db, agora }) {
           await q("commit");
         } catch (e) { await q("rollback"); throw e; }
       });
-      return dizer(`Você equipa *${it.nome}*.\n${rodape(efeitoItem(it), `ocupa: ${SLOT[it.slot]}`)}`);
+      return dizer(`Você equipa *${it.nome}*.\n${rodape(efeitoItem(it), `ocupa: ${SLOT[it.slot]}`)}\n\n${await totais(j)}`);
     }
     if ((m = t.match(/^(desequipar|guardar|tirar)\s+(.+)$/))) {
       const linhas = (await bolsa(j)).filter((x) => x.equipado);
       const l = achar(linhas, m[2], (x) => item(x.item_id)?.nome ?? x.item_id);
       if (!l) return dizer("Isso não está equipado.");
       await db.query("update jogo.inventario set equipado = false where jogador_id = $1 and item_id = $2", [j.id, l.item_id]);
-      return dizer(`Você guarda *${item(l.item_id).nome}* na bolsa.`);
+      return dizer(`Você guarda *${item(l.item_id).nome}* na bolsa.\n\n${await totais(j)}`);
     }
 
     if ((m = t.match(/^(usar|beber|comer|ler)\s+(.+)$/))) {

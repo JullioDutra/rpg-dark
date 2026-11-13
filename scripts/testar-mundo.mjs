@@ -681,6 +681,27 @@ export async function testarMundoServidor({ db, jogador, outro, mensagem, grupo,
     assert.match(texto(await noGrupo(outroPrivado("revigorar"))), /Só um Mago/);
     await db.query("update jogo.jogadores set classe = $2 where id = $1", [outro.id, classeRin]);
   });
+  await t("equipamento: o bônus aparece na ficha, na mensagem de equipar e é o mesmo número que vale dentro da luta", async () => {
+    await db.query("update jogo.batalhas set status = 'encerrada' where status <> 'encerrada'"); await db.query("delete from jogo.exploracoes where pendente"); await db.query("delete from jogo.ameacas");
+    await db.query("delete from jogo.inventario where jogador_id = $1", [jogador.id]);
+    await db.query(`update jogo.jogadores set classe = 'Mago', nivel = 20, hp = hp_max, atributos = '{"FOR":10,"DEF":12,"MAG":40,"RES":20,"VEL":15,"SOR":6}', regiao_atual = 'R-HOM-3', local_atual = null where id = $1`, [jogador.id]);
+    await db.query(`insert into jogo.inventario (jogador_id, item_id, tipo, qtd, dados) values ($1, 'arma-cajado-3', 'equipamento', 1, '{}'), ($1, 'ace-sabio', 'equipamento', 1, '{}')`, [jogador.id]);
+    assert.match((await enviar("ficha")).at(-1).legenda, /MAG 40 ·[\s\S]*Nada equipado/);
+    const eq = texto(await enviar("equipar cajado"));
+    assert.match(eq, /Você equipa \*Cajado de aço\*[\s\S]*Seus atributos agora[\s\S]*MAG 52 _\(\+12\)_[\s\S]*já vale nas lutas/);
+    await enviar("equipar anel do sabio");
+    const f = (await enviar("ficha")).at(-1);
+    assert.match(f.legenda, /FOR 16 _\(\+6\)_ · DEF 12 · MAG 56 _\(\+16\)_ · RES 24 _\(\+4\)_[\s\S]*Equipado: [\s\S]*Cajado de aço[\s\S]*Anel do sábio/);
+    assert(f.imagem?.length > 1000);
+    // dentro da luta, os atributos são exatamente os da ficha
+    await db.query(`insert into jogo.exploracoes (jogador_id, mensagem_id, regiao, tipo, dados, pendente, criada_em) values ($1, $2, 'R-HOM-3', 'encontro', $3, true, $4)`,
+      [jogador.id, `eq:${clock}`, JSON.stringify({ inimigo: { id: "V001", nome: "x", nivel: 20 }, lacaio: true }), new Date(clock)]);
+    await enviar("lutar");
+    const at = (await db.query("select estado from jogo.batalhas where status <> 'encerrada'"))[0].estado.jogador.at;
+    assert.equal(at.MAG, 56); assert.equal(at.FOR, 16); assert.equal(at.RES, 24);
+    await db.query("update jogo.batalhas set status = 'encerrada' where status <> 'encerrada'");
+    assert.match(texto(await enviar("guardar cajado")), /guarda[\s\S]*MAG 44 _\(\+4\)_/);
+  });
   await t("Olhos da Terra: a mestra entrega o pergaminho a quem é da terra; ler cega e dá as habilidades; admin também concede", async () => {
     await db.query("update jogo.jogadores set regiao_atual = 'R-DAI-6', local_atual = null, atributo_magico = 'Fogo (Chama)', reino = 'Homura' where id = $1", [jogador.id]);
     await enviar("falar tsuchi"); clock += 7 * 3_600_000;
