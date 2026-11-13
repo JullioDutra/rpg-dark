@@ -2,7 +2,8 @@
 // ranking do mundo e presentes entre jogadores. Tudo aqui dá ryō, mérito e um pouco de XP; nada dá atributo,
 // nada pula capítulo. Os sonhos sempre apontam de volta para o próximo passo da história.
 import { MUNDO } from "../mundo/mundo.mjs";
-import { aplicarXP } from "../regras/combate.mjs";
+import { aplicarXP, REVIGORAR } from "../regras/combate.mjs";
+import { recuperarVigor } from "../regras/exploracao.mjs";
 import { item } from "../regras/itens.mjs";
 import { XP_PROXIMO } from "../../scripts/balanceamento.mjs";
 import { rodape } from "./textos.mjs";
@@ -189,7 +190,36 @@ export function criarSocial({ db, rng, agora }) {
     return dizer(texto);
   }
 
+  // ── Revigorar: habilidade de campo do Mago (fora de luta) ──
+  async function revigorar(j, para) {
+    if (j.classe !== REVIGORAR.classe) return [{ para, texto: `Só um ${REVIGORAR.classe} sabe transformar mana em fôlego. Se houver um por perto, peça a ele.` }];
+    if (j.nivel < REVIGORAR.nivel) return [{ para, texto: `Você ainda não domina isso. O *Sopro de Mana* se aprende no nível ${REVIGORAR.nivel}.` }];
+    if ((await db.query("select 1 from jogo.batalhas b join jogo.participantes_batalha p on p.batalha_id = b.id where p.jogador_id = $1 and b.status <> 'encerrada' limit 1", [j.id])).length)
+      return [{ para, texto: "No meio de uma luta não dá para se concentrar nisso." }];
+    const custo = Math.ceil(j.mp_max * REVIGORAR.custoMana);
+    if (j.mp < custo) return [{ para, texto: `O Sopro de Mana consome quase tudo: ${custo} de mana (90% do seu máximo). Você tem ${j.mp}.\n${rodape("a mana volta com o tempo, com descanso ou com poção")}` }];
+    const perto = await db.query(`select x.*, i.wa_jid, i.wa_lid from jogo.jogadores x join jogo.identidades i on i.id = x.identidade_id
+      where x.mundo_id = $1 and x.estado = 'ativo' and x.regiao_atual = $2 order by (x.id = $3) desc, x.id`, [j.mundo_id, j.regiao_atual, j.id]);
+    const tempo = agora(), linhas = [];
+    let alguemGanhou = false;
+    const ganhos = perto.map((x) => { const v = recuperarVigor(x, tempo), novo = Math.min(100, v.vigor + REVIGORAR.vigor); return { x, antes: v.vigor, novo }; });
+    if (!ganhos.some((g) => g.novo > g.antes)) return [{ para, texto: "Ninguém por aqui está cansado. Guarde a mana para quando fizer falta." }];
+    await db.query("update jogo.jogadores set mp = mp - $2 where id = $1 and mp >= $2", [j.id, custo]);
+    const saidas = [];
+    for (const { x, antes, novo } of ganhos) {
+      if (novo <= antes) continue;
+      alguemGanhou = true;
+      await db.query("update jogo.jogadores set vigor = $2, vigor_em = $3 where id = $1", [x.id, novo, new Date(tempo)]);
+      linhas.push(`${String(x.id) === String(j.id) ? "você" : x.nome}: vigor ${antes} → ${novo}`);
+      const pv = x.wa_jid ?? x.wa_lid;
+      if (String(x.id) !== String(j.id) && pv) saidas.push({ para: pv, texto: `Um vento morno passa por você, vindo de *${j.nome}*. As pernas param de pesar.\n${rodape(`vigor ${antes} → ${novo}`)}` });
+    }
+    saidas.unshift({ para, texto: `Você fecha os olhos e solta a mana de uma vez, como quem sopra uma brasa. O ar em volta fica leve.\n\n*Sopro de Mana*\n${linhas.join("\n")}\n${rodape(`−${custo} de mana`, alguemGanhou && ganhos.length > 1 ? "vale para todos os jogadores na mesma região" : null)}` });
+    return saidas;
+  }
+
   async function comando(j, t, para) {
+    if (/^(revigorar|sopro de mana|sopro|restaurar vigor|recuperar vigor|dar vigor)$/.test(t)) return { tratado: true, saidas: await revigorar(j, para) };
     if (/^(contratos?|guilda|quadro|quadro da guilda|missoes da guilda|contratos da guilda)$/.test(t)) return { tratado: true, saidas: await quadro(j, para) };
     if (/^(ranking|rank|placar|classificacao)$/.test(t)) return { tratado: true, saidas: await ranking(j.mundo_id, para) };
     return { tratado: false, saidas: [] };

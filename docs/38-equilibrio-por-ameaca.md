@@ -100,3 +100,23 @@ node scripts/render-guia-dado.mjs
 ```bash
 npm run testar
 ```
+
+## 38.6 Revisão das passivas e o Sopro de Mana
+
+**Passivas conferidas uma a uma** (teste `passivas: cada uma das 9 classes…` em `scripts/testar-combate.mjs`, que compara a mesma ficha trocando só a classe):
+
+| Classe | Passiva | Situação |
+|--------|---------|----------|
+| Mago | −40% de dano enquanto tiver mana | Funciona (sem mana, o dano volta ao normal) |
+| Bruxo | −18% de dano; inimigo enfraquecido bate 35% menos (em vez de 25%) | Funciona |
+| Demônio | −42% de dano | Funciona |
+| Espadachim | Inimigo rola com −4; −26% de dano | Funciona |
+| Meio-humano | Inimigo rola com −1; +1 no próprio dado com a vida abaixo da metade | Funciona |
+| Força da Natureza | +3% de vida por rodada | Funciona |
+| Anti-magia | −30% de dano de magia | Funciona (contra golpe físico não reduz, como diz o texto) |
+| Cavaleiro | Defender bloqueia 10% a mais | Funciona |
+| Paladino | Curas e proteções +25%; −12% de dano | **Corrigido:** a cura do Golpe Sagrado não recebia os +25% |
+
+**Onde as passivas valem:** batalhas (inclusive em conjunto) e duelos (as de redução pela metade, doc 42). **Corrigido:** nas lutas contra monstros e Calamidades (`golpear`) nenhuma passiva valia; agora valem (a do Anti-magia não entra, porque esses monstros batem com o corpo).
+
+**Sopro de Mana (Mago, nível 5, fora de luta):** `revigorar` gasta 90% da mana máxima e devolve 40 de vigor ao Mago e a todos os jogadores na mesma região (até o teto de 100). Os outros são avisados no privado. Não funciona no meio de uma luta, e nada é gasto se ninguém por perto estiver cansado. Aparece em `habilidades`.

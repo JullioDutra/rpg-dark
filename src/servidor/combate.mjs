@@ -3,7 +3,7 @@
 // Devolve também `eventos` (vilão derrotado, derrota, nível…) para o mundo vivo anunciar no grupo e avançar a história.
 import { readFileSync } from "node:fs";
 import { semAcento } from "../linguagem/normalizar.mjs";
-import { novoCombate, resolverRodada, painel, textoMenu, escolher, recompensa, aplicarXP, atributoPrincipal, HABILIDADES, CLASSES, KITS, proximaHabilidade, SISMICO, PASSIVAS, nivelDeLuta, multAlcance } from "../regras/combate.mjs";
+import { novoCombate, resolverRodada, painel, textoMenu, escolher, recompensa, aplicarXP, atributoPrincipal, HABILIDADES, CLASSES, KITS, proximaHabilidade, SISMICO, PASSIVAS, nivelDeLuta, multAlcance, REVIGORAR } from "../regras/combate.mjs";
 import { REGIAO, MATERIAIS } from "../regras/exploracao.mjs";
 import { COVIL } from "../mundo/mundo.mjs";
 import { magiasDeBatalha } from "../regras/grimorios.mjs";
@@ -349,6 +349,9 @@ export function textoHabilidades(j, terra = false) {
   const prox = proximaHabilidade(j.classe, j.nivel);
   const pas = PASSIVAS[j.classe];
   if (pas) linhas.unshift(`*${pas.nome}* (sempre ativa) — ${pas.texto}`, "");
+  if (j.classe === REVIGORAR.classe) linhas.push("", j.nivel >= REVIGORAR.nivel
+    ? `*Sopro de Mana* (fora de luta: *revigorar*) — gasta 90% da sua mana e devolve ${REVIGORAR.vigor} de vigor a você e a todos os jogadores na mesma região`
+    : `_Sopro de Mana — aprende no nível ${REVIGORAR.nivel}_`);
   if (terra) linhas.push("", "*Olhos da Terra*", ...SISMICO.map((h) => `*${h.nome}* — ${h.resumo}`), "_+2 no dado ao defender · −2 no dado contra espíritos e deuses (não tocam o chão)_");
   return `*Habilidades de ${j.classe}*\n\n${linhas.join("\n")}\n\n${rodape("além disso: atacar, defender" + (j.mp_max > 0 ? ", magia do seu elemento" : ""), prox ? `próxima no nível ${prox.nivel}` : "todas aprendidas")}`;
 }

@@ -2,7 +2,7 @@
 // Uso: node scripts/testar-combate.mjs
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { novoCombate, resolverRodada, aplicarXP, multElemento, rankDoNivel, recompensa, painel, menu, escolher, rolar, KITS, CLASSES,
+import { PASSIVAS, novoCombate, resolverRodada, aplicarXP, multElemento, rankDoNivel, recompensa, painel, menu, escolher, rolar, KITS, CLASSES,
   atributosEfetivos, habilidadesDe, proximaHabilidade } from "../src/regras/combate.mjs";
 import { item, bonusEquip, podeEquipar, kitInicial, estoque, efeitoItem, EQUIP_CLASSE, todosItens } from "../src/regras/itens.mjs";
 import { XP_PROXIMO } from "./balanceamento.mjs";
@@ -237,5 +237,48 @@ t("duelo: turnos, dado às claras, guarda que quebra, vantagem de elemento, cura
   let x = novoDuelo(A, B, 0), fim = null, k = 0; const rr = d(3, 14, 9, 17, 6, 11, 20, 8);
   while (!fim && k++ < 80) { const o = agirDuelo(x, menuDuelo(x).find((m) => !m.bloqueio).acao, rr, 0); x = o.estado; fim = o.fim; }
   assert(fim?.vencedor && fim.perdedor && fim.vencedor.id !== fim.perdedor.id);
+});
+t("passivas: cada uma das 9 classes muda a luta do jeito que o texto promete", () => {
+  // mesma ficha para todos; só a classe (e portanto a passiva) muda
+  const base = novoCombate(jog("Cavaleiro", { nivel: 20, hp: 400, hp_max: 400, mp: 100, mp_max: 100, atributos: { FOR: 40, DEF: 30, MAG: 40, RES: 30, VEL: 20, SOR: 0 } }), V("V001"), 20);
+  base.inimigo.at.VEL = base.jogador.at.VEL; // mesma velocidade: o dado do inimigo não tem outro modificador além da passiva
+  const como = (classe, extra = {}, inimigo = {}) => { const e = structuredClone(base); Object.assign(e.jogador, { classe }, extra); Object.assign(e.inimigo, inimigo); return e; };
+  const apanha = (e, acao = { tipo: "atacar" }, dados = [10, 10]) => { const r = resolverRodada(e, acao, d(...dados)).estado; return { dano: e.jogador.hp - r.jogador.hp, r }; };
+  const ref = apanha(como("Cavaleiro")).dano;
+  assert(ref > 0);
+  const perto = (x, alvo, msg) => assert(Math.abs(x - alvo) <= Math.max(1, alvo * 0.03), `${msg}: ${x} ≠ ${alvo.toFixed(1)}`);
+  // Demônio: −42% de dano · Bruxo: −18% · Paladino: −12%
+  perto(apanha(como("Demônio")).dano, ref * (1 - PASSIVAS["Demônio"].reducao), "Couraça de Miasma");
+  perto(apanha(como("Bruxo")).dano, ref * (1 - PASSIVAS.Bruxo.reducao), "Pele Amaldiçoada");
+  perto(apanha(como("Paladino")).dano, ref * (1 - PASSIVAS.Paladino.reducao), "Fé Inabalável (dano)");
+  // Mago: −40% só enquanto tem mana
+  perto(apanha(como("Mago")).dano, ref * (1 - PASSIVAS.Mago.reducaoComMana), "Manto Arcano com mana");
+  perto(apanha(como("Mago", { mp: 0 })).dano, ref, "Manto Arcano sem mana");
+  // Anti-magia: −30% só contra magia
+  const magico = { at: { ...base.inimigo.at, MAG: base.inimigo.at.FOR, FOR: 1 } }, refMag = apanha(como("Cavaleiro", {}, magico)).dano;
+  perto(apanha(como("Anti-magia", {}, magico)).dano, refMag * (1 - PASSIVAS["Anti-magia"].reducaoMagia), "Vazio Interior contra magia");
+  perto(apanha(como("Anti-magia")).dano, ref, "Vazio Interior contra golpe físico");
+  // Espadachim: o inimigo rola com −4 (um 10 vira 6, de raspão) e ainda −26%
+  const esp = apanha(como("Espadachim"));
+  assert.match(esp.r.log.join("\n"), /🎲 10 −4 = 6 · de raspão/);
+  perto(esp.dano, ref * 0.7 * (1 - PASSIVAS.Espadachim.reducao), "Reflexos");
+  // Meio-humano: inimigo com −1; e +1 no próprio dado com a vida abaixo da metade
+  assert.match(apanha(como("Meio-humano")).r.log.join("\n"), /🎲 10 −1 = 9/);
+  assert.match(apanha(como("Meio-humano", { hp: 150 })).r.log[0], /🎲 \*10\* \+1 = 11/);
+  assert.doesNotMatch(apanha(como("Meio-humano", { hp: 380 })).r.log[0], /\+1 = 11/);
+  // Força da Natureza: +3% de vida por rodada (aqui o inimigo erra, então só a regeneração aparece)
+  const fdn = apanha(como("Força da Natureza", { hp: 200 }), { tipo: "atacar" }, [10, 1]);
+  assert.equal(fdn.r.jogador.hp, 200 + Math.ceil(400 * PASSIVAS["Força da Natureza"].regen));
+  // Cavaleiro: defender bloqueia 10% a mais que outra classe com o mesmo dado
+  const defCav = apanha(como("Cavaleiro"), { tipo: "defender" }, [10, 10]).dano, defOutro = apanha(como("Anti-magia"), { tipo: "defender" }, [10, 10]).dano;
+  perto(defCav, defOutro * (1 - 0.5 - PASSIVAS.Cavaleiro.defesaExtra) / (1 - 0.5), "Postura de Ferro");
+  // Paladino: curas +25% (Mãos de Luz cura 35% → 43,75%) e a cura do Golpe Sagrado também
+  const pal = como("Paladino", { nivel: 20, hp: 50 }), cura = resolverRodada(pal, { tipo: "habilidade", id: "h2" }, d(10, 1)).estado;
+  assert.equal(cura.jogador.hp, 50 + Math.round(400 * 0.35 * (1 + PASSIVAS.Paladino.curaExtra)));
+  const sagrado = resolverRodada(como("Paladino", { nivel: 20, hp: 50 }), { tipo: "habilidade", id: "h1" }, d(10, 1)).estado;
+  assert.equal(sagrado.jogador.hp, 50 + Math.round(400 * 0.12 * (1 + PASSIVAS.Paladino.curaExtra)));
+  // Bruxo: inimigo enfraquecido bate 35% menos (em vez de 25%)
+  perto(apanha(como("Bruxo", {}, { fraco: 2 })).dano, ref * (1 - PASSIVAS.Bruxo.reducao) * 0.65, "Pele Amaldiçoada com inimigo fraco");
+  perto(apanha(como("Cavaleiro", {}, { fraco: 2 })).dano, ref * 0.75, "inimigo fraco contra outra classe");
 });
 console.log(`${n} testes de combate passaram`);

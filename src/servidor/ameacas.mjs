@@ -5,7 +5,7 @@
 import { REGIAO } from "../regras/exploracao.mjs";
 import { MONSTROS, MONSTRO, dnaMonstro } from "../mundo/monstros.mjs";
 import { renderizar } from "../avatar/index.mjs";
-import { atributosEfetivos, rolar, bonusDado, aplicarXP, habilidadesDe, MAGIA, elementoBase } from "../regras/combate.mjs";
+import { atributosEfetivos, rolar, bonusDado, aplicarXP, habilidadesDe, MAGIA, elementoBase, PASSIVAS } from "../regras/combate.mjs";
 import { magiasDeBatalha } from "../regras/grimorios.mjs";
 import { bonusEquip } from "../regras/itens.mjs";
 import { K, XP_PROXIMO } from "../../scripts/balanceamento.mjs";
@@ -168,21 +168,25 @@ export function criarAmeacas({ db, rng, agora, relogio = null }) {
     const ehDano = ["fisico", "magico", "melhor"].includes(x.tipo);
     const atk = x.tipo === "fisico" ? at.FOR ?? 0 : x.tipo === "magico" ? at.MAG ?? 0 : melhor;
     const junto = await um(db, "select 1 from jogo.ameaca_golpes where ameaca_id = $1 and jogador_id <> $2 and ultimo_em > $3 limit 1", [a.id, j.id, new Date(agora() - AMEACA.comboMs)]);
-    const d = rolar(rng, bonusDado(at) - (m.grau >= 3 ? 1 : 0) + (x.dado ?? 0), AMEACA.falhaAte[m.grau]);
+    // passivas de classe valem aqui como nas batalhas
+    const pas = PASSIVAS[j.classe] ?? {};
+    const d = rolar(rng, bonusDado(at) - (m.grau >= 3 ? 1 : 0) + (x.dado ?? 0) + (pas.furia && j.hp < j.hp_max / 2 ? pas.furia : 0), AMEACA.falhaAte[m.grau]);
     // habilidades valem como nas batalhas: força, vários golpes, atravessar defesa, dano contínuo (já somado), foco do turno anterior
     const multHab = ehDano ? (x.poder ?? 1) * (x.golpes ?? 1) * (x.queima ? 1.3 : 1) * (focado ? 1.5 : 1) : 0;
     const dano = ehDano && d.mult ? Math.min(a.hp, danoDe(atk, j.nivel, defesaDe(a.nivel, m.grau) * (1 - (x.ignoraDef ?? 0)), d.mult * multHab * (junto ? AMEACA.combo : 1))) : 0;
     // o que a habilidade faz por você neste turno: cura, proteção, enfraquecer ou prender o monstro
-    const forca = d.faixa === "falha" ? 0.5 : d.faixa === "critico" ? 1.3 : 1;
-    const curou = Math.min(j.hp_max - j.hp, Math.round((x.tipo === "cura" ? j.hp_max * (x.cura ?? 0) * forca : 0) + (x.curaFixa && dano ? j.hp_max * x.curaFixa : 0) + (x.rouba && dano ? Math.min(j.hp_max * 0.3, dano * x.rouba) : 0)));
+    const forca = (d.faixa === "falha" ? 0.5 : d.faixa === "critico" ? 1.3 : 1) * (1 + (pas.curaExtra ?? 0));
+    const curou = Math.min(j.hp_max - j.hp, Math.round((x.tipo === "cura" ? j.hp_max * (x.cura ?? 0) * forca : 0) + (x.curaFixa && dano ? j.hp_max * x.curaFixa * (1 + (pas.curaExtra ?? 0)) : 0) + (x.rouba && dano ? Math.min(j.hp_max * 0.3, dano * x.rouba) : 0)
+      + (pas.regen ? j.hp_max * pas.regen : 0)));
     const custoVida = x.custoHp ? Math.round(j.hp_max * x.custoHp) : 0;
     const protecao = !ehDano || x.protecao ? Math.min(0.85, (x.protecao ?? 0) * (ehDano ? 1 : forca)) : 0;
     const preso = Boolean(dano && x.prende), fraco = Boolean((dano && x.enfraquece) || x.enfraqueceAlvo);
     j = { ...j, hp: Math.max(1, j.hp + curou - custoVida), mp: Math.max(0, j.mp - (x.mp ?? 0)) };
     // contra-ataque: o monstro também rola; a vida do jogador nunca passa de 1 para baixo
-    const c = rolar(rng, 0);
+    const c = rolar(rng, pas.dadoInimigo ?? 0);
+    const reducaoPassiva = (pas.reducao ?? 0) + (pas.reducaoComMana && j.mp > 0 ? pas.reducaoComMana : 0); // os monstros batem com o corpo: a resistência à magia do Anti-magia não entra
     const def = Math.max(at.DEF ?? 0, at.RES ?? 0);
-    const leva = c.faixa === "falha" || preso ? 0 : Math.min(j.hp - 1, Math.round(j.hp_max * AMEACA.contra[m.grau] * { fraco: 0.6, normal: 1, forte: 1.4, critico: 2 }[c.faixa] * (1 - protecao) * (fraco ? 0.75 : 1) * (K(j.nivel) / (K(j.nivel) + def * 0.5))));
+    const leva = c.faixa === "falha" || preso ? 0 : Math.min(j.hp - 1, Math.round(j.hp_max * AMEACA.contra[m.grau] * { fraco: 0.6, normal: 1, forte: 1.4, critico: 2 }[c.faixa] * (1 - protecao) * (1 - reducaoPassiva) * (fraco ? (j.classe === "Bruxo" ? 0.65 : 0.75) : 1) * (K(j.nivel) / (K(j.nivel) + def * 0.5))));
     const depois = await um(db, "update jogo.ameacas set hp = greatest(0, hp - $2) where id = $1 and estado = 'ativa' returning *", [a.id, dano]);
     if (!depois) return [{ para, texto: `Quando você chega, *${m.nome}* já não está mais lá.` }];
     await db.query(`insert into jogo.ameaca_golpes (ameaca_id, jogador_id, dano, golpes, ultimo_em) values ($1, $2, $3, 1, $4)

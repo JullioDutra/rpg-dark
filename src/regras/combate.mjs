@@ -163,6 +163,8 @@ export const PASSIVAS = {
   Cavaleiro: { nome: "Postura de Ferro", texto: "defender bloqueia 10% a mais", defesaExtra: 0.1 },
   Paladino: { nome: "Fé Inabalável", texto: "curas e proteções valem 25% a mais e você recebe 12% menos dano", curaExtra: 0.25, reducao: 0.12 },
 };
+/** Fora de luta: o Mago converte quase toda a mana em vigor para ele e para quem está por perto. */
+export const REVIGORAR = { classe: "Mago", custoMana: 0.9, vigor: 40, nivel: 5 };
 // Chefes não deixam a luta se arrastar: depois da 8ª rodada, batem 8% mais forte a cada rodada (fúria).
 export const FURIA = { apartir: 8, porRodada: 0.08, max: 2 };
 // Golpes fortes de chefes atravessam parte da defesa (armadura sozinha não vence chefe).
@@ -392,7 +394,7 @@ export function resolverRodada(estado, acao, rng) {
       if (dano) {
         if (hab.postura && i.posturaMax) i.postura -= hab.postura;
         if (hab.rouba) { const c = Math.min(j.hpMax - j.hp, Math.round(dano * hab.rouba)); j.hp += c; if (c) e.log.push(`A força dele vira sua. _(+${c} de vida)_`); }
-        if (hab.curaFixa) { const c = Math.min(j.hpMax - j.hp, Math.round(j.hpMax * hab.curaFixa)); j.hp += c; if (c) e.log.push(`A luz também cuida de você. _(+${c} de vida)_`); }
+        if (hab.curaFixa) { const c = Math.min(j.hpMax - j.hp, Math.round(j.hpMax * hab.curaFixa * (1 + (passiva.curaExtra ?? 0)))); j.hp += c; if (c) e.log.push(`A luz também cuida de você. _(+${c} de vida)_`); }
         if (hab.enfraquece) { i.fraco = hab.enfraquece; e.log.push(`${i.nome} fica mais fraco.`); }
         if (hab.prende) { i.preso = hab.prende; e.log.push(`${i.nome} não consegue se mover.`); }
         if (hab.queima) { i.queima = hab.queima; i.queimaDano = Math.max(1, Math.round(dano * 0.25)); e.log.push(`A ferida continua aberta. _(${i.queimaDano} por rodada)_`); }

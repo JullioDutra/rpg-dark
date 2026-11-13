@@ -658,6 +658,29 @@ export async function testarMundoServidor({ db, jogador, outro, mensagem, grupo,
     assert.match(d2, new RegExp(`Kaito Ryuen [▰▱]+ ${fK.hp_max}/${fK.hp_max}`)); assert.match(d2, new RegExp(`Rin [▰▱]+ ${fR.hp_max}/${fR.hp_max}`));
     await noGrupo(grupo("desistir", false)); await noGrupo(outroGrupo("desistir"));
   });
+  await t("Sopro de Mana: o Mago gasta 90% da mana e devolve vigor a ele e a quem está na mesma região; outras classes não podem", async () => {
+    await db.query("update jogo.batalhas set status = 'encerrada' where status <> 'encerrada'"); await db.query("delete from jogo.exploracoes where pendente"); await db.query("delete from jogo.ameacas");
+    await db.query("delete from jogo.progresso where chave in ('duelo-ativo', 'duelo-estado', 'falando', 'pacto-ameaca', 'ameaca-vez')");
+    const agoraDb = new Date(clock);
+    await db.query("update jogo.jogadores set classe = 'Mago', nivel = 20, mp = 200, mp_max = 200, vigor = 30, vigor_em = $2, regiao_atual = 'R-HOM-1', local_atual = null where id = $1", [jogador.id, agoraDb]);
+    await db.query("update jogo.jogadores set vigor = 10, vigor_em = $2, regiao_atual = 'R-HOM-1' where id = $1", [outro.id, agoraDb]);
+    assert.match(texto(await enviar("habilidades")), /Sopro de Mana[\s\S]*90% da sua mana/);
+    const r = await enviar("revigorar");
+    assert.match(texto(r), /Sopro de Mana[\s\S]*você: vigor 30 → 70[\s\S]*Rin: vigor 10 → 50[\s\S]*−180 de mana/);
+    assert(r.some((x) => /vento morno[\s\S]*Kaito Ryuen[\s\S]*vigor 10 → 50/.test(x.texto ?? "")), "o companheiro é avisado no privado");
+    const dep = await atual();
+    assert.equal(Number(dep.mp), 20); assert.equal(Number(dep.vigor), 70);
+    assert.equal(Number((await db.query("select vigor from jogo.jogadores where id = $1", [outro.id]))[0].vigor), 50);
+    assert.match(texto(await enviar("revigorar")), /consome quase tudo: 180 de mana/);
+    // quem está em outra região não recebe; quem não é Mago não usa
+    await db.query("update jogo.jogadores set mp = 200, vigor = 30, vigor_em = $2 where id = $1", [jogador.id, new Date(clock)]);
+    await db.query("update jogo.jogadores set vigor = 10, vigor_em = $2, regiao_atual = 'R-WAT-1' where id = $1", [outro.id, new Date(clock)]);
+    assert.doesNotMatch(texto(await enviar("revigorar")), /Rin/);
+    const classeRin = (await db.query("select classe from jogo.jogadores where id = $1", [outro.id]))[0].classe;
+    await db.query("update jogo.jogadores set classe = 'Cavaleiro' where id = $1", [outro.id]);
+    assert.match(texto(await noGrupo(outroPrivado("revigorar"))), /Só um Mago/);
+    await db.query("update jogo.jogadores set classe = $2 where id = $1", [outro.id, classeRin]);
+  });
   await t("Olhos da Terra: a mestra entrega o pergaminho a quem é da terra; ler cega e dá as habilidades; admin também concede", async () => {
     await db.query("update jogo.jogadores set regiao_atual = 'R-DAI-6', local_atual = null, atributo_magico = 'Fogo (Chama)', reino = 'Homura' where id = $1", [jogador.id]);
     await enviar("falar tsuchi"); clock += 7 * 3_600_000;
