@@ -195,6 +195,13 @@ try {
   const erros = await enviarSaidas({ texto: async (p, t) => enviados.push(t), imagem: async () => { throw new Error("falhou"); } },
     [{ para: "x", texto: "a" }, { espera: 1 }, { para: "x", imagem: Buffer.from("p") }, { para: "x", texto: "b" }], { dormir: async () => {} });
   ok(enviados.join() === "a,b" && erros.length === 1, "falha num envio não interrompe os outros");
+  const env2 = []; let tent = 0;
+  const err2 = await enviarSaidas({ texto: async (p, t) => env2.push(t), imagem: async () => { tent++; throw new Error("Media upload failed"); } },
+    [{ para: "x", imagem: Buffer.from("p"), legenda: "cena com legenda" }], { dormir: async () => {} });
+  ok(tent === 2 && env2.join() === "cena com legenda" && err2.length === 1, "imagem que falha é tentada de novo e, sem sucesso, a legenda vai como texto");
+  const env3 = []; let t3 = 0;
+  await enviarSaidas({ texto: async (p, t) => env3.push(t), imagem: async () => { if (++t3 === 1) throw new Error("x"); env3.push("img"); } }, [{ para: "x", imagem: Buffer.from("p"), legenda: "l" }], { dormir: async () => {} });
+  ok(env3.join() === "img", "se a segunda tentativa da imagem funciona, não duplica o texto");
 } finally {
   await pool.end();
   run(`${PGBIN}/pg_ctl -D ${TMP}/data stop -m immediate`);

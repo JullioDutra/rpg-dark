@@ -32,7 +32,15 @@ export async function enviarSaidas(evo, saidas, { dormir = (ms) => new Promise((
   for (const s of saidas) {
     try {
       if (s.espera) await dormir(s.espera);
-      else if (s.imagem) await evo.imagem(s.para, s.imagem, s.legenda, s.mencoes);
+      else if (s.imagem) {
+        // O envio de mídia do WhatsApp falha de vez em quando ("Media upload failed"): tenta de novo e, se não for,
+        // manda pelo menos o texto da legenda, para o jogador não ficar sem resposta.
+        try { await evo.imagem(s.para, s.imagem, s.legenda, s.mencoes); }
+        catch (e1) {
+          try { await dormir(800); await evo.imagem(s.para, s.imagem, s.legenda, s.mencoes); }
+          catch (e2) { erros.push(String(e2.message ?? e2)); if (s.legenda) await evo.texto(s.para, s.legenda, s.mencoes); }
+        }
+      }
       else if (s.texto) await evo.texto(s.para, s.texto, s.mencoes);
     } catch (e) { erros.push(String(e.message ?? e)); }
   }
