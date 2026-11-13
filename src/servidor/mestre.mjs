@@ -36,6 +36,7 @@ mestre mapa — mapa do mundo com a posição de todos (só você vê)
 mestre sete luzes — abre o chamado do Grimório das Sete Luzes: os jogadores aceitam ou recusam, quem aceita enfrenta o Dragão da Aurora na Geleira Hyōga, e só um fica com o livro (eles não sabem disso até o dragão cair)
 mestre sete luzes status — quem aceitou, quem recusou, vida do dragão e votos
 mestre sete luzes entregar <nome> — encerra a disputa dando o livro a alguém
+mestre transformar <nome> — desperta a fera de um Meio-humano (um estágio por vez, até 3). O grupo recebe a arte da transformação
 mestre grimorios — onde está cada um dos 40 grimórios e quem já tem
 mestre grimorio <nome> <nº> — entrega um grimório ao jogador (ele "encontra" o livro)
 mestre tesouros — mapa de onde estão os 4 Grandes Itens, os 4 núcleos, os santuários de pet e o pergaminho da terra, e com quem cada um está
@@ -54,7 +55,7 @@ const ESPIA = { nome: "Shiori", papel: "uma cartógrafa de estrada", maxLog: 25,
     "fica um passo atrás, desenhando o caminho de vocês num mapa.", "pergunta de onde você é, e escuta a resposta com atenção demais para quem só puxa conversa.",
     "ajeita a alça da bolsa e diz que nunca viu ninguém viajar do seu jeito."] };
 
-export function criarMestre({ db, agora, ameacas = null, grimorios = null, seteLuzes = null }) {
+export function criarMestre({ db, agora, ameacas = null, grimorios = null, seteLuzes = null, fera = null }) {
   const gravar = (j, chave, valor) => db.query(`insert into jogo.progresso (jogador_id, chave, valor, criado_em) values ($1, $2, $3, $4)
     on conflict (jogador_id, chave) do update set valor = excluded.valor`, [j.id, chave, JSON.stringify(valor), new Date(agora())]);
   const jogadores = () => db.query(`select j.*, i.wa_jid, i.wa_lid, m.grupo_wa_id from jogo.jogadores j join jogo.identidades i on i.id = j.identidade_id
@@ -278,6 +279,11 @@ export function criarMestre({ db, agora, ameacas = null, grimorios = null, seteL
       const s = await grimorios.entregar(alvo, g, pv ?? para, "Você acorda com um livro debaixo do braço que não estava lá ontem. A capa está morna.\n\n*Você encontrou um grimório.*");
       if (!s.length) return dizer(`${alvo.nome} já tem ${g.nome}.`);
       return [...(pv ? s : []), ...dizer(`Feito. ${alvo.nome} recebeu ${g.nome}.`)];
+    }
+    if (/^(transformar|transformacao|despertar|fera)$/.test(acao) && fera) {
+      const r = await fera.transformar(alvo, pv ?? para, { forcar: true });
+      if (r.erro) return dizer(r.erro);
+      return [...r.saidas.filter((x) => pv || x.para !== para), ...dizer(`Feito. ${alvo.nome} está no ${r.estagio}º despertar.`)];
     }
     if (/^(fala|falar|dizer)$/.test(acao)) {
       const e = (await um(db, "select valor from jogo.progresso where jogador_id = $1 and chave = 'espia'", [alvo.id]))?.valor;

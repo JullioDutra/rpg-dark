@@ -6,6 +6,7 @@ import { semAcento } from "../linguagem/normalizar.mjs";
 import { novoCombate, resolverRodada, painel, textoMenu, escolher, recompensa, aplicarXP, atributoPrincipal, HABILIDADES, CLASSES, KITS, proximaHabilidade, SISMICO, PASSIVAS, nivelDeLuta, multAlcance, REVIGORAR } from "../regras/combate.mjs";
 import { REGIAO, MATERIAIS } from "../regras/exploracao.mjs";
 import { COVIL } from "../mundo/mundo.mjs";
+import { habilidadesDaFera, feraDe, NIVEL_ESTAGIO } from "../regras/fera.mjs";
 import { magiasDeBatalha, GRIMORIOS, podeLer, maxGrimorios } from "../regras/grimorios.mjs";
 import { bonusEquip, item as itemDe, todosItens, EQUIP_CLASSE, habilidadesDosItens, HABILIDADE_ITEM } from "../regras/itens.mjs";
 import { XP_PROXIMO } from "../../scripts/balanceamento.mjs";
@@ -85,7 +86,8 @@ export function criarCombate({ db, rng, agora }) {
         const fechados = (await q("select grimorio_id from jogo.grimorios_jogador where jogador_id = $1 and not equipado order by grimorio_id", [j.id])).map((x) => x.grimorio_id);
         const invH = await q("select item_id, equipado from jogo.inventario where jogador_id = $1", [j.id]);
         const petH = (await q("select nome from jogo.pets where jogador_id = $1", [j.id]))[0] ?? null;
-        dizer(textoHabilidades(j, terra, { abertos, fechados, inv: invH, pet: petH })); return fim(true);
+        const feraH = j.classe === "Meio-humano" ? Number((await q("select valor from jogo.progresso where jogador_id = $1 and chave = 'fera'", [j.id]))[0]?.valor?.estagio ?? 0) : null;
+        dizer(textoHabilidades(j, terra, { abertos, fechados, inv: invH, pet: petH, fera: feraH })); return fim(true);
       }
       const querEntrar = /^(entrar na luta|entro na luta|lutar junto|ajudar na luta|entrar na batalha)$/.test(t);
       if (!querEntrar && !/^(lutar|enfrentar|luto|lutar!|atacar|a|aceito lutar|bora|1)$/.test(t)) return fim(false);
@@ -117,7 +119,8 @@ export function criarCombate({ db, rng, agora }) {
       const pet = (await q("select nome, estagio from jogo.pets where jogador_id = $1", [j.id]))[0] ?? null;
       // magias dos grimórios abertos entram no menu da luta
       // e também a habilidade de cada Grande Item equipado. Nada disso tira as habilidades da classe: é acréscimo.
-      const magias = [...magiasDeBatalha((await q("select grimorio_id from jogo.grimorios_jogador where jogador_id = $1 and equipado order by grimorio_id", [j.id])).map((x) => x.grimorio_id)), ...habilidadesDosItens(inv)];
+      const feraEst = j.classe === "Meio-humano" ? Number((await q("select valor from jogo.progresso where jogador_id = $1 and chave = 'fera'", [j.id]))[0]?.valor?.estagio ?? 0) : 0;
+      const magias = [...habilidadesDaFera(j.tipo_animal, feraEst), ...magiasDeBatalha((await q("select grimorio_id from jogo.grimorios_jogador where jogador_id = $1 and equipado order by grimorio_id", [j.id])).map((x) => x.grimorio_id)), ...habilidadesDosItens(inv)];
       const vd = pend.dados.lacaio ? { ...v, nome: nomeLacaio(v), tier: "comum" } : v;
       // Vilão de covil nunca luta mais que alguns níveis acima do jogador (a história não trava por falta de nível)
       const nivelLuta = pend.dados.fixo ? nivelDeLuta(pend.dados.inimigo.nivel, j.nivel) : pend.dados.inimigo.nivel;
@@ -370,6 +373,10 @@ export function textoHabilidades(j, terra = false, extra = null) {
     for (const l of extra.inv ?? []) { const h = HABILIDADE_ITEM[l.item_id]; if (!h) continue;
       it.push(l.equipado ? `*${h.nome}* (${itemDe(l.item_id).nome.split(",")[0]}) — ${h.resumo}${custo(h)}` : `_${h.nome} — você tem ${itemDe(l.item_id).nome.split(",")[0]}, mas não está equipado: equipe para usar_`); }
     if (it.length) linhas.push("", "*De Grandes Itens*", ...it);
+    if (extra.fera != null && feraDe(j.tipo_animal)) {
+      const f = feraDe(j.tipo_animal);
+      linhas.push("", `*Da fera no seu sangue* (${f.ser}, ${extra.fera} de 3 despertares)`, ...f.estagios.map((e, i) => i < extra.fera ? `*${e.hab.nome}* (${e.nome}) — ${e.hab.resumo}${custo(e.hab)}` : `_${i === extra.fera ? `${e.nome}: desperta com uma Relíquia do Sangue Antigo (nível ${NIVEL_ESTAGIO[i]})` : "??? — ainda dormindo"}_`));
+    }
     if (extra.pet) linhas.push("", `*${extra.pet.nome}* (companheiro) — ataca junto com você em toda rodada`);
   }
   return `*Habilidades de ${j.classe}*\n\n${linhas.join("\n")}\n\n${rodape("além disso: atacar, defender" + (j.mp_max > 0 ? ", magia do seu elemento" : ""), prox ? `próxima no nível ${prox.nivel}` : "todas aprendidas")}`;

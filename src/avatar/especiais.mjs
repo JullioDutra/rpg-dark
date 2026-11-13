@@ -1,6 +1,7 @@
 // Artes especiais, maiores que os bustos (96×96): o Dragão da Aurora e o Grimório das Sete Luzes.
 import { Tela, rng } from "./pixel.mjs";
-import { rampa, misturar } from "./paletas.mjs";
+import { rampa, misturar, CABELO } from "./paletas.mjs";
+import { montar } from "./index.mjs";
 
 export const SETE_LUZES = ["#ff4d5e", "#ff9a3c", "#ffe14d", "#5fe07a", "#4dd6e8", "#4d7dff", "#b266ff"];
 const W = 96;
@@ -164,3 +165,61 @@ export function desenharGrimorio() {
 let cacheDragao = null, cacheGrimorio = null;
 export const imagemDragao = (escala = 5) => (cacheDragao ??= desenharDragao().png(escala));
 export const imagemGrimorioLuzes = (escala = 5) => (cacheGrimorio ??= desenharGrimorio().png(escala));
+
+/**
+ * Arte da transformação mística (Meio-humano): à esquerda o personagem como ele é, à direita a forma animal com as
+ * cores dele (pelo = cabelo, olhos = olhos), ligados por uma descarga de energia. 152×96.
+ * estagio 1–3 muda a intensidade: mais raios, lua maior, moldura dourada e as marcas de estágio embaixo.
+ */
+export function desenharTransformacao(dnaHumano, dnaAnimal, estagio = 1) {
+  const L = 152, A = 96, t = new Tela(L, A);
+  const energia = CABELO[dnaHumano?.corCabelo] ?? "#b266ff", r = rng(`transf-${dnaAnimal.id}`);
+  const claro = misturar(energia, "#ffffff", 0.55);
+  // fundo: noite com clarão vindo do meio
+  for (let y = 0; y < A; y++) for (let x = 0; x < L; x++) {
+    const d = Math.hypot((x - 76) / 1.25, y - 48) / 62;
+    t.set(x, y, misturar(misturar(energia, "#241640", 0.5), "#07051a", Math.min(1, d * 0.95)));
+  }
+  // lua atrás da fera (cresce com o estágio)
+  const lua = t.mascara().elipse(112, 44, 26 + estagio * 5, 26 + estagio * 5);
+  for (let y = 0; y < A; y++) for (let x = 0; x < L; x++) if (lua.tem(x, y)) t.set(x, y, misturar(t.get(x, y), "#fff6d8", 0.16 + estagio * 0.07));
+  // raios saindo da costura central
+  for (let k = 0; k < 10 + estagio * 8; k++) {
+    const ang = r() * Math.PI * 2, comp = 20 + r() * (30 + estagio * 10);
+    for (let d = 6; d < comp; d++) {
+      const x = Math.round(76 + Math.cos(ang) * d * 1.3), y = Math.round(48 + Math.sin(ang) * d);
+      const f = t.get(x, y); if (f && (d + k) % 2 === 0) t.set(x, y, misturar(f, k % 3 ? claro : "#ffffff", 0.75 - d / 130));
+    }
+  }
+  // anéis de energia em volta da fera (um por estágio)
+  for (let k = 1; k <= estagio; k++) {
+    const anel = t.mascara().elipse(114, 46, 36 + k * 7, 34 + k * 6);
+    anel.apagar(t.mascara().elipse(114, 46, 35 + k * 7, 33 + k * 6));
+    for (let y = 0; y < A; y++) for (let x = 0; x < L; x++) if (anel.tem(x, y) && (x + y) % 2 === 0) t.set(x, y, misturar(t.get(x, y), claro, 0.7));
+  }
+  // estrelas / fagulhas
+  for (let i = 0; i < 60; i++) { const x = Math.floor(r() * L), y = Math.floor(r() * A); t.set(x, y, r() < 0.3 ? "#ffffff" : claro); }
+  // os dois retratos
+  const copiar = (origem, ox, oy) => { for (let y = 0; y < 64; y++) for (let x = 0; x < 64; x++) { const c = origem.get(x, y); if (c) t.set(ox + x, oy + y, c); } };
+  copiar(montar(dnaHumano), 6, 14);
+  copiar(montar(dnaAnimal), 82, 14);
+  // molduras: a do jogador sóbria, a da fera na cor da energia (dourada no estágio 3)
+  const moldura = (ox, oy, cor, esp) => { const m = t.mascara().retangulo(ox - esp, oy - esp, ox + 63 + esp, oy + 63 + esp); m.apagar(t.mascara().retangulo(ox, oy, ox + 63, oy + 63)); t.carimbar(m, rampa(cor), { sombra: 1 }); };
+  moldura(6, 14, "#5a5470", 2);
+  moldura(82, 14, estagio >= 3 ? "#f0c040" : energia, estagio >= 2 ? 3 : 2);
+  // costura: relâmpago em ziguezague do peito do jogador até a fera
+  let x = 70, y = 8;
+  const raio = t.mascara();
+  while (y < 88) { const nx = 72 + (r() - 0.5) * 12, ny = y + 5 + r() * 5; raio.linha(x, y, nx, ny, 2); x = nx; y = ny; }
+  t.carimbar(raio, ["#1a1030", energia, claro, "#ffffff"], { sombra: 1 });
+  // faíscas indo de um retrato para o outro
+  for (let i = 0; i < 26 + estagio * 10; i++) { const fx = 66 + r() * 20, fy = 12 + r() * 70; t.set(Math.round(fx), Math.round(fy), i % 2 ? claro : "#ffffff"); }
+  // marcas do estágio (1 a 3 losangos) embaixo, no centro
+  for (let k = 0; k < 3; k++) {
+    const cx = 76 + (k - 1) * 9, cy = 88;
+    const lz = t.mascara().poligono([[cx, cy - 4], [cx + 4, cy], [cx, cy + 4], [cx - 4, cy]]);
+    t.carimbar(lz, k < estagio ? ["#3a2606", "#b07a1e", "#f0c040", "#fff1a8"] : ["#15121f", "#2a2638", "#3a3550", "#4a4566"], { sombra: 1 });
+  }
+  return t;
+}
+export const imagemTransformacao = (dnaHumano, dnaAnimal, estagio, escala = 5) => desenharTransformacao(dnaHumano, dnaAnimal, estagio).png(escala);

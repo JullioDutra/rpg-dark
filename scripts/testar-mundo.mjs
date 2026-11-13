@@ -871,6 +871,61 @@ export async function testarMundoServidor({ db, jogador, outro, mensagem, grupo,
     assert.deepEqual((await inv()).map((x) => `${x.item_id}:${x.qtd}`), ["arma-cajado-2:1", "pocao:3"]);
     assert.match(texto(await noGrupo(adminPrivado("mestre devolver Rin"))), /Não há nada/);
   });
+  await t("fera do Meio-humano: 3 despertares por relíquia ou pelo mestre, arte no grupo com as cores do jogador, uma habilidade nova por estágio sem tirar as da classe", async () => {
+    const F = await import("../src/regras/fera.mjs");
+    const { criarFera } = await import("../src/servidor/fera.mjs");
+    // dados: 7 animais × 3 estágios, cada estágio com habilidade própria
+    assert.equal(Object.keys(F.FERAS).length, 7);
+    const ids = new Set();
+    for (const f of Object.values(F.FERAS)) { assert.equal(f.estagios.length, 3); for (const e of f.estagios) { assert(e.nome && e.hab.nome && e.hab.resumo && e.hab.recarga); ids.add(e.hab.id); } }
+    assert.equal(ids.size, 21);
+    await db.query("update jogo.batalhas set status = 'encerrada' where status <> 'encerrada'"); await db.query("delete from jogo.exploracoes where pendente"); await db.query("delete from jogo.ameacas");
+    await db.query("delete from jogo.progresso where chave in ('fera', 'falando', 'ameaca-vez', 'duelo-ativo', 'duelo-estado')"); await db.query("delete from jogo.inventario where jogador_id = $1", [jogador.id]);
+    await db.query("update jogo.jogadores set classe = 'Mago', tipo_animal = null, nivel = 10, hp = hp_max, mp = 200, mp_max = 200, regiao_atual = 'R-HOM-3', local_atual = null where id = $1", [jogador.id]);
+    // quem não é Meio-humano não tem fera
+    assert.match(texto(await enviar("fera")), /Só os Meio-humanos/);
+    assert.match(texto(await noGrupo(adminPrivado("mestre transformar Kaito"))), /Só quem é Meio-humano/);
+    await db.query("update jogo.jogadores set classe = 'Meio-humano', tipo_animal = 'raposa' where id = $1", [jogador.id]);
+    assert.match(texto(await enviar("fera")), /raposa no seu sangue[\s\S]*◇ _Raposa de Uma Cauda — nível 1 e uma Relíquia[\s\S]*\?\?\?/);
+    // 1º despertar pela relíquia achada explorando
+    const fe = criarFera({ db, rng: () => 0, agora: () => clock });
+    assert.match(texto(await fe.aoExplorar(await atual(), "pv")), /Relíquia do Sangue Antigo[\s\S]*usar relíquia/);
+    assert.deepEqual(await fe.aoExplorar(await atual(), "pv"), [], "com uma relíquia na bolsa, não acha outra");
+    assert.match(texto(await enviar("itens")), /Relíquia do Sangue Antigo/);
+    const d1 = await enviar("usar relíquia");
+    assert(d1.some((x) => x.para !== GRUPO && x.imagem?.length > 3000 && /Raposa de Uma Cauda[\s\S]*Nova habilidade:\* \*Fogo-Fátuo/.test(x.legenda)), "o jogador recebe a arte e a habilidade nova");
+    assert(doGrupo(d1).some((x) => x.imagem?.length > 3000 && /UMA FERA ACORDOU[\s\S]*Kaito Ryuen\* despertou a raposa[\s\S]*Raposa de Uma Cauda/.test(x.legenda)), "o grupo recebe a arte da transformação");
+    assert.equal((await db.query("select count(*)::int n from jogo.inventario where jogador_id = $1 and item_id = 'reliquia-fera'", [jogador.id]))[0].n, 0, "a relíquia é gasta");
+    // 2º despertar pede nível 20: a relíquia não é gasta se não der
+    await db.query(`insert into jogo.inventario (jogador_id, item_id, tipo, qtd, dados) values ($1, 'reliquia-fera', 'historia', 1, '{}')`, [jogador.id]);
+    assert.match(texto(await enviar("usar relíquia")), /fica fria[\s\S]*nível 20[\s\S]*continua na sua bolsa/);
+    assert.equal((await db.query("select count(*)::int n from jogo.inventario where jogador_id = $1 and item_id = 'reliquia-fera'", [jogador.id]))[0].n, 1);
+    // o mestre passa por cima do nível; 2º e 3º despertar, e depois não há mais
+    const m2 = await noGrupo(adminPrivado("mestre transformar Kaito"));
+    assert(doGrupo(m2).some((x) => /O SANGUE ANTIGO RESPONDE[\s\S]*Raposa de Três Caudas/.test(x.legenda ?? "") && !/mestre|admin/i.test(x.legenda)) && /2º despertar/.test(m2.at(-1).texto));
+    const m3 = await noGrupo(adminPrivado("mestre transformar Kaito"));
+    assert(doGrupo(m3).some((x) => /A FERA ANCESTRAL DESPERTOU[\s\S]*Kyūbi/.test(x.legenda ?? "")));
+    assert.match(texto(await noGrupo(adminPrivado("mestre transformar Kaito"))), /já chegou à forma final/);
+    // habilidades: as da classe continuam, e as três da fera entram
+    const h = texto(await enviar("habilidades"));
+    assert.match(h, /Fúria da Fera[\s\S]*Da fera no seu sangue[\s\S]*Fogo-Fátuo[\s\S]*Ilusão das Três Caudas[\s\S]*Nove Caudas/);
+    const ver = await enviar("fera");
+    assert(ver[0].imagem?.length > 3000 && /◆◆◆ \*Kyūbi/.test(ver[0].legenda));
+    // na luta: menu com as habilidades da classe e as da fera, e elas funcionam
+    await db.query(`insert into jogo.exploracoes (jogador_id, mensagem_id, regiao, tipo, dados, pendente, criada_em) values ($1, $2, 'R-HOM-3', 'encontro', $3, true, $4)`,
+      [jogador.id, `fe:${clock}`, JSON.stringify({ inimigo: { id: "V001", nome: "x", nivel: 10 }, lacaio: true }), new Date(clock)]);
+    const luta = texto(await enviar("lutar"));
+    assert.match(luta, /Fúria da Fera[\s\S]*Fogo-Fátuo[\s\S]*Ilusão das Três Caudas[\s\S]*Nove Caudas/);
+    const nFogo = luta.match(/\*(\d+)\* Fogo-Fátuo/)[1];
+    assert.match(texto(await enviar(nFogo)), /Fogo-Fátuo|Vitória|passa/);
+    await db.query("update jogo.batalhas set status = 'encerrada' where status <> 'encerrada'");
+    // a forma animal usa as cores do próprio jogador
+    const dna = (await atual()).avatar_dna, { CABELO } = await import("../src/avatar/paletas.mjs");
+    const animal = F.dnaFera("raposa", 3, dna, { cabelo: CABELO });
+    assert.equal(animal.cor, CABELO[dna.corCabelo]); assert.equal(animal.corOlhos, dna.corOlhos); assert.equal(animal.caudas, 9);
+    await db.query("update jogo.jogadores set classe = 'Mago', tipo_animal = null where id = $1", [jogador.id]);
+    await db.query("delete from jogo.progresso where chave = 'fera'");
+  });
   await t("Olhos da Terra: a mestra entrega o pergaminho a quem é da terra; ler cega e dá as habilidades; admin também concede", async () => {
     await db.query("update jogo.jogadores set regiao_atual = 'R-DAI-6', local_atual = null, atributo_magico = 'Fogo (Chama)', reino = 'Homura' where id = $1", [jogador.id]);
     await enviar("falar tsuchi"); clock += 7 * 3_600_000;
