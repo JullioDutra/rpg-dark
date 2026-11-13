@@ -26,7 +26,26 @@ export default async function handler(req, res) {
       const db = await bancoNeon();
       const m = await garantirEsquema(db);
       const c = await um(db, "select (select count(*) from jogo.mundos)::int as mundos, (select count(*) from jogo.jogadores)::int as jogadores");
-      return { ok: true, ...c, migracoes_aplicadas_agora: m.aplicadas };
+      // Números de uso (só contagens, nenhum dado de jogador)
+      const uso = await um(db, `select
+        (select count(*) from jogo.mensagens_processadas)::int as mensagens_recebidas,
+        (select count(*) from jogo.mensagens_processadas where recebida_em > now() - interval '24 hours')::int as mensagens_24h,
+        (select count(*) from jogo.mensagens_processadas where recebida_em > now() - interval '7 days')::int as mensagens_7d,
+        (select min(recebida_em) from jogo.mensagens_processadas) as primeira_mensagem,
+        (select count(*) from jogo.jogadores where estado = 'ativo')::int as personagens_ativos,
+        (select count(*) from jogo.cenas where papel = 'jogador')::int as acoes_livres_narrador,
+        (select coalesce(sum(conversas), 0) from jogo.relacoes)::int as conversas_com_npc,
+        (select count(*) from jogo.batalhas)::int as batalhas,
+        (select count(*) from jogo.batalhas where status = 'encerrada' and resultado->>'resultado' = 'vitoria')::int as batalhas_vencidas,
+        (select count(*) from jogo.exploracoes)::int as exploracoes,
+        (select count(*) from jogo.viagens)::int as viagens,
+        (select count(*) from jogo.progresso where chave like 'c:%' and coalesce(valor->>'herdado', '') = '')::int as capitulos_concluidos,
+        (select count(*) from jogo.derrotas_vilao)::int as viloes_derrotados,
+        (select count(*) from jogo.feitos)::int as feitos_no_mural,
+        (select count(*) from jogo.ameaca_golpes)::int as jogadores_em_ameacas,
+        (select coalesce(sum(golpes), 0) from jogo.ameaca_golpes)::int as golpes_em_ameacas,
+        (select count(*) from jogo.grimorios_jogador)::int as grimorios_encontrados`);
+      return { ok: true, ...c, migracoes_aplicadas_agora: m.aplicadas, uso };
     }) : null,
     process.env.EVOLUTION_URL ? checar(async () => {
       const evo = criarEvolution();
