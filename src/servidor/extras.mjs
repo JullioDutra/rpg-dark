@@ -114,6 +114,28 @@ export function criarExtras({ db, rng, agora }) {
     return [{ para, texto: "Enquanto você tenta se levantar, uma voz calma fala bem perto, como se alguém estivesse sentado ao seu lado.\n\n— Dói perder, eu sei. Eu posso te emprestar força. Sem contrato, sem letras miúdas. Só um aperto de mão.\n\nVocê conhece essa voz. É a do Mestre Yoru.\n\n*aceitar pacto* · *recusar pacto*\n" + rodape("aceitar: +15% de dano para sempre, +25 de corrupção", "a corrupção fecha o melhor final") }];
   }
 
+  /**
+   * Pacto oferecido por um vilão ou monstro da cena (o jogador propôs, ou o narrador propôs por ele).
+   * Vale o mesmo que o pacto de Kanata: +15% de dano em todas as lutas e corrupção. Com um monstro solto, o preço inclui parar de atacá-lo.
+   */
+  async function ofertaPacto(j, de, para, { ameaca = null } = {}) {
+    const b = new Set((await db.query("select chave from jogo.progresso where jogador_id = $1 and (chave like 'b:pacto-%' or chave = 'oferta-pacto')", [j.id])).map((x) => x.chave));
+    if (b.has("oferta-pacto")) return [{ para, texto: "Já há uma oferta esperando a sua resposta: *aceitar pacto* ou *recusar pacto*." }];
+    const pactos = [...b].filter((k) => k.startsWith("b:pacto-")).length;
+    if (pactos >= PACTO.max) return [{ para, texto: `${de || "A coisa"} olha dentro de você e recua.
+— Você já deve demais. Não sobrou onde assinar.
+${rodape(`${pactos} pactos é o máximo`, "purificar num templo desfaz um")}` }];
+    const ultima = await um(db, "select criado_em from jogo.progresso where jogador_id = $1 and chave = 'ultima-oferta-cena'", [j.id]);
+    if (ultima && agora() - +new Date(ultima.criado_em) < 6 * 3_600_000) return [{ para, texto: `${de || "A coisa"} não responde. Hoje ninguém quer negociar com você.` }];
+    await gravar(j, "oferta-pacto", { de: de || "a coisa", ameaca }); await gravar(j, "ultima-oferta-cena");
+    return [{ para, texto: `*${de || "A coisa"}* para. Inclina a cabeça, como quem escuta uma proposta pela primeira vez em muito tempo.
+
+Você não ouve palavras, mas entende a resposta: força em troca de um lugar dentro de você.${ameaca ? " E a sua palavra de que não vai mais levantar a mão contra ela." : ""}
+
+*aceitar pacto* · *recusar pacto*
+${rodape("+15% de dano em todas as lutas", `+${PACTO.corrupcao} de corrupção`, ameaca ? "você não poderá mais golpear esta ameaça" : null, "um templo desfaz o pacto")}` }];
+  }
+
   async function comando(j, t, para, bruto = t) {
     let m;
     if (/^minha historia\b/.test(t)) return { tratado: true, saidas: await minhaHistoria(j, bruto, para) };
@@ -141,16 +163,23 @@ export function criarExtras({ db, rng, agora }) {
       return { tratado: true, saidas: [{ para, imagem: imagemPet(pet.pet_id, pet.estagio), legenda: `*${pet.nome}* — ${p.especie} (${NOMES_ESTAGIO[pet.estagio - 1]})\n_${p.habilidade}_${extra}\n\n${rodape(`vínculo ${pet.vinculo}/100`, `${pet.vitorias} vitórias juntos`, alvo ? `evolui com ${alvo.vitorias} vitórias e vínculo ${alvo.vinculo}` : "forma final")}` }] };
     }
     if (/^(aceitar pacto|pacto|aceito o pacto)$/.test(t) || /^(recusar pacto|resistir|recuso o pacto)$/.test(t)) {
-      const oferta = await db.query("delete from jogo.progresso where jogador_id = $1 and chave = 'oferta-pacto' returning 1", [j.id]);
+      const oferta = await db.query("delete from jogo.progresso where jogador_id = $1 and chave = 'oferta-pacto' returning valor", [j.id]);
+      const quem = oferta[0]?.valor?.de ?? null, ameaca = oferta[0]?.valor?.ameaca ?? null;
       if (!oferta.length) return { tratado: true, saidas: [{ para, texto: "Ninguém te ofereceu nada. Ainda." }] };
       if (/^(recusar|resistir|recuso)/.test(t)) {
         await db.query("update jogo.jogadores set merito = merito + 10 where id = $1", [j.id]);
-        return { tratado: true, saidas: [{ para, texto: `Você não responde. Depois de um tempo, a voz ri baixinho, sem raiva.\n— Tudo bem. Eu espero.\n${rodape("+10 de mérito")}` }] };
+        return { tratado: true, saidas: [{ para, texto: quem ? `Você balança a cabeça. *${quem}* te olha por mais um instante, e alguma coisa nela parece quase aliviada.\n${rodape("+10 de mérito")}` : `Você não responde. Depois de um tempo, a voz ri baixinho, sem raiva.\n— Tudo bem. Eu espero.\n${rodape("+10 de mérito")}` }] };
       }
       const n = (await db.query("select 1 from jogo.progresso where jogador_id = $1 and chave like 'b:pacto-%'", [j.id])).length + 1;
       await gravar(j, `b:pacto-${n}`);
       const r = await um(db, "update jogo.jogadores set corrupcao = least(100, corrupcao + $2), corrupcao_max = greatest(corrupcao_max, least(100, corrupcao + $2)) where id = $1 returning corrupcao", [j.id, PACTO.corrupcao]);
+      if (ameaca) await gravar(j, "pacto-ameaca", { id: ameaca });
+      if (quem) return { tratado: true, pactoAmeaca: ameaca, saidas: [{ para, texto: `Você estende a mão. *${quem}* não a aperta: encosta a testa nela, e algo frio passa para dentro do seu braço e sobe até o peito.\n\nA partir de agora, uma parte da força dela anda com você. E uma parte de você anda com ela.\n${rodape("+15% de dano em todas as lutas", `corrupção ${r.corrupcao}/100`, ameaca ? "você não pode mais golpear esta ameaça" : null, "pactos mostra os seus", "purificar num templo desfaz")}` }] };
       return { tratado: true, saidas: [{ para, texto: `Você aperta uma mão que não está lá. Ela é quente.\n\nA dor some. No lugar dela fica uma força que não é sua — e uma sensação fina, no fundo do peito, de que alguém acabou de aprender o caminho até você.\n${rodape("+15% de dano", `corrupção ${r.corrupcao}/100`, "purificar num templo desfaz o pacto")}` }] };
+    }
+    if (/^(pactos|meus pactos)$/.test(t)) {
+      const n = (await db.query("select 1 from jogo.progresso where jogador_id = $1 and chave like 'b:pacto-%'", [j.id])).length;
+      return { tratado: true, saidas: [{ para, texto: n ? `*Seus pactos*\n\nVocê carrega *${n}* pacto${n > 1 ? "s" : ""}.\n${rodape(`+${n * 15}% de dano em todas as lutas`, `corrupção ${Number(j.corrupcao ?? 0)}/100`, "com 25 ou mais de corrupção, o final da história muda", "purificar num templo desfaz um pacto")}` : "Você não deve nada a ninguém. Ainda." }] };
     }
     if (/^(purificar|purificacao|limpar corrupcao)$/.test(t)) {
       const templo = MUNDO[j.regiao_atual]?.locais.find((l) => l.cena === "templo");
@@ -160,6 +189,7 @@ export function criarExtras({ db, rng, agora }) {
       const pago = await db.query("update jogo.jogadores set ryo = ryo - $2, corrupcao = greatest(0, corrupcao - 25) where id = $1 and ryo >= $2 returning corrupcao", [j.id, custo]);
       if (!pago.length) return { tratado: true, saidas: [{ para, texto: `A oferenda custa ${custo} ryō. Você tem ${j.ryo}.` }] };
       await db.query(`delete from jogo.progresso where jogador_id = $1 and chave = (select max(chave) from jogo.progresso where jogador_id = $1 and chave like 'b:pacto-%')`, [j.id]);
+      await db.query("delete from jogo.progresso where jogador_id = $1 and chave = 'pacto-ameaca'", [j.id]); // a palavra dada a um monstro também se desfaz
       return { tratado: true, saidas: [{ para, texto: `Em ${templo.nome}, você queima a oferenda e fica em silêncio até a fumaça acabar. Alguma coisa solta do seu ombro.\n${rodape(`corrupção ${pago[0].corrupcao}/100`, "um pacto foi desfeito (−15% de dano)", `−${custo} ryō`)}` }] };
     }
     if (/^(boatos|boato|rumores|contos|ouvir)$/.test(t)) {
@@ -287,7 +317,7 @@ export function criarExtras({ db, rng, agora }) {
       const pv = alvo.wa_jid ?? alvo.wa_lid;
       return [{ para: msg.chat, texto: anuncio }, ...(pv ? [{ para: pv, texto: `A terra te escolheu.\n\n${textoTerra}` }] : [])];
     }
-    if ((m = t.match(/^[!/]?(duelo|desafio|x1|apoiar|apoio)\b/))) {
+    if ((m = t.match(/^[!/]?(duelo|duelar|duelando|desafio|desafiar|desafio|x1|pvp|apoiar|apoio)\b/))) {
       if (!autorJog) return [{ para: msg.chat, texto: "Você ainda não tem personagem neste mundo." }];
       const alvo = await acharJogador(msg);
       if (!alvo || alvo.id === autorJog.id) return [{ para: msg.chat, texto: `Marque a pessoa: *${m[1]} @pessoa* (ou o nome do personagem).` }];
@@ -379,7 +409,7 @@ export function criarExtras({ db, rng, agora }) {
     return [{ para: msg.chat, texto: painelDuelo(r.estado) }];
   }
 
-  return { comando, aoConcluir, aoVencer, aoDerrota, aoFalar, historiaPara, lerPergaminho, noGrupo, acaoDuelo };
+  return { comando, aoConcluir, aoVencer, aoDerrota, aoFalar, historiaPara, lerPergaminho, noGrupo, acaoDuelo, ofertaPacto };
 }
 
 export { PETS };

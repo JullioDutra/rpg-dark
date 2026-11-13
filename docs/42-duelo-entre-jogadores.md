@@ -28,13 +28,13 @@ Fim por nocaute, desistência, abandono, ou por pontos depois de 12 turnos de ca
 
 | Ajuste | Valor | Motivo |
 |--------|-------|--------|
-| Vida e mana | Cópia cheia; a ficha de verdade não muda | É amistoso |
+| Vida e mana | Os dois entram com a **vida e a mana da ficha**, cheias, numa cópia; a ficha de verdade não muda | É amistoso, e o número mostrado é o que o jogador conhece |
 | Dano | Metade | Jogadores têm muito menos vida que vilões; sem isso o duelo acabava em 2 golpes |
 | Curas, roubo de vida e regeneração | Metade | Classe que se cura não pode vencer só por durar mais |
 | Reduções de dano das passivas | Metade | Feitas para aguentar chefe, eram fortes demais contra outro jogador |
 | Defesa física e mágica | Puxadas 50% para a média das duas | Quem só tem uma das duas perdia sempre para o tipo "errado" de adversário |
-| Vida por classe e nível | `AJUSTE_DUELO` (de ×0,53 a ×1,88) | Ver calibração |
-| Fôlego contra o ponto fraco | `PAR_DUELO` (20 confrontos, de +4% a +37% de vida) | Ver calibração |
+| Fôlego por classe e nível | `AJUSTE_DUELO` (de ×0,53 a ×1,88): divide o dano **recebido**, sem mexer na vida mostrada | Ver calibração |
+| Fôlego contra o ponto fraco | `PAR_DUELO` (20 confrontos, de +4% a +37%), somado ao fôlego da classe | Ver calibração |
 
 ## 42.4 Calibração entre classes
 
@@ -67,3 +67,8 @@ Só um pouco de experiência: 2% do XP do nível para quem vence e 1% para quem 
 - A calibração usa um duelista simulado; jogadores reais vão achar combinações melhores para algumas classes.
 - Foi medida com os dois lados no mesmo nível e com o mesmo elemento. Diferença de nível e vantagem de elemento continuam valendo como vantagem de verdade.
 - Entre as faixas calibradas (10, 30, 60, 90) o ajuste é interpolado.
+
+## 42.7 Correções
+
+- **`duelar @pessoa` não fazia nada:** o comando só aceitava `duelo`. Agora aceita `duelo`, `duelar`, `desafiar`, `x1` e `pvp`.
+- **Vida do duelo parecia errada:** o equilíbrio entre classes multiplicava a vida (um Anti-magia aparecia com metade, um Demônio com quase o dobro). Agora a vida é a da ficha e o ajuste virou "fôlego": muda quanto de cada golpe recebido desconta. A conta é a mesma; a simulação continua com as classes entre 47% e 52%.

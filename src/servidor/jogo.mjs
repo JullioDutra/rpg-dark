@@ -86,9 +86,11 @@ export function criarJogo({ relogio = null, db, sal = process.env.TELEFONE_SAL ?
   ehAdminGrupo = async () => false, ia = null, rng = rngSeguro, agora = () => Date.now() }) {
   const D = dados();
   const exploracao = criarExploracao({ db, rng, agora });
-  const narrador = criarNarrador({ db, ia, agora });
+  let pactoDaCena = null; // ligado depois que os modos complementares existem
+  const narrador = criarNarrador({ db, ia, agora, aoPacto: (j, com, para) => pactoDaCena(j, com, para) });
   const combate = criarCombate({ db, rng, agora });
   const extras = criarExtras({ db, rng, agora });
+  pactoDaCena = (j, com, para) => extras.ofertaPacto(j, com, para);
   const social = criarSocial({ db, rng, agora });
   const ameacas = criarAmeacas({ db, rng, agora, relogio });
   const grimorios = criarGrimorios({ db, rng });
@@ -172,7 +174,7 @@ export function criarJogo({ relogio = null, db, sal = process.env.TELEFONE_SAL ?
       const eu = await um(db, "select * from jogo.jogadores where mundo_id = $1 and identidade_id = $2 and estado = 'ativo'", [mundo.id, idt.id]);
       return mestre.resgatar(eu, t.replace(/^[!/]?resgatar\s*/, "").replace(/@\S+/g, "").trim(), msg.chat);
     }
-    if (/^[!/]?(duelo|desafio|x1|apoiar|apoio|aceitar|aceito|recusar|recuso|historia|conceder|dar)\b/.test(t)) {
+    if (/^[!/]?(duelo|duelar|duelando|desafio|desafiar|x1|pvp|apoiar|apoio|aceitar|aceito|recusar|recuso|historia|conceder|dar)\b/.test(t)) {
       const idt = await identidade(msg.autor);
       const eu = await um(db, "select * from jogo.jogadores where mundo_id = $1 and identidade_id = $2 and estado = 'ativo'", [mundo.id, idt.id]);
       const achar = async (m) => {
@@ -245,6 +247,11 @@ export function criarJogo({ relogio = null, db, sal = process.env.TELEFONE_SAL ?
       if (fechada) return [...novidades, { para: msg.chat, texto: fechada }];
       const ps = await mestre.passagem(ativo, tc, msg.chat);
       if (ps.tratado) return [...novidades, ...ps.saidas, ...(ps.mudouRegiao ? await mundo.chegada(ativo, msg.chat) : [])];
+      // propor um pacto à ameaça que está em cena
+      if (/\b(pacto|alianca|trato|acordo|barganha)\b/.test(tc) && !/^(aceitar|aceito|recusar|recuso|pactos|meus pactos|pacto)\b/.test(tc)) {
+        const cena = await ameacas.cenaPara(ativo);
+        if (cena) return [...novidades, ...(await extras.ofertaPacto(ativo, cena.nome.split(",")[0], msg.chat, { ameaca: cena.id }))];
+      }
       const am = await ameacas.comando(ativo, tc, msg.chat);
       if (am.tratado) return [...novidades, ...am.saidas, ...(await mestre.observar(ativo, msg.texto, msg.chat))];
     }
@@ -323,14 +330,14 @@ export function criarJogo({ relogio = null, db, sal = process.env.TELEFONE_SAL ?
     const ehLocal = /^(ir|vou|visitar|entrar)\b/.test(tc) ? await mundo.comando(j, tc, msg.texto, para) : { tratado: false };
     if (ehLocal.tratado) return ehLocal.saidas;
     // Comandos do mundo vivo têm verbo próprio: a exploração só confere chegadas (para "falar sobre o mapa" não abrir o mapa)
-    const direto = /^(falar|conversar|perguntar|locais|lugares|olhar|missao|missoes|historia|capitulo|objetivo|diario|caminho|segredos|pistas|amigos|amizades|feitos|noticias|vingar|vinganca|pet|boatos|boato|rumores|contos|ouvir|lembrar|ecos|eco|aceitar pacto|recusar pacto|pacto|resistir|purificar|contratos|contrato|guilda|quadro|grimorio|grimorios|meus grimorios|livros|magias|abrir grimorio|abrir livro|ler grimorio|fechar grimorio|guardar grimorio|equipar grimorio|usar grimorio|ranking|rank|placar|acompanhar|seguir com|ir com|juntar|seguir sozinho|seguir sozinha|separar|deixar grupo|minha historia|aceitar a terra|aceito a terra|fechar o pergaminho|fechar pergaminho)\b/.test(tc);
+    const direto = /^(falar|conversar|perguntar|locais|lugares|olhar|missao|missoes|historia|capitulo|objetivo|diario|caminho|segredos|pistas|amigos|amizades|feitos|noticias|vingar|vinganca|pet|boatos|boato|rumores|contos|ouvir|lembrar|ecos|eco|aceitar pacto|recusar pacto|pacto|pactos|meus pactos|resistir|purificar|contratos|contrato|guilda|quadro|grimorio|grimorios|meus grimorios|livros|magias|abrir grimorio|abrir livro|ler grimorio|fechar grimorio|guardar grimorio|equipar grimorio|usar grimorio|ranking|rank|placar|acompanhar|seguir com|ir com|juntar|seguir sozinho|seguir sozinha|separar|deixar grupo|minha historia|aceitar a terra|aceito a terra|fechar o pergaminho|fechar pergaminho)\b/.test(tc);
     const e = await exploracao(j.id, info || direto ? { ...msg, texto: "" } : /^(ir|vou)\b/.test(tc) ? { ...msg, texto: tc.replace(/^(ir|vou)\s+(para |pra |a |ao |à )?/, "viajar ") } : msg);
     j = { ...j, ...e.jogador };
     const chegou = j.regiao_atual !== antes ? await mundo.chegada(j, para) : [];
     if (e.tratado) return [...e.saidas, ...chegou, ...(/^explorar\b/.test(tc) && !e.saidas.some((x) => /precisa descansar|ainda está na estrada/.test(x.texto ?? "")) ? await grimorios.aoExplorar(j, para) : [])];
     // 4) Mundo vivo: locais, NPCs, missão, segredos, amigos, feitos, vingar; pet, pactos, boatos, ecos
     const ex = await extras.comando(j, tc, para, msg.texto);
-    if (ex.tratado) return [...e.saidas, ...chegou, ...ex.saidas];
+    if (ex.tratado) return [...e.saidas, ...chegou, ...ex.saidas, ...(ex.pactoAmeaca ? await ameacas.aoPacto(j, ex.pactoAmeaca) : [])];
     const gr = await grimorios.comando(j, tc, para);
     if (gr.tratado) return [...e.saidas, ...chegou, ...gr.saidas];
     const so = await social.comando(j, tc, para);
@@ -538,7 +545,7 @@ const AJUDA = `*Como jogar*
 *No grupo*
 entrar no mundo — criar seu personagem
 ficha — sua carta · feitos — o que aconteceu no mundo
-duelo @pessoa — duelo amistoso · apoiar @pessoa — mandar forças
+duelo @pessoa (ou duelar @pessoa) — duelo amistoso por turnos · apoiar @pessoa — mandar forças
 dar <item> @pessoa — dar uma poção, um material ou ryō · ranking
 historia @pessoa — ler a história de alguém
 

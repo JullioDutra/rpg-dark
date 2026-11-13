@@ -5,7 +5,8 @@
 import { REGIAO } from "../regras/exploracao.mjs";
 import { MONSTROS, MONSTRO, dnaMonstro } from "../mundo/monstros.mjs";
 import { renderizar } from "../avatar/index.mjs";
-import { atributosEfetivos, rolar, bonusDado, aplicarXP } from "../regras/combate.mjs";
+import { atributosEfetivos, rolar, bonusDado, aplicarXP, habilidadesDe, MAGIA, elementoBase } from "../regras/combate.mjs";
+import { magiasDeBatalha } from "../regras/grimorios.mjs";
 import { bonusEquip } from "../regras/itens.mjs";
 import { K, XP_PROXIMO } from "../../scripts/balanceamento.mjs";
 import { rodape } from "./textos.mjs";
@@ -125,41 +126,87 @@ export function criarAmeacas({ db, rng, agora, relogio = null }) {
       rodape(a.tipo === "monstro" && a.regiao !== j.regiao_atual ? `vá até ${nomeRegiao(a.regiao)} para lutar` : "golpear", `vai embora em ${h}h${String(min).padStart(2, "0")}`);
   }
 
-  async function golpear(j, para) {
+  /** Menu do que o jogador pode fazer contra a ameaça: o mesmo das batalhas (ataque, magia, habilidades da classe, magias de grimório aberto). */
+  async function opcoes(j) {
+    const itens = [], add = (rotulo, x, detalhe = null, bloqueio = null) => itens.push({ n: itens.length + 1, rotulo, x, detalhe, bloqueio });
+    const temMana = j.mp_max > 0, custo = (h) => (temMana ? h.mp ?? 0 : 0);
+    add("Atacar", { nome: "um golpe direto", tipo: "fisico", poder: 1, mp: 0 });
+    if (temMana) add(`Magia de ${elementoBase(j.atributo_magico) ?? "mana"}`, { nome: "magia", tipo: "magico", poder: MAGIA.poder, mp: MAGIA.mp }, `${MAGIA.mp} de mana`, j.mp < MAGIA.mp ? "sem mana" : null);
+    const abertos = (await db.query("select grimorio_id from jogo.grimorios_jogador where jogador_id = $1 and equipado order by grimorio_id", [j.id])).map((x) => x.grimorio_id);
+    for (const h of [...habilidadesDe(j.classe, j.nivel), ...magiasDeBatalha(abertos)])
+      add(h.nome, { ...h, mp: custo(h) }, [h.resumo, custo(h) ? `${custo(h)} de mana` : null].filter(Boolean).join(" · "), j.mp < custo(h) ? "sem mana" : null);
+    return itens;
+  }
+  const textoOpcoes = (ops) => ops.map((o) => `*${o.n}* ${o.rotulo}${o.bloqueio ? ` _(${o.bloqueio})_` : o.detalhe ? ` — _${o.detalhe}_` : ""}`).join("\n");
+
+  async function golpear(j, para, escolha = null) {
     const { aqui, outras } = await ativaPara(j);
     if (!aqui) {
       const longe = outras.find((a) => a.tipo === "monstro");
       return [{ para, texto: longe ? `Não há nada para enfrentar aqui. Mas ${MONSTRO.get(longe.monstro).nome} está em *${nomeRegiao(longe.regiao)}*: chegue lá e use *golpear*.` : "Não há nenhuma ameaça solta no mundo agora." }];
     }
     const a = aqui, m = MONSTRO.get(a.monstro);
+    const pacto = (await um(db, "select valor from jogo.progresso where jogador_id = $1 and chave = 'pacto-ameaca'", [j.id]))?.valor;
+    if (Number(pacto?.id) === Number(a.id)) return [{ para, texto: `Você ergue a arma, e o braço não obedece. *${m.nome}* te olha de longe, sem pressa. Vocês têm um pacto.\n${rodape("purificar num templo desfaz o pacto")}` }];
     if (j.hp <= j.hp_max * AMEACA.vidaMinima) return [{ para, texto: `Você mal fica em pé. Enfrentar *${m.nome}* assim é só entregar a vida.\n${rodape("use uma poção ou descanse e volte", a.tipo === "monstro" ? "nesta cidade ninguém dorme: descanse em outra" : null)}` }];
     const meu = await um(db, "select * from jogo.ameaca_golpes where ameaca_id = $1 and jogador_id = $2", [a.id, j.id]);
     const espera = meu ? AMEACA.recargaMs - (agora() - +new Date(meu.ultimo_em)) : 0;
     if (espera > 0) return [{ para, texto: `Você ainda está recuperando o fôlego do último golpe.\n${rodape(`volte em ${Math.ceil(espera / 60_000)} min`)}\n\n${painel(a, m, j)}` }];
-    const { at, atk } = await poder(j);
+    const ops = await opcoes(j);
+    const vez = (await um(db, "select valor from jogo.progresso where jogador_id = $1 and chave = 'ameaca-vez'", [j.id]))?.valor;
+    if (escolha == null) {
+      // primeiro o menu, como em qualquer batalha; a resposta com o número executa
+      await db.query(`insert into jogo.progresso (jogador_id, chave, valor, criado_em) values ($1, 'ameaca-vez', $2, $3) on conflict (jogador_id, chave) do update set valor = excluded.valor`,
+        [j.id, JSON.stringify({ id: Number(a.id), em: agora(), foco: Boolean(vez?.foco && Number(vez.id) === Number(a.id)) }), new Date(agora())]);
+      return [{ para, texto: `${painel(a, m, j)}\nVocê ${barra(j.hp, j.hp_max)} ${j.hp}/${j.hp_max}${j.mp_max ? ` · mana ${j.mp}` : ""}\n\n${textoOpcoes(ops)}\n\n${rodape("responda com o número", "o dado é o mesmo das batalhas", `um golpe a cada ${AMEACA.recargaMs / 60_000} min`)}` }];
+    }
+    const op = ops[Number(escolha) - 1];
+    if (!op) return [{ para, texto: `Escolha um número de 1 a ${ops.length}.\n\n${textoOpcoes(ops)}` }];
+    if (op.bloqueio) return [{ para, texto: `${op.rotulo}: ${op.bloqueio}.\n\n${textoOpcoes(ops)}` }];
+    const x = op.x, focado = Boolean(vez?.foco && Number(vez.id) === Number(a.id));
+    const { at, atk: melhor } = await poder(j);
+    const ehDano = ["fisico", "magico", "melhor"].includes(x.tipo);
+    const atk = x.tipo === "fisico" ? at.FOR ?? 0 : x.tipo === "magico" ? at.MAG ?? 0 : melhor;
     const junto = await um(db, "select 1 from jogo.ameaca_golpes where ameaca_id = $1 and jogador_id <> $2 and ultimo_em > $3 limit 1", [a.id, j.id, new Date(agora() - AMEACA.comboMs)]);
-    const d = rolar(rng, bonusDado(at) - (m.grau >= 3 ? 1 : 0), AMEACA.falhaAte[m.grau]);
-    const dano = d.mult ? Math.min(a.hp, danoDe(atk, j.nivel, defesaDe(a.nivel, m.grau), d.mult * (junto ? AMEACA.combo : 1))) : 0;
+    const d = rolar(rng, bonusDado(at) - (m.grau >= 3 ? 1 : 0) + (x.dado ?? 0), AMEACA.falhaAte[m.grau]);
+    // habilidades valem como nas batalhas: força, vários golpes, atravessar defesa, dano contínuo (já somado), foco do turno anterior
+    const multHab = ehDano ? (x.poder ?? 1) * (x.golpes ?? 1) * (x.queima ? 1.3 : 1) * (focado ? 1.5 : 1) : 0;
+    const dano = ehDano && d.mult ? Math.min(a.hp, danoDe(atk, j.nivel, defesaDe(a.nivel, m.grau) * (1 - (x.ignoraDef ?? 0)), d.mult * multHab * (junto ? AMEACA.combo : 1))) : 0;
+    // o que a habilidade faz por você neste turno: cura, proteção, enfraquecer ou prender o monstro
+    const forca = d.faixa === "falha" ? 0.5 : d.faixa === "critico" ? 1.3 : 1;
+    const curou = Math.min(j.hp_max - j.hp, Math.round((x.tipo === "cura" ? j.hp_max * (x.cura ?? 0) * forca : 0) + (x.curaFixa && dano ? j.hp_max * x.curaFixa : 0) + (x.rouba && dano ? Math.min(j.hp_max * 0.3, dano * x.rouba) : 0)));
+    const custoVida = x.custoHp ? Math.round(j.hp_max * x.custoHp) : 0;
+    const protecao = !ehDano || x.protecao ? Math.min(0.85, (x.protecao ?? 0) * (ehDano ? 1 : forca)) : 0;
+    const preso = Boolean(dano && x.prende), fraco = Boolean((dano && x.enfraquece) || x.enfraqueceAlvo);
+    j = { ...j, hp: Math.max(1, j.hp + curou - custoVida), mp: Math.max(0, j.mp - (x.mp ?? 0)) };
     // contra-ataque: o monstro também rola; a vida do jogador nunca passa de 1 para baixo
     const c = rolar(rng, 0);
     const def = Math.max(at.DEF ?? 0, at.RES ?? 0);
-    const leva = c.faixa === "falha" ? 0 : Math.min(j.hp - 1, Math.round(j.hp_max * AMEACA.contra[m.grau] * { fraco: 0.6, normal: 1, forte: 1.4, critico: 2 }[c.faixa] * (K(j.nivel) / (K(j.nivel) + def * 0.5))));
+    const leva = c.faixa === "falha" || preso ? 0 : Math.min(j.hp - 1, Math.round(j.hp_max * AMEACA.contra[m.grau] * { fraco: 0.6, normal: 1, forte: 1.4, critico: 2 }[c.faixa] * (1 - protecao) * (fraco ? 0.75 : 1) * (K(j.nivel) / (K(j.nivel) + def * 0.5))));
     const depois = await um(db, "update jogo.ameacas set hp = greatest(0, hp - $2) where id = $1 and estado = 'ativa' returning *", [a.id, dano]);
     if (!depois) return [{ para, texto: `Quando você chega, *${m.nome}* já não está mais lá.` }];
     await db.query(`insert into jogo.ameaca_golpes (ameaca_id, jogador_id, dano, golpes, ultimo_em) values ($1, $2, $3, 1, $4)
       on conflict (ameaca_id, jogador_id) do update set dano = jogo.ameaca_golpes.dano + excluded.dano, golpes = jogo.ameaca_golpes.golpes + 1, ultimo_em = excluded.ultimo_em`, [a.id, j.id, dano, new Date(agora())]);
     // recuperacao_em marca de quando a vida começa a voltar: sem atualizar aqui, a próxima mensagem "curava" tudo de uma vez
-    await db.query("update jogo.jogadores set hp = greatest(1, hp - $2), recuperacao_em = $3 where id = $1", [j.id, leva, new Date(agora())]);
+    await db.query("update jogo.jogadores set hp = greatest(1, $2::int - $3::int), mp = $4, recuperacao_em = $5 where id = $1", [j.id, j.hp, leva, j.mp, new Date(agora())]);
+    // foco ("próximo golpe +50%") fica guardado para a próxima ação; usado, some
+    await db.query(`insert into jogo.progresso (jogador_id, chave, valor, criado_em) values ($1, 'ameaca-vez', $2, $3) on conflict (jogador_id, chave) do update set valor = excluded.valor`,
+      [j.id, JSON.stringify({ id: Number(a.id), em: 0, foco: Boolean(x.foco) || (focado && !ehDano) }), new Date(agora())]);
+    const dadoTxt = `🎲 *${d.nat}*${d.total !== d.nat && d.nat !== 1 && d.nat !== 20 ? ` ${d.total > d.nat ? "+" : "−"}${Math.abs(d.total - d.nat)} = ${d.total}` : ""} · ${d.texto}${d.mult && d.mult !== 1 ? ` ×${String(d.mult).replace(".", ",")}` : ""}`;
+    const efeitos = [curou > 0 && `+${curou} de vida`, custoVida > 0 && `−${custoVida} de vida pelo custo`, protecao > 0 && `protegido em ${Math.round(protecao * 100)}%`, x.foco && "próximo golpe +50%",
+      preso && `${m.nome} fica preso e não revida`, fraco && !preso && `${m.nome} enfraquecido`, junto && dano > 0 && "ao lado de um companheiro: +25%", focado && ehDano && "concentrado: +50%"].filter(Boolean);
     const linhas = [
-      `🎲 ${d.nat} — ${d.faixa === "falha" ? `seu golpe passa no vazio. ${m.nome} nem olha.` : `${d.faixa === "critico" ? "*Golpe perfeito!* " : ""}você acerta *${m.nome}*${junto ? ", aproveitando a abertura que um companheiro deixou" : ""}. _(−${dano})_`}`,
-      `🎲 ${c.nat} — ${leva > 0 ? `${m.nome} revida${c.faixa === "critico" ? " em cheio" : ""}. _(−${leva})_` : `${m.nome} revida, e você sai do caminho a tempo.`}`,
-    ];
+      ehDano ? `${dadoTxt}. ${d.faixa === "falha" ? `${op.rotulo} passa no vazio. ${m.nome} nem olha.` : `Você acerta *${m.nome}* com ${x.nome.startsWith("um ") || x.nome === "magia" ? x.nome : `*${x.nome}*`}. _(${dano} de dano)_`}`
+        : `${dadoTxt}. Você usa *${x.nome}*.`,
+      efeitos.length ? `_${efeitos.join(" · ")}_` : null,
+      preso ? null : `🎲 ${c.nat} · ${leva > 0 ? `${m.nome} revida${c.faixa === "critico" ? " em cheio" : ""}. _(−${leva} de vida)_` : `${m.nome} revida, e você sai do caminho a tempo.`}`,
+    ].filter(Boolean);
     const mundo = await um(db, "select * from jogo.mundos where id = $1", [a.mundo_id]);
     if (depois.hp <= 0) {
       const fim = await db.query("update jogo.ameacas set estado = 'derrotada' where id = $1 and estado = 'ativa' returning id", [a.id]);
       return [{ para, texto: `${linhas[0]}\n\nÉ o último golpe. *${m.nome}* desaba.` }, ...(fim.length ? await vitoria(depois, m, mundo) : [])];
     }
-    const saidas = [{ para, texto: `${linhas.join("\n")}\n\n${m.nome} ${barra(depois.hp, depois.hp_max)} ${Math.round((depois.hp / depois.hp_max) * 100)}%\nVocê ${barra(j.hp - leva, j.hp_max)} ${j.hp - leva}/${j.hp_max}\n${rodape(junto ? "lutando junto: +25%" : "se outro jogador bater nos próximos 10 min, vale +25%", `próximo golpe em ${AMEACA.recargaMs / 60_000} min`)}` }];
+    const saidas = [{ para, texto: `${linhas.join("\n")}\n\n${m.nome} ${barra(depois.hp, depois.hp_max)} ${Math.round((depois.hp / depois.hp_max) * 100)}%\nVocê ${barra(j.hp - leva, j.hp_max)} ${j.hp - leva}/${j.hp_max}${j.mp_max ? ` · mana ${j.mp}` : ""}\n${rodape(junto ? "lutando junto: +25%" : "se outro jogador bater nos próximos 10 min, vale +25%", `próximo golpe em ${AMEACA.recargaMs / 60_000} min`)}` }];
     // o grupo acompanha pelos marcos (75%, 50%, 25%), não a cada golpe
     const marcos = depois.dados?.marcos ?? [], pct = (depois.hp / depois.hp_max) * 100;
     const novo = [75, 50, 25].find((x) => pct <= x && !marcos.includes(x));
@@ -172,7 +219,15 @@ export function criarAmeacas({ db, rng, agora, relogio = null }) {
   }
 
   async function comando(j, t, para) {
-    if (/^(golpear|golpe|atacar monstro|atacar calamidade|atacar a calamidade|atacar o monstro|enfrentar monstro|enfrentar calamidade|enfrentar a calamidade|enfrentar o monstro)$/.test(t)) return { tratado: true, saidas: await golpear(j, para) };
+    let mg;
+    if ((mg = t.match(/^(?:golpear|golpe|atacar monstro|atacar calamidade|atacar a calamidade|atacar o monstro|enfrentar monstro|enfrentar calamidade|enfrentar a calamidade|enfrentar o monstro)(?:\s+(\d{1,2}))?$/)))
+      return { tratado: true, saidas: await golpear(j, para, mg[1] ?? null) };
+    if (/^\d{1,2}$/.test(t)) {
+      // número solto só vale se o menu da ameaça foi aberto há pouco e o jogador não está numa batalha comum
+      const vez = (await um(db, "select valor from jogo.progresso where jogador_id = $1 and chave = 'ameaca-vez'", [j.id]))?.valor;
+      if (vez && agora() - Number(vez.em) < 10 * 60_000 && !(await db.query("select 1 from jogo.batalhas b join jogo.participantes_batalha p on p.batalha_id = b.id where p.jogador_id = $1 and b.status <> 'encerrada' limit 1", [j.id])).length
+        && !(await db.query("select 1 from jogo.exploracoes where jogador_id = $1 and pendente limit 1", [j.id])).length) return { tratado: true, saidas: await golpear(j, para, t) };
+    }
     if (/^(calamidade|ameaca|ameacas|monstro|monstros)$/.test(t)) {
       const { outras } = await ativaPara(j);
       if (!outras.length) return { tratado: true, saidas: [{ para, texto: "Não há nenhuma ameaça solta no mundo agora." }] };
@@ -210,7 +265,15 @@ export function criarAmeacas({ db, rng, agora, relogio = null }) {
     // A Calamidade vale para o mundo inteiro e dura dias: só vira "a cena" de quem está lutando agora (golpeou há pouco)
     if (aqui.tipo === "calamidade" && !(await db.query("select 1 from jogo.ameaca_golpes where ameaca_id = $1 and jogador_id = $2 and ultimo_em > $3", [aqui.id, j.id, new Date(agora() - 15 * 60_000)])).length) return null;
     const m = MONSTRO.get(aqui.monstro);
-    return { tipo: aqui.tipo, nome: `${m.nome}, ${m.titulo}`, descricao: m.desc, vida: `${Math.round((aqui.hp / aqui.hp_max) * 100)}%`, onde: aqui.regiao ? nomeRegiao(aqui.regiao) : "o mundo inteiro" };
+    return { id: Number(aqui.id), tipo: aqui.tipo, nome: `${m.nome}, ${m.titulo}`, descricao: m.desc, vida: `${Math.round((aqui.hp / aqui.hp_max) * 100)}%`, onde: aqui.regiao ? nomeRegiao(aqui.regiao) : "o mundo inteiro" };
+  }
+
+  /** Alguém fez um pacto com a ameaça: ela recupera fôlego, e o grupo fica sabendo que houve um pacto (não de quem). */
+  async function aoPacto(j, id) {
+    const a = await um(db, "update jogo.ameacas set hp = least(hp_max, hp + round(hp_max * 0.08)) where id = $1 and estado = 'ativa' returning *", [id]);
+    if (!a) return [];
+    const m = MONSTRO.get(a.monstro), mundo = await um(db, "select grupo_wa_id from jogo.mundos where id = $1", [a.mundo_id]);
+    return mundo?.grupo_wa_id ? [{ para: mundo.grupo_wa_id, texto: `_${m.nome} ergue a cabeça, como quem recebeu uma boa notícia. As feridas mais recentes se fecham._\n\nAlguém entre vocês fez um pacto com ela.\n${rodape(`${m.nome}: ${Math.round((a.hp / a.hp_max) * 100)}% de vida`)}` }] : [];
   }
 
   async function aoTick(id) {
@@ -218,5 +281,5 @@ export function criarAmeacas({ db, rng, agora, relogio = null }) {
     return a && +new Date(a.termina_em) <= agora() ? encerrarPorTempo(a) : [];
   }
 
-  return { comando, invocar, aoConcluir, aoTick, cidadeFechada, capitulosDoMundo, cenaPara };
+  return { comando, invocar, aoConcluir, aoTick, cidadeFechada, capitulosDoMundo, cenaPara, aoPacto };
 }

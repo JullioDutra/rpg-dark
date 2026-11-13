@@ -374,15 +374,15 @@ export async function testarMundoServidor({ db, jogador, outro, mensagem, grupo,
     const inv = await noGrupo(adminPrivado(`mestre monstro 6 ${(await import("../src/regras/exploracao.mjs")).REGIAO.get(rid).nome}`));
     assert(doGrupo(inv).some((x) => x.imagem?.length > 1000 && /Tsuchigumo[\s\S]*apareceu em/.test(x.legenda) && !/mestre|admin/i.test(x.legenda)), "anúncio com imagem, sem citar o mestre");
     assert.match(texto(await enviar("loja")), /Portas trancadas/);
-    assert.match(texto(await noGrupo(outroPrivado("golpear"))), /chegue lá/);
-    const g1 = texto(await enviar("golpear"));
+    assert.match(texto(await noGrupo(outroPrivado("golpear 1"))), /chegue lá/);
+    const g1 = texto(await enviar("golpear 1"));
     assert.match(g1, /🎲[\s\S]*Tsuchigumo/);
-    assert.match(texto(await enviar("golpear")), /recuperando o fôlego/);
+    assert.match(texto(await enviar("golpear 1")), /recuperando o fôlego/);
     // ação livre no meio da luta: a vida não "reseta" e o narrador fica na luta, sem puxar missão do lugar
     await db.query("update jogo.jogadores set hp = hp_max - 40, recuperacao_em = $2 where id = $1", [jogador.id, new Date(clock - 20 * 3_600_000)]);
     await db.query("update jogo.ameaca_golpes set ultimo_em = $2 where jogador_id = $1", [jogador.id, new Date(clock - 10 * 60_000)]);
     let apanhou = null;
-    for (let k = 0; k < 8 && !apanhou; k++) { const antes = Number((await atual()).hp); await enviar("golpear"); const dep = Number((await atual()).hp);
+    for (let k = 0; k < 8 && !apanhou; k++) { const antes = Number((await atual()).hp); await enviar("golpear 1"); const dep = Number((await atual()).hp);
       if (dep < antes) apanhou = dep; else { clock += 6 * 60_000; await db.query("update jogo.jogadores set recuperacao_em = $2 where id = $1", [jogador.id, new Date(clock - 20 * 3_600_000)]); } }
     assert(apanhou, "o monstro acertou pelo menos uma vez");
     const pedidosA = [];
@@ -395,13 +395,13 @@ export async function testarMundoServidor({ db, jogador, outro, mensagem, grupo,
     assert.match(texto(livreA), /carroça[\s\S]*Para ferir Tsuchigumo:_ \*golpear\*/);
     jogo = novoJogo(); clock += 6 * 60_000;
     await db.query("update jogo.jogadores set regiao_atual = $2, hp = hp_max where id = $1", [outro.id, rid]);
-    assert.match(texto(await noGrupo(outroPrivado("golpear"))), /lutando junto: \+25%|passa no vazio/);
+    assert.match(texto(await noGrupo(outroPrivado("golpear 1"))), /lutando junto: \+25%|passa no vazio/);
     const am = (await db.query("select * from jogo.ameacas where estado = 'ativa' and tipo = 'monstro'"))[0];
     await db.query("update jogo.ameacas set hp = 1 where id = $1", [am.id]);
     await db.query("update jogo.jogadores set hp = hp_max where id = $1", [jogador.id]);
     const ryo = Number((await atual()).ryo);
     let fim = [];
-    for (let k = 0; k < 12 && !doGrupo(fim).some((x) => /está livre/.test(x.texto)); k++) { clock += 6 * 60_000; await db.query("update jogo.jogadores set hp = hp_max where id = $1", [jogador.id]); fim = await enviar("golpear"); }
+    for (let k = 0; k < 12 && !doGrupo(fim).some((x) => /está livre/.test(x.texto)); k++) { clock += 6 * 60_000; await db.query("update jogo.jogadores set hp = hp_max where id = $1", [jogador.id]); fim = await enviar("golpear 1"); }
     assert(doGrupo(fim).some((x) => /está livre[\s\S]*Kaito Ryuen/.test(x.texto)), "vitória anunciada com o placar");
     assert(Number((await atual()).ryo) > ryo, "quem lutou recebe ryō");
     assert.doesNotMatch(texto(await enviar("loja")), /Portas trancadas/);
@@ -415,7 +415,7 @@ export async function testarMundoServidor({ db, jogador, outro, mensagem, grupo,
     assert(doGrupo(cal).some((x) => /CALAMIDADE[\s\S]*Gashadokuro/.test(x.legenda ?? "")), "Calamidade anunciada no grupo");
     await db.query("update jogo.jogadores set regiao_atual = $2, hp = hp_max where id = $1", [outro.id, longe]);
     clock += 6 * 60_000;
-    assert.match(texto(await noGrupo(outroPrivado("golpear"))), /🎲[\s\S]*Gashadokuro/, "a Calamidade se ataca de qualquer lugar");
+    assert.match(texto(await noGrupo(outroPrivado("golpear 1"))), /🎲[\s\S]*Gashadokuro/, "a Calamidade se ataca de qualquer lugar");
     const c = (await db.query("select * from jogo.ameacas where estado = 'ativa' and tipo = 'calamidade'"))[0];
     clock += 49 * 3_600_000;
     assert(doGrupo(await jogo.aoTick({ tipo: "ameaca", ameaca: Number(c.id) })).some((x) => /vai embora/.test(x.texto)), "sem vitória, ela vai embora no prazo");
@@ -608,6 +608,55 @@ export async function testarMundoServidor({ db, jogador, outro, mensagem, grupo,
     // Anti-magia só lê os do Vazio
     assert.match(G.podeLer({ classe: "Anti-magia", nivel: 99 }, G.GRIMORIOS.get("G01")), /só consegue ler grimórios do Vazio/);
     assert.equal(G.podeLer({ classe: "Anti-magia", nivel: 99 }, G.GRIMORIOS.get("G32")), null);
+  });
+  await t("ameaça com habilidades: menu igual ao das batalhas, magia gasta mana; pacto com o monstro conta; item de cena vai para a bolsa; duelar funciona com a vida da ficha", async () => {
+    const { REGIAO } = await import("../src/regras/exploracao.mjs");
+    const { MUNDO } = await import("../src/mundo/mundo.mjs");
+    await db.query("update jogo.batalhas set status = 'encerrada' where status <> 'encerrada'"); await db.query("delete from jogo.exploracoes where pendente");
+    await db.query("delete from jogo.ameacas"); await db.query("delete from jogo.viagens where concluida_em is null"); await db.query("delete from jogo.lutas_grupo");
+    await db.query("delete from jogo.progresso where chave in ('oferta-pacto', 'ultima-oferta-cena', 'pacto-ameaca', 'ameaca-vez', 'presentes-ia', 'duelo-ativo', 'duelo-estado', 'duelo', 'falando') or chave like 'b:pacto-%'");
+    const rid = Object.keys(MUNDO).find((k) => MUNDO[k].tipo === "capital");
+    await db.query("update jogo.jogadores set classe = 'Mago', nivel = 20, hp = hp_max, mp = 200, mp_max = 200, corrupcao = 0, regiao_atual = $2, local_atual = null where id = $1", [jogador.id, rid]);
+    await db.query("update jogo.jogadores set hp = hp_max, regiao_atual = $2, local_atual = null where id = $1", [outro.id, rid]);
+    await noGrupo(adminPrivado(`mestre monstro 3 ${REGIAO.get(rid).nome}`));
+    // menu com as habilidades da classe (e magias de grimório aberto)
+    const menu = texto(await enviar("golpear"));
+    assert.match(menu, /\*1\* Atacar[\s\S]*\*2\* Magia de[\s\S]*Rajada Arcana[\s\S]*responda com o número/);
+    const nRajada = menu.match(/\*(\d+)\* Rajada Arcana/)[1], mp0 = Number((await atual()).mp);
+    const g = texto(await enviar(nRajada));
+    assert.match(g, /🎲 \*\d+\*[\s\S]*(Rajada Arcana|passa no vazio)/, "o número do menu executa a habilidade com o dado às claras");
+    assert.equal(Number((await atual()).mp), mp0 - 12, "habilidade gasta mana também contra a ameaça");
+    assert.match(texto(await enviar("golpear")), /recuperando o fôlego/);
+    // pacto com o monstro: oferta, aceite, efeito em todas as lutas, e a palavra dada
+    const of = texto(await enviar("quero fazer um pacto com o monstro"));
+    assert.match(of, /Kawa-onna[\s\S]*aceitar pacto[\s\S]*\+15% de dano/);
+    const ac = await enviar("aceitar pacto");
+    assert.match(texto(ac), /uma parte da força dela anda com você[\s\S]*corrupção 25\/100/);
+    assert(doGrupo(ac).some((x) => /Alguém entre vocês fez um pacto/.test(x.texto) && !/Kaito/.test(x.texto)), "o grupo sabe do pacto, não de quem");
+    assert.equal((await db.query("select count(*)::int n from jogo.progresso where jogador_id = $1 and chave like 'b:pacto-%'", [jogador.id]))[0].n, 1);
+    assert.match(texto(await enviar("pactos")), /1\* pacto[\s\S]*\+15% de dano em todas as lutas/);
+    clock += 6 * 60_000;
+    assert.match(texto(await enviar("golpear")), /braço não obedece[\s\S]*pacto/);
+    assert.match(texto(await noGrupo(outroPrivado("golpear"))), /\*1\* Atacar/, "os outros continuam podendo lutar");
+    // item citado numa cena narrada cai na bolsa (e só os da lista)
+    await db.query("delete from jogo.ameacas");
+    const pocoes = async () => (await db.query("select coalesce(sum(qtd), 0)::int n from jogo.inventario where jogador_id = $1 and item_id = 'pocao'", [jogador.id]))[0].n;
+    const antes = await pocoes();
+    jogo = novoJogo({ nome: "falsa", async gerarJSON(a2) { return { ok: true, provedor: "falsa", dados: { narracao: "A velha te entrega um frasco.", eventos: [{ tipo: "propor_recompensa", dados: "{\"item\":\"pocao\"}" }] } }; } });
+    clock += 60_000;
+    const cena = texto(await enviar("> ajudo a velha a carregar a lenha"));
+    assert.match(cena, /entrega um frasco[\s\S]*\+1 Poção de cura \(na sua bolsa\)/); assert.equal(await pocoes(), antes + 1);
+    jogo = novoJogo({ nome: "falsa", async gerarJSON() { return { ok: true, provedor: "falsa", dados: { narracao: "Você acha uma espada lendária.", eventos: [{ tipo: "propor_recompensa", dados: "{\"item\":\"excalibur\"}" }] } }; } });
+    clock += 60_000;
+    assert.match(texto(await enviar("> reviro o baú")), /Nada foi para a sua bolsa/);
+    jogo = novoJogo();
+    // duelar (com "r") abre o duelo, e a vida mostrada é a da ficha
+    const d1 = await noGrupo(outroGrupo("duelar Kaito"));
+    assert.match(texto(d1), /desafia \*Kaito Ryuen\*/);
+    const d2 = texto(await noGrupo(grupo("aceitar", false)));
+    const fK = await atual(), fR = (await db.query("select hp_max from jogo.jogadores where id = $1", [outro.id]))[0];
+    assert.match(d2, new RegExp(`Kaito Ryuen [▰▱]+ ${fK.hp_max}/${fK.hp_max}`)); assert.match(d2, new RegExp(`Rin [▰▱]+ ${fR.hp_max}/${fR.hp_max}`));
+    await noGrupo(grupo("desistir", false)); await noGrupo(outroGrupo("desistir"));
   });
   await t("Olhos da Terra: a mestra entrega o pergaminho a quem é da terra; ler cega e dá as habilidades; admin também concede", async () => {
     await db.query("update jogo.jogadores set regiao_atual = 'R-DAI-6', local_atual = null, atributo_magico = 'Fogo (Chama)', reino = 'Homura' where id = $1", [jogador.id]);

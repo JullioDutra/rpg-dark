@@ -207,7 +207,8 @@ t("duelo: turnos, dado às claras, guarda que quebra, vantagem de elemento, cura
   const A = { ...jog("Anti-magia", { nivel: 12 }), id: 1, nome: "Aki" }, B = { ...jog("Mago", { nivel: 12 }), id: 2, nome: "Bo" };
   let e = novoDuelo(A, B, 0);
   assert.equal(e.lados[0].guarda, DUELO.guarda); assert.match(painelDuelo(e), /Vez de (Aki|Bo)[\s\S]*\*1\* Atacar[\s\S]*guarda ◆/);
-  assert.equal(e.lados[1].hpMax, Math.round(B.hp_max * ajusteDuelo("Mago", 12) * parDuelo("Mago", "Anti-magia")), "vida de duelo usa o ajuste da classe e do confronto");
+  assert.equal(e.lados[1].hpMax, B.hp_max, "a vida no duelo é a da ficha");
+  assert.equal(e.lados[1].folego, ajusteDuelo("Mago", 12) * parDuelo("Mago", "Anti-magia"), "o equilíbrio entre classes entra como fôlego (dano recebido), não como vida diferente");
   // quem não está na vez não escolhe; a escolha é pelo número
   assert.match(escolherDuelo(e, "99").erro, /Escolha um número/);
   // Quebra-Selo (Anti-magia, nível 12) tira 4 de guarda; um golpe perfeito tira mais 1: a guarda quebra e o próximo golpe entra com +50%

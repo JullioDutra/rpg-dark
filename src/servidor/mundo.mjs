@@ -2,6 +2,7 @@
 // história (o motor avança os passos por ações concretas; a IA só narra), vilões em covis com derrota única e
 // anúncio dos feitos no grupo.
 import { MUNDO, VILOES, COVIL, CAPITULO, local as localDe, npcDe, dnaNpc } from "../mundo/mundo.mjs";
+import { presentear, PRESENTES_IA } from "./presentes.mjs";
 import { renderizar } from "../avatar/index.mjs";
 import { REGIAO, normal } from "../regras/exploracao.mjs";
 import { multAlcance, aplicarXP } from "../regras/combate.mjs";
@@ -424,7 +425,7 @@ export function criarMundo({ db, ia = null, rng, agora, ganchos = {} }) {
     const at = capituloAtivo(rid, st);
     const passo = at && !at.bloqueado ? at.cap.passos[at.passo] : null;
     const daHistoria = passo?.t === "falar" && passo.a === nid;
-    let resposta = null;
+    let resposta = null, presenteIA = null;
     const hoje = new Date(tempo).toISOString().slice(0, 10);
     const uso = (await um(db, "select valor from jogo.progresso where jogador_id = $1 and chave = 'ia-npc'", [j.id]))?.valor;
     const usadas = uso?.dia === hoje ? Number(uso.n ?? 0) : 0;
@@ -439,14 +440,16 @@ export function criarMundo({ db, ia = null, rng, agora, ganchos = {} }) {
       const sistema = `Você interpreta ${p.nome}, ${p.papel}, num RPG de anime (Yotsuhoshi) jogado no WhatsApp, em português do Brasil. Jeito de falar: ${p.jeito}. ` +
         `Você SABE disto e deve contar com suas palavras${daHistoria || !rel ? " nesta conversa" : " se fizer sentido"}: ${p.sabe}. ` +
         `Regras: responda só como o personagem, em até 450 caracteres, sem emojis, sem listas; falas entre aspas ou com travessão; não invente fatos grandes do mundo além do que você sabe; ` +
-        `nunca dê itens, poderes ou números; não resolva a missão pelo jogador. O que o aventureiro precisa fazer agora: ${rumo} ${turno >= CONVERSA.falas ? "Esta é a última fala desta conversa: despeça-se com naturalidade." : turno >= 2 ? "Se ainda não lembrou nesta conversa, lembre em uma frase curta o que ele precisa fazer; se já lembrou, não repita." : ""} Responda ao que ele disse ou perguntou. Você só fala: nunca descreva o que o aventureiro faz, nunca o segure, puxe ou leve a outro lugar, e não termine oferecendo duas opções. ${ganchos.historiaPara ? await ganchos.historiaPara(j) : ""} Relação com o jogador: ${amizade >= AMIZADE.proximo ? "amigo próximo, fala com carinho" : amizade >= AMIZADE.amigo ? "amigo" : rel ? "conhecido" : "primeiro encontro"}.`;
-      const esquema = { type: "object", additionalProperties: false, required: ["fala"], properties: { fala: { type: "string" } } };
+        `nunca dê poderes, números, dinheiro nem equipamento; só entregue um item se fizer muito sentido (ele te ajudou, é amigo) e apenas da lista do campo "presente" — se a fala entrega algo, preencha "presente"; se não preencher, não diga que entregou; não resolva a missão pelo jogador. O que o aventureiro precisa fazer agora: ${rumo} ${turno >= CONVERSA.falas ? "Esta é a última fala desta conversa: despeça-se com naturalidade." : turno >= 2 ? "Se ainda não lembrou nesta conversa, lembre em uma frase curta o que ele precisa fazer; se já lembrou, não repita." : ""} Responda ao que ele disse ou perguntou. Você só fala: nunca descreva o que o aventureiro faz, nunca o segure, puxe ou leve a outro lugar, e não termine oferecendo duas opções. ${ganchos.historiaPara ? await ganchos.historiaPara(j) : ""} Relação com o jogador: ${amizade >= AMIZADE.proximo ? "amigo próximo, fala com carinho" : amizade >= AMIZADE.amigo ? "amigo" : rel ? "conhecido" : "primeiro encontro"}.`;
+      const esquema = { type: "object", additionalProperties: false, required: ["fala"], properties: { fala: { type: "string" },
+        presente: { type: "string", description: `Deixe vazio. Só preencha se, na fala, você ENTREGA algo ao aventureiro; aí use um destes: ${PRESENTES_IA.join(", ")}` } } };
       try {
         const res = await Promise.race([
           ia.gerarJSON({ sistema, mensagens: [{ role: "user", content: `${j.nome} (${j.classe}) ${fala ? `diz: "${fala.slice(0, 300)}"` : "se aproxima para conversar."}` }], esquema, maxTokens: 500 }),
           new Promise((ok) => setTimeout(() => ok({ ok: false }), 15000)),
         ]);
         if (res.ok && res.dados.fala?.trim()) resposta = res.dados.fala.trim().slice(0, 700);
+        if (res.ok && res.dados.presente?.trim()) presenteIA = await presentear(db, j, res.dados.presente, tempo);
       } catch { /* cai no texto pronto */ }
     }
     resposta ??= `— ${p.sabe[0].toUpperCase()}${p.sabe.slice(1)}.`;
@@ -455,6 +458,7 @@ export function criarMundo({ db, ia = null, rng, agora, ganchos = {} }) {
       await db.query(`insert into jogo.inventario (jogador_id, item_id, tipo, qtd, dados) values ($1, 'pocao', 'consumivel', 2, '{}') on conflict (jogador_id, item_id) do update set qtd = jogo.inventario.qtd + 2`, [j.id]);
       saidas.push({ para, texto: `${p.nome} coloca um embrulho na sua mão. — Leva. Você vai precisar mais do que eu.\n${rodape("+2 poções de cura")}` });
     }
+    if (presenteIA) saidas.push({ para, texto: `_${presenteIA}_` });
     if (ganchos.aoFalar) saidas.push(...(await ganchos.aoFalar(j, chave, amizade, para)));
     saidas.push(...(await avancar(j, rid, { t: "falar", a: nid }, para, st)));
     return saidas;

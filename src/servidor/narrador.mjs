@@ -2,6 +2,7 @@
 // Travas: pedidos de poder/atributo e tentativas de manipular o bot nunca chegam à IA; alegações de poder são
 // marcadas como ignoradas; só eventos permitidos e vilões do marco/região viram jogo.
 import { readFileSync } from "node:fs";
+import { presentear, PRESENTES_IA } from "./presentes.mjs";
 import { narrar } from "../ia/narrador.mjs";
 import { criarInterpretador } from "../linguagem/interpretar.mjs";
 import { REGIAO, REGIOES, normal } from "../regras/exploracao.mjs";
@@ -42,7 +43,7 @@ function biblia(j) {
   ].filter(Boolean).join("\n");
 }
 
-export function criarNarrador({ db, ia, agora = () => Date.now() }) {
+export function criarNarrador({ db, ia, agora = () => Date.now(), aoPacto = null }) {
   async function marcoAtual(j) {
     let m = await um(db, `select * from jogo.marcos where mundo_id = $1 and jogador_id = $2 and status = 'ativo' order by id desc limit 1`, [j.mundo_id, j.id]);
     if (!m) {
@@ -75,6 +76,7 @@ export function criarNarrador({ db, ia, agora = () => Date.now() }) {
     const permitidos = {
       viloes: [...COVIL.entries()].filter(([id, c]) => c.regiao === j.regiao_atual && VILOES.get(id).arquetipo !== "divino").map(([id]) => id).slice(0, 4),
       fatos: (m?.fatos_disponiveis ?? []).map((id) => FATOS.get(id)).filter(Boolean).map((f) => ({ id: f.id, descricao: f.descricao })),
+      itens: PRESENTES_IA,
     };
     const historico = (await db.query(`select papel, texto from jogo.cenas where jogador_id = $1 order by criado_em desc limit $2`, [j.id, LIMITES.historico]))
       .reverse().map((c) => ({ role: c.papel === "jogador" ? "user" : "assistant", content: c.texto }));
@@ -113,6 +115,12 @@ export function criarNarrador({ db, ia, agora = () => Date.now() }) {
 
     // O motor aplica só o que entende e permite.
     for (const ev of r.eventos) {
+      if (ev.tipo === "propor_recompensa") {
+        // item citado na cena vai para a bolsa de verdade (lista fechada, com limite); fora disso, a cena avisa que nada foi guardado
+        const linha = await presentear(db, j, ev.dados.item ?? ev.dados.id ?? ev.dados.nome, tempo);
+        saidas.push({ para, texto: linha ? `_${linha}_` : "_(Nada foi para a sua bolsa desta vez: o que a cena mostrou ficou na cena.)_" });
+      }
+      if (ev.tipo === "propor_pacto" && aoPacto) saidas.push(...(await aoPacto(j, String(ev.dados.com ?? "").slice(0, 60), para)));
       if (ev.tipo === "iniciar_batalha" && !pendente && !viagem) {
         const v = VILOES.get((ev.dados.viloes ?? [])[0]);
         if (!v || !permitidos.viloes.includes(v.id)) continue;

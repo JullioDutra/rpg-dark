@@ -62,3 +62,37 @@ Detalhes e calibração em **[42](42-duelo-entre-jogadores.md)**.
 | A vida "resetava" depois de uma ação livre (`>`) | O contra-ataque do monstro tirava vida sem atualizar o marco de recuperação; a mensagem seguinte calculava horas de descanso e curava tudo | O golpe do monstro (e o preço em vida do Selo de Passagem) agora atualiza esse marco |
 | O narrador puxava uma missão do lugar no meio da luta | O narrador não sabia que havia uma ameaça em cena e seguia o capítulo da região | Com monstro na região (ou Calamidade que o jogador golpeou nos últimos 15 min), a cena é a luta: a ação acontece diante do monstro, sem capítulo, e a resposta termina com `Para ferir <monstro>: golpear` |
 | Frase livre virava passo de capítulo durante a luta | O atalho "ouvir a Ine" / "subo até X" valia sempre | Desligado enquanto a ameaça estiver em cena |
+
+## 40.8 Habilidades contra monstros e Calamidades
+
+`golpear` agora abre o **mesmo menu das batalhas**: Atacar, Magia do elemento, as habilidades da classe e as magias dos grimórios abertos. O jogador responde com o número (ou `golpear <nº>` direto).
+
+| Efeito da habilidade | Contra a ameaça |
+|----------------------|-----------------|
+| Força, vários golpes, atravessar defesa, bônus no dado | Valem como nas batalhas |
+| Dano contínuo | Entra somado no golpe (+30%) |
+| Cura, roubo de vida, custo em vida | Mexem na vida de verdade do jogador |
+| Proteção | Reduz o contra-ataque daquele turno |
+| Enfraquecer | Contra-ataque 25% menor |
+| Prender | O monstro não revida naquele turno |
+| Foco ("próximo golpe +50%") | Fica guardado para a próxima ação |
+| Mana | Gasta a mana de verdade; não há espera por habilidade, só o intervalo de 5 minutos entre ações |
+
+## 40.9 Pactos com monstros
+
+Durante uma luta contra monstro ou Calamidade, propor um pacto ("quero fazer um pacto com o monstro") abre uma oferta: `aceitar pacto` ou `recusar pacto`.
+
+- **Aceitar:** +15% de dano em **todas** as lutas (mesma regra do pacto de Kanata), +25 de corrupção, e o jogador não pode mais golpear aquela ameaça. O monstro recupera 8% da vida e o grupo é avisado de que alguém fez um pacto, sem dizer quem.
+- **Recusar:** +10 de mérito.
+- Máximo de 3 pactos por jogador; uma oferta de cena a cada 6 horas. `pactos` mostra quantos o jogador tem e o que valem. `purificar` num templo desfaz um.
+- Com 25 ou mais de corrupção, o final "estelar" da história fica fora do alcance de quem dá o último golpe.
+- Fora das ameaças, o narrador também pode abrir essa oferta quando o jogador propõe um pacto a um vilão da cena (evento `propor_pacto`).
+
+## 40.10 Itens de cenas e conversas vão para a bolsa
+
+Antes, a IA podia narrar "ela te entrega um frasco" sem nada acontecer. Agora:
+
+- O narrador e os NPCs só podem **propor** um item de uma lista fechada: poção de cura, poção de mana, ração, bandagem, bomba de fumaça e os cinco materiais.
+- Quem entrega é o motor: o item entra na bolsa e a mensagem termina com `+1 Poção de cura (na sua bolsa)`.
+- Limite: 3 por dia por jogador, com 20 minutos entre um e outro. Fora do limite ou da lista, a cena avisa que nada foi guardado.
+- A instrução para a IA passou a ser: nunca dizer que o jogador recebeu algo sem propor o item.

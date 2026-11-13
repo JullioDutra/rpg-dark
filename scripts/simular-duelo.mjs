@@ -83,7 +83,7 @@ const md = `# 42b — Duelos entre classes (gerado por \`scripts/simular-duelo.m
 > Duração média: **${turnos.toFixed(1)} turnos** somando os dois (${(turnos / 2).toFixed(1)} para cada um).
 
 ## Vitórias de cada classe contra o campo
-| Classe | Vida no duelo (níveis ${NIVEIS.join(", ")}) | Geral | ${NIVEIS.map((n) => `Nível ${n}`).join(" | ")} |
+| Classe | Fôlego no duelo (níveis ${NIVEIS.join(", ")}) | Geral | ${NIVEIS.map((n) => `Nível ${n}`).join(" | ")} |
 |---|:---:|:---:|${NIVEIS.map(() => ":---:").join("|")}|
 ${CLASSES.map((cl) => `| ${cl} | ${D.AJUSTE_DUELO[cl].map((x) => `×${x.toFixed(2)}`).join(" · ")} | **${pct(v[cl].total, v[cl].n)}%** | ${NIVEIS.map((n) => `${pct(v[cl].porNivel[n], porNivelN)}%`).join(" | ")} |`).join("\n")}
 

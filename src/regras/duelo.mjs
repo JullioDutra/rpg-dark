@@ -73,8 +73,11 @@ const barra = (v, max, n = 8) => { const c = Math.max(0, Math.min(n, Math.round(
 
 function lado(j, adversario = null) {
   const at = atributosEfetivos(j, Date.now(), j.equip ?? {});
-  const vida = Math.round(j.hp_max * ajusteDuelo(j.classe, j.nivel) * (adversario ? parDuelo(j.classe, adversario.classe) : 1));
-  return { id: Number(j.id), nome: j.nome, classe: j.classe, nivel: j.nivel, hp: vida, hpMax: vida, mp: j.mp_max, mpMax: j.mp_max, at, guarda: DUELO.guarda, aberto: false,
+  // A vida no duelo é a da ficha (é o número que o jogador conhece). O equilíbrio entre classes entra como "fôlego":
+  // quanto do dano recebido realmente desconta. Fôlego 1,5 = cada golpe tira 1/1,5 do que tiraria.
+  const folego = ajusteDuelo(j.classe, j.nivel) * (adversario ? parDuelo(j.classe, adversario.classe) : 1);
+  const vida = j.hp_max;
+  return { id: Number(j.id), nome: j.nome, classe: j.classe, nivel: j.nivel, hp: vida, hpMax: vida, folego, mp: j.mp_max, mpMax: j.mp_max, at, guarda: DUELO.guarda, aberto: false,
     elemento: elementoBase(j.atributo_magico), recargas: {}, protecao: 0, protecaoTurnos: 0, foco: false, fraco: 0, preso: 0, imune: 0, queima: 0, queimaDano: 0, turnos: 0 };
 }
 
@@ -155,7 +158,7 @@ export function agirDuelo(estado, acao, rng, agora = Date.now()) {
     const elemento = magico ? multElemento(j.elemento, o.elemento) : 1;
     const aberto = o.aberto;
     const mult = d.mult * elemento * (aberto ? DUELO.aberto : 1) * (j.foco ? 1.5 : 1) * (j.fraco ? (po.reducao && o.classe === "Bruxo" ? 0.65 : 0.75) : 1) * (1 - reducao)
-      * (1 - (o.protecaoTurnos && !aberto ? o.protecao : 0)) * DUELO.dano;
+      * (1 - (o.protecaoTurnos && !aberto ? o.protecao : 0)) * DUELO.dano / (o.folego ?? 1);
     let dano = 0;
     for (let g = 0; g < (x.golpes ?? 1); g++) dano += Math.max(1, Math.round((((magico ? j.at.MAG : j.at.FOR) * 3 * K(j.nivel)) / (K(j.nivel) + Math.max(0, def))) * poder * mult));
     o.hp -= dano; j.foco = false;
@@ -188,7 +191,7 @@ export function agirDuelo(estado, acao, rng, agora = Date.now()) {
     if (h.tipo === "fisico" || h.tipo === "magico") {
       const dano = ferir(h.tipo, h.poder, d, `*${h.nome}*`, h);
       if (dano > 0) {
-        if (h.rouba) e.log.push(`${j.nome} recupera ${curar(j, dano * h.rouba)} de vida.`);
+        if (h.rouba) e.log.push(`${j.nome} recupera ${curar(j, (dano * (o.folego ?? 1) / (j.folego ?? 1)) * h.rouba)} de vida.`);
         if (h.curaFixa) e.log.push(`${j.nome} recupera ${curar(j, j.hpMax * h.curaFixa)} de vida.`);
         if (h.queima) { o.queima = h.queima; o.queimaDano = Math.max(1, Math.round(dano * 0.15)); }
         if (h.enfraquece) o.fraco = h.enfraquece;

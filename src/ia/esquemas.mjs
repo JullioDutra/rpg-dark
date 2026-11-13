@@ -3,7 +3,7 @@
 
 export const EVENTOS_PERMITIDOS = [
   "iniciar_batalha", "propor_recompensa", "revelar_subfase", "atualizar_marco", "disparar_fato",
-  "registrar_relacao", "registrar_fato_canonico", "pedir_teste", "julgar_tatica", "pista_do_ovo",
+  "registrar_relacao", "registrar_fato_canonico", "pedir_teste", "julgar_tatica", "pista_do_ovo", "propor_pacto",
 ];
 
 export const ESQUEMA_NARRADOR = {
