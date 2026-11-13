@@ -7,8 +7,8 @@
 - Erros de estrutura (travas): **0**
 
 ## Progressão sem moer (só XP de capítulos e dos vilões dos capítulos)
-- Só o caminho crítico: nível final 98 · 29 lutas de história (116 tentativas esperadas) · 40 viagens · 16.8 h de jogo ativo · vigor de viagem: 600 (2.1 dias só esperando o vigor voltar, ou 17 rações)
-- Todos os 54 capítulos: nível final 100 · 99 lutas de história (310 tentativas esperadas) · 187 viagens · 56.2 h de jogo ativo · vigor de viagem: 2805 (11.3 dias só esperando o vigor voltar, ou 91 rações)
+- Só o caminho crítico: nível final 98 · 29 lutas de história (116 tentativas esperadas) · 40 viagens · 16.8 h de jogo ativo · vigor de viagem: 600 (1.0 dias só esperando o vigor voltar, ou 17 rações)
+- Todos os 54 capítulos: nível final 100 · 99 lutas de história (310 tentativas esperadas) · 187 viagens · 56.2 h de jogo ativo · vigor de viagem: 2805 (5.6 dias só esperando o vigor voltar, ou 91 rações)
 - XP total da história: 1.415.310 → nível 87 · com os 1 vilões opcionais: nível 87 · para o nível 98 são precisos 1.877.301
 
 ## Onde o jogador enfrenta vilão acima do próprio nível (no caminho crítico, sem nada além dele)
