@@ -754,6 +754,46 @@ export async function testarMundoServidor({ db, jogador, outro, mensagem, grupo,
     assert(so.some((x) => /Outra lembrança que não é sua[\s\S]*Sayo/.test(x.texto ?? "")), "quem recusou recebe o segundo eco quando o dragão cai");
     await limpar();
   });
+  await t("diário: começa pelo mundo, cresce com o que o jogador descobre e não mostra o que ele ainda não viu", async () => {
+    const { MUNDO, CAPITULO } = await import("../src/mundo/mundo.mjs");
+    const { REGIAO } = await import("../src/regras/exploracao.mjs");
+    await db.query("update jogo.batalhas set status = 'encerrada' where status <> 'encerrada'"); await db.query("delete from jogo.exploracoes where pendente"); await db.query("delete from jogo.ameacas");
+    // Rin vira um recém-chegado: sem progresso, sem conhecidos, sem viagens
+    for (const tb of ["progresso", "relacoes", "npcs_mortos", "derrotas_vilao", "viagens", "grimorios_jogador", "pets"]) await db.query(`delete from jogo.${tb} where jogador_id = $1`, [outro.id]);
+    // um lugar cuja primeira história ninguém do mundo fez ainda, sem exigências, e com gente para conversar
+    const feitosNoMundo = new Set((await db.query("select distinct chave from jogo.progresso where chave like 'c:%'")).map((x) => x.chave.slice(2)));
+    const rid = Object.keys(MUNDO).find((k) => { const c = MUNDO[k].capitulos?.[0]; return c && !feitosNoMundo.has(c.id) && !(c.requer ?? []).length && c.passos.length >= 2 && Object.keys(MUNDO[k].npcs ?? {}).length; });
+    assert(rid, "há uma região com história intocada para o teste");
+    const cap = MUNDO[rid].capitulos[0], [nid, npc] = Object.entries(MUNDO[rid].npcs)[0];
+    await db.query("update jogo.jogadores set regiao_atual = $2, local_atual = null, hp = hp_max, titulo = null where id = $1", [outro.id, rid]);
+    await noGrupo(outroPrivado("itens")); // a notícia das histórias que outros já viveram chega antes (herança): não é do diário
+    const herdados = (await db.query("select chave from jogo.progresso where jogador_id = $1 and chave like 'c:%'", [outro.id])).map((x) => x.chave.slice(2));
+    const d0 = await noGrupo(outroPrivado("diario"));
+    assert.match(d0[0].texto, /Diário de Rin[\s\S]*\*1\* O mundo como te contaram[\s\S]*\*2\* Lugares onde você esteve/);
+    assert.doesNotMatch(d0[0].texto, /Pessoas que você conheceu|Inimigos que você enfrentou|Boatos e ecos/, "sem descobertas, essas partes não existem");
+    assert.match(d0[1].texto, /1\. O mundo como te contaram[\s\S]*quatro reinos[\s\S]*Reino do Vento/);
+    const tudo0 = texto(await noGrupo(outroPrivado("diario tudo")));
+    assert(!tudo0.includes(cap.pista) && !tudo0.includes(cap.fim) && !tudo0.includes(npc.sabe), "nada do capítulo nem do NPC antes de descobrir");
+    assert(tudo0.includes(cap.titulo) && tudo0.includes(cap.passos[0].txt) && !tudo0.includes(cap.passos[1].txt), "o capítulo do lugar onde ele está aparece só até o passo atual");
+    for (const id of herdados) { const h = CAPITULO.get(id); assert((!h.pista || tudo0.includes(h.pista)) && !(h.fim && tudo0.includes(h.fim)), "o que foi só ouvido aparece como ouvido: pista sim, desfecho não"); }
+    // nenhuma história que ninguém contou a ele aparece
+    for (const c of CAPITULO.values()) if (c.id !== cap.id && !herdados.includes(c.id)) assert(!(c.pista && tudo0.includes(c.pista)) && !(c.fim && tudo0.includes(c.fim)), `vazou ${c.id}`);
+    // conversa com alguém → entra em Pessoas
+    clock += 60_000; await noGrupo(outroPrivado(`falar ${npc.nome.split(" ").at(-1).length >= 4 ? npc.nome.split(" ").at(-1) : npc.nome}`));
+    const d1 = texto(await noGrupo(outroPrivado("diario pessoas")));
+    assert(d1.includes(npc.nome) && d1.includes(npc.sabe));
+    // conclui o capítulo → entra em Histórias com desfecho e pista
+    await db.query("insert into jogo.progresso (jogador_id, chave, valor) values ($1, $2, 'true') on conflict (jogador_id, chave) do update set valor = 'true'", [outro.id, `c:${cap.id}`]);
+    const d2 = texto(await noGrupo(outroPrivado("diario historias")));
+    assert(d2.includes(cap.fim) && d2.includes(cap.pista), "capítulo vivido: desfecho e pista");
+    // região nunca visitada não aparece em Lugares
+    const visit = new Set([rid, ...herdados.map(() => null)]);
+    const longe = Object.keys(MUNDO).find((k) => k !== rid && k.slice(0, 5) !== rid.slice(0, 5));
+    const d3 = texto(await noGrupo(outroPrivado("diario lugares")));
+    assert(d3.includes(`*${REGIAO.get(rid).nome}* —`) && !d3.includes(`*${REGIAO.get(longe).nome}* —`), "só os lugares onde esteve");
+    assert.match(texto(await noGrupo(outroPrivado("diario 99"))), /Seu diário tem estas partes/);
+    await db.query("delete from jogo.progresso where jogador_id = $1 and chave = $2", [outro.id, `c:${cap.id}`]);
+  });
   await t("Olhos da Terra: a mestra entrega o pergaminho a quem é da terra; ler cega e dá as habilidades; admin também concede", async () => {
     await db.query("update jogo.jogadores set regiao_atual = 'R-DAI-6', local_atual = null, atributo_magico = 'Fogo (Chama)', reino = 'Homura' where id = $1", [jogador.id]);
     await enviar("falar tsuchi"); clock += 7 * 3_600_000;

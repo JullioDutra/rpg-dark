@@ -568,13 +568,13 @@ export function criarMundo({ db, ia = null, rng, agora, ganchos = {} }) {
       const tinha = await db.query("delete from jogo.progresso where jogador_id = $1 and chave = 'acomp' returning 1", [j.id]);
       return { tratado: true, saidas: [{ para, texto: tinha.length ? "Você se despede e segue o seu próprio passo. O que já foi feito juntos continua valendo." : "Você já anda por conta própria." }] };
     }
-    if (/^(missao|missoes|historia|capitulo|objetivo|diario|caminho)$/.test(t)) {
+    if (/^(missao|missoes|historia|capitulo|objetivo|caminho)$/.test(t)) {
       const st = await estado(j);
       const at = capituloAtivo(rid, st);
       const feitos = [...st.P.keys()].filter((k) => k.startsWith("c:")).length;
       let texto = `*Seu caminho*\n${objetivoCampanha(st.B)}\n\n`;
       texto += at && !at.bloqueado ? `*Aqui em ${nomeRegiao(rid)}*\n${textoPasso(at.cap, at.passo)}` : at?.bloqueado ? `*Aqui em ${nomeRegiao(rid)}*\nHá uma história aqui (_${at.cap.titulo}_), mas ainda não chegou a hora dela.` : `*Aqui em ${nomeRegiao(rid)}*\nVocê já resolveu tudo o que havia por aqui.`;
-      texto += `\n\n${rodape(`${feitos} de ${CAPITULO.size} capítulos`, `${st.D.size} de ${VILOES.size} vilões`, "segredos · amigos · feitos")}`;
+      texto += `\n\n${rodape(`${feitos} de ${CAPITULO.size} capítulos`, `${st.D.size} de ${VILOES.size} vilões`, "diario · segredos · amigos · feitos")}`;
       return { tratado: true, saidas: [{ para, texto }] };
     }
     if (/^(segredos|pistas|verdades)$/.test(t)) {

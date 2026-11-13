@@ -22,6 +22,7 @@ import { criarMestre } from "./mestre.mjs";
 import { criarAmeacas } from "./ameacas.mjs";
 import { criarGrimorios } from "./grimorios.mjs";
 import { criarSeteLuzes } from "./seteluzes.mjs";
+import { criarDiario } from "./diario.mjs";
 import { kitInicial, bonusEquip, item as itemDe } from "../regras/itens.mjs";
 import { XP_PROXIMO } from "../../scripts/balanceamento.mjs";
 import { comandoExploracao, recuperarVigor, buscarRegioes } from "../regras/exploracao.mjs";
@@ -96,6 +97,7 @@ export function criarJogo({ relogio = null, db, sal = process.env.TELEFONE_SAL ?
   const social = criarSocial({ db, rng, agora });
   const ameacas = criarAmeacas({ db, rng, agora, relogio });
   const grimorios = criarGrimorios({ db, rng });
+  const diario = criarDiario({ db });
   const seteLuzes = criarSeteLuzes({ db, agora, ameacas, grimorios, relogio });
   fimDeDuelo = seteLuzes.aoFimDuelo;
   const mestre = criarMestre({ db, agora, ameacas, grimorios, seteLuzes });
@@ -228,7 +230,9 @@ export function criarJogo({ relogio = null, db, sal = process.env.TELEFONE_SAL ?
   async function fichaCompleta(j, para) {
     const inv = await db.query("select item_id, equipado from jogo.inventario where jogador_id = $1 and equipado", [j.id]);
     const bonus = bonusEquip(inv), efetivos = atributosEfetivos(j, agora(), bonus);
-    return { para, imagem: cartaPersonagem({ ...j, atributos: efetivos }, j.avatar_dna), legenda: legendaFicha(j, agora(), { bonus, itens: inv.map((l) => itemDe(l.item_id)?.nome ?? l.item_id) }) };
+    const legenda = legendaFicha(j, agora(), { bonus, itens: inv.map((l) => itemDe(l.item_id)?.nome ?? l.item_id) });
+    if (!j.avatar_dna) return { para, texto: legenda }; // personagem sem retrato (não deveria acontecer): a ficha sai só em texto, sem derrubar a resposta
+    return { para, imagem: cartaPersonagem({ ...j, atributos: efetivos }, j.avatar_dna), legenda };
   }
 
   async function ficha(msg, mundo, destino) {
@@ -351,7 +355,7 @@ export function criarJogo({ relogio = null, db, sal = process.env.TELEFONE_SAL ?
     const ehLocal = /^(ir|vou|visitar|entrar)\b/.test(tc) ? await mundo.comando(j, tc, msg.texto, para) : { tratado: false };
     if (ehLocal.tratado) return ehLocal.saidas;
     // Comandos do mundo vivo têm verbo próprio: a exploração só confere chegadas (para "falar sobre o mapa" não abrir o mapa)
-    const direto = /^(falar|conversar|perguntar|locais|lugares|olhar|missao|missoes|historia|capitulo|objetivo|diario|caminho|segredos|pistas|amigos|amizades|feitos|noticias|vingar|vinganca|pet|boatos|boato|rumores|contos|ouvir|lembrar|ecos|eco|aceitar pacto|recusar pacto|pacto|pactos|meus pactos|resistir|purificar|revigorar|sopro de mana|sopro|restaurar vigor|recuperar vigor|dar vigor|contratos|contrato|guilda|quadro|grimorio|grimorios|meus grimorios|livros|magias|abrir grimorio|abrir livro|ler grimorio|fechar grimorio|guardar grimorio|equipar grimorio|usar grimorio|ranking|rank|placar|acompanhar|seguir com|ir com|juntar|seguir sozinho|seguir sozinha|separar|deixar grupo|minha historia|aceitar a terra|aceito a terra|fechar o pergaminho|fechar pergaminho)\b/.test(tc);
+    const direto = /^(falar|conversar|perguntar|locais|lugares|olhar|missao|missoes|historia|capitulo|objetivo|diario|meu diario|caderno|caminho|segredos|pistas|amigos|amizades|feitos|noticias|vingar|vinganca|pet|boatos|boato|rumores|contos|ouvir|lembrar|ecos|eco|aceitar pacto|recusar pacto|pacto|pactos|meus pactos|resistir|purificar|revigorar|sopro de mana|sopro|restaurar vigor|recuperar vigor|dar vigor|contratos|contrato|guilda|quadro|grimorio|grimorios|meus grimorios|livros|magias|abrir grimorio|abrir livro|ler grimorio|fechar grimorio|guardar grimorio|equipar grimorio|usar grimorio|ranking|rank|placar|acompanhar|seguir com|ir com|juntar|seguir sozinho|seguir sozinha|separar|deixar grupo|minha historia|aceitar a terra|aceito a terra|fechar o pergaminho|fechar pergaminho)\b/.test(tc);
     const e = await exploracao(j.id, info || direto ? { ...msg, texto: "" } : /^(ir|vou)\b/.test(tc) ? { ...msg, texto: tc.replace(/^(ir|vou)\s+(para |pra |a |ao |à )?/, "viajar ") } : msg);
     j = { ...j, ...e.jogador };
     const chegou = j.regiao_atual !== antes ? await mundo.chegada(j, para) : [];
@@ -359,6 +363,8 @@ export function criarJogo({ relogio = null, db, sal = process.env.TELEFONE_SAL ?
     // 4) Mundo vivo: locais, NPCs, missão, segredos, amigos, feitos, vingar; pet, pactos, boatos, ecos
     const ex = await extras.comando(j, tc, para, msg.texto);
     if (ex.tratado) return [...e.saidas, ...chegou, ...ex.saidas, ...(ex.pactoAmeaca ? await ameacas.aoPacto(j, ex.pactoAmeaca) : [])];
+    const di = await diario.comando(j, tc, para);
+    if (di.tratado) return [...e.saidas, ...chegou, ...di.saidas];
     const gr = await grimorios.comando(j, tc, para);
     if (gr.tratado) return [...e.saidas, ...chegou, ...gr.saidas];
     const so = await social.comando(j, tc, para);
@@ -581,6 +587,7 @@ locais — o que existe onde você está
 ir <lugar> — visitar um lugar
 falar <nome> — conversar com alguém
 missao — sua história e o próximo passo
+diario — tudo o que você já descobriu do mundo
 acompanhar <nome> — viver a história junto com outro jogador
 entrar na luta — lutar ao lado de quem você acompanha (elites e chefes)
 explorar — procurar encrenca e achados
