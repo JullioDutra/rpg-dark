@@ -196,6 +196,57 @@ const ARQ = {
     marcas(t, d, r);
   },
 
+  // Espírito da floresta (kodama): porte 1 = broto, 2 = guardião jovem, 3 = árvore anciã. cor = casca, corFolha, corFlor, corNucleo.
+  arvore(t, d, r) {
+    const porte = d.porte ?? 2, C = rampa(d.cor), F = rampa(d.corFolha ?? "#4a9a3a"), flor = d.corFlor ?? "#ffe07a", nucleo = d.corNucleo ?? "#9affc0";
+    const folha = (x, y, dx, dy, tam = 4) => t.carimbar(t.mascara().poligono([[x, y], [x + dx * tam - dy * tam * 0.45, y + dy * tam + dx * tam * 0.45], [x + dx * tam * 1.9, y + dy * tam * 1.9], [x + dx * tam + dy * tam * 0.45, y + dy * tam - dx * tam * 0.45]]), F);
+    const florzinha = (x, y) => { for (const [a, b] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) t.set(x + a, y + b, flor); t.set(x, y, "#fff8e0"); };
+    if (porte === 1) {
+      // broto: uma semente redonda de olhos grandes, com duas folhas novas e um talo
+      t.pintar(t.mascara().elipse(32, 58, 16, 3), misturar(C[0], "#000000", 0.4));
+      t.carimbar(t.mascara().linha(32, 30, 32, 16, 2), F, { sombra: 0 });
+      folha(32, 18, -0.75, -0.65, 6); folha(32, 18, 0.75, -0.65, 6);
+      t.carimbar(t.mascara().elipse(32, 42, 13, 14).elipse(32, 50, 15, 9), C, { sombra: 2 });
+      t.pintar(t.mascara().elipse(32, 49, 8, 6), misturar(C[2], "#fff0d0", 0.35));
+      olho(t, 26, 40, d.corOlhos, "brilho", 2.1); olho(t, 38, 40, d.corOlhos, "brilho", 2.1);
+      t.pintar(t.mascara().linha(30, 46, 32, 47).linha(32, 47, 34, 46), C[0]);
+      for (const x of [20, 44]) t.carimbar(t.mascara().elipse(x, 56, 4, 3), C);
+      florzinha(32, 13);
+    } else {
+      const anciao = porte >= 3;
+      // raízes e tronco
+      const tronco = t.mascara().poligono(anciao ? [[21, 63], [23, 30], [41, 30], [43, 63]] : [[24, 63], [25, 32], [39, 32], [40, 63]]);
+      for (const lado of [-1, 1]) tronco.poligono([[32 + lado * 9, 63], [32 + lado * (anciao ? 26 : 19), 63], [32 + lado * (anciao ? 24 : 18), 60], [32 + lado * 9, 52]]);
+      // galhos (braços) abertos
+      const galhos = t.mascara();
+      for (const lado of [-1, 1]) {
+        galhos.linha(32 + lado * 8, 40, 32 + lado * 20, 34, 3).linha(32 + lado * 20, 34, 32 + lado * (anciao ? 28 : 25), 24, 2);
+        if (anciao) galhos.linha(32 + lado * 20, 34, 32 + lado * 29, 38, 2).linha(32 + lado * 6, 30, 32 + lado * 13, 10, 2).linha(32 + lado * 11, 18, 32 + lado * 19, 12, 2);
+      }
+      t.carimbar(galhos, C, { sombra: 0 });
+      t.carimbar(tronco, C, { sombra: 2 });
+      // copa
+      const copa = t.mascara().elipse(32, anciao ? 17 : 20, anciao ? 20 : 15, anciao ? 12 : 10).elipse(anciao ? 15 : 20, anciao ? 22 : 24, anciao ? 10 : 7, anciao ? 8 : 6).elipse(anciao ? 49 : 44, anciao ? 22 : 24, anciao ? 10 : 7, anciao ? 8 : 6);
+      if (anciao) copa.elipse(24, 9, 9, 6).elipse(41, 8, 9, 6).elipse(7, 30, 6, 5).elipse(57, 30, 6, 5);
+      t.carimbar(copa, F, { sombra: 2 });
+      for (let k = 0; k < (anciao ? 26 : 14); k++) { const x = Math.floor(8 + r() * 48), y = Math.floor(6 + r() * 22); if (copa.tem(x, y)) t.set(x, y, F[3]); }
+      for (const lado of [-1, 1]) folha(32 + lado * (anciao ? 28 : 25), 24, lado * 0.6, -0.8, 3);
+      // rosto na casca: olhos fundos que brilham, boca de fenda, veios
+      t.pintar(t.mascara().elipse(27.5, 40, 3.2, 3).elipse(36.5, 40, 3.2, 3), "#120a10");
+      olho(t, 27.5, 40, d.corOlhos, "brilho", anciao ? 1.5 : 1.3); olho(t, 36.5, 40, d.corOlhos, "brilho", anciao ? 1.5 : 1.3);
+      t.pintar(t.mascara().linha(29, 47, 32, 48).linha(32, 48, 35, 47), "#120a10");
+      t.pintar(t.mascara().linha(25, 34, 27, 36).linha(39, 34, 37, 36).linha(26, 54, 28, 60).linha(37, 52, 36, 58), C[0]);
+      // o coração do espírito, na cor do jogador
+      t.pintar(t.mascara().elipse(32, 56, anciao ? 3.4 : 2.4, anciao ? 3.4 : 2.4), misturar(nucleo, "#000000", 0.25));
+      t.pintar(t.mascara().elipse(32, 56, anciao ? 2.2 : 1.4, anciao ? 2.2 : 1.4), nucleo); t.set(31, 55, "#ffffff");
+      if (anciao) { const v = t.mascara().linha(32, 52, 32, 49).linha(29, 57, 26, 60).linha(35, 57, 38, 60); t.pintar(v, nucleo); }
+      // flores (e folhas caindo no ancião)
+      for (let k = 0; k < (anciao ? 9 : 4); k++) { let x, y, n = 0; do { x = Math.floor(8 + r() * 48); y = Math.floor(7 + r() * 20); } while (!copa.tem(x, y) && n++ < 20); florzinha(x, y); }
+      if (anciao) for (let k = 0; k < 10; k++) { const x = Math.floor(2 + r() * 60), y = Math.floor(30 + r() * 30); if (!tronco.tem(x, y) && !galhos.tem(x, y)) { t.set(x, y, k % 3 ? F[2] : flor); t.set(x + 1, y + 1, k % 3 ? F[1] : flor); } }
+    }
+    marcas(t, d, r);
+  },
+
   aracnideo(t, d, r) {
     const C = rampa(d.cor);
     const pernas = t.mascara();

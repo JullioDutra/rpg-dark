@@ -875,16 +875,16 @@ export async function testarMundoServidor({ db, jogador, outro, mensagem, grupo,
     const F = await import("../src/regras/fera.mjs");
     const { criarFera } = await import("../src/servidor/fera.mjs");
     // dados: 7 animais × 3 estágios, cada estágio com habilidade própria
-    assert.equal(Object.keys(F.FERAS).length, 7);
+    assert.equal(Object.values(F.FERAS).filter((f) => f.linhagem === "fera").length, 7);
     const ids = new Set();
     for (const f of Object.values(F.FERAS)) { assert.equal(f.estagios.length, 3); for (const e of f.estagios) { assert(e.nome && e.hab.nome && e.hab.resumo && e.hab.recarga); ids.add(e.hab.id); } }
-    assert.equal(ids.size, 21);
+    assert.equal(ids.size, Object.keys(F.FERAS).length * 3);
     await db.query("update jogo.batalhas set status = 'encerrada' where status <> 'encerrada'"); await db.query("delete from jogo.exploracoes where pendente"); await db.query("delete from jogo.ameacas");
     await db.query("delete from jogo.progresso where chave in ('fera', 'falando', 'ameaca-vez', 'duelo-ativo', 'duelo-estado')"); await db.query("delete from jogo.inventario where jogador_id = $1", [jogador.id]);
     await db.query("update jogo.jogadores set classe = 'Mago', tipo_animal = null, nivel = 10, hp = hp_max, mp = 200, mp_max = 200, regiao_atual = 'R-HOM-3', local_atual = null where id = $1", [jogador.id]);
     // quem não é Meio-humano não tem fera
-    assert.match(texto(await enviar("fera")), /Só os Meio-humanos/);
-    assert.match(texto(await noGrupo(adminPrivado("mestre transformar Kaito"))), /Só quem é Meio-humano/);
+    assert.match(texto(await enviar("fera")), /Só Meio-humanos e Forças da Natureza/);
+    assert.match(texto(await noGrupo(adminPrivado("mestre transformar Kaito"))), /Só Meio-humanos e Forças da Natureza/);
     await db.query("update jogo.jogadores set classe = 'Meio-humano', tipo_animal = 'raposa' where id = $1", [jogador.id]);
     assert.match(texto(await enviar("fera")), /raposa no seu sangue[\s\S]*◇ _Raposa de Uma Cauda — nível 1 e uma Relíquia[\s\S]*\?\?\?/);
     // 1º despertar pela relíquia achada explorando
@@ -934,6 +934,93 @@ export async function testarMundoServidor({ db, jogador, outro, mensagem, grupo,
     assert.equal(animal.cor, CABELO[dna.corCabelo]); assert.equal(animal.corOlhos, dna.corOlhos); assert.equal(animal.caudas, 9);
     await db.query("update jogo.jogadores set classe = 'Mago', tipo_animal = null, avatar_dna = $2 where id = $1", [jogador.id, JSON.stringify(unido.base)]);
     await db.query("delete from jogo.progresso where chave = 'fera'");
+  });
+  await t("Força da Natureza desperta o espírito do seu reino (semente ou mestre); cada estágio dá habilidade e atributos, que valem na ficha, nas lutas e nos duelos, junto com grimórios e Grandes Itens", async () => {
+    const F = await import("../src/regras/fera.mjs");
+    const D = await import("../src/regras/duelo.mjs");
+    const { criarFera } = await import("../src/servidor/fera.mjs");
+    assert.equal(Object.values(F.FERAS).filter((f) => f.linhagem === "natureza").length, 4);
+    assert.equal(F.chaveDespertar({ classe: "Força da Natureza", reino: "Kokū" }), "nat-Daichi", "reino sem espírito próprio usa o carvalho");
+    assert.equal(F.chaveDespertar({ classe: "Mago", reino: "Daichi" }), null);
+    assert.deepEqual(F.bonusDespertar("nat-Daichi", 0, { DEF: 50, RES: 40 }), {});
+    assert.deepEqual(F.bonusDespertar("nat-Daichi", 1, { DEF: 50, RES: 40 }), { DEF: 3, RES: 2 });
+    assert.deepEqual(F.bonusDespertar("nat-Daichi", 3, { DEF: 50, RES: 40 }), { DEF: 10, RES: 8 });
+    assert.deepEqual(F.bonusDespertar("lobo", 2, { FOR: 50, VEL: 25 }), { FOR: 6, VEL: 3 });
+    await db.query("update jogo.batalhas set status = 'encerrada' where status <> 'encerrada'"); await db.query("delete from jogo.exploracoes where pendente"); await db.query("delete from jogo.ameacas");
+    await db.query("delete from jogo.progresso where chave in ('fera', 'falando', 'ameaca-vez', 'duelo-ativo', 'duelo-estado', 'duelo', 'duelos-dia', 'b:olhos-da-terra')"); await db.query("delete from jogo.inventario where jogador_id = any($1)", [[jogador.id, outro.id]]);
+    await db.query("delete from jogo.grimorios_jogador"); await db.query("delete from jogo.pets");
+    await db.query(`update jogo.jogadores set classe = 'Força da Natureza', tipo_animal = null, reino = 'Homura', nivel = 10, atributos = '{"FOR":30,"DEF":20,"MAG":40,"RES":20,"VEL":15,"SOR":10}', hp = hp_max, mp = 200, mp_max = 200, regiao_atual = 'R-HOM-3', local_atual = null where id = $1`, [jogador.id]);
+    const antes = (await atual()).avatar_dna;
+    assert.match(texto(await enviar("forma")), /espírito das cinzas férteis em você[\s\S]*Broto de Cinza — nível 1 e uma Semente do Primeiro Bosque \(\+6% de MAG e FOR\)/);
+    // a relíquia dos Meio-humanos não serve para a Força da Natureza, e não é gasta
+    await db.query(`insert into jogo.inventario (jogador_id, item_id, tipo, qtd, dados) values ($1, 'reliquia-fera', 'historia', 1, '{}')`, [jogador.id]);
+    assert.match(texto(await enviar("usar relíquia")), /Só um Meio-humano[\s\S]*continua na sua bolsa/);
+    assert.equal((await db.query("select count(*)::int n from jogo.inventario where jogador_id = $1", [jogador.id]))[0].n, 1);
+    await db.query("delete from jogo.inventario where jogador_id = $1", [jogador.id]);
+    // 1º despertar pela semente achada explorando
+    const fe = criarFera({ db, rng: () => 0, agora: () => clock });
+    assert.match(texto(await fe.aoExplorar(await atual(), "pv")), /Semente do Primeiro Bosque[\s\S]*usar semente/);
+    const d1 = await enviar("usar semente");
+    assert(d1.some((x) => x.para !== GRUPO && x.imagem?.length > 3000 && /Broto de Cinza[\s\S]*Nova habilidade:\* \*Semente de Brasa[\s\S]*Atributos:\* \+6% de MAG e FOR/.test(x.legenda)), "o jogador recebe a arte, a habilidade e o bônus");
+    assert(doGrupo(d1).some((x) => x.imagem?.length > 3000 && /ALGO BROTOU[\s\S]*Kaito Ryuen\* despertou o espírito das cinzas férteis[\s\S]*Broto de Cinza/.test(x.legenda)), "o grupo recebe a arte");
+    assert.equal((await db.query("select count(*)::int n from jogo.inventario where jogador_id = $1 and item_id = 'semente-ancestral'", [jogador.id]))[0].n, 0, "a semente é gasta");
+    // ficha: o bônus do estágio aparece somado (MAG 40 → 42, FOR 30 → 32)
+    const f1 = (await enviar("ficha")).at(-1);
+    assert.match(f1.legenda ?? f1.texto, /Forma desperta: Broto de Cinza \(MAG \+2, FOR \+2\)/);
+    const m2 = await noGrupo(adminPrivado("mestre transformar Kaito"));
+    assert(doGrupo(m2).some((x) => /A FLORESTA RESPONDE[\s\S]*Guardião da Queimada/.test(x.legenda ?? "") && !/mestre|admin/i.test(x.legenda)));
+    const m3 = await noGrupo(adminPrivado("mestre transformar Kaito"));
+    assert(doGrupo(m3).some((x) => /O ESPÍRITO ANCIÃO DESPERTOU[\s\S]*Hi-no-Kodama/.test(x.legenda ?? "")));
+    const f3 = (await enviar("ficha")).at(-1);
+    assert.match(f3.legenda ?? f3.texto, /Forma desperta: Hi-no-Kodama[^\n]*\(MAG \+8, FOR \+6\)/, "no 3º estágio o bônus é 20%");
+    assert.match(texto(await enviar("atributos")).concat(f3.legenda ?? ""), /MAG \+8|MAG 48/);
+    const h = texto(await enviar("habilidades"));
+    assert.match(h, /Do espírito que cresce em você[\s\S]*Semente de Brasa[\s\S]*Casca de Carvão[\s\S]*Renascer das Cinzas[\s\S]*\+20% de MAG e FOR/);
+    // a união: raízes, o traço do reino e a aura; o rosto do jogador não muda
+    const unido = (await atual()).avatar_dna;
+    for (const tr of ["folhas", "galhos", "brasas", "coroa-flores", "halo"]) assert(unido.acessorios.includes(tr), `a união soma ${tr}`);
+    for (const k of ["cabelo", "corCabelo", "corOlhos", "pele", "rosto", "roupa"]) assert.equal(unido[k], unido.base[k], `a união não muda ${k}`);
+    assert.equal(unido.corFolha, F.FERAS["nat-Homura"].paleta.folha, "folhas e flores na cor do reino");
+    const { CABELO: CB } = await import("../src/avatar/paletas.mjs");
+    const esp = F.dnaFera("nat-Homura", 3, unido.base, { cabelo: CB });
+    assert.equal(esp.tipo, "arvore"); assert.equal(esp.porte, 3); assert.equal(esp.corOlhos, unido.base.corOlhos, "o espírito tem os olhos do jogador"); assert.equal(esp.corNucleo, CB[unido.base.corCabelo]);
+    // luta: o bônus entra nos atributos e as habilidades no menu
+    await db.query(`insert into jogo.exploracoes (jogador_id, mensagem_id, regiao, tipo, dados, pendente, criada_em) values ($1, $2, 'R-HOM-3', 'encontro', $3, true, $4)`,
+      [jogador.id, `nat:${clock}`, JSON.stringify({ inimigo: { id: "V001", nome: "x", nivel: 10 }, lacaio: true }), new Date(clock)]);
+    assert.match(texto(await enviar("lutar")), /Semente de Brasa[\s\S]*Casca de Carvão[\s\S]*Renascer das Cinzas/);
+    const est = (await db.query("select estado from jogo.batalhas where status <> 'encerrada' order by id desc limit 1"))[0].estado;
+    assert.equal(est.jogador.at.MAG, 48, "a luta usa os atributos com o bônus do despertar");
+    await db.query("update jogo.batalhas set status = 'encerrada' where status <> 'encerrada'");
+    // duelo: vale tudo — despertar, grimório aberto, Grande Item equipado e companheiro
+    await db.query(`insert into jogo.inventario (jogador_id, item_id, tipo, qtd, equipado, dados) values ($1, 'excalibur', 'equipamento', 1, true, '{}')`, [jogador.id]);
+    await db.query("insert into jogo.grimorios_jogador (jogador_id, grimorio_id, equipado) values ($1, 'G01', true)", [jogador.id]);
+    await db.query("update jogo.jogadores set regiao_atual = 'R-HOM-3', hp = hp_max where id = $1", [outro.id]);
+    assert.match(texto(await noGrupo(outroGrupo("duelar Kaito"))), /desafia/);
+    const painel = texto(await noGrupo(grupo("aceitar", false)));
+    assert.match(painel, /vale tudo o que cada um tem/);
+    const ed = (await db.query("select valor from jogo.progresso where chave = 'duelo-estado'"))[0].valor;
+    const eu = ed.lados.find((x) => x.nome === "Kaito Ryuen");
+    const { bonusEquip: bE } = await import("../src/regras/itens.mjs");
+    assert.equal(eu.at.MAG, 48 + (bE([{ item_id: "excalibur", equipado: true }]).MAG ?? 0), "o duelo usa os atributos com o bônus do despertar e do equipamento");
+    for (const n of ["Semente de Brasa", "Casca de Carvão", "Renascer das Cinzas", "Faísca", "Lâmina das Estrelas"]) assert(eu.extras.some((x) => x.nome === n), `${n} entra no duelo`);
+    // na vez dele, o menu mostra de onde vem cada uma, e todas funcionam
+    const meu = { ...ed, vez: ed.lados.indexOf(eu) };
+    const menu = D.menuDuelo(meu);
+    assert(menu.some((x) => /Semente de Brasa _\(despertar\)_/.test(x.rotulo)) && menu.some((x) => /Faísca _\(grimório\)_/.test(x.rotulo)) && menu.some((x) => /Lâmina das Estrelas _\(Grande Item\)_/.test(x.rotulo)));
+    for (const x of menu.filter((i) => i.acao.tipo === "habilidade")) {
+      const r = D.agirDuelo(meu, x.acao, () => 0.6, clock);
+      assert(!r.erro, `${x.rotulo} funciona no duelo`);
+      const depois = r.estado.lados.find((y) => y.nome === "Kaito Ryuen");
+      assert(depois.recargas[x.acao.id] > 0, `${x.rotulo} entra em recarga`);
+    }
+    const golpe = D.agirDuelo(meu, menu.find((x) => /Semente de Brasa/.test(x.rotulo)).acao, () => 0.6, clock);
+    assert(golpe.estado.lados.find((y) => y.nome === "Rin").hp < ed.lados.find((y) => y.nome === "Rin").hp, "a habilidade do despertar fere no duelo");
+    // companheiro ataca junto
+    const comPet = structuredClone(meu); comPet.lados[comPet.vez].pet = { nome: "Tama", poder: 0.22 };
+    assert.match(D.agirDuelo(comPet, { tipo: "atacar" }, () => 0.6, clock).estado.log.join(" "), /Tama ataca junto/);
+    await noGrupo(grupo("desistir", false)); await noGrupo(outroGrupo("desistir"));
+    await db.query("delete from jogo.progresso where chave in ('fera', 'duelo-ativo', 'duelo-estado', 'duelo', 'duelos-dia')"); await db.query("delete from jogo.grimorios_jogador"); await db.query("delete from jogo.inventario where jogador_id = $1", [jogador.id]);
+    await db.query("update jogo.jogadores set classe = 'Mago', reino = 'Homura', avatar_dna = $2 where id = $1", [jogador.id, JSON.stringify(antes)]);
   });
   await t("Olhos da Terra: a mestra entrega o pergaminho a quem é da terra; ler cega e dá as habilidades; admin também concede", async () => {
     await db.query("update jogo.jogadores set regiao_atual = 'R-DAI-6', local_atual = null, atributo_magico = 'Fogo (Chama)', reino = 'Homura' where id = $1", [jogador.id]);

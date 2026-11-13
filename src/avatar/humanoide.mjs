@@ -24,7 +24,7 @@ export const CATALOGO = {
     "olho-obsidiana", "tapa-olho", "sardas", "curativo", "rubor", "pintura-crescente", "veias-vazio", "anel-eclipse",
     "fios-prata", "colar-perolas", "gota", "correntes", "chapeu-juiz", "chapeu-corte", "cartola", "capuz",
     "brasas", "raizes", "halo", "luvas", "fitas-agua", "pelagem", "prato", "chapeu-palha", "cristais",
-    "asas-penas", "asas-morcego", "nariz-tengu", "oculos-aviador", "kabuto", "bandagem-boca", "rosto-buraco", "sombra-dragao"],
+    "folhas", "galhos", "coroa-flores", "asas-penas", "asas-morcego", "nariz-tengu", "oculos-aviador", "kabuto", "bandagem-boca", "rosto-buraco", "sombra-dragao"],
 };
 
 // ─────────────────────────────── ROSTO ───────────────────────────────
@@ -503,6 +503,31 @@ const ACESSORIO = {
     t.carimbar(t.mascara().poligono([[10, 16], [54, 16], [CX, 2]]), rampa("#d8b060"));
     t.pintar(t.mascara().linha(16, 13, 47, 13), "#a07a30");
   }],
+  // ── traços de quem despertou um espírito da natureza ──
+  folhas: ["frente", (t, c) => {
+    const F = rampa(c.corFolha ?? "#4a9a3a");
+    for (const [x, y, dx] of [[20, 13, -1], [43, 12, 1], [31, 6, 1]]) t.carimbar(t.mascara().poligono([[x, y], [x + dx * 3, y - 4], [x + dx * 7, y - 5], [x + dx * 5, y - 1]]), F);
+    // um ramo fino subindo pelo ombro
+    t.pintar(t.mascara().linha(12, 63, 15, 55).linha(15, 55, 13, 50), F[1]);
+    for (const [x, y] of [[16, 54], [12, 51], [14, 48]]) { t.set(x, y, F[2]); t.set(x + 1, y, F[3]); }
+  }],
+  galhos: ["tras", (t, c) => {
+    const G = rampa(c.corGalho ?? "#6a4a2a"), F = rampa(c.corFolha ?? "#4a9a3a");
+    for (const lado of [-1, 1]) {
+      const m = t.mascara().linha(CX + lado * 9, 14, CX + lado * 17, 4, 2).linha(CX + lado * 14, 8, CX + lado * 22, 7, 2).linha(CX + lado * 17, 4, CX + lado * 16, 0, 2).linha(CX + lado * 22, 7, CX + lado * 26, 2, 1);
+      t.carimbar(m, G, { sombra: 0 });
+      for (const [x, y] of [[26, 2], [22, 9], [16, 0]]) t.carimbar(t.mascara().elipse(CX + lado * x, y + 1, 2, 1.5), F);
+    }
+  }],
+  "coroa-flores": ["frente", (t, c, r) => {
+    const F = rampa(c.corFolha ?? "#4a9a3a"), flor = c.corFlor ?? "#ffe07a";
+    // guirlanda de folhas na testa, com flores
+    for (let x = 18; x <= 46; x += 4) t.carimbar(t.mascara().elipse(x, 15 - Math.round(Math.sin(((x - 18) / 28) * Math.PI) * 3), 2.4, 1.6), F);
+    for (const x of [20, 28, 36, 44]) { const y = 14 - Math.round(Math.sin(((x - 18) / 28) * Math.PI) * 3); for (const [a, b] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) t.set(x + a, y + b, flor); t.set(x, y, "#fff8e0"); }
+    // veios de seiva que brilham no pescoço e pétalas no ar
+    t.pintar(t.mascara().linha(28, 50, 26, 56).linha(36, 50, 38, 56).linha(26, 56, 22, 60).linha(38, 56, 42, 60), c.aura ?? "#9affc0");
+    for (let k = 0; k < 9; k++) { const x = Math.floor(r() * 62), y = Math.floor(r() * 46); t.set(x, y, k % 2 ? flor : F[3]); t.set(x + 1, y + 1, k % 2 ? flor : F[2]); }
+  }],
   cristais: ["frente", (t, c, r) => {
     const m = t.mascara().espinho(24, 30, 3, 21, 22).espinho(39, 30, 3, 42, 23).espinho(12, 48, 4, 8, 36).espinho(52, 48, 4, 56, 37);
     t.carimbar(m, rampa("#e080ff"));
@@ -569,7 +594,7 @@ export function desenharHumanoide(t, d) {
   const corCabelo = CABELO[d.corCabelo] ?? d.corCabelo ?? CABELO.preto;
   const ctx = {
     rosto: d.rosto ?? "oval", pele, cabelo: corCabelo, roupa: d.corRoupa, destaque: d.corRoupa?.[2],
-    aura: d.aura, corPena: d.corPena, corPelagem: d.corPelagem, corAsas: d.corAsas, crista: d.crista,
+    aura: d.aura, corPena: d.corPena, corPelagem: d.corPelagem, corAsas: d.corAsas, corFolha: d.corFolha, corFlor: d.corFlor, corGalho: d.corGalho, crista: d.crista,
   };
   // Traços femininos: cílios e lábios entram sozinhos; o resto (cabelo, flor, laço, brincos) é escolha
   const acess = [...(d.feminino ? ["cilios", "labios"] : []), ...(d.acessorios ?? [])].filter((a, i, l) => ACESSORIO[a] && l.indexOf(a) === i);

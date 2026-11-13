@@ -63,8 +63,73 @@ Essa terceira imagem passa a ser a aparência dele de verdade: a `ficha` e a car
 
 Rosto, cabelo, cor do cabelo, cor dos olhos, pele e roupa **não mudam**: continua sendo o mesmo personagem. O retrato original fica guardado, e o que ele ganhar por outros caminhos (como a venda dos Olhos da Terra) é mantido.
 
-## 47.4 Limites conhecidos
+## 47.5 Força da Natureza: o espírito do reino
+
+A mesma lógica vale para a classe **Força da Natureza**. Em vez de um animal, ela carrega o **espírito da floresta do reino onde nasceu** (um kodama), que cresce em três estágios: broto, guardião e árvore anciã.
+
+- **Como desperta:** com a **Semente do Primeiro Bosque** (aparece explorando, 6% de chance, só quando o jogador já tem nível para o próximo estágio e não tem outra na bolsa) e `usar semente`, ou pelo mestre com `mestre transformar <nome>` (ignora o nível). Níveis mínimos: 1, 20 e 40, iguais aos da fera.
+- **Cada linhagem só usa o seu item:** a Relíquia não serve para a Força da Natureza e a Semente não serve para o Meio-humano. O item não é gasto se não der certo, e pode ser dado a outro jogador.
+- **A arte no grupo** tem os mesmos três quadros: quem era, o espírito (árvore com os olhos do jogador e o coração na cor do cabelo dele) e quem é agora.
+- **Comando:** `forma` (ou `espirito`, `fera`) mostra os estágios, as habilidades e os atributos.
+
+| Reino | Estágio | Nome | Habilidade | O que faz | Mana | Recarga |
+|-------|:---:|------|-----------|-----------|:---:|:---:|
+| Homura | 1 | Broto de Cinza | **Semente de Brasa** | golpe de força 1,3 e queimadura por 3 rodadas | 10 | 3 |
+|  | 2 | Guardião da Queimada | **Casca de Carvão** | corta 70% do dano por 2 rodadas | 14 | 5 |
+|  | 3 | Hi-no-Kodama, a Floresta que Renasce | **Renascer das Cinzas** | cura 35% da vida e protege por 2 rodadas | 24 | 5 |
+| Watatsumi | 1 | Broto de Lótus | **Raiz Encharcada** | golpe de força 1,2 que prende por 1 rodada | 12 | 4 |
+|  | 2 | Guardião do Mangue | **Orvalho** | cura 30% da vida | 14 | 4 |
+|  | 3 | Mizu-no-Kodama, o Lótus de Mil Anos | **Maré Verde** | golpe de força 2,3 que enfraquece | 26 | 5 |
+| Daichi (e Kokū) | 1 | Broto de Carvalho | **Chicote de Cipó** | dois golpes de força 0,8 | 10 | 3 |
+|  | 2 | Guardião do Bosque | **Casca de Carvalho** | corta 75% do dano por 2 rodadas | 14 | 5 |
+|  | 3 | Ō-Kodama, o Carvalho Ancião | **Punho da Floresta** | golpe de força 2,5 que quebra a guarda | 28 | 5 |
+| Fūjin | 1 | Broto de Cerejeira | **Chuva de Pétalas** | três golpes de força 0,55 | 10 | 3 |
+|  | 2 | Guardião do Bambuzal | **Dobrar com o Vento** | esquiva 80% por 1 rodada e o próximo golpe vale +50% | 12 | 4 |
+|  | 3 | Kaze-no-Kodama, a Cerejeira Eterna | **Florada** | cinco golpes de força 0,5 | 26 | 5 |
+
+**O retrato depois da união:** estágio 1, folhas no cabelo e um ramo no ombro; estágio 2, galhos como uma galhada, olhos acesos e o traço do reino (brasas em Homura, fitas de água em Watatsumi, raízes em Daichi, pena em Fūjin); estágio 3, coroa de flores, veios de seiva e aura. Folhas e flores saem na cor do reino (laranja-brasa, verde-água com lótus rosa, verde com flor amarela, rosa-cerejeira). Rosto, cabelo, olhos, pele e roupa não mudam.
+
+Exemplos: `docs/img/despertar-natureza-daichi-1.png`, `-daichi-2.png`, `-daichi-3.png`, `-homura-3.png`, `-fujin-3.png`, `-watatsumi-3.png`.
+
+## 47.6 Atributos por estágio (as duas linhagens)
+
+Além da habilidade, cada despertar fortalece dois atributos da forma. O bônus é calculado sobre os atributos do próprio jogador e **não se acumula**: o do estágio novo substitui o anterior.
+
+| Estágio | Bônus |
+|:---:|:---:|
+| 1 | +6% |
+| 2 | +12% |
+| 3 | +20% |
+
+| Forma | Atributos | Forma | Atributos |
+|-------|-----------|-------|-----------|
+| raposa | MAG e VEL | dragão menor | FOR e MAG |
+| lobo | FOR e VEL | espírito de Homura | MAG e FOR |
+| tigre | FOR e DEF | espírito de Watatsumi | MAG e RES |
+| corvo | VEL e SOR | espírito de Daichi/Kokū | DEF e RES |
+| serpente | RES e MAG | espírito de Fūjin | MAG e VEL |
+| coelho | VEL e SOR | | |
+
+O bônus funciona como um equipamento que não sai: não altera os atributos de base (mérito, pontos de nível), mas é somado em **todas** as contas — batalha, luta em grupo, calamidades e monstros, duelos — e aparece na `ficha` (linha "Forma desperta"), na carta e em `forma`. Exemplo: MAG 40 no 3º estágio de Homura vira MAG 48.
+
+Quem já tinha despertado antes desta mudança recebe o bônus automaticamente (ele é calculado na hora, a partir do estágio guardado).
+
+## 47.7 Duelos: vale tudo o que o jogador tem
+
+Antes, o duelo usava só Atacar, Defender, Magia e as habilidades da classe. Agora o menu do duelo traz também, com a origem ao lado do nome:
+
+- habilidades do **despertar** (fera ou espírito);
+- magias dos **grimórios abertos** (as de batalha; as utilitárias continuam fora);
+- habilidades dos **Grandes Itens equipados**;
+- as dos **Olhos da Terra**;
+- o **companheiro** ataca junto sempre que o dono parte para cima, como nas batalhas.
+
+Os atributos do duelo já incluíam o equipamento; agora incluem também o bônus do despertar. Quem não tem mana usa essas habilidades sem custo, como nas batalhas. Recargas e efeitos (queimadura, prender, enfraquecer, quebrar a guarda, proteção, cura reduzida de duelo) seguem as regras do duelo.
+
+## 47.8 Limites conhecidos
 
 - As habilidades não foram calibradas por simulação. As do 3º estágio equivalem às habilidades de nível 25 das classes; um Meio-humano no 3º despertar tem três habilidades a mais que as outras classes.
 - A forma animal usa os desenhos de criatura que o jogo já tinha (raposa, lobo, tigre e coelho partem do mesmo molde de fera, mudando orelhas, focinho, caudas e marcas).
 - O jogador não "vira" o animal durante a luta: a transformação é o despertar, e o que fica são as habilidades.
+- Os bônus de atributo e as habilidades da Força da Natureza também não foram calibrados por simulação. Nas batalhas, um jogador desperto fica um pouco acima das metas de dificuldade medidas no doc 38 (até +20% em dois atributos no 3º estágio).
+- **Duelos:** a calibração entre classes (doc 42) foi feita só com as habilidades de classe e continua valendo para dois jogadores "limpos". Com grimórios, Grandes Itens e despertar no duelo, quem tem mais coisas leva vantagem real; isso é intencional ("vale tudo"), mas não está medido.

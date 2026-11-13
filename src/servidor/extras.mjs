@@ -4,7 +4,10 @@ import { readFileSync } from "node:fs";
 import { MUNDO, VILOES } from "../mundo/mundo.mjs";
 import { REGIAO } from "../regras/exploracao.mjs";
 import { atributosEfetivos, rolar, bonusDado, aplicarXP } from "../regras/combate.mjs";
-import { bonusEquip } from "../regras/itens.mjs";
+import { bonusEquip, habilidadesDosItens } from "../regras/itens.mjs";
+import { magiasDeBatalha } from "../regras/grimorios.mjs";
+import { somarBonus } from "../regras/fera.mjs";
+import { despertarDe } from "./fera.mjs";
 import { K, XP_PROXIMO } from "../../scripts/balanceamento.mjs";
 import { DUELO, novoDuelo, painelDuelo, escolherDuelo, agirDuelo } from "../regras/duelo.mjs";
 import { renderizar } from "../avatar/index.mjs";
@@ -341,13 +344,19 @@ ${rodape("+15% de dano em todas as lutas", `+${PACTO.corrupcao} de corrupção`,
       const a = await um(db, "select * from jogo.jogadores where id = $1", [d.jogador_id]);
       if (/^[!/]?recus/.test(t)) return [{ para: msg.chat, texto: `*${autorJog.nome}* recusa o duelo. ${a.nome} guarda a arma.` }];
       for (const x of [a, autorJog]) {
-        x.equip = bonusEquip(await db.query("select item_id, equipado from jogo.inventario where jogador_id = $1", [x.id]));
+        // no duelo vale tudo o que o jogador tem: equipamento, despertar, grimórios abertos, Grandes Itens, Olhos da Terra e companheiro
+        const inv = await db.query("select item_id, equipado from jogo.inventario where jogador_id = $1", [x.id]);
+        const desp = await despertarDe((sql, p) => db.query(sql, p), x);
+        x.equip = somarBonus(bonusEquip(inv), desp.bonus);
+        x.magias = [...desp.habs, ...magiasDeBatalha((await db.query("select grimorio_id from jogo.grimorios_jogador where jogador_id = $1 and equipado order by grimorio_id", [x.id])).map((g) => g.grimorio_id)), ...habilidadesDosItens(inv)];
+        x.sismico = Boolean(await um(db, "select 1 as ok from jogo.progresso where jogador_id = $1 and chave = 'b:olhos-da-terra'", [x.id]));
+        x.pet = (await um(db, "select nome, estagio from jogo.pets where jogador_id = $1", [x.id])) ?? null;
         if (await dueloDe(x)) return [{ para: msg.chat, texto: `*${x.nome}* já está num duelo. Um de cada vez.` }];
       }
       const e = novoDuelo(a, autorJog, agora());
       await gravar(a, "duelo-estado", e);
       for (const x of [a, autorJog]) await gravar(x, "duelo-ativo", { dono: Number(a.id), grupo: msg.chat });
-      return [{ para: msg.chat, texto: `${painelDuelo(e)}\n\n${rodape("cada um joga na sua vez, aqui no grupo", "ninguém se machuca de verdade", "vale só um pouco de experiência")}` }];
+      return [{ para: msg.chat, texto: `${painelDuelo(e)}\n\n${rodape("cada um joga na sua vez, aqui no grupo", "ninguém se machuca de verdade", "vale tudo o que cada um tem: grimórios abertos, Grandes Itens, despertar e companheiro", "vale só um pouco de experiência")}` }];
     }
     return null;
   }

@@ -6,7 +6,8 @@ import { semAcento } from "../linguagem/normalizar.mjs";
 import { novoCombate, resolverRodada, painel, textoMenu, escolher, recompensa, aplicarXP, atributoPrincipal, HABILIDADES, CLASSES, KITS, proximaHabilidade, SISMICO, PASSIVAS, nivelDeLuta, multAlcance, REVIGORAR } from "../regras/combate.mjs";
 import { REGIAO, MATERIAIS } from "../regras/exploracao.mjs";
 import { COVIL } from "../mundo/mundo.mjs";
-import { habilidadesDaFera, feraDe, NIVEL_ESTAGIO } from "../regras/fera.mjs";
+import { FERAS, NIVEL_ESTAGIO, somarBonus, chaveDespertar, BONUS_ESTAGIO, atributosDaForma } from "../regras/fera.mjs";
+import { despertarDe } from "./fera.mjs";
 import { magiasDeBatalha, GRIMORIOS, podeLer, maxGrimorios } from "../regras/grimorios.mjs";
 import { bonusEquip, item as itemDe, todosItens, EQUIP_CLASSE, habilidadesDosItens, HABILIDADE_ITEM } from "../regras/itens.mjs";
 import { XP_PROXIMO } from "../../scripts/balanceamento.mjs";
@@ -86,7 +87,7 @@ export function criarCombate({ db, rng, agora }) {
         const fechados = (await q("select grimorio_id from jogo.grimorios_jogador where jogador_id = $1 and not equipado order by grimorio_id", [j.id])).map((x) => x.grimorio_id);
         const invH = await q("select item_id, equipado from jogo.inventario where jogador_id = $1", [j.id]);
         const petH = (await q("select nome from jogo.pets where jogador_id = $1", [j.id]))[0] ?? null;
-        const feraH = j.classe === "Meio-humano" ? Number((await q("select valor from jogo.progresso where jogador_id = $1 and chave = 'fera'", [j.id]))[0]?.valor?.estagio ?? 0) : null;
+        const feraH = chaveDespertar(j) ? (await despertarDe(q, j)).estagio : null;
         dizer(textoHabilidades(j, terra, { abertos, fechados, inv: invH, pet: petH, fera: feraH })); return fim(true);
       }
       const querEntrar = /^(entrar na luta|entro na luta|lutar junto|ajudar na luta|entrar na batalha)$/.test(t);
@@ -119,12 +120,12 @@ export function criarCombate({ db, rng, agora }) {
       const pet = (await q("select nome, estagio from jogo.pets where jogador_id = $1", [j.id]))[0] ?? null;
       // magias dos grimórios abertos entram no menu da luta
       // e também a habilidade de cada Grande Item equipado. Nada disso tira as habilidades da classe: é acréscimo.
-      const feraEst = j.classe === "Meio-humano" ? Number((await q("select valor from jogo.progresso where jogador_id = $1 and chave = 'fera'", [j.id]))[0]?.valor?.estagio ?? 0) : 0;
-      const magias = [...habilidadesDaFera(j.tipo_animal, feraEst), ...magiasDeBatalha((await q("select grimorio_id from jogo.grimorios_jogador where jogador_id = $1 and equipado order by grimorio_id", [j.id])).map((x) => x.grimorio_id)), ...habilidadesDosItens(inv)];
+      const desp = await despertarDe(q, j);
+      const magias = [...desp.habs, ...magiasDeBatalha((await q("select grimorio_id from jogo.grimorios_jogador where jogador_id = $1 and equipado order by grimorio_id", [j.id])).map((x) => x.grimorio_id)), ...habilidadesDosItens(inv)];
       const vd = pend.dados.lacaio ? { ...v, nome: nomeLacaio(v), tier: "comum" } : v;
       // Vilão de covil nunca luta mais que alguns níveis acima do jogador (a história não trava por falta de nível)
       const nivelLuta = pend.dados.fixo ? nivelDeLuta(pend.dados.inimigo.nivel, j.nivel) : pend.dados.inimigo.nivel;
-      const estado = novoCombate(j, vd, nivelLuta, { agora: tempo, equip: bonusEquip(inv), eco: Boolean(pend.dados.eco),
+      const estado = novoCombate(j, vd, nivelLuta, { agora: tempo, equip: somarBonus(bonusEquip(inv), desp.bonus), eco: Boolean(pend.dados.eco),
         itens: Object.fromEntries(inv.map((i) => [i.item_id, i.qtd])), bonusDano: bonusCampanha(chaves) * (juramento ? 1.15 : 1) * (1 + 0.1 * apoio), pet, sismico: chaves.includes("b:olhos-da-terra"), lacaio: Boolean(pend.dados.lacaio), magias });
       estado.contexto = { lacaio: Boolean(pend.dados.lacaio), fixo: Boolean(pend.dados.fixo), eco: Boolean(pend.dados.eco), vilao: v.id, juramento, nivelReal: pend.dados.inimigo.nivel };
       // Vilão de médio escalão para cima pode ser enfrentado junto por quem está acompanhando a mesma história
@@ -373,9 +374,11 @@ export function textoHabilidades(j, terra = false, extra = null) {
     for (const l of extra.inv ?? []) { const h = HABILIDADE_ITEM[l.item_id]; if (!h) continue;
       it.push(l.equipado ? `*${h.nome}* (${itemDe(l.item_id).nome.split(",")[0]}) — ${h.resumo}${custo(h)}` : `_${h.nome} — você tem ${itemDe(l.item_id).nome.split(",")[0]}, mas não está equipado: equipe para usar_`); }
     if (it.length) linhas.push("", "*De Grandes Itens*", ...it);
-    if (extra.fera != null && feraDe(j.tipo_animal)) {
-      const f = feraDe(j.tipo_animal);
-      linhas.push("", `*Da fera no seu sangue* (${f.ser}, ${extra.fera} de 3 despertares)`, ...f.estagios.map((e, i) => i < extra.fera ? `*${e.hab.nome}* (${e.nome}) — ${e.hab.resumo}${custo(e.hab)}` : `_${i === extra.fera ? `${e.nome}: desperta com uma Relíquia do Sangue Antigo (nível ${NIVEL_ESTAGIO[i]})` : "??? — ainda dormindo"}_`));
+    const chave = chaveDespertar(j);
+    if (extra.fera != null && chave) {
+      const f = FERAS[chave], nat = f.linhagem === "natureza", pct = (i) => `+${Math.round(BONUS_ESTAGIO[i] * 100)}% de ${atributosDaForma(chave).join(" e ")}`;
+      linhas.push("", `*${nat ? "Do espírito que cresce em você" : "Da fera no seu sangue"}* (${f.ser}, ${extra.fera} de 3 despertares)`, ...f.estagios.map((e, i) => i < extra.fera ? `*${e.hab.nome}* (${e.nome}) — ${e.hab.resumo}${custo(e.hab)}` : `_${i === extra.fera ? `${e.nome}: desperta com uma ${nat ? "Semente do Primeiro Bosque" : "Relíquia do Sangue Antigo"} (nível ${NIVEL_ESTAGIO[i]}; dá ${pct(i)})` : "??? — ainda dormindo"}_`));
+      if (extra.fera) linhas.push(`_atributos do despertar: ${pct(extra.fera - 1)} (já somado na ficha)_`);
     }
     if (extra.pet) linhas.push("", `*${extra.pet.nome}* (companheiro) — ataca junto com você em toda rodada`);
   }

@@ -49,7 +49,51 @@ export const FERAS = {
       { nome: "Ryūjin, o Dragão Menor Desperto", extra: { asas: true, bigodes: true, marcas: ["estrelas", "coroa-espirito"] }, hab: H(3, "Voo Rasante", "Você desce do céu como uma sentença.", "golpe de força 2,5 que atravessa 30% da defesa", { tipo: "melhor", poder: 2.5, ignoraDef: 0.3, mp: 28, recarga: 5 }) },
     ] },
 };
-for (const [k, f] of Object.entries(FERAS)) f.estagios.forEach((e, i) => { e.hab.id = `fe-${k.replace("_", "")}-${i + 1}`; e.hab.origem = "fera"; });
+// ── Força da Natureza: o espírito do lugar onde a pessoa nasceu cresce nela. Um por reino, mesmos 3 estágios. ──
+const NAT = (ser, pal, traco, estagios) => ({ ser, linhagem: "natureza", corBase: pal.casca, paleta: pal, traco, criatura: { tipo: "arvore", corFolha: pal.folha, corFlor: pal.flor }, estagios });
+Object.assign(FERAS, {
+  "nat-Homura": NAT("espírito das cinzas férteis", { casca: "#4a3430", folha: "#d8642a", flor: "#ffd23a" }, "brasas", [
+    { nome: "Broto de Cinza", criatura: { porte: 1 }, extra: {}, hab: H(1, "Semente de Brasa", "Uma semente acesa cai da sua mão e cria raiz no inimigo.", "golpe de força 1,3 e queimadura por 3 rodadas", { tipo: "melhor", poder: 1.3, queima: 3, mp: 10, recarga: 3 }) },
+    { nome: "Guardião da Queimada", criatura: { porte: 2 }, extra: { marcas: ["brasas"] }, hab: H(2, "Casca de Carvão", "A sua pele endurece como tronco queimado.", "corta 70% do dano por 2 rodadas", { tipo: "guarda", protecao: 0.7, duracao: 2, mp: 14, recarga: 5 }) },
+    { nome: "Hi-no-Kodama, a Floresta que Renasce", criatura: { porte: 3 }, extra: { marcas: ["brasas", "estrelas"] }, hab: H(3, "Renascer das Cinzas", "Onde queimou, brota de novo. Em você também.", "cura 35% da vida e protege por 2 rodadas", { tipo: "cura", cura: 0.35, protecao: 0.5, duracao: 2, mp: 24, recarga: 5 }) },
+  ]),
+  "nat-Watatsumi": NAT("espírito do mangue e do lótus", { casca: "#4a6258", folha: "#3aa890", flor: "#ff9ac8" }, "fitas-agua", [
+    { nome: "Broto de Lótus", criatura: { porte: 1 }, extra: {}, hab: H(1, "Raiz Encharcada", "Raízes molhadas sobem pelos pés dele.", "golpe de força 1,2 que prende por 1 rodada", { tipo: "melhor", poder: 1.2, prende: 1, mp: 12, recarga: 4 }) },
+    { nome: "Guardião do Mangue", criatura: { porte: 2 }, extra: { marcas: ["geada"] }, hab: H(2, "Orvalho", "Cada folha sua guarda uma gota.", "cura 30% da vida", { tipo: "cura", cura: 0.3, mp: 14, recarga: 4 }) },
+    { nome: "Mizu-no-Kodama, o Lótus de Mil Anos", criatura: { porte: 3 }, extra: { marcas: ["geada", "estrelas"] }, hab: H(3, "Maré Verde", "A floresta inteira se levanta como uma onda.", "golpe de força 2,3 que enfraquece", { tipo: "melhor", poder: 2.3, enfraquece: 3, mp: 26, recarga: 5 }) },
+  ]),
+  "nat-Daichi": NAT("espírito do carvalho", { casca: "#6a4a2a", folha: "#4a9a3a", flor: "#ffe07a" }, "raizes", [
+    { nome: "Broto de Carvalho", criatura: { porte: 1 }, extra: {}, hab: H(1, "Chicote de Cipó", "Um cipó estala no ar.", "dois golpes de força 0,8", { tipo: "melhor", poder: 0.8, golpes: 2, mp: 10, recarga: 3 }) },
+    { nome: "Guardião do Bosque", criatura: { porte: 2 }, extra: {}, hab: H(2, "Casca de Carvalho", "Sua pele vira casca grossa.", "corta 75% do dano por 2 rodadas", { tipo: "guarda", protecao: 0.75, duracao: 2, mp: 14, recarga: 5 }) },
+    { nome: "Ō-Kodama, o Carvalho Ancião", criatura: { porte: 3 }, extra: { marcas: ["estrelas"] }, hab: H(3, "Punho da Floresta", "Um tronco inteiro desce como um punho.", "golpe de força 2,5 que quebra a guarda", { tipo: "melhor", poder: 2.5, postura: 3, mp: 28, recarga: 5 }) },
+  ]),
+  "nat-Fūjin": NAT("espírito da cerejeira e do bambu", { casca: "#5a4038", folha: "#f0a0c8", flor: "#ffffff" }, "pena", [
+    { nome: "Broto de Cerejeira", criatura: { porte: 1 }, extra: {}, hab: H(1, "Chuva de Pétalas", "Pétalas cortam como papel.", "três golpes de força 0,55", { tipo: "melhor", poder: 0.55, golpes: 3, mp: 10, recarga: 3 }) },
+    { nome: "Guardião do Bambuzal", criatura: { porte: 2 }, extra: {}, hab: H(2, "Dobrar com o Vento", "Você se curva, e o golpe passa.", "esquiva 80% por 1 rodada e o próximo golpe vale +50%", { tipo: "guarda", protecao: 0.8, duracao: 1, foco: true, mp: 12, recarga: 4 }) },
+    { nome: "Kaze-no-Kodama, a Cerejeira Eterna", criatura: { porte: 3 }, extra: { marcas: ["estrelas"] }, hab: H(3, "Florada", "A árvore inteira floresce de uma vez.", "cinco golpes de força 0,5", { tipo: "melhor", poder: 0.5, golpes: 5, mp: 26, recarga: 5 }) },
+  ]),
+});
+/** Chave do despertar de um jogador: o animal do Meio-humano, ou o espírito do reino da Força da Natureza. null = a classe não desperta. */
+export function chaveDespertar(j) {
+  if (j?.classe === "Meio-humano") return FERAS[j.tipo_animal] ? j.tipo_animal : null;
+  if (j?.classe === "Força da Natureza") return FERAS[`nat-${j.reino}`] ? `nat-${j.reino}` : "nat-Daichi";
+  return null;
+}
+/** Cada despertar também fortalece: +6%, +12% e +20% nos dois atributos da forma (calculado sobre os atributos do jogador). */
+export const BONUS_ESTAGIO = [0.06, 0.12, 0.2];
+const ATRIBUTOS_FORMA = { raposa: ["MAG", "VEL"], lobo: ["FOR", "VEL"], tigre: ["FOR", "DEF"], corvo: ["VEL", "SOR"], serpente: ["RES", "MAG"], coelho: ["VEL", "SOR"], dragao_menor: ["FOR", "MAG"],
+  "nat-Homura": ["MAG", "FOR"], "nat-Watatsumi": ["MAG", "RES"], "nat-Daichi": ["DEF", "RES"], "nat-Fūjin": ["MAG", "VEL"] };
+export const atributosDaForma = (chave) => ATRIBUTOS_FORMA[chave] ?? [];
+/** Bônus de atributos do despertar, no mesmo formato do bônus de equipamento ({ FOR: 6, VEL: 4 }). */
+export function bonusDespertar(chave, estagio, atributos = {}) {
+  if (!estagio || !ATRIBUTOS_FORMA[chave]) return {};
+  const pct = BONUS_ESTAGIO[Math.min(3, estagio) - 1];
+  return Object.fromEntries(ATRIBUTOS_FORMA[chave].map((k) => [k, Math.max(1, Math.round((atributos[k] ?? 0) * pct))]));
+}
+export const somarBonus = (...bs) => { const r = {}; for (const b of bs) for (const [k, v] of Object.entries(b ?? {})) r[k] = (r[k] ?? 0) + v; return r; };
+
+for (const [k, f] of Object.entries(FERAS)) f.estagios.forEach((e, i) => { e.hab.id = `fe-${k.replace(/[^a-zA-Z]/g, "").toLowerCase()}-${i + 1}`; e.hab.origem = "fera"; });
+for (const f of Object.values(FERAS)) f.linhagem ??= "fera";
 
 export const feraDe = (tipoAnimal) => FERAS[tipoAnimal] ?? null;
 /** Habilidades que a transformação soma, até o estágio atual (0 = ainda não despertou). */
@@ -76,9 +120,12 @@ const UNIAO_ANIMAL = {
  */
 export function dnaUniao(base, tipoAnimal, estagio) {
   const d = { ...base, acessorios: [...(base.acessorios ?? [])] };
-  for (let i = 0; i < Math.min(3, estagio); i++) for (const camada of [UNIAO_COMUM[i], UNIAO_ANIMAL[tipoAnimal]?.[i] ?? {}]) {
+  const f = FERAS[tipoAnimal];
+  // Força da Natureza: folhas no cabelo; depois galhos e o traço do reino (brasas, água, raízes, pena); no fim, coroa de flores e aura — tudo nas cores do reino
+  const comum = f?.linhagem === "natureza" ? [{ acessorios: ["folhas"], corFolha: f.paleta.folha, corFlor: f.paleta.flor, corGalho: f.paleta.casca }, { acessorios: ["galhos", f.traco], olhos: "brilho" }, { acessorios: ["coroa-flores", "halo"], brilhoAura: true }] : UNIAO_COMUM;
+  for (let i = 0; i < Math.min(3, estagio); i++) for (const camada of [comum[i], UNIAO_ANIMAL[tipoAnimal]?.[i] ?? {}]) {
     for (const a of camada.acessorios ?? []) if (!d.acessorios.includes(a)) d.acessorios.push(a);
-    for (const k of ["boca", "olhos", "brilhoAura"]) if (camada[k] !== undefined) d[k] = camada[k];
+    for (const k of ["boca", "olhos", "brilhoAura", "corFolha", "corFlor", "corGalho"]) if (camada[k] !== undefined) d[k] = camada[k];
   }
   // chifres pequenos dão lugar aos de dragão quando eles chegam
   if (d.acessorios.includes("chifres-dragao")) d.acessorios = d.acessorios.filter((a) => a !== "chifres-pequenos");
@@ -88,7 +135,9 @@ export function dnaUniao(base, tipoAnimal, estagio) {
 /** DNA da forma animal, com as cores do próprio jogador (pelo = cor do cabelo, olhos = cor dos olhos, aura = elemento dele). */
 export function dnaFera(tipoAnimal, estagio, dnaJogador, cores) {
   const f = FERAS[tipoAnimal], e = f.estagios[estagio - 1];
-  const pelo = cores.cabelo[dnaJogador?.corCabelo] ?? "#8a8a92";
-  return { id: `fera-${tipoAnimal}-${estagio}`, ...f.criatura, ...e.extra, cor: pelo, corCauda: pelo, corOlhos: dnaJogador?.corOlhos ?? "dourado",
+  const cabelo = cores.cabelo[dnaJogador?.corCabelo] ?? "#8a8a92";
+  // a fera tem o pelo da cor do cabelo; o espírito da natureza tem a cor do reino, com olhos e brilho do jogador
+  const pelo = f.corBase ?? cabelo;
+  return { id: `fera-${tipoAnimal}-${estagio}`, ...f.criatura, ...(e.criatura ?? {}), ...e.extra, corNucleo: cabelo, corCoroa: cabelo, cor: pelo, corCauda: pelo, corOlhos: dnaJogador?.corOlhos ?? "dourado",
     corAsas: pelo, corCrina: pelo, elemento: dnaJogador?.elemento ?? "Vazio", brilhoAura: estagio >= 2 };
 }

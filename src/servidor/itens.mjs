@@ -1,4 +1,6 @@
 // Itens no privado: bolsa detalhada (o que cada item faz e quantos usos tem), equipar, usar, loja e descanso.
+import { somarBonus } from "../regras/fera.mjs";
+import { despertarDe } from "./fera.mjs";
 import { item, efeitoItem, podeEquipar, estoque, precoVenda, CONSUMIVEIS, descricaoEquipClasse, bonusEquip, HABILIDADE_ITEM } from "../regras/itens.mjs";
 import { REGIAO, REGIOES, normal } from "../regras/exploracao.mjs";
 import { MUNDO } from "../mundo/mundo.mjs";
@@ -29,7 +31,7 @@ export function criarItens({ db, agora }) {
 
   /** Atributos como ficam agora, com tudo que está equipado (é o que vale nas lutas e o que a ficha mostra). */
   const totais = async (j) => {
-    const b = bonusEquip(await db.query("select item_id, equipado from jogo.inventario where jogador_id = $1 and equipado", [j.id])), a = j.atributos ?? {};
+    const b = somarBonus(bonusEquip(await db.query("select item_id, equipado from jogo.inventario where jogador_id = $1 and equipado", [j.id])), (await despertarDe((sql, p) => db.query(sql, p), j)).bonus), a = j.atributos ?? {};
     return `*Seus atributos agora*\n${["FOR", "DEF", "MAG", "RES", "VEL", "SOR"].map((k) => `${k} ${(a[k] ?? 0) + (b[k] ?? 0)}${b[k] ? ` _(+${b[k]})_` : ""}`).join(" · ")}\n${rodape("já vale nas lutas", "ficha mostra tudo")}`;
   };
 
@@ -83,7 +85,7 @@ export function criarItens({ db, agora }) {
       const c = l && CONSUMIVEIS[l.item_id];
       if (!l) return dizer("Você não tem isso na bolsa. Veja com *itens*.");
       if (l.item_id === "pergaminho-terra") return { tratado: false, saidas: [], pergaminhoTerra: true };
-      if (l.item_id === "reliquia-fera") return { tratado: false, saidas: [], reliquiaFera: true };
+      if (l.item_id === "reliquia-fera" || l.item_id === "semente-ancestral") return { tratado: false, saidas: [], reliquiaFera: l.item_id };
       if (!c) return dizer(item(l.item_id)?.tipo === "equipamento" ? `Isso se equipa: *equipar ${item(l.item_id).nome.toLowerCase()}*.` : "Isso não se usa assim.");
       if (!c.fora) return dizer(`${c.nome} só serve durante uma luta.`);
       const partes = [];

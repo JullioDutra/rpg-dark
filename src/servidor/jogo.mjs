@@ -24,6 +24,7 @@ import { criarGrimorios } from "./grimorios.mjs";
 import { criarSeteLuzes } from "./seteluzes.mjs";
 import { criarDiario } from "./diario.mjs";
 import { criarFera } from "./fera.mjs";
+import { FERAS, somarBonus } from "../regras/fera.mjs";
 import { kitInicial, bonusEquip, item as itemDe } from "../regras/itens.mjs";
 import { XP_PROXIMO } from "../../scripts/balanceamento.mjs";
 import { comandoExploracao, recuperarVigor, buscarRegioes } from "../regras/exploracao.mjs";
@@ -236,8 +237,9 @@ export function criarJogo({ relogio = null, db, sal = process.env.TELEFONE_SAL ?
   /** Ficha com o equipamento somado: a carta e a legenda mostram os atributos que realmente valem nas lutas. */
   async function fichaCompleta(j, para) {
     const inv = await db.query("select item_id, equipado from jogo.inventario where jogador_id = $1 and equipado", [j.id]);
-    const bonus = bonusEquip(inv), efetivos = atributosEfetivos(j, agora(), bonus);
-    const legenda = legendaFicha(j, agora(), { bonus, itens: inv.map((l) => itemDe(l.item_id)?.nome ?? l.item_id) });
+    const desp = await fera.despertar(j);
+    const bonus = somarBonus(bonusEquip(inv), desp.bonus), efetivos = atributosEfetivos(j, agora(), bonus);
+    const legenda = legendaFicha(j, agora(), { bonus, itens: inv.map((l) => itemDe(l.item_id)?.nome ?? l.item_id), forma: desp.estagio ? `${FERAS[desp.chave].estagios[desp.estagio - 1].nome} (${Object.entries(desp.bonus).map(([k, v]) => `${k} +${v}`).join(", ")})` : null });
     if (!j.avatar_dna) return { para, texto: legenda }; // personagem sem retrato (não deveria acontecer): a ficha sai só em texto, sem derrubar a resposta
     return { para, imagem: cartaPersonagem({ ...j, atributos: efetivos }, j.avatar_dna), legenda };
   }
@@ -358,7 +360,7 @@ export function criarJogo({ relogio = null, db, sal = process.env.TELEFONE_SAL ?
     // 2) Itens, loja, descanso
     const it = await itens(j, tc, para);
     if (it.pergaminhoTerra) return extras.lerPergaminho(j, para);
-    if (it.reliquiaFera) return fera.usarReliquia(j, para);
+    if (it.reliquiaFera) return fera.usarReliquia(j, para, it.reliquiaFera);
     if (it.tratado) return it.mudouRegiao ? [...it.saidas, ...(await mundo.chegada(j, para))] : it.descansou ? [...it.saidas, ...(await social.sonho(j, para))] : it.saidas;
     // 3) Exploração e viagens (também confere chegadas pendentes); ao mudar de região, mostra o lugar
     const antes = j.regiao_atual;
@@ -566,6 +568,7 @@ export function legendaFicha(j, tempo = Date.now(), equip = null) {
     `${NOME_CASTA[j.casta] ?? ""} de ${j.aldeia ?? "?"} · ${j.atributo_magico ?? "?"}${j.elegivel_pet ? " · elegível a pet" : ""}\n\n` +
     `Vida ${j.hp}/${j.hp_max} · Mana ${j.mp}/${j.mp_max} · Vigor ${recuperarVigor(j, tempo).vigor}\n` +
     `${linha}\n` +
+    (equip?.forma ? `_Forma desperta: ${equip.forma}_\n` : "") +
     (equip?.itens?.length ? `_Equipado: ${equip.itens.join(" · ")}_\n` : equip ? "_Nada equipado. Veja *itens* e use *equipar <nº>*._\n" : "") +
     rodape(`XP ${j.xp}/${XP_PROXIMO(j.nivel)}`, j.ryo != null ? `${j.ryo} ryō` : null, j.pontos_livres ? `${j.pontos_livres} pontos livres` : null,
       Number(j.corrupcao) ? `corrupção ${j.corrupcao}/100` : null, j.titulo ? j.titulo : null, Object.keys(b).length ? "(+n) vem do equipamento e já vale nas lutas" : null);
@@ -613,7 +616,7 @@ viajar <região> · rota · mapa
 itens — bolsa, o que cada coisa faz e quantos usos tem
 equipar <nº> · usar <nº> · loja (loja poções, loja armas) · descansar
 habilidades · ficha · segredos · amigos · pet
-fera — (Meio-humano) a forma animal que você carrega e os despertares
+forma — (Meio-humano e Força da Natureza) o que você carrega dentro, os despertares e o que cada um dá
 grimorios — seus livros de magia · abrir grimorio <nº> põe as magias na luta
 minha história — conte quem é o seu personagem
 boatos — histórias que o povo conta · lembrar — ecos do passado

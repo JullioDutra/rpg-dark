@@ -1,6 +1,6 @@
 // Duelo amistoso entre dois jogadores, por turnos, com o mesmo dado e as mesmas habilidades das batalhas.
 // Ninguém se machuca de verdade: a vida do duelo é uma cópia (os dois entram inteiros) e nada volta para a ficha.
-import { KITS, MAGIA, PASSIVAS, FAIXAS, habilidadesDe, atributosEfetivos, elementoBase, multElemento, rolar, bonusDado } from "./combate.mjs";
+import { KITS, SISMICO, MAGIA, PASSIVAS, FAIXAS, habilidadesDe, atributosEfetivos, elementoBase, multElemento, rolar, bonusDado } from "./combate.mjs";
 import { K } from "../../scripts/balanceamento.mjs";
 
 export const DUELO = {
@@ -78,8 +78,13 @@ function lado(j, adversario = null) {
   const folego = ajusteDuelo(j.classe, j.nivel) * (adversario ? parDuelo(j.classe, adversario.classe) : 1);
   const vida = j.hp_max;
   return { id: Number(j.id), nome: j.nome, classe: j.classe, nivel: j.nivel, hp: vida, hpMax: vida, folego, mp: j.mp_max, mpMax: j.mp_max, at, guarda: DUELO.guarda, aberto: false,
-    elemento: elementoBase(j.atributo_magico), recargas: {}, protecao: 0, protecaoTurnos: 0, foco: false, fraco: 0, preso: 0, imune: 0, queima: 0, queimaDano: 0, turnos: 0 };
+    elemento: elementoBase(j.atributo_magico), recargas: {}, protecao: 0, protecaoTurnos: 0, foco: false, fraco: 0, preso: 0, imune: 0, queima: 0, queimaDano: 0, turnos: 0,
+    // tudo o que o jogador tem fora do kit da classe: magias de grimórios abertos, Grandes Itens equipados, despertar, Olhos da Terra, companheiro
+    extras: [...(j.sismico ? SISMICO : []), ...(j.magias ?? [])].filter((h) => !h.utilitaria), pet: j.pet ? { nome: j.pet.nome, poder: 0.15 + 0.07 * (j.pet.estagio ?? 1) } : null };
 }
+const ORIGEM = (h) => h.grimorio ? "grimório" : h.origem === "fera" ? "despertar" : h.origem ? "Grande Item" : "Olhos da Terra";
+const custo = (j, h) => (j.mpMax > 0 ? h.mp ?? 0 : 0); // quem não tem mana usa sem custo, como nas batalhas
+const habDuelo = (j, id) => (KITS[j.classe] ?? []).find((x) => x.id === id) ?? (j.extras ?? []).find((x) => x.id === id) ?? null;
 
 export function novoDuelo(a, b, agora = Date.now()) {
   const lados = [lado(a, b), lado(b, a)];
@@ -98,6 +103,10 @@ export function menuDuelo(e) {
   for (const h of habilidadesDe(j.classe, j.nivel)) {
     const rec = j.recargas[h.id] ?? 0;
     add({ tipo: "habilidade", id: h.id }, h.nome, `${h.resumo}${h.mp ? ` · ${h.mp} de mana` : ""}`, rec > 0 ? `volta em ${rec}` : j.mp < (h.mp ?? 0) ? "sem mana" : null);
+  }
+  for (const h of j.extras ?? []) {
+    const rec = j.recargas[h.id] ?? 0, mp = custo(j, h);
+    add({ tipo: "habilidade", id: h.id }, `${h.nome} _(${ORIGEM(h)})_`, `${h.resumo}${mp ? ` · ${mp} de mana` : ""}`, rec > 0 ? `volta em ${rec}` : j.mp < mp ? "sem mana" : null);
   }
   return itens;
 }
@@ -183,8 +192,10 @@ export function agirDuelo(estado, acao, rng, agora = Date.now()) {
     if (j.aberto) { j.aberto = false; j.guarda = Math.ceil(DUELO.guarda / 2); e.log.push(`${j.nome} recompõe a postura.`); }
     if (d.faixa === "critico" && !o.aberto) { o.guarda = Math.max(0, o.guarda - 2); e.log.push(`Defesa perfeita: ${o.nome} perde o equilíbrio.`); if (!o.guarda) { o.aberto = true; o.protecao = 0; o.protecaoTurnos = 0; e.log.push(`*A guarda de ${o.nome} quebrou!*`); } }
   } else if (acao.tipo === "habilidade") {
-    const h = (KITS[j.classe] ?? []).find((x) => x.id === acao.id);
-    if (!h) return { estado, fim: null, erro: "Habilidade desconhecida." };
+    const h0 = habDuelo(j, acao.id);
+    if (!h0) return { estado, fim: null, erro: "Habilidade desconhecida." };
+    // "melhor" = usa o atributo mais forte de quem ataca (magias de grimório, despertar, Grandes Itens)
+    const h = { ...h0, mp: custo(j, h0), tipo: h0.tipo === "melhor" ? (j.at.MAG > j.at.FOR ? "magico" : "fisico") : h0.tipo };
     j.mp -= h.mp ?? 0; j.recargas[h.id] = (h.recarga ?? 0) + 1;
     if (h.custoHp) j.hp -= Math.round(j.hpMax * h.custoHp);
     const d = rolar(rng, bd + (h.dado ?? 0));
@@ -209,9 +220,15 @@ export function agirDuelo(estado, acao, rng, agora = Date.now()) {
     }
   } else return { estado, fim: null, erro: "Ação desconhecida." };
 
+  // o companheiro ataca junto sempre que o dono parte para cima (como nas batalhas)
+  const ofensiva = acao.tipo === "atacar" || acao.tipo === "magia" || (acao.tipo === "habilidade" && ["fisico", "magico", "melhor"].includes(habDuelo(j, acao.id)?.tipo));
+  if (j.pet && ofensiva && o.hp > 0) {
+    const dp = Math.max(1, Math.round(((Math.max(j.at.FOR, j.at.MAG) * j.pet.poder * 3 * K(j.nivel)) / (K(j.nivel) + Math.min(o.at.DEF, o.at.RES))) * DUELO.dano / (o.folego ?? 1)));
+    o.hp -= dp; e.log.push(`${j.pet.nome} ataca junto. _(${dp} de dano)_`);
+  }
   // fim do turno de quem agiu: efeitos dele contam um turno; a guarda do outro gasta um golpe
   if (j.fraco > 0) j.fraco -= 1;
-  if (o.protecaoTurnos > 0 && acao.tipo !== "defender" && !(acao.tipo === "habilidade" && !["fisico", "magico"].includes((KITS[j.classe] ?? []).find((x) => x.id === acao.id)?.tipo))) { o.protecaoTurnos -= 1; if (!o.protecaoTurnos) o.protecao = 0; }
+  if (o.protecaoTurnos > 0 && acao.tipo !== "defender" && !(acao.tipo === "habilidade" && !["fisico", "magico", "melhor"].includes(habDuelo(j, acao.id)?.tipo))) { o.protecaoTurnos -= 1; if (!o.protecaoTurnos) o.protecao = 0; }
   j.turnos += 1; e.ultimo = agora;
   const fim = (v, motivo) => ({ estado: e, fim: { vencedor: e.lados[v], perdedor: e.lados[1 - v], motivo } });
   const euIdx = e.vez;
