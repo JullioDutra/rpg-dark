@@ -23,6 +23,8 @@ export const MONSTROS = [
   M("M18", "Yamata", "a Serpente de Oito Vales", 4, "Água", "serpente", "#1a3a3a", "#60c0a0", "vermelho", "Oito cabeças, oito rios envenenados. As lendas dizem que foi morta. As lendas erraram a conta.", { asas: true, calamidade: "Os rios de Yotsuhoshi correm ao contrário por um instante. Rio acima, alguma coisa bebe." }),
   M("M19", "Gashadokuro", "o Esqueleto dos Que Não Foram Enterrados", 4, "Trevas", "cranio", "#d8d0c0", "#8a5ac0", "roxo", "Feito dos ossos de todos os que morreram de fome nas guerras dos quatro reis. Ele lembra de cada um.", { calamidade: "À meia-noite, todos os sinos do mundo tocam sozinhos. Depois, um som de ossos, muito longe e muito alto." }),
   M("M20", "Amanozako", "a Fúria que Caiu do Céu", 4, "Raio", "espirito", "#f0e8ff", "#ffd23a", "dourado", "Uma deusa menor cuspida pela tempestade. Não quer nada. Só não sabe mais parar.", { calamidade: "O céu rasga de leste a oeste num relâmpago que não apaga. Algo desceu por ele." }),
+  // Só aparece no evento do Grimório das Sete Luzes (não entra na lista de monstros de cidade nem nas Calamidades)
+  M("M21", "Kōryū", "o Dragão da Aurora", 3, "Luz", "serpente", "#cfe4f2", "#f3ead0", "dourado", "Dorme enrolado no topo da geleira desde antes dos quatro reinos. As sete luzes do céu do norte são a respiração dele.", { evento: true, especial: "dragao", asas: true }),
 ];
 export const MONSTRO = new Map(MONSTROS.map((m) => [m.id, m]));
 export const dnaMonstro = (m) => ({ id: m.id, tipo: m.tipo, elemento: m.elemento, cor: m.cor, cor2: m.cor2, corOlhos: m.corOlhos, brilhoAura: m.grau >= 3,

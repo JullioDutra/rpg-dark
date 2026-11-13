@@ -77,10 +77,13 @@ const regiaoDaSubfase = (onde) => {
   return sf ? REGIOES.find((r) => n(r.nome) === n(sf.regiao)) ?? REGIOES.find((r) => n(r.nome).includes(n(sf.regiao)) || n(sf.regiao).includes(n(r.nome))) ?? null : null;
 };
 
-export const GRIMORIOS = new Map(ler("grimorios.json").map((g) => {
+/** O 41º: único no mundo, só se ganha no evento do Dragão da Aurora (nunca explorando). */
+const SETE_LUZES = { id: "G41", nome: "Grimório das Sete Luzes", rank: "S", elemento: "Luz/Aurora", classes: ["todas"], onde: "evento", unico: true, nivelMinimo: 15, regiaoFixa: "R-WAT-5", lugarFixo: "o ninho do Dragão da Aurora",
+  magias: ["Arco das Sete Luzes (30 MP) — 7 raios MAG×0,4", "Véu da Aurora (25 MP) — cura 30% HP + escudo", "Sétima Luz (45 MP) — dano MAG×2,4 que ignora 40% RES"] };
+export const GRIMORIOS = new Map([...ler("grimorios.json"), SETE_LUZES].map((g) => {
   const magias = g.magias.map((t, k) => magia(g, t, k));
   const sf = SUBFASE.get(String(g.onde).split(" ")[0]);
-  return [g.id, { ...g, nivel: NIVEL_RANK[g.rank] ?? 1, magias, regiao: regiaoDaSubfase(g.onde)?.id ?? null, lugar: sf?.nome ?? g.onde }];
+  return [g.id, { ...g, nivel: g.nivelMinimo ?? NIVEL_RANK[g.rank] ?? 1, magias, regiao: g.regiaoFixa ?? regiaoDaSubfase(g.onde)?.id ?? null, lugar: g.lugarFixo ?? sf?.nome ?? g.onde }];
 }));
 
 /** Quantos grimórios a classe consegue manter abertos ao mesmo tempo. */
@@ -89,7 +92,7 @@ export const maxGrimorios = (classe) => CLASSES[classe]?.grimorios_max ?? 1;
 /** null se o jogador pode ler este grimório; senão, o motivo. */
 export function podeLer(j, g) {
   const cl = CLASSES[j.classe] ?? {};
-  if (cl.grimorios_permitidos && !cl.grimorios_permitidos.includes(g.id)) return `${j.classe} só consegue ler grimórios do Vazio. Este se apaga nas suas mãos.`;
+  if (cl.grimorios_permitidos && !g.unico && !cl.grimorios_permitidos.includes(g.id)) return `${j.classe} só consegue ler grimórios do Vazio. Este se apaga nas suas mãos.`;
   if (!g.classes.includes("todas") && !g.classes.includes(j.classe)) return `As letras não ficam paradas para ${j.classe}. Este grimório foi escrito para: ${g.classes.join(", ")}.`;
   if (j.nivel < g.nivel) return `Você ainda não entende esta escrita. Precisa estar no nível ${g.nivel} (rank ${g.rank}).`;
   return null;
@@ -98,5 +101,5 @@ export function podeLer(j, g) {
 /** Magias de batalha dos grimórios equipados (ids dos grimórios). */
 export const magiasDeBatalha = (ids) => ids.flatMap((id) => GRIMORIOS.get(id)?.magias.filter((m) => !m.utilitaria) ?? []);
 /** Grimórios escondidos numa região. */
-export const grimoriosDaRegiao = (rid) => [...GRIMORIOS.values()].filter((g) => g.regiao === rid);
+export const grimoriosDaRegiao = (rid) => [...GRIMORIOS.values()].filter((g) => g.regiao === rid && !g.unico);
 export const acharGrimorio = (texto) => { const t = n(texto).trim(); return GRIMORIOS.get(t.toUpperCase()) ?? GRIMORIOS.get(`G${t.padStart(2, "0")}`) ?? (t.length >= 3 ? [...GRIMORIOS.values()].find((g) => n(g.nome).includes(t)) : null) ?? null; };

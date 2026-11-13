@@ -33,6 +33,9 @@ mestre espiã <nome> — uma viajante passa a acompanhar o jogador e anota o que
 mestre relatório <nome> — o que a espiã viu
 mestre fala <nome> <texto> — a espiã diz isso ao jogador, com as suas palavras
 mestre mapa — mapa do mundo com a posição de todos (só você vê)
+mestre sete luzes — abre o chamado do Grimório das Sete Luzes: os jogadores aceitam ou recusam, quem aceita enfrenta o Dragão da Aurora na Geleira Hyōga, e só um fica com o livro (eles não sabem disso até o dragão cair)
+mestre sete luzes status — quem aceitou, quem recusou, vida do dragão e votos
+mestre sete luzes entregar <nome> — encerra a disputa dando o livro a alguém
 mestre grimorios — onde está cada um dos 40 grimórios e quem já tem
 mestre grimorio <nome> <nº> — entrega um grimório ao jogador (ele "encontra" o livro)
 mestre tesouros — mapa de onde estão os 4 Grandes Itens, os 4 núcleos, os santuários de pet e o pergaminho da terra, e com quem cada um está
@@ -49,7 +52,7 @@ const ESPIA = { nome: "Shiori", papel: "uma cartógrafa de estrada", maxLog: 25,
     "fica um passo atrás, desenhando o caminho de vocês num mapa.", "pergunta de onde você é, e escuta a resposta com atenção demais para quem só puxa conversa.",
     "ajeita a alça da bolsa e diz que nunca viu ninguém viajar do seu jeito."] };
 
-export function criarMestre({ db, agora, ameacas = null, grimorios = null }) {
+export function criarMestre({ db, agora, ameacas = null, grimorios = null, seteLuzes = null }) {
   const gravar = (j, chave, valor) => db.query(`insert into jogo.progresso (jogador_id, chave, valor, criado_em) values ($1, $2, $3, $4)
     on conflict (jogador_id, chave) do update set valor = excluded.valor`, [j.id, chave, JSON.stringify(valor), new Date(agora())]);
   const jogadores = () => db.query(`select j.*, i.wa_jid, i.wa_lid, m.grupo_wa_id from jogo.jogadores j join jogo.identidades i on i.id = j.identidade_id
@@ -155,16 +158,30 @@ export function criarMestre({ db, agora, ameacas = null, grimorios = null }) {
       // a legenda do WhatsApp tem limite: manda a imagem com o título e o detalhe em texto
       return [{ para, imagem: imagemMapaCom(pontos), legenda: "*Tesouros do mundo* — legenda na mensagem seguinte" }, { para, texto }];
     }
+    if (/^sete$/.test(acao) && seteLuzes) {
+      const cont = new Map(); for (const x of todos) cont.set(String(x.mundo_id), (cont.get(String(x.mundo_id)) ?? 0) + 1);
+      const mid = [...cont.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? null;
+      const sub = semAcento(resto.toLowerCase()).replace(/^luzes\s*/, "").trim();
+      if (/^status$/.test(sub)) return dizer(await seteLuzes.status(mid));
+      if (/^entregar\b/.test(sub)) {
+        const quem = achar(todos, sub.replace(/^entregar\s*/, ""));
+        if (!quem) return dizer("Entregar a quem? Use: mestre sete luzes entregar <nome>");
+        const r = await seteLuzes.entregarPeloMestre(mid, quem.id);
+        return r ? [...r, ...dizer(`Feito. ${quem.nome} ficou com o grimório.`)] : dizer("Não há disputa aberta agora (o dragão ainda não caiu, ou o livro já tem dono).");
+      }
+      const r = await seteLuzes.iniciar(mid);
+      return r.erro ? dizer(r.erro) : [...r.saidas, ...dizer("Feito. O chamado foi feito no grupo. Acompanhe com: mestre sete luzes status")];
+    }
     if (/^grimorios$/.test(acao) && grimorios) {
       const cont = new Map(); for (const x of todos) cont.set(String(x.mundo_id), (cont.get(String(x.mundo_id)) ?? 0) + 1);
       const txt = await grimorios.relatorio([...cont.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? null);
       const linhas = txt.split("\n");
-      return [{ para, texto: `*Os 40 grimórios* _(só você vê)_\n\n${linhas.slice(0, 20).join("\n")}` }, { para, texto: linhas.slice(20).join("\n") }];
+      return [{ para, texto: `*Os ${linhas.length} grimórios* _(só você vê)_\n\n${linhas.slice(0, 20).join("\n")}` }, { para, texto: linhas.slice(20).join("\n") }];
     }
     if (acao === "quem") return dizer(todos.length ? todos.map((x) => `*${x.nome}* — ${x.classe}, nível ${x.nivel}, em ${nomeR(x.regiao_atual)}`).join("\n") : "Nenhum personagem ativo.");
 
-    if (/^monstros$/.test(acao)) return dizer(`*Monstros* (grau 1 a 3 para cidades; grau 4 são Calamidades)\n\n${MONSTROS.map((x) => `*${x.id.slice(1)}* ${x.nome}, ${x.titulo} — grau ${x.grau}, ${x.elemento}`).join("\n")}`);
-    const acharMonstro = (txt) => { const n = semAcento(txt.toLowerCase()).trim(); return MONSTROS.find((x) => x.id.toLowerCase() === n || x.id.slice(1) === n.padStart(2, "0")) ?? (n.length >= 3 ? MONSTROS.find((x) => semAcento(x.nome.toLowerCase()).startsWith(n)) : null) ?? null; };
+    if (/^monstros$/.test(acao)) return dizer(`*Monstros* (grau 1 a 3 para cidades; grau 4 são Calamidades)\n\n${MONSTROS.filter((x) => !x.evento).map((x) => `*${x.id.slice(1)}* ${x.nome}, ${x.titulo} — grau ${x.grau}, ${x.elemento}`).join("\n")}`);
+    const acharMonstro = (txt) => { const n = semAcento(txt.toLowerCase()).trim(); return MONSTROS.filter((x) => !x.evento).find((x) => x.id.toLowerCase() === n || x.id.slice(1) === n.padStart(2, "0")) ?? (n.length >= 3 ? MONSTROS.find((x) => semAcento(x.nome.toLowerCase()).startsWith(n)) : null) ?? null; };
     // o mundo do mestre: o que tem mais jogadores ativos
     const porMundo = new Map(); for (const x of todos) porMundo.set(String(x.mundo_id), (porMundo.get(String(x.mundo_id)) ?? 0) + 1);
     const mundoId = [...porMundo.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? null;

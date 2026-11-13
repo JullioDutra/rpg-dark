@@ -5,6 +5,7 @@
 import { REGIAO } from "../regras/exploracao.mjs";
 import { MONSTROS, MONSTRO, dnaMonstro } from "../mundo/monstros.mjs";
 import { renderizar } from "../avatar/index.mjs";
+import { imagemDragao } from "../avatar/especiais.mjs";
 import { atributosEfetivos, rolar, bonusDado, aplicarXP, habilidadesDe, MAGIA, elementoBase, PASSIVAS } from "../regras/combate.mjs";
 import { magiasDeBatalha } from "../regras/grimorios.mjs";
 import { bonusEquip } from "../regras/itens.mjs";
@@ -25,10 +26,11 @@ export const AMEACA = {
   limiares: [12, 24, 36, 48],     // a cada marca, uma Calamidade desperta sozinha
 };
 const barra = (v, max, n = 10) => { const c = Math.max(0, Math.min(n, Math.round((v / max) * n))); return "▰".repeat(c) + "▱".repeat(n - c); };
-const imagem = (m) => renderizar(dnaMonstro(m), 6);
+const imagem = (m) => (m.especial === "dragao" ? imagemDragao() : renderizar(dnaMonstro(m), 6));
 const nomeRegiao = (rid) => REGIAO.get(rid)?.nome ?? rid;
 
 export function criarAmeacas({ db, rng, agora, relogio = null }) {
+  let aoVencerEvento = null; // ligado pelo módulo do evento (sete-luzes)
   const privado = (x) => x.wa_jid ?? x.wa_lid ?? null;
   const jogadoresDoMundo = (mundoId) => db.query(`select j.*, i.wa_jid, i.wa_lid from jogo.jogadores j join jogo.identidades i on i.id = j.identidade_id
     where j.mundo_id = $1 and j.estado = 'ativo'`, [mundoId]);
@@ -64,7 +66,9 @@ export function criarAmeacas({ db, rng, agora, relogio = null }) {
     const media = soma / jogs.length;
     const lutadores = tipo === "calamidade" ? Math.max(2, jogs.length) : Math.max(1, Math.min(3, jogs.length));
     const hp = Math.round(media * AMEACA.golpesPorJogador[m.grau] * lutadores * (tipo === "calamidade" ? 1.5 : 1));
-    const termina = agora() + AMEACA.duracaoMs[tipo];
+    const { anuncio = null, duracaoMs = null, ...dadosExtra } = extra; // anuncio: saídas próprias no lugar do aviso padrão (eventos)
+    extra = dadosExtra;
+    const termina = agora() + (duracaoMs ?? AMEACA.duracaoMs[tipo]);
     const a = await um(db, `insert into jogo.ameacas (mundo_id, tipo, monstro, regiao, nivel, hp, hp_max, dados, criada_em, termina_em)
       values ($1, $2, $3, $4, $5, $6, $6, $7, $8, $9) returning *`, [mundoId, tipo, m.id, regiao, nivel, hp, JSON.stringify({ marcos: [], ...extra }), new Date(agora()), new Date(termina)]);
     if (relogio) await relogio.agendar(`ameaca:${a.id}`, termina + 2000, { tipo: "ameaca", ameaca: Number(a.id) });
@@ -73,7 +77,7 @@ export function criarAmeacas({ db, rng, agora, relogio = null }) {
       ? `⚠️ *CALAMIDADE*\n\n${m.calamidade ?? "O mundo inteiro sente ao mesmo tempo."}\n\n*${m.nome}, ${m.titulo}*\n_${m.desc}_\n\nNenhum herói derruba isso sozinho. A vida dela é uma só para o mundo inteiro: cada golpe de cada um conta.\n${rodape("no privado: golpear", "juntos, os golpes valem mais", `${horas} horas até ela ir embora`)}`
       : `⚠️ *${m.nome}, ${m.titulo}* apareceu em *${nomeRegiao(regiao)}*.\n\n_${m.desc}_\n\nEnquanto estiver lá, as lojas ficam fechadas e ninguém dorme. Quem estiver na região pode enfrentar; quem não estiver, ainda dá tempo de chegar.\n${rodape("no privado, estando lá: golpear", "juntos, os golpes valem mais", `${horas} horas até ele ir embora`)}`;
     await db.query("insert into jogo.feitos (mundo_id, jogador_id, tipo, texto, criado_em) values ($1, $2, 'ameaca', $3, $4)", [mundoId, jogs[0].id, tipo === "calamidade" ? `Calamidade: ${m.nome} despertou.` : `${m.nome} apareceu em ${nomeRegiao(regiao)}.`, new Date(agora())]);
-    return { ameaca: a, saidas: [{ para: mundo.grupo_wa_id, imagem: imagem(m), legenda }] };
+    return { ameaca: a, saidas: anuncio ? anuncio(mundo.grupo_wa_id, a) : [{ para: mundo.grupo_wa_id, imagem: imagem(m), legenda }] };
   }
 
   async function encerrarPorTempo(a) {
@@ -116,7 +120,9 @@ export function criarAmeacas({ db, rng, agora, relogio = null }) {
       : `⭐ *${nomeRegiao(a.regiao)} está livre.*\n\n*${m.nome}* caiu. As lojas reabrem, e esta noite a cidade dorme.\n\n${placar}`;
     if (a.tipo === "calamidade") await db.query("update jogo.mundos set relogio_eclipse = greatest(0, relogio_eclipse - 5) where id = $1", [a.mundo_id]);
     await db.query("insert into jogo.feitos (mundo_id, jogador_id, tipo, texto, criado_em) values ($1, $2, 'ameaca', $3, $4)", [a.mundo_id, golpes[0].jogador_id, `${m.nome} foi derrotado por ${golpes.map((g) => g.nome).join(", ")}.`.slice(0, 400), new Date(agora())]);
-    saidas.unshift({ para: mundo.grupo_wa_id, texto });
+    // ameaça de evento (ex.: o dragão das Sete Luzes): o desfecho no grupo é do evento, não o aviso padrão
+    if (a.dados?.evento && aoVencerEvento) saidas.unshift(...(await aoVencerEvento(a, golpes, mundo)));
+    else saidas.unshift({ para: mundo.grupo_wa_id, texto });
     return saidas;
   }
 
@@ -146,6 +152,8 @@ export function criarAmeacas({ db, rng, agora, relogio = null }) {
       return [{ para, texto: longe ? `Não há nada para enfrentar aqui. Mas ${MONSTRO.get(longe.monstro).nome} está em *${nomeRegiao(longe.regiao)}*: chegue lá e use *golpear*.` : "Não há nenhuma ameaça solta no mundo agora." }];
     }
     const a = aqui, m = MONSTRO.get(a.monstro);
+    if (a.dados?.evento && !(a.dados.aceitos ?? []).map(Number).includes(Number(j.id)))
+      return [{ para, texto: (a.dados.recusaram ?? []).map(Number).includes(Number(j.id)) ? "A aurora passa por cima de você como se você não estivesse ali. Quem recusou o chamado não encontra o caminho." : `Há uma luz estranha no alto da geleira, mas o caminho se fecha diante de você. Só quem atendeu ao chamado passa.\n${rodape("aceitar missão · recusar missão")}` }];
     const pacto = (await um(db, "select valor from jogo.progresso where jogador_id = $1 and chave = 'pacto-ameaca'", [j.id]))?.valor;
     if (Number(pacto?.id) === Number(a.id)) return [{ para, texto: `Você ergue a arma, e o braço não obedece. *${m.nome}* te olha de longe, sem pressa. Vocês têm um pacto.\n${rodape("purificar num templo desfaz o pacto")}` }];
     if (j.hp <= j.hp_max * AMEACA.vidaMinima) return [{ para, texto: `Você mal fica em pé. Enfrentar *${m.nome}* assim é só entregar a vida.\n${rodape("use uma poção ou descanse e volte", a.tipo === "monstro" ? "nesta cidade ninguém dorme: descanse em outra" : null)}` }];
@@ -245,7 +253,7 @@ export function criarAmeacas({ db, rng, agora, relogio = null }) {
   async function cidadeFechada(j, t) {
     if (!/^(loja|comprar|mercado|vender|descansar|dormir|estalagem|pousada)\b/.test(t)) return null;
     const a = await um(db, "select * from jogo.ameacas where mundo_id = $1 and estado = 'ativa' and tipo = 'monstro' and regiao = $2 and termina_em > $3 limit 1", [j.mundo_id, j.regiao_atual, new Date(agora())]);
-    if (!a) return null;
+    if (!a || a.dados?.evento) return null; // o dragão do evento fica no ermo: não fecha loja de ninguém
     const m = MONSTRO.get(a.monstro);
     return `Portas trancadas, janelas pregadas. Enquanto *${m.nome}* estiver em ${nomeRegiao(a.regiao)}, ninguém abre loja nem aluga cama.\n${rodape("golpear para enfrentar", "monstro mostra a situação")}`;
   }
@@ -267,6 +275,7 @@ export function criarAmeacas({ db, rng, agora, relogio = null }) {
     const { aqui } = await ativaPara(j);
     if (!aqui) return null;
     // A Calamidade vale para o mundo inteiro e dura dias: só vira "a cena" de quem está lutando agora (golpeou há pouco)
+    if (aqui.dados?.evento && !(aqui.dados.aceitos ?? []).map(Number).includes(Number(j.id))) return null;
     if (aqui.tipo === "calamidade" && !(await db.query("select 1 from jogo.ameaca_golpes where ameaca_id = $1 and jogador_id = $2 and ultimo_em > $3", [aqui.id, j.id, new Date(agora() - 15 * 60_000)])).length) return null;
     const m = MONSTRO.get(aqui.monstro);
     return { id: Number(aqui.id), tipo: aqui.tipo, nome: `${m.nome}, ${m.titulo}`, descricao: m.desc, vida: `${Math.round((aqui.hp / aqui.hp_max) * 100)}%`, onde: aqui.regiao ? nomeRegiao(aqui.regiao) : "o mundo inteiro" };
@@ -285,5 +294,5 @@ export function criarAmeacas({ db, rng, agora, relogio = null }) {
     return a && +new Date(a.termina_em) <= agora() ? encerrarPorTempo(a) : [];
   }
 
-  return { comando, invocar, aoConcluir, aoTick, cidadeFechada, capitulosDoMundo, cenaPara, aoPacto };
+  return { comando, invocar, aoConcluir, aoTick, cidadeFechada, capitulosDoMundo, cenaPara, aoPacto, definirEvento: (fn) => { aoVencerEvento = fn; } };
 }

@@ -67,7 +67,7 @@ export function simularDuelo(a, b, rng) {
   return { vencedor: vencedor === A ? a : b, perdedor: vencedor === A ? b : a, linhas, resto: Math.max(0, Math.round((vencedor.hp / vencedor.max) * 100)) };
 }
 
-export function criarExtras({ db, rng, agora }) {
+export function criarExtras({ db, rng, agora, aoFimDuelo = null }) {
   const gravar = (j, chave, valor = true) => db.query(`insert into jogo.progresso (jogador_id, chave, valor, criado_em) values ($1, $2, $3, $4)
     on conflict (jogador_id, chave) do update set valor = excluded.valor, criado_em = excluded.criado_em`, [j.id, chave, JSON.stringify(valor), new Date(agora())]);
   const grupoDe = async (j) => (await um(db, "select grupo_wa_id from jogo.mundos where id = $1", [j.mundo_id]))?.grupo_wa_id;
@@ -381,7 +381,9 @@ ${rodape("+15% de dano em todas as lutas", `+${PACTO.corrupcao} de corrupção`,
     const jv = await um(db, "select * from jogo.jogadores where id = $1", [fim.vencedor.id]);
     await feito(jv, "duelo", `⚔️ *${fim.vencedor.nome}* venceu *${fim.perdedor.nome}* num duelo amistoso.`);
     const resto = Math.max(0, Math.round((fim.vencedor.hp / fim.vencedor.hpMax) * 100));
-    return [{ para: chat, texto: `${extra}*${fim.vencedor.nome}* vence${fim.motivo === "tempo" ? " por pontos" : fim.motivo === "desistencia" ? " por desistência" : fim.motivo === "wo" ? " por abandono" : ""}, ainda com ${resto}% de fôlego. ${fim.perdedor.nome} aceita a mão estendida e levanta rindo.\n${rodape(`${fim.vencedor.nome}: ${xv}`, `${fim.perdedor.nome}: ${xp}`, "a vida de verdade não mudou")}` }];
+    const saidasFim = [{ para: chat, texto: `${extra}*${fim.vencedor.nome}* vence${fim.motivo === "tempo" ? " por pontos" : fim.motivo === "desistencia" ? " por desistência" : fim.motivo === "wo" ? " por abandono" : ""}, ainda com ${resto}% de fôlego. ${fim.perdedor.nome} aceita a mão estendida e levanta rindo.\n${rodape(`${fim.vencedor.nome}: ${xv}`, `${fim.perdedor.nome}: ${xp}`, "a vida de verdade não mudou")}` }];
+    if (aoFimDuelo) saidasFim.push(...(await aoFimDuelo(fim.vencedor.id, fim.perdedor.id, jv.mundo_id, chat)));
+    return saidasFim;
   }
   /** Mensagem no grupo de alguém que está num duelo: número ou nome da ação, desistir, wo. Devolve null se não for do duelo. */
   async function acaoDuelo(msg, j, t) {

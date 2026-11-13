@@ -21,6 +21,7 @@ import { criarSocial } from "./social.mjs";
 import { criarMestre } from "./mestre.mjs";
 import { criarAmeacas } from "./ameacas.mjs";
 import { criarGrimorios } from "./grimorios.mjs";
+import { criarSeteLuzes } from "./seteluzes.mjs";
 import { kitInicial, bonusEquip, item as itemDe } from "../regras/itens.mjs";
 import { XP_PROXIMO } from "../../scripts/balanceamento.mjs";
 import { comandoExploracao, recuperarVigor, buscarRegioes } from "../regras/exploracao.mjs";
@@ -89,12 +90,15 @@ export function criarJogo({ relogio = null, db, sal = process.env.TELEFONE_SAL ?
   let pactoDaCena = null; // ligado depois que os modos complementares existem
   const narrador = criarNarrador({ db, ia, agora, aoPacto: (j, com, para) => pactoDaCena(j, com, para) });
   const combate = criarCombate({ db, rng, agora });
-  const extras = criarExtras({ db, rng, agora });
+  let fimDeDuelo = null; // ligado quando o evento das Sete Luzes existe
+  const extras = criarExtras({ db, rng, agora, aoFimDuelo: (v, p, mundoId, chat) => (fimDeDuelo ? fimDeDuelo(v, p, mundoId, chat) : []) });
   pactoDaCena = (j, com, para) => extras.ofertaPacto(j, com, para);
   const social = criarSocial({ db, rng, agora });
   const ameacas = criarAmeacas({ db, rng, agora, relogio });
   const grimorios = criarGrimorios({ db, rng });
-  const mestre = criarMestre({ db, agora, ameacas, grimorios });
+  const seteLuzes = criarSeteLuzes({ db, agora, ameacas, grimorios, relogio });
+  fimDeDuelo = seteLuzes.aoFimDuelo;
+  const mestre = criarMestre({ db, agora, ameacas, grimorios, seteLuzes });
   // Ganchos do mundo vivo: os modos complementares e, por cima, os contratos da Guilda (que só observam)
   const ganchos = { ...extras,
     aoFalar: async (j, npc, amizade, para) => [...(await extras.aoFalar(j, npc, amizade, para)), ...(await social.aoFalar(j, npc, para))],
@@ -169,6 +173,13 @@ export function criarJogo({ relogio = null, db, sal = process.env.TELEFONE_SAL ?
     }
     if (ehComando(t, "ranking", "rank", "placar")) return social.ranking(mundo.id, msg.chat);
     if (/^[!/]?mestre\b/.test(t)) return []; // a mão do mestre nunca aparece no grupo
+    // Chamado das Sete Luzes: aceitar/recusar a missão e votar em quem fica com o grimório
+    const mMissao = t.match(/^[!/]?(aceitar|aceito|recusar|recuso)\s+(?:a\s+|o\s+)?(missao|chamado)$/), mVoto = t.match(/^[!/]?(?:votar|voto)\s+(?:em\s+|no\s+|na\s+)?(.+)$/);
+    if (mMissao || mVoto) {
+      const idt = await identidade(msg.autor);
+      const eu = await um(db, "select * from jogo.jogadores where mundo_id = $1 and identidade_id = $2 and estado = 'ativo'", [mundo.id, idt.id]);
+      if (eu) { const r = mMissao ? await seteLuzes.responder(eu, /^aceit/.test(mMissao[1]), msg.chat) : await seteLuzes.votar(eu, mVoto[1], msg.chat); if (r) return r; }
+    }
     if (/^[!/]?resgatar\b/.test(t)) {
       const idt = await identidade(msg.autor);
       const eu = await um(db, "select * from jogo.jogadores where mundo_id = $1 and identidade_id = $2 and estado = 'ativo'", [mundo.id, idt.id]);
@@ -252,6 +263,8 @@ export function criarJogo({ relogio = null, db, sal = process.env.TELEFONE_SAL ?
       const tc = tn.replace(/^[!/]/, "");
       const fechada = await ameacas.cidadeFechada(ativo, tc);
       if (fechada) return [...novidades, { para: msg.chat, texto: fechada }];
+      const mMissao = tc.match(/^(aceitar|aceito|recusar|recuso)\s+(?:a\s+|o\s+)?(missao|chamado)$/);
+      if (mMissao) { const r = await seteLuzes.responder(ativo, /^aceit/.test(mMissao[1]), msg.chat); if (r) return [...novidades, ...r]; }
       const ps = await mestre.passagem(ativo, tc, msg.chat);
       if (ps.tratado) return [...novidades, ...ps.saidas, ...(ps.mudouRegiao ? await mundo.chegada(ativo, msg.chat) : [])];
       // propor um pacto à ameaça que está em cena
@@ -295,6 +308,7 @@ export function criarJogo({ relogio = null, db, sal = process.env.TELEFONE_SAL ?
       return [...e.saidas, ...(j.regiao_atual !== antes ? await mundo.chegada(j, para) : [])];
     }
     if (corpo.tipo === "ameaca") return ameacas.aoTick(corpo.ameaca);
+    if (corpo.tipo === "sete-luzes") return seteLuzes.aoTick(corpo.ameaca);
     if (corpo.tipo === "resumo") {
       const saidas = [];
       const mundos = await db.query("select id, grupo_wa_id from jogo.mundos where status = 'ativo' and grupo_wa_id is not null");

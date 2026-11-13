@@ -567,7 +567,7 @@ export async function testarMundoServidor({ db, jogador, outro, mensagem, grupo,
   await t("grimórios: 40 no jogo, achados explorando ou pelo mestre; abrir respeita classe, nível e limite; as magias entram no menu da luta e funcionam", async () => {
     const G = await import("../src/regras/grimorios.mjs");
     const { criarGrimorios } = await import("../src/servidor/grimorios.mjs");
-    assert.equal(G.GRIMORIOS.size, 40);
+    assert.equal(G.GRIMORIOS.size, 41);
     for (const g of G.GRIMORIOS.values()) { assert(g.regiao, `${g.id} tem região`); assert(g.magias.some((m) => !m.utilitaria), `${g.id} tem magia de batalha`); }
     await db.query("update jogo.batalhas set status = 'encerrada' where status <> 'encerrada'"); await db.query("delete from jogo.exploracoes where pendente");
     await db.query("delete from jogo.grimorios_jogador"); await db.query("delete from jogo.lutas_grupo"); await db.query("delete from jogo.viagens where concluida_em is null");
@@ -584,7 +584,7 @@ export async function testarMundoServidor({ db, jogador, outro, mensagem, grupo,
     await noGrupo(adminPrivado("mestre grimorio Kaito 2")); await noGrupo(adminPrivado("mestre grimorio Kaito 5")); await noGrupo(adminPrivado("mestre grimorio Kaito 9")); await noGrupo(adminPrivado("mestre grimorio Kaito 17"));
     assert.match(texto(await noGrupo(adminPrivado("mestre grimorios"))), /\*01\* Caderno de Faíscas[\s\S]*com Kaito Ryuen/);
     const lista = texto(await enviar("grimorios"));
-    assert.match(lista, /Seus grimórios[\s\S]*0 de 3 abertos \(Mago\)[\s\S]*6 de 40/);
+    assert.match(lista, /Seus grimórios[\s\S]*0 de 3 abertos \(Mago\)[\s\S]*6 de 41/);
     // regras para abrir
     assert.match(texto(await enviar("abrir grimorio manual do duelista")), /foi escrito para: Espadachim, Cavaleiro, Paladino/);
     assert.match(texto(await enviar("abrir grimorio g08")), /nível 45/);
@@ -701,6 +701,58 @@ export async function testarMundoServidor({ db, jogador, outro, mensagem, grupo,
     assert.equal(at.MAG, 56); assert.equal(at.FOR, 16); assert.equal(at.RES, 24);
     await db.query("update jogo.batalhas set status = 'encerrada' where status <> 'encerrada'");
     assert.match(texto(await enviar("guardar cajado")), /guarda[\s\S]*MAG 44 _\(\+4\)_/);
+  });
+  await t("Sete Luzes: chamado do mestre, aceitar/recusar, só quem aceitou enfrenta o dragão, um só grimório decidido por voto ou duelo; quem recusa ouve ecos do menino", async () => {
+    const limpar = async () => { await db.query("update jogo.batalhas set status = 'encerrada' where status <> 'encerrada'"); await db.query("delete from jogo.exploracoes where pendente");
+      await db.query("delete from jogo.ameacas"); await db.query("delete from jogo.viagens where concluida_em is null"); await db.query("delete from jogo.grimorios_jogador where grimorio_id = 'G41'");
+      await db.query("delete from jogo.progresso where chave in ('duelo-ativo', 'duelo-estado', 'duelo', 'falando', 'pacto-ameaca', 'ameaca-vez', 'ecos-menino', 'duelos-dia')");
+      await db.query("update jogo.jogadores set hp = hp_max, mp = mp_max, regiao_atual = 'R-WAT-5', local_atual = null where id = any($1)", [[jogador.id, outro.id]]); };
+    const matar = async (quem) => { await db.query("update jogo.ameacas set hp = 1 where estado = 'ativa'"); let r = [];
+      for (let k = 0; k < 12 && !(await db.query("select 1 from jogo.ameacas where estado = 'derrotada'")).length; k++) { clock += 6 * 60_000; await db.query("update jogo.jogadores set hp = hp_max"); r = await quem("golpear 1"); } return r; };
+    await limpar();
+    // 1) chamado
+    assert.doesNotMatch(texto(await noGrupo(outroPrivado("mestre sete luzes"))), /Feito/);
+    const ch = await noGrupo(adminPrivado("mestre sete luzes"));
+    assert(doGrupo(ch).some((x) => x.imagem?.length > 2000 && /CHAMADO DAS SETE LUZES[\s\S]*Geleira Hyōga[\s\S]*aceitar missão[\s\S]*recusar missão/.test(x.legenda) && !/mestre|admin|só um/i.test(x.legenda)), "chamado no grupo com a imagem do grimório, sem revelar que é um só");
+    assert.match(texto(await noGrupo(adminPrivado("mestre sete luzes"))), /já está aberto/);
+    // sem responder, o caminho não abre
+    assert.match(texto(await enviar("golpear")), /caminho se fecha[\s\S]*aceitar missão/);
+    // 2) os dois aceitam (um no grupo, outro no privado)
+    const ac = await noGrupo(grupo("aceitar missão", false));
+    assert.match(texto(ac), /Kaito Ryuen\* atende ao chamado/); assert(ac.some((x) => /dragão dorme no topo[\s\S]*golpear/.test(x.texto ?? "") && x.para !== GRUPO));
+    assert.match(texto(await noGrupo(outroPrivado("aceitar missao"))), /Rin\* atende ao chamado/);
+    assert.match(texto(await noGrupo(grupo("recusar missão", false))), /já atendeu/);
+    const dragao = await enviar("monstro");
+    assert(dragao[0].imagem?.length > 5000 && /Kōryū, o Dragão da Aurora/.test(dragao[0].legenda), "o dragão tem imagem própria");
+    assert.match(texto(await enviar("golpear")), /\*1\* Atacar/);
+    await enviar("golpear 1"); clock += 6 * 60_000; await noGrupo(outroPrivado("golpear 1"));
+    // 3) o dragão cai: um livro, dois que lutaram
+    const fim = await matar(enviar);
+    assert(doGrupo(fim).some((x) => /DRAGÃO DA AURORA CAIU[\s\S]*Um livro\. Um só[\s\S]*votar <nome>[\s\S]*duelo/.test(x.legenda ?? "")), "só agora eles descobrem que é um só");
+    assert.equal((await db.query("select count(*)::int n from jogo.grimorios_jogador where grimorio_id = 'G41'"))[0].n, 0);
+    // voto dividido não decide
+    await noGrupo(grupo("votar Kaito", false));
+    assert.match(texto(await noGrupo(outroGrupo("votar Rin"))), /ninguém passou da metade[\s\S]*duelo/);
+    // duelo decide: quem perde sai, e sobra um
+    await noGrupo(outroGrupo("duelar Kaito")); await noGrupo(grupo("aceitar", false));
+    const dz = await noGrupo(grupo("desistir", false));
+    assert(doGrupo(dz).some((x) => /GRIMÓRIO DAS SETE LUZES TEM DONO[\s\S]*Rin/.test(x.legenda ?? "")), "o vencedor do duelo fica com o livro");
+    assert.equal((await db.query("select jogador_id from jogo.grimorios_jogador where grimorio_id = 'G41'"))[0].jogador_id, outro.id);
+    assert.match(texto(await noGrupo(outroPrivado("grimorios"))), /Grimório das Sete Luzes[\s\S]*Arco das Sete Luzes/);
+    assert.match(texto(await noGrupo(adminPrivado("mestre sete luzes"))), /já tem dono/);
+    // 4) de novo, agora com recusa: quem recusa não passa e ouve ecos; quem luta sozinho leva direto
+    await limpar();
+    await noGrupo(adminPrivado("mestre sete luzes"));
+    const rec = await noGrupo(outroGrupo("recusar missão"));
+    assert.match(texto(rec), /Rin\* fica/); assert(rec.some((x) => /sonha com alguém que nunca conheceu[\s\S]*Vale de Hinata/.test(x.texto ?? "") && x.para !== GRUPO), "quem recusa recebe um eco do menino, no privado");
+    assert.match(texto(await noGrupo(outroPrivado("golpear"))), /Quem recusou o chamado não encontra o caminho/);
+    assert.match(texto(await noGrupo(outroGrupo("aceitar missão"))), /já escolheu ficar/);
+    await noGrupo(grupo("aceitar missão", false));
+    assert.match(texto(await noGrupo(adminPrivado("mestre sete luzes status"))), /Aceitaram: Kaito Ryuen[\s\S]*Recusaram: Rin/);
+    const so = await matar(enviar);
+    assert(doGrupo(so).some((x) => /TEM DONO[\s\S]*Kaito Ryuen/.test(x.legenda ?? "")), "quem lutou sozinho fica com o livro sem disputa");
+    assert(so.some((x) => /Outra lembrança que não é sua[\s\S]*Sayo/.test(x.texto ?? "")), "quem recusou recebe o segundo eco quando o dragão cai");
+    await limpar();
   });
   await t("Olhos da Terra: a mestra entrega o pergaminho a quem é da terra; ler cega e dá as habilidades; admin também concede", async () => {
     await db.query("update jogo.jogadores set regiao_atual = 'R-DAI-6', local_atual = null, atributo_magico = 'Fogo (Chama)', reino = 'Homura' where id = $1", [jogador.id]);
