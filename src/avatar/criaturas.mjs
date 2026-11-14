@@ -247,6 +247,49 @@ const ARQ = {
     marcas(t, d, r);
   },
 
+  // O "eu arcano" do mago: porte 1 = centelha com um anel; 2 = vulto encapuzado com um círculo; 3 = arquimago com três círculos, coroa de estrelas e orbes.
+  arcano(t, d, r) {
+    const porte = d.porte ?? 2, cor = d.cor ?? "#c090ff", A = rampa(cor), claro = misturar(cor, "#ffffff", 0.6), manto = rampa(misturar(cor, "#0c0818", 0.78));
+    const anel = (cx, cy, R, esp = 1, marcas = 0, fase = 0) => {
+      const m = t.mascara().elipse(cx, cy, R, R).apagar(t.mascara().elipse(cx, cy, R - esp, R - esp));
+      t.pintar(m, cor);
+      for (let k = 0; k < marcas; k++) { const a = fase + (k / marcas) * Math.PI * 2; t.set(Math.round(cx + Math.cos(a) * (R - esp - 1.5)), Math.round(cy + Math.sin(a) * (R - esp - 1.5)), claro); t.set(Math.round(cx + Math.cos(a) * R), Math.round(cy + Math.sin(a) * R), "#ffffff"); }
+    };
+    const estrela = (x, y, g = 1) => { t.set(x, y, "#ffffff"); for (let k = 1; k <= g; k++) for (const [a, b] of [[k, 0], [-k, 0], [0, k], [0, -k]]) t.set(x + a, y + b, k === g ? cor : claro); };
+    if (porte === 1) {
+      anel(32, 34, 20, 1, 8);
+      // centelha: um núcleo de luz com olhos, e faíscas em volta
+      t.carimbar(t.mascara().elipse(32, 34, 10, 11).espinho(32, 24, 8, 32, 12).espinho(25, 28, 6, 19, 18).espinho(39, 28, 6, 45, 18), A, { sombra: 2 });
+      t.pintar(t.mascara().elipse(32, 36, 6, 6), claro); t.pintar(t.mascara().elipse(32, 37, 3, 3), "#ffffff");
+      olho(t, 28, 33, d.corOlhos, "brilho", 1.5); olho(t, 36, 33, d.corOlhos, "brilho", 1.5);
+      for (let k = 0; k < 6; k++) { const a = r() * 6.28, R = 23 + r() * 5; estrela(Math.round(32 + Math.cos(a) * R), Math.round(34 + Math.sin(a) * R), 1); }
+    } else {
+      const arqui = porte >= 3;
+      // círculos atrás
+      if (arqui) { anel(32, 26, 29, 1, 12, 0.2); anel(32, 26, 23, 2, 6); t.pintar(t.mascara().linha(32, 4, 51, 37).linha(51, 37, 13, 37).linha(13, 37, 32, 4), misturar(cor, "#000000", 0.25)); anel(32, 26, 15, 1, 0); }
+      else { anel(32, 26, 21, 2, 8); anel(32, 26, 14, 1, 0); }
+      // manto e capuz
+      const corpo = t.mascara().poligono(arqui ? [[6, 63], [16, 40], [48, 40], [58, 63]] : [[10, 63], [19, 41], [45, 41], [54, 63]]);
+      const capuz = t.mascara().elipse(32, 27, 13, 14).poligono([[19, 30], [45, 30], [47, 44], [17, 44]]).espinho(32, 15, 14, 32, arqui ? 5 : 8);
+      t.carimbar(corpo, manto, { sombra: 2 });
+      t.carimbar(capuz, manto, { sombra: 2 });
+      // o rosto é um vazio estrelado, só com os olhos do mago
+      const rosto = t.mascara().elipse(32, 29, 8, 9);
+      t.pintar(rosto, "#07040f");
+      olho(t, 28, 29, d.corOlhos, "brilho", arqui ? 1.6 : 1.4); olho(t, 36, 29, d.corOlhos, "brilho", arqui ? 1.6 : 1.4);
+      for (const [x, y] of [[30, 23], [35, 25], [29, 34], [34, 35]]) t.set(x, y, claro);
+      // bordado do manto e fecho
+      t.pintar(t.mascara().linha(32, 44, 32, 63).linha(24, 44, 20, 63).linha(40, 44, 44, 63), A[1]);
+      t.pintar(t.mascara().elipse(32, 45, 2.4, 2.4), cor); t.set(32, 45, "#ffffff");
+      // mãos de luz segurando um orbe (adepto) ou abrindo três (arquimago)
+      const orbe = (x, y, R) => { t.pintar(t.mascara().elipse(x, y, R + 1, R + 1), misturar(cor, "#000000", 0.3)); t.pintar(t.mascara().elipse(x, y, R, R), cor); t.pintar(t.mascara().elipse(x - 0.5, y - 0.5, R * 0.5, R * 0.5), claro); t.set(Math.round(x - 1), Math.round(y - 1), "#ffffff"); };
+      if (arqui) { orbe(9, 30, 3); orbe(55, 30, 3); orbe(32, 54, 3.5); for (const x of [22, 27, 32, 37, 42]) estrela(x, 4 + Math.abs(x - 32) / 4, x === 32 ? 2 : 1); t.pintar(t.mascara().linha(12, 33, 18, 44).linha(52, 33, 46, 44), claro); }
+      else orbe(32, 54, 3);
+      for (let k = 0; k < (arqui ? 14 : 7); k++) { const x = Math.floor(2 + r() * 60), y = Math.floor(2 + r() * 60); if (!corpo.tem(x, y) && !capuz.tem(x, y)) t.set(x, y, k % 2 ? claro : "#ffffff"); }
+    }
+    marcas(t, d, r);
+  },
+
   aracnideo(t, d, r) {
     const C = rampa(d.cor);
     const pernas = t.mascara();

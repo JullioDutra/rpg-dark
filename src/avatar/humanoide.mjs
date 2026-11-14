@@ -24,7 +24,7 @@ export const CATALOGO = {
     "olho-obsidiana", "tapa-olho", "sardas", "curativo", "rubor", "pintura-crescente", "veias-vazio", "anel-eclipse",
     "fios-prata", "colar-perolas", "gota", "correntes", "chapeu-juiz", "chapeu-corte", "cartola", "capuz",
     "brasas", "raizes", "halo", "luvas", "fitas-agua", "pelagem", "prato", "chapeu-palha", "cristais",
-    "folhas", "galhos", "coroa-flores", "asas-penas", "asas-morcego", "nariz-tengu", "oculos-aviador", "kabuto", "bandagem-boca", "rosto-buraco", "sombra-dragao"],
+    "folhas", "galhos", "coroa-flores", "runas", "circulo-arcano", "orbes", "asas-penas", "asas-morcego", "nariz-tengu", "oculos-aviador", "kabuto", "bandagem-boca", "rosto-buraco", "sombra-dragao"],
 };
 
 // ─────────────────────────────── ROSTO ───────────────────────────────
@@ -527,6 +527,27 @@ const ACESSORIO = {
     // veios de seiva que brilham no pescoço e pétalas no ar
     t.pintar(t.mascara().linha(28, 50, 26, 56).linha(36, 50, 38, 56).linha(26, 56, 22, 60).linha(38, 56, 42, 60), c.aura ?? "#9affc0");
     for (let k = 0; k < 9; k++) { const x = Math.floor(r() * 62), y = Math.floor(r() * 46); t.set(x, y, k % 2 ? flor : F[3]); t.set(x + 1, y + 1, k % 2 ? flor : F[2]); }
+  }],
+  // ── traços de quem abriu os Círculos Arcanos (na cor do elemento do mago) ──
+  runas: ["frente", (t, c) => {
+    const cor = c.aura ?? "#c090ff", claro = misturar(cor, "#ffffff", 0.6);
+    // três runas subindo pelo ombro e uma marca pequena sob o olho
+    for (const [x, y] of [[50, 56], [53, 49], [50, 42]]) { t.pintar(t.mascara().linha(x, y, x, y + 3).linha(x, y, x + 2, y + 1).linha(x, y + 3, x - 2, y + 2), cor); t.set(x, y + 1, claro); }
+    t.set(38, 31, cor); t.set(39, 32, claro); t.set(38, 33, cor);
+  }],
+  "circulo-arcano": ["tras", (t, c) => {
+    const cor = c.aura ?? "#c090ff", claro = misturar(cor, "#ffffff", 0.6);
+    t.pintar(t.mascara().elipse(CX, 18, 23, 23).apagar(t.mascara().elipse(CX, 18, 21, 21)), cor);
+    t.pintar(t.mascara().elipse(CX, 18, 17, 17).apagar(t.mascara().elipse(CX, 18, 16, 16)), misturar(cor, "#000000", 0.2));
+    for (let k = 0; k < 12; k++) { const a = (k / 12) * Math.PI * 2; t.set(Math.round(CX + Math.cos(a) * 19), Math.round(18 + Math.sin(a) * 19), claro); if (k % 3 === 0) t.set(Math.round(CX + Math.cos(a) * 22), Math.round(18 + Math.sin(a) * 22), "#ffffff"); }
+  }],
+  orbes: ["frente", (t, c, r) => {
+    const cor = c.aura ?? "#c090ff", claro = misturar(cor, "#ffffff", 0.6);
+    for (const [x, y, rastro] of [[8, 30, 1], [56, 26, -1], [52, 6, -1]]) {
+      t.pintar(t.mascara().linha(x, y + 3, x + rastro * 3, y + 9).linha(x + rastro * 3, y + 9, x + rastro * 2, y + 13), misturar(cor, "#000000", 0.2));
+      t.pintar(t.mascara().elipse(x, y, 3, 3), misturar(cor, "#000000", 0.3)); t.pintar(t.mascara().elipse(x, y, 2, 2), cor); t.set(x - 1, y - 1, "#ffffff");
+    }
+    for (let k = 0; k < 8; k++) { const x = Math.floor(r() * 62), y = Math.floor(r() * 44); t.set(x, y, k % 2 ? claro : "#ffffff"); }
   }],
   cristais: ["frente", (t, c, r) => {
     const m = t.mascara().espinho(24, 30, 3, 21, 22).espinho(39, 30, 3, 42, 23).espinho(12, 48, 4, 8, 36).espinho(52, 48, 4, 56, 37);

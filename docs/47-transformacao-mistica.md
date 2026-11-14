@@ -126,6 +126,39 @@ Antes, o duelo usava só Atacar, Defender, Magia e as habilidades da classe. Ago
 
 Os atributos do duelo já incluíam o equipamento; agora incluem também o bônus do despertar. Quem não tem mana usa essas habilidades sem custo, como nas batalhas. Recargas e efeitos (queimadura, prender, enfraquecer, quebrar a guarda, proteção, cura reduzida de duelo) seguem as regras do duelo.
 
+## 47.9 Mago: os Círculos Arcanos
+
+A mesma lógica para o **Mago**. Em vez de fera ou espírito, ele abre **três Círculos Arcanos** da escola do seu elemento.
+
+- **Como abre:** com o **Selo Arcano** (aparece explorando, 6% de chance, mesmas condições das outras linhagens) e `usar selo arcano`, ou pelo mestre com `mestre transformar <nome>`. Níveis mínimos 1, 20 e 40. (`usar selo`, sozinho, continua sendo o teletransporte do mestre.)
+- **Escola pelo elemento:** Chama (Fogo, Lava, Explosão, Cinzas) · Maré (Água, Gelo, Espelho, Veneno) · Pedra (Terra, Metal, Cristal, Madeira, Natureza) · Tempestade (Vento, Raio, Som) · Véu (Trevas, Luz, Alma, Tempo, Espaço e qualquer outro).
+- **A arte no grupo:** quem era · o "eu arcano" (centelha → vulto encapuzado com um círculo → arquimago com três círculos e orbes, na cor do elemento e com os olhos do jogador) · quem é agora.
+- **O retrato:** 1º círculo, runas no ombro e uma marca sob o olho; 2º, um círculo mágico atrás da cabeça e olhos acesos; 3º, orbes em órbita, aura e o traço da escola. Tudo na cor do elemento do mago.
+- **Atributos:** +6% / +12% / +20% em MAG e mais um: VEL (Chama e Tempestade), RES (Maré), DEF (Pedra), SOR (Véu).
+- **Comando:** `circulos` (ou `forma`, `arcano`).
+
+| Escola | Círculo | Título | Habilidade | O que faz | Mana | Recarga |
+|--------|:---:|--------|-----------|-----------|:---:|:---:|
+| Chama | 1 | Iniciado da Chama | **Lança de Chamas** | magia de força 1,4 e queimadura por 3 rodadas | 12 | 3 |
+|  | 2 | Adepto da Chama | **Manto Incandescente** | corta 60% do dano por 2 rodadas e o próximo golpe vale +50% | 16 | 5 |
+|  | 3 | Arquimago do Sol | **Sol Menor** | magia de força 2,6 e queimadura por 3 rodadas | 30 | 5 |
+| Maré | 1 | Iniciado da Maré | **Agulhas de Gelo** | três magias de força 0,55 | 12 | 3 |
+|  | 2 | Adepto da Maré | **Espelho d'Água** | corta 75% do dano por 2 rodadas | 16 | 5 |
+|  | 3 | Arquimago do Abismo | **Maré Absoluta** | magia de força 2,2 que prende por 1 rodada | 30 | 5 |
+| Pedra | 1 | Iniciado da Pedra | **Estilhaço** | magia de força 1,4 que abala a guarda | 12 | 3 |
+|  | 2 | Adepto da Pedra | **Muralha Rúnica** | corta 80% do dano por 2 rodadas | 16 | 5 |
+|  | 3 | Arquimago da Montanha | **Meteoro** | magia de força 2,6 que atravessa 30% da defesa | 30 | 5 |
+| Tempestade | 1 | Iniciado da Tempestade | **Fagulha em Cadeia** | duas magias de força 0,8 | 12 | 3 |
+|  | 2 | Adepto da Tempestade | **Passo do Relâmpago** | esquiva 80% por 1 rodada e o próximo golpe vale +50% | 14 | 4 |
+|  | 3 | Arquimago do Trovão | **Juízo do Trovão** | magia de força 2,4 que prende por 1 rodada | 30 | 5 |
+| Véu | 1 | Iniciado do Véu | **Dardo Astral** | magia de força 1,3 com +3 no dado | 12 | 3 |
+|  | 2 | Adepto do Véu | **Véu das Horas** | cura 30% da vida e protege por 2 rodadas | 18 | 5 |
+|  | 3 | Arquimago das Estrelas | **Colapso Estelar** | magia de força 2,5 que enfraquece | 30 | 5 |
+
+As magias dos círculos são sempre mágicas (usam MAG e o elemento do mago, com vantagem e desvantagem de elemento), somam-se ao kit do Mago e valem em batalhas, calamidades e duelos.
+
+Exemplos: `docs/img/despertar-arcano-veu-1.png`, `-veu-2.png`, `-veu-3.png`, `-chama-3.png`, `-mare-3.png`, `-pedra-3.png`, `-tempestade-3.png`.
+
 ## 47.8 Limites conhecidos
 
 - As habilidades não foram calibradas por simulação. As do 3º estágio equivalem às habilidades de nível 25 das classes; um Meio-humano no 3º despertar tem três habilidades a mais que as outras classes.
@@ -133,3 +166,4 @@ Os atributos do duelo já incluíam o equipamento; agora incluem também o bônu
 - O jogador não "vira" o animal durante a luta: a transformação é o despertar, e o que fica são as habilidades.
 - Os bônus de atributo e as habilidades da Força da Natureza também não foram calibrados por simulação. Nas batalhas, um jogador desperto fica um pouco acima das metas de dificuldade medidas no doc 38 (até +20% em dois atributos no 3º estágio).
 - **Duelos:** a calibração entre classes (doc 42) foi feita só com as habilidades de classe e continua valendo para dois jogadores "limpos". Com grimórios, Grandes Itens e despertar no duelo, quem tem mais coisas leva vantagem real; isso é intencional ("vale tudo"), mas não está medido.
+- Os Círculos Arcanos também não foram calibrados por simulação. O Mago já era a classe de maior dano mágico; no 3º círculo ele ganha +20% de MAG e três magias a mais.

@@ -881,10 +881,10 @@ export async function testarMundoServidor({ db, jogador, outro, mensagem, grupo,
     assert.equal(ids.size, Object.keys(F.FERAS).length * 3);
     await db.query("update jogo.batalhas set status = 'encerrada' where status <> 'encerrada'"); await db.query("delete from jogo.exploracoes where pendente"); await db.query("delete from jogo.ameacas");
     await db.query("delete from jogo.progresso where chave in ('fera', 'falando', 'ameaca-vez', 'duelo-ativo', 'duelo-estado')"); await db.query("delete from jogo.inventario where jogador_id = $1", [jogador.id]);
-    await db.query("update jogo.jogadores set classe = 'Mago', tipo_animal = null, nivel = 10, hp = hp_max, mp = 200, mp_max = 200, regiao_atual = 'R-HOM-3', local_atual = null where id = $1", [jogador.id]);
+    await db.query("update jogo.jogadores set classe = 'Cavaleiro', tipo_animal = null, nivel = 10, hp = hp_max, mp = 200, mp_max = 200, regiao_atual = 'R-HOM-3', local_atual = null where id = $1", [jogador.id]);
     // quem não é Meio-humano não tem fera
-    assert.match(texto(await enviar("fera")), /Só Meio-humanos e Forças da Natureza/);
-    assert.match(texto(await noGrupo(adminPrivado("mestre transformar Kaito"))), /Só Meio-humanos e Forças da Natureza/);
+    assert.match(texto(await enviar("fera")), /Só Meio-humanos, Forças da Natureza e Magos/);
+    assert.match(texto(await noGrupo(adminPrivado("mestre transformar Kaito"))), /Só Meio-humanos, Forças da Natureza e Magos/);
     await db.query("update jogo.jogadores set classe = 'Meio-humano', tipo_animal = 'raposa' where id = $1", [jogador.id]);
     assert.match(texto(await enviar("fera")), /raposa no seu sangue[\s\S]*◇ _Raposa de Uma Cauda — nível 1 e uma Relíquia[\s\S]*\?\?\?/);
     // 1º despertar pela relíquia achada explorando
@@ -941,7 +941,7 @@ export async function testarMundoServidor({ db, jogador, outro, mensagem, grupo,
     const { criarFera } = await import("../src/servidor/fera.mjs");
     assert.equal(Object.values(F.FERAS).filter((f) => f.linhagem === "natureza").length, 4);
     assert.equal(F.chaveDespertar({ classe: "Força da Natureza", reino: "Kokū" }), "nat-Daichi", "reino sem espírito próprio usa o carvalho");
-    assert.equal(F.chaveDespertar({ classe: "Mago", reino: "Daichi" }), null);
+    assert.equal(F.chaveDespertar({ classe: "Cavaleiro", reino: "Daichi" }), null);
     assert.deepEqual(F.bonusDespertar("nat-Daichi", 0, { DEF: 50, RES: 40 }), {});
     assert.deepEqual(F.bonusDespertar("nat-Daichi", 1, { DEF: 50, RES: 40 }), { DEF: 3, RES: 2 });
     assert.deepEqual(F.bonusDespertar("nat-Daichi", 3, { DEF: 50, RES: 40 }), { DEF: 10, RES: 8 });
@@ -1021,6 +1021,55 @@ export async function testarMundoServidor({ db, jogador, outro, mensagem, grupo,
     await noGrupo(grupo("desistir", false)); await noGrupo(outroGrupo("desistir"));
     await db.query("delete from jogo.progresso where chave in ('fera', 'duelo-ativo', 'duelo-estado', 'duelo', 'duelos-dia')"); await db.query("delete from jogo.grimorios_jogador"); await db.query("delete from jogo.inventario where jogador_id = $1", [jogador.id]);
     await db.query("update jogo.jogadores set classe = 'Mago', reino = 'Homura', avatar_dna = $2 where id = $1", [jogador.id, JSON.stringify(antes)]);
+  });
+  await t("Mago abre os Círculos Arcanos da escola do seu elemento (selo ou mestre): habilidade e atributos por círculo, arte no grupo, vale em luta e duelo", async () => {
+    const F = await import("../src/regras/fera.mjs");
+    const { criarFera } = await import("../src/servidor/fera.mjs");
+    assert.equal(Object.values(F.FERAS).filter((f) => f.linhagem === "arcano").length, 5);
+    assert.equal(F.escolaArcana("Fogo (Chama)"), "arc-chama"); assert.equal(F.escolaArcana("Gelo"), "arc-mare"); assert.equal(F.escolaArcana("Raio"), "arc-tempestade");
+    assert.equal(F.escolaArcana("Cristal"), "arc-pedra"); assert.equal(F.escolaArcana("Tempo"), "arc-veu"); assert.equal(F.escolaArcana(null), "arc-veu");
+    assert.deepEqual(F.bonusDespertar("arc-chama", 3, { MAG: 40, VEL: 15 }), { MAG: 8, VEL: 3 });
+    for (const f of Object.values(F.FERAS).filter((x) => x.linhagem === "arcano")) for (const e of f.estagios) assert(["magico", "guarda", "cura"].includes(e.hab.tipo) && e.hab.mp > 0, "círculo arcano é magia e custa mana");
+    await db.query("update jogo.batalhas set status = 'encerrada' where status <> 'encerrada'"); await db.query("delete from jogo.exploracoes where pendente"); await db.query("delete from jogo.ameacas");
+    await db.query("delete from jogo.progresso where chave in ('fera', 'falando', 'ameaca-vez', 'duelo-ativo', 'duelo-estado', 'duelo', 'duelos-dia')"); await db.query("delete from jogo.inventario where jogador_id = $1", [jogador.id]);
+    await db.query(`update jogo.jogadores set classe = 'Mago', tipo_animal = null, atributo_magico = 'Fogo (Chama)', nivel = 10, atributos = '{"FOR":5,"DEF":10,"MAG":40,"RES":20,"VEL":15,"SOR":10}', hp = hp_max, mp = 200, mp_max = 200, regiao_atual = 'R-HOM-3', local_atual = null where id = $1`, [jogador.id]);
+    const antes = (await atual()).avatar_dna;
+    assert.match(texto(await enviar("circulos")), /Círculos Arcanos — Escola da Chama[\s\S]*Primeiro Círculo — Iniciado da Chama — nível 1 e um Selo Arcano \(\+6% de MAG e VEL\)/);
+    // a semente não serve para o Mago
+    await db.query(`insert into jogo.inventario (jogador_id, item_id, tipo, qtd, dados) values ($1, 'semente-ancestral', 'historia', 1, '{}')`, [jogador.id]);
+    assert.match(texto(await enviar("usar semente")), /Só uma Força da Natureza[\s\S]*continua na sua bolsa/);
+    await db.query("delete from jogo.inventario where jogador_id = $1", [jogador.id]);
+    const fe = criarFera({ db, rng: () => 0, agora: () => clock });
+    assert.match(texto(await fe.aoExplorar(await atual(), "pv")), /Selo Arcano[\s\S]*usar selo arcano/);
+    const d1 = await enviar("usar selo arcano");
+    assert(d1.some((x) => x.para !== GRUPO && x.imagem?.length > 3000 && /Primeiro Círculo[\s\S]*Nova habilidade:\* \*Lança de Chamas[\s\S]*Atributos:\* \+6% de MAG e VEL/.test(x.legenda)), "o mago recebe a arte, a habilidade e o bônus");
+    assert(doGrupo(d1).some((x) => x.imagem?.length > 3000 && /UM CÍRCULO SE ABRIU[\s\S]*Kaito Ryuen\* abriu um novo círculo da Escola da Chama/.test(x.legenda)), "o grupo recebe a arte");
+    assert.equal((await db.query("select count(*)::int n from jogo.inventario where jogador_id = $1 and item_id = 'selo-arcano'", [jogador.id]))[0].n, 0, "o selo é gasto");
+    await noGrupo(adminPrivado("mestre transformar Kaito"));
+    const m3 = await noGrupo(adminPrivado("mestre transformar Kaito"));
+    assert(doGrupo(m3).some((x) => /NASCE UM ARQUIMAGO[\s\S]*Arquimago do Sol/.test(x.legenda ?? "") && !/mestre|admin/i.test(x.legenda)));
+    const f3 = (await enviar("ficha")).at(-1);
+    assert.match(f3.legenda ?? f3.texto, /Forma desperta: Terceiro Círculo — Arquimago do Sol \(MAG \+8, VEL \+3\)/);
+    assert.match(texto(await enviar("habilidades")), /Dos Círculos Arcanos\* \(Escola da Chama, 3 de 3 círculos\)[\s\S]*Lança de Chamas[\s\S]*Manto Incandescente[\s\S]*Sol Menor/);
+    const unido = (await atual()).avatar_dna;
+    for (const tr of ["runas", "circulo-arcano", "orbes", "brasas"]) assert(unido.acessorios.includes(tr), `o retrato ganha ${tr}`);
+    for (const k of ["cabelo", "corCabelo", "corOlhos", "pele", "rosto", "roupa"]) assert.equal(unido[k], unido.base[k], `o retrato não muda ${k}`);
+    // luta: menu e atributos
+    await db.query(`insert into jogo.exploracoes (jogador_id, mensagem_id, regiao, tipo, dados, pendente, criada_em) values ($1, $2, 'R-HOM-3', 'encontro', $3, true, $4)`,
+      [jogador.id, `arc:${clock}`, JSON.stringify({ inimigo: { id: "V001", nome: "x", nivel: 10 }, lacaio: true }), new Date(clock)]);
+    const luta = texto(await enviar("lutar"));
+    assert.match(luta, /Lança de Chamas[\s\S]*Manto Incandescente[\s\S]*Sol Menor/);
+    assert.equal((await db.query("select estado from jogo.batalhas where status <> 'encerrada' order by id desc limit 1"))[0].estado.jogador.at.MAG, 48);
+    assert.match(texto(await enviar(luta.match(/\*(\d+)\* Lança de Chamas/)[1])), /Lança de Chamas|Vitória|passa/);
+    await db.query("update jogo.batalhas set status = 'encerrada' where status <> 'encerrada'");
+    // duelo: os círculos entram no menu
+    await db.query("update jogo.jogadores set regiao_atual = 'R-HOM-3', hp = hp_max where id = $1", [outro.id]);
+    await noGrupo(outroGrupo("duelar Kaito")); await noGrupo(grupo("aceitar", false));
+    const eu = (await db.query("select valor from jogo.progresso where chave = 'duelo-estado'"))[0].valor.lados.find((x) => x.nome === "Kaito Ryuen");
+    assert.equal(eu.at.MAG, 48); assert(eu.extras.some((x) => x.nome === "Sol Menor"));
+    await noGrupo(grupo("desistir", false)); await noGrupo(outroGrupo("desistir"));
+    await db.query("delete from jogo.progresso where chave in ('fera', 'duelo-ativo', 'duelo-estado', 'duelo', 'duelos-dia')");
+    await db.query("update jogo.jogadores set avatar_dna = $2 where id = $1", [jogador.id, JSON.stringify(antes)]);
   });
   await t("Olhos da Terra: a mestra entrega o pergaminho a quem é da terra; ler cega e dá as habilidades; admin também concede", async () => {
     await db.query("update jogo.jogadores set regiao_atual = 'R-DAI-6', local_atual = null, atributo_magico = 'Fogo (Chama)', reino = 'Homura' where id = $1", [jogador.id]);

@@ -2,11 +2,11 @@
 // e o anúncio com a arte no grupo. As habilidades de cada estágio entram no menu das lutas (ver regras/fera.mjs).
 import { FERAS, habilidadesDaFera, dnaFera, dnaUniao, NIVEL_ESTAGIO, CHANCE_RELIQUIA, chaveDespertar, bonusDespertar, atributosDaForma, BONUS_ESTAGIO } from "../regras/fera.mjs";
 import { imagemTransformacao } from "../avatar/especiais.mjs";
-import { CABELO } from "../avatar/paletas.mjs";
+import { CABELO, ELEMENTO } from "../avatar/paletas.mjs";
 import { rodape } from "./textos.mjs";
 import { um } from "./db.mjs";
 
-export const RELIQUIA = "reliquia-fera", SEMENTE = "semente-ancestral";
+export const RELIQUIA = "reliquia-fera", SEMENTE = "semente-ancestral", SELO = "selo-arcano";
 /** O que muda no texto conforme a linhagem: a fera do Meio-humano ou o espírito da Força da Natureza. */
 const LINHAGEM = {
   fera: { item: RELIQUIA, nomeItem: "Relíquia do Sangue Antigo", usar: "usar relíquia", dentro: (f) => `a ${f.ser} que corre no seu sangue`, dele: (f) => `a ${f.ser} que carrega no sangue`, titulo: (f) => `A ${f.ser} no seu sangue`,
@@ -20,6 +20,14 @@ const LINHAGEM = {
     sentir: ["Começa nos pés: uma vontade de ficar parado, de afundar os dedos na terra. Depois você sente a água subindo, a luz descendo, e entende que nunca esteve sozinho dentro do próprio corpo.", "Desta vez as raízes vão mais fundo. Você sente cada folha num raio de cem passos como se fosse um dedo seu.", "Você não fala mais *com* a floresta. Quando você respira, é ela que respira."],
     achou: (f) => `Entre duas pedras, há uma semente do tamanho de um punho, morna como um bicho dormindo. Na casca, veios desenham algo que você reconhece sem nunca ter visto: um ${f.ser}. Quando você a pega, ela pulsa no ritmo do seu coração.`, frio: "A semente continua dormindo na sua mão." },
 };
+LINHAGEM.arcano = { item: SELO, nomeItem: "Selo Arcano", usar: "usar selo arcano", dentro: (f) => `a ${f.ser}`, dele: (f) => `um novo círculo da ${f.ser}`, titulo: (f) => `Os seus Círculos Arcanos — ${f.ser}`,
+  grupo: ["UM CÍRCULO SE ABRIU", "O SEGUNDO CÍRCULO GIRA", "O TERCEIRO CÍRCULO: NASCE UM ARQUIMAGO"],
+  cena: ["Em algum lugar, todas as velas de uma biblioteca acenderam sozinhas.", "Por um instante, a mana do ar ficou pesada como antes de chuva.", "As estrelas mudaram de lugar por um instante, e quem estuda magia no continente inteiro perdeu a linha do que estava lendo."],
+  sentir: ["Você sempre empurrou a mana para fora, como quem sopra. Hoje ela veio sozinha, e desenhou no ar um círculo que você nunca aprendeu.", "O segundo círculo gira ao contrário do primeiro. Entre os dois, há um silêncio onde cabe qualquer feitiço.", "Três círculos, um dentro do outro. Você não conjura mais: você decide, e a magia já aconteceu."],
+  achou: (f) => `Preso entre duas lajes, há um disco de metal frio, do tamanho de uma moeda grande, gravado com um círculo dentro de outro. Quando você o toca, a sua mana responde antes de você pensar: é um selo da ${f.ser}.`, frio: "O selo continua frio e mudo na sua mão.",
+  verbo: "abriu", um: "um", outro: "outro", so: "Só um Mago consegue ler o que está gravado nele." };
+LINHAGEM.fera.so = "Só um Meio-humano carrega o sangue que ela chama."; LINHAGEM.natureza.so = "Só uma Força da Natureza consegue acordá-la.";
+const DO_ITEM = { [RELIQUIA]: LINHAGEM.fera, [SEMENTE]: LINHAGEM.natureza, [SELO]: LINHAGEM.arcano };
 const NOME_ATR = { FOR: "FOR", DEF: "DEF", MAG: "MAG", RES: "RES", VEL: "VEL", SOR: "SOR" };
 
 /** Tudo do despertar de um jogador, para quem monta lutas e fichas. q = função de consulta (db.query ou a de uma transação). */
@@ -36,14 +44,14 @@ export function criarFera({ db, rng, agora }) {
   // o retrato original fica guardado em avatar_dna.base no primeiro despertar; a aparência atual é sempre recalculada a partir dele
   const baseDe = (j) => { const { base, ...atual } = j.avatar_dna ?? {}; return base ?? atual; };
   const formaDe = (j) => { const chave = chaveDespertar(j), f = chave ? FERAS[chave] : null; return f ? { chave, f, L: LINHAGEM[f.linhagem] } : null; };
-  const arte = (j, estagio) => { const base = baseDe(j), k = chaveDespertar(j); return imagemTransformacao(base, dnaFera(k, estagio, base, { cabelo: CABELO }), estagio, dnaUniao(base, k, estagio)); };
+  const arte = (j, estagio) => { const base = baseDe(j), k = chaveDespertar(j); return imagemTransformacao(base, dnaFera(k, estagio, { ...base, elemento: base.elemento ?? j.atributo_magico }, { cabelo: CABELO, elemento: ELEMENTO }), estagio, dnaUniao(base, k, estagio)); };
   const linhaBonus = (chave, estagio) => `+${Math.round(BONUS_ESTAGIO[estagio - 1] * 100)}% de ${atributosDaForma(chave).map((k) => NOME_ATR[k]).join(" e ")}`;
   const linhaHab = (h, temMana) => `*${h.nome}* — ${h.resumo}${temMana && h.mp ? ` _(${h.mp} de mana)_` : ""}`;
 
   /** Sobe um estágio. forcar = veio do mestre (ignora o nível mínimo). Devolve as saídas (privado + grupo) ou uma recusa em texto. */
   async function transformar(j, para, { forcar = false } = {}) {
     const forma = formaDe(j);
-    if (!forma) return { erro: `Só Meio-humanos e Forças da Natureza despertam. ${j.nome} é ${j.classe}.` };
+    if (!forma) return { erro: `Só Meio-humanos, Forças da Natureza e Magos despertam. ${j.nome} é ${j.classe}.` };
     const { chave, f, L } = forma;
     const atual = await estagioDe(j.id);
     if (atual >= 3) return { erro: `${j.nome} já chegou à forma final: ${f.estagios[2].nome}.` };
@@ -51,7 +59,7 @@ export function criarFera({ db, rng, agora }) {
     const novo = atual + 1, e = f.estagios[novo - 1];
     await db.query(`insert into jogo.progresso (jogador_id, chave, valor, criado_em) values ($1, 'fera', $2, $3) on conflict (jogador_id, chave) do update set valor = excluded.valor`, [j.id, JSON.stringify({ estagio: novo }), new Date(agora())]);
     const mundo = await um(db, "select grupo_wa_id from jogo.mundos where id = $1", [j.mundo_id]);
-    await db.query("insert into jogo.feitos (mundo_id, jogador_id, tipo, texto, criado_em) values ($1, $2, 'fera', $3, $4)", [j.mundo_id, j.id, `${j.nome} despertou: ${e.nome}.`, new Date(agora())]);
+    await db.query("insert into jogo.feitos (mundo_id, jogador_id, tipo, texto, criado_em) values ($1, $2, 'fera', $3, $4)", [j.mundo_id, j.id, `${j.nome} ${f.linhagem === "arcano" ? "abriu o" : "despertou:"} ${e.nome}.`, new Date(agora())]);
     // a união muda a aparência do personagem de verdade: a ficha passa a mostrar o retrato com os traços da fera
     if (j.avatar_dna) {
       // o que o personagem ganhou por outros caminhos depois do último despertar (ex.: a venda dos Olhos da Terra) passa a fazer parte do retrato de base
@@ -64,9 +72,9 @@ export function criarFera({ db, rng, agora }) {
     const img = j.avatar_dna ? arte(j, novo) : null;
     const privado = `${L.sentir[novo - 1]}\n\n` +
       `*${e.nome}* — ${ORDINAL[novo - 1]} despertar d${L.dentro(f)}.\n\n*Nova habilidade:* ${linhaHab(e.hab, j.mp_max > 0)}\n_${e.hab.frase}_\n\n*Atributos:* ${linhaBonus(chave, novo)} _(já aparece na ficha e vale em toda luta)_\n\n` +
-      rodape("o terceiro quadro é você agora: a sua ficha passa a mostrar essa aparência", "a habilidade se soma às que você já tem", "vale em lutas, calamidades e duelos", novo < 3 ? `próximo despertar: nível ${NIVEL_ESTAGIO[novo]} e outra ${L.nomeItem}` : "esta é a forma final", "forma mostra tudo");
+      rodape("o terceiro quadro é você agora: a sua ficha passa a mostrar essa aparência", "a habilidade se soma às que você já tem", "vale em lutas, calamidades e duelos", novo < 3 ? `próximo despertar: nível ${NIVEL_ESTAGIO[novo]} e ${L.outro ?? "outra"} ${L.nomeItem}` : "esta é a forma final", "forma mostra tudo");
     const legenda = `${"⭐".repeat(novo)} *${L.grupo[novo - 1]}*\n\n${L.cena[novo - 1]}\n\n` +
-      `*${j.nome}* despertou ${L.dele(f)} e agora é *${e.nome}*.\n\n_À esquerda, quem ${j.avatar_dna?.feminino ? "ela" : "ele"} era. No meio, o que sempre esteve lá dentro. À direita, quem ${j.avatar_dna?.feminino ? "ela" : "ele"} é agora._`;
+      `*${j.nome}* ${L.verbo ?? "despertou"} ${L.dele(f)} e agora é *${e.nome}*.\n\n_À esquerda, quem ${j.avatar_dna?.feminino ? "ela" : "ele"} era. No meio, o que sempre esteve lá dentro. À direita, quem ${j.avatar_dna?.feminino ? "ela" : "ele"} é agora._`;
     return { estagio: novo, saidas: [
       img ? { para, imagem: img, legenda: privado } : { para, texto: privado },
       ...(mundo?.grupo_wa_id ? [img ? { para: mundo.grupo_wa_id, imagem: img, legenda } : { para: mundo.grupo_wa_id, texto: legenda }] : []),
@@ -75,8 +83,8 @@ export function criarFera({ db, rng, agora }) {
 
   /** usar a Relíquia / a Semente (só é gasta se a transformação acontecer, e cada linhagem só usa a sua). */
   async function usarReliquia(j, para, itemId = RELIQUIA) {
-    const forma = formaDe(j), nome = itemId === SEMENTE ? LINHAGEM.natureza : LINHAGEM.fera;
-    if (!forma || forma.L.item !== itemId) return [{ para, texto: `${nome.frio}\n\n${itemId === SEMENTE ? "Só uma Força da Natureza consegue acordá-la." : "Só um Meio-humano carrega o sangue que ela chama."}\n${rodape("ela continua na sua bolsa", "pode ser dada a outro jogador: dar <nome> <item>")}` }];
+    const forma = formaDe(j), nome = DO_ITEM[itemId] ?? LINHAGEM.fera;
+    if (!forma || forma.L.item !== itemId) return [{ para, texto: `${nome.frio}\n\n${nome.so}\n${rodape("continua na sua bolsa", "pode ser dado a outro jogador: dar <nome> <item>")}` }];
     const r = await transformar(j, para);
     if (r.erro) return [{ para, texto: `${forma.L.frio}\n\n${r.erro}\n${rodape("ela continua na sua bolsa")}` }];
     const gasto = await db.query("delete from jogo.inventario where jogador_id = $1 and item_id = $2 and qtd = 1 returning 1", [j.id, itemId]);
@@ -96,11 +104,11 @@ export function criarFera({ db, rng, agora }) {
   }
 
   async function comando(j, t, para) {
-    if (!/^(fera|minha fera|forma|minha forma|transformacao|despertar|espirito|meu espirito)$/.test(t)) return { tratado: false, saidas: [] };
+    if (!/^(fera|minha fera|forma|minha forma|transformacao|despertar|espirito|meu espirito|circulo|circulos|arcano|circulos arcanos|niveis arcanos)$/.test(t)) return { tratado: false, saidas: [] };
     const forma = formaDe(j);
-    if (!forma) return { tratado: true, saidas: [{ para, texto: "Só Meio-humanos e Forças da Natureza têm uma forma para despertar." }] };
+    if (!forma) return { tratado: true, saidas: [{ para, texto: "Só Meio-humanos, Forças da Natureza e Magos têm uma forma para despertar." }] };
     const { chave, f, L } = forma, atual = await estagioDe(j.id), temMana = j.mp_max > 0;
-    const linhas = f.estagios.map((e, i) => i < atual ? `${"◆".repeat(i + 1)} *${e.nome}* — ${linhaBonus(chave, i + 1)}\n   ${linhaHab(e.hab, temMana)}` : `${"◇".repeat(i + 1)} _${i === atual ? e.nome : "???"} — ${i === atual ? `nível ${NIVEL_ESTAGIO[i]} e uma ${L.nomeItem} (${linhaBonus(chave, i + 1)})` : "ainda dormindo"}_`);
+    const linhas = f.estagios.map((e, i) => i < atual ? `${"◆".repeat(i + 1)} *${e.nome}* — ${linhaBonus(chave, i + 1)}\n   ${linhaHab(e.hab, temMana)}` : `${"◇".repeat(i + 1)} _${i === atual ? e.nome : "???"} — ${i === atual ? `nível ${NIVEL_ESTAGIO[i]} e ${L.um ?? "uma"} ${L.nomeItem} (${linhaBonus(chave, i + 1)})` : "ainda dormindo"}_`);
     const b = bonusDespertar(chave, atual, j.atributos ?? {});
     const texto = `*${L.titulo(f)}*\n\n${linhas.join("\n")}\n\n${rodape(atual ? `${atual} de 3 despertares` : "ainda não despertou", atual ? `atributos agora: ${Object.entries(b).map(([k, v]) => `${k} +${v}`).join(", ")} (o bônus de cada estágio substitui o anterior)` : null, atual < 3 ? `${L.nomeItem} aparece para quem explora` : "forma final", "as habilidades despertas valem em lutas, calamidades e duelos")}`;
     return { tratado: true, saidas: [atual && j.avatar_dna ? { para, imagem: arte(j, atual), legenda: texto } : { para, texto }] };

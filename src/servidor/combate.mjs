@@ -376,8 +376,8 @@ export function textoHabilidades(j, terra = false, extra = null) {
     if (it.length) linhas.push("", "*De Grandes Itens*", ...it);
     const chave = chaveDespertar(j);
     if (extra.fera != null && chave) {
-      const f = FERAS[chave], nat = f.linhagem === "natureza", pct = (i) => `+${Math.round(BONUS_ESTAGIO[i] * 100)}% de ${atributosDaForma(chave).join(" e ")}`;
-      linhas.push("", `*${nat ? "Do espírito que cresce em você" : "Da fera no seu sangue"}* (${f.ser}, ${extra.fera} de 3 despertares)`, ...f.estagios.map((e, i) => i < extra.fera ? `*${e.hab.nome}* (${e.nome}) — ${e.hab.resumo}${custo(e.hab)}` : `_${i === extra.fera ? `${e.nome}: desperta com uma ${nat ? "Semente do Primeiro Bosque" : "Relíquia do Sangue Antigo"} (nível ${NIVEL_ESTAGIO[i]}; dá ${pct(i)})` : "??? — ainda dormindo"}_`));
+      const f = FERAS[chave], nat = f.linhagem === "natureza", arc = f.linhagem === "arcano", pct = (i) => `+${Math.round(BONUS_ESTAGIO[i] * 100)}% de ${atributosDaForma(chave).join(" e ")}`;
+      linhas.push("", `*${arc ? "Dos Círculos Arcanos" : nat ? "Do espírito que cresce em você" : "Da fera no seu sangue"}* (${f.ser}, ${extra.fera} de 3 ${arc ? "círculos" : "despertares"})`, ...f.estagios.map((e, i) => i < extra.fera ? `*${e.hab.nome}* (${e.nome}) — ${e.hab.resumo}${custo(e.hab)}` : `_${i === extra.fera ? `${e.nome}: desperta com uma ${arc ? "Selo Arcano" : nat ? "Semente do Primeiro Bosque" : "Relíquia do Sangue Antigo"} (nível ${NIVEL_ESTAGIO[i]}; dá ${pct(i)})` : "??? — ainda dormindo"}_`));
       if (extra.fera) linhas.push(`_atributos do despertar: ${pct(extra.fera - 1)} (já somado na ficha)_`);
     }
     if (extra.pet) linhas.push("", `*${extra.pet.nome}* (companheiro) — ataca junto com você em toda rodada`);

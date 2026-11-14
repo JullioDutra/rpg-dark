@@ -616,7 +616,7 @@ viajar <região> · rota · mapa
 itens — bolsa, o que cada coisa faz e quantos usos tem
 equipar <nº> · usar <nº> · loja (loja poções, loja armas) · descansar
 habilidades · ficha · segredos · amigos · pet
-forma — (Meio-humano e Força da Natureza) o que você carrega dentro, os despertares e o que cada um dá
+forma — (Meio-humano, Força da Natureza e Mago) a fera, o espírito ou os Círculos Arcanos: estágios, habilidades e atributos
 grimorios — seus livros de magia · abrir grimorio <nº> põe as magias na luta
 minha história — conte quem é o seu personagem
 boatos — histórias que o povo conta · lembrar — ecos do passado

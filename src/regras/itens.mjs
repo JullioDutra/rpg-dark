@@ -50,6 +50,8 @@ CATALOGO.set("pergaminho-terra", { id: "pergaminho-terra", tipo: "historia", nom
   efeito: "ensina a ver pelo chão: você fica cego para sempre e ganha Onda Sísmica, Ler o Chão e +2 no dado ao defender (só para quem é da terra)", preco: 0, lendario: true });
 CATALOGO.set("reliquia-fera", { id: "reliquia-fera", tipo: "historia", nome: "Relíquia do Sangue Antigo",
   efeito: "desperta a fera que um Meio-humano carrega no sangue (um estágio por relíquia; some ao ser usada)", preco: 0, lendario: true });
+CATALOGO.set("selo-arcano", { id: "selo-arcano", tipo: "historia", nome: "Selo Arcano",
+  efeito: "abre o próximo Círculo Arcano de um Mago (um círculo por selo; some ao ser usado)", preco: 0, lendario: true });
 CATALOGO.set("semente-ancestral", { id: "semente-ancestral", tipo: "historia", nome: "Semente do Primeiro Bosque",
   efeito: "desperta o espírito que cresce numa Força da Natureza (um estágio por semente; some ao ser usada)", preco: 0, lendario: true });
 for (const [id, m] of Object.entries(MATERIAIS_INFO)) CATALOGO.set(id, { id, tipo: "material", nome: m.nome, efeito: "material: pode ser vendido numa loja", preco: m.valor });

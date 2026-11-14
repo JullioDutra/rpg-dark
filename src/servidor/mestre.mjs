@@ -36,7 +36,7 @@ mestre mapa — mapa do mundo com a posição de todos (só você vê)
 mestre sete luzes — abre o chamado do Grimório das Sete Luzes: os jogadores aceitam ou recusam, quem aceita enfrenta o Dragão da Aurora na Geleira Hyōga, e só um fica com o livro (eles não sabem disso até o dragão cair)
 mestre sete luzes status — quem aceitou, quem recusou, vida do dragão e votos
 mestre sete luzes entregar <nome> — encerra a disputa dando o livro a alguém
-mestre transformar <nome> — desperta a fera de um Meio-humano ou o espírito de uma Força da Natureza (um estágio por vez, até 3; dá habilidade nova e atributos). O grupo recebe a arte da transformação
+mestre transformar <nome> — desperta a fera de um Meio-humano, o espírito de uma Força da Natureza ou abre um Círculo Arcano de um Mago (um estágio por vez, até 3; dá habilidade nova e atributos). O grupo recebe a arte da transformação
 mestre grimorios — onde está cada um dos 40 grimórios e quem já tem
 mestre grimorio <nome> <nº> — entrega um grimório ao jogador (ele "encontra" o livro)
 mestre tesouros — mapa de onde estão os 4 Grandes Itens, os 4 núcleos, os santuários de pet e o pergaminho da terra, e com quem cada um está
@@ -370,7 +370,7 @@ export function criarMestre({ db, agora, ameacas = null, grimorios = null, seteL
   };
   /** Comandos do jogador ligados ao selo. Devolve { tratado, saidas, mudouRegiao }. */
   async function passagem(j, t, para) {
-    const m = t.match(/^(?:teleportar|teletransportar|atravessar|usar selo)\s*(?:para |pra |a |ao |à )?(.*)$/), pg = t.match(/^pagar\s*(?:com |em )?(vida|sangue|ryo|ouro|merito|nome|memoria)?$/);
+    const m = t.match(/^(?:teleportar|teletransportar|atravessar|usar selo(?! arcano))\s*(?:para |pra |a |ao |à )?(.*)$/), pg = t.match(/^pagar\s*(?:com |em )?(vida|sangue|ryo|ouro|merito|nome|memoria)?$/);
     if (!m && !pg) return { tratado: false, saidas: [] };
     const dizer = (texto) => ({ tratado: true, saidas: [{ para, texto }] });
     const selo = (await um(db, "select valor from jogo.progresso where jogador_id = $1 and chave = 'teleporte'", [j.id]))?.valor;
